@@ -47,16 +47,19 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
     private static MenuItem searchWidget;
     private static String title;
     private static Forecast.Response lastForecastResponse;
-    private static double lat, lng;
     private static int navItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Fragment cFrag, wFrag, mFrag;
+        ActionBar actionBar;
 
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.main_activity);
+
+        actionBar = getActionBar();
+        assert actionBar != null;
 
         if (playServicesAvailable()) {
 
@@ -90,10 +93,11 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
             ft.add(R.id.main_fragment, mFrag, "map");
             ft.detach(mFrag);
             mListen = (FragmentListener) mFrag;
+
             ft.commit();
 
-            title = getString(R.string.app_name);
         } else {
+
             cFrag = getFragmentManager().findFragmentByTag("current");
             cListen = (FragmentListener) cFrag;
             wFrag = getFragmentManager().findFragmentByTag("week");
@@ -102,20 +106,14 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
             mListen = (FragmentListener) mFrag;
 
             if(lastForecastResponse != null) {
-                if (lastForecastResponse.getExpiration().after(new Date())) {
-                    cListen.onRestoreData(lastForecastResponse);
-                    wListen.onRestoreData(lastForecastResponse);
-                    mListen.onRestoreData(lastForecastResponse);
-                } else {
-                    Network.getInstance(getApplicationContext()).getForecast(lat, lng, Locale.getDefault().getLanguage(), this);
-                    changeVisibility(R.id.main_fragment, false);
-                    changeVisibility(R.id.progress_spinner, true);
-                }
+                cListen.onRestoreData(lastForecastResponse);
+                wListen.onRestoreData(lastForecastResponse);
+                mListen.onRestoreData(lastForecastResponse);
+                changeVisibility(R.id.main_fragment, true);
             }
+
         }
 
-        ActionBar actionBar = getActionBar();
-        assert actionBar != null;
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         TabListener currentTab, weekTab, mapTab;
@@ -131,9 +129,9 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
         actionBar.addTab(tab);
 
         actionBar.setSelectedNavigationItem(navItem);
-        actionBar.setTitle(title);
 
         setIntent(null);
+
     }
 
     @Override
@@ -169,8 +167,24 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
     public void onResume() {
         super.onResume();
 
+        ActionBar actionBar = getActionBar();
+        assert actionBar != null;
+
+        if (title == null)
+            actionBar.setTitle(getString(R.string.app_name));
+        else
+            actionBar.setTitle(title);
+
+        if (lastForecastResponse != null && lastForecastResponse.getExpiration().before(new Date())) {
+            Network.getInstance(getApplicationContext()).getForecast(lastForecastResponse.getLatitude(), lastForecastResponse.getLongitude(),
+                    Locale.getDefault().getLanguage(), this);
+            changeVisibility(R.id.main_fragment, false);
+            changeVisibility(R.id.progress_spinner, true);
+        }
+
         if (bannerAd != null)
             bannerAd.resume();
+
     }
 
     @Override
@@ -317,11 +331,8 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
 
             if (details.getStatus().equals("OK")) {
                 title = details.getResult().getName();
-
-                lat = details.getResult().getGeometry().getLocation().getLat();
-                lng = details.getResult().getGeometry().getLocation().getLng();
-
-                Network.getInstance(getApplicationContext()).getForecast(lat, lng, Locale.getDefault().getLanguage(), this);
+                Places.Location location = details.getResult().getGeometry().getLocation();
+                Network.getInstance(getApplicationContext()).getForecast(location.getLat(), location.getLng(), Locale.getDefault().getLanguage(), this);
             } else {
                 setIntent(null);
                 changeVisibility(R.id.progress_spinner, false);

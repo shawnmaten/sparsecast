@@ -23,7 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_above="@id/ad" />
+        android:layout_above="@id/ad"
+        android:visibility="invisible" />
 
     <com.google.android.gms.ads.AdView
         android:id="@id/ad"
