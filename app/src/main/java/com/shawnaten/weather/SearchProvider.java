@@ -38,20 +38,22 @@ public class SearchProvider extends ContentProvider implements Callback<Places.A
 		query = uri.getLastPathSegment();
 		switch (URIMatcher.match(uri)) {
 		case 0:
-			MatrixCursor cursor = new MatrixCursor(pColumns);
+            if (!query.equals("search_suggest_query")) {
+                MatrixCursor cursor = new MatrixCursor(pColumns);
 
-            Network.getInstance(getContext()).getAutocomplete(query, Locale.getDefault().getLanguage(), this);
+                Network.getInstance(getContext()).getAutocomplete(query, Locale.getDefault().getLanguage(), this);
 
-			waitForData();
+                waitForData();
 
-            if (autocomplete != null && autocomplete.getStatus().equals("OK")) {
-                for(int i = 0; i < autocomplete.getPredictions().length; i++) {
-                    cursor.addRow(new Object[]{i, autocomplete.getPredictions()[i].getDescription(),
-                            autocomplete.getPredictions()[i].getPlace_id()});
+                if (autocomplete != null && autocomplete.getStatus().equals("OK")) {
+                    for (int i = 0; i < autocomplete.getPredictions().length; i++) {
+                        cursor.addRow(new Object[]{i, autocomplete.getPredictions()[i].getDescription(),
+                                autocomplete.getPredictions()[i].getPlace_id()});
+                    }
                 }
-            }
 
-			return cursor;
+                return cursor;
+            }
 		}		
 		return null;
 	}

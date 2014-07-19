@@ -26,12 +26,12 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.shawnaten.networking.Forecast;
 import com.shawnaten.networking.Network;
 import com.shawnaten.networking.Places;
+import com.shawnaten.tools.FragmentListener;
+import com.shawnaten.tools.TabListener;
 
 import java.util.Date;
 import java.util.Locale;
 
-import com.shawnaten.tools.FragmentListener;
-import com.shawnaten.tools.TabListener;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Header;
@@ -318,9 +318,10 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
             if (details.getStatus().equals("OK")) {
                 title = details.getResult().getName();
 
-                Network.getInstance(getApplicationContext()).getForecast(details.getResult().getGeometry().getLocation().getLat(),
-                        details.getResult().getGeometry().getLocation().getLng(),
-                        Locale.getDefault().getLanguage(), this);
+                lat = details.getResult().getGeometry().getLocation().getLat();
+                lng = details.getResult().getGeometry().getLocation().getLng();
+
+                Network.getInstance(getApplicationContext()).getForecast(lat, lng, Locale.getDefault().getLanguage(), this);
             } else {
                 setIntent(null);
                 changeVisibility(R.id.progress_spinner, false);
