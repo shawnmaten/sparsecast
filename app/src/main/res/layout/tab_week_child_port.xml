@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:tag="tab_week_child_port"
+    style="@style/tab.week.layout.child" >
+
+    <Space
+        android:id="@+id/center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true" />
+
+    <TextView
+        android:id="@+id/precip"
+        style="@style/tab.week.item.child.port"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/temp"
+        style="@style/tab.week.item.child.port"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/precip" />
+
+    <TextView
+        android:id="@+id/sun"
+        style="@style/tab.week.item.child.port"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/temp" />
+
+
+
+
+
+</RelativeLayout>

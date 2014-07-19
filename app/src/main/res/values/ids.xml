@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="center"/>
+    <item type="id" name="left_offset"/>
+    <item type="id" name="time"/>
+</resources>

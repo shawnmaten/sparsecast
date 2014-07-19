@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="green_500">#259b24</color>
+    <color name="black_text">#dd000000</color>
+    <color name="white_text">#ddffffff</color>
+    <color name="white_secondary">#89ffffff</color>
+    <color name="white_hint">#42ffffff</color>
+    <color name="pink_a100">#ff80ab</color>
+    <color name="red_500">#e51c23</color>
+
+    <color name="scattered_rain">#b3e5fc</color>
+    <color name="light_rain">#81d4fa</color>
+    <color name="moderate_rain">#4fc3f7</color>
+    <color name="heavy_rain">#29b6f6</color>
+
+    <color name="scattered_snow">#e1bee7</color>
+    <color name="light_snow">#ce93d8</color>
+    <color name="moderate_snow">#ba68c8</color>
+    <color name="heavy_snow">#ab47bc</color>
+
+    <color name="scattered_sleet">#f8bbd0</color>
+    <color name="light_sleet">#f48fb1</color>
+    <color name="moderate_sleet">#f06292</color>
+    <color name="heavy_sleet">#ec407a</color>
+
+    <color name="hail">#e84e40</color>
+
+    <color name="clear">#cfd8dc</color>
+    <color name="partly_cloudy">#b0bec5</color>
+    <color name="mostly_cloudy">#90a4ae</color>
+    <color name="overcast">#78909c</color>
+
+    <color name="haze">#d7ccc8</color>
+    <color name="mist">#bcaaa4</color>
+    <color name="fog">#a1887f</color>
+
+</resources>

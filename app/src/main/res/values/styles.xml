@@ -1,0 +1,218 @@
+<resources
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" >
+	
+	<style 
+	    name="tab" >
+	    <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:freezesText">true</item>
+	</style>
+
+    <style
+        name="tab.current" >
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingStart" tools:targetApi="17">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingEnd" tools:targetApi="17">16dp</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="tab.current.bold" >
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="tab.current.alert" >
+        <item name="android:padding">8dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/red_500</item>
+    </style>
+	
+	<style 
+	    name="tab.current.port" >
+	    <item name="android:gravity">center</item>
+	</style>
+
+    <style
+        name="tab.current.port.small" >
+        <item name="android:textSize">16sp</item>
+    </style>
+	
+	<style 
+	    name="tab.current.land" >
+	    <item name="android:layout_width">wrap_content</item>
+        <item name="android:gravity">center_vertical|left|start</item>
+	</style>
+
+    <style
+        name="tab.current.land.small" >
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style
+        name="tab.current.land.small.left" >
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingEnd" tools:targetApi="17">8dp</item>
+    </style>
+
+    <style
+        name="tab.current.land.small.right" >
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingStart" tools:targetApi="17">8dp</item>
+    </style>
+
+    <style
+        name="tab.current.land.left" >
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingEnd" tools:targetApi="17">8dp</item>
+    </style>
+
+    <style
+        name="tab.current.land.right" >
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingStart" tools:targetApi="17">8dp</item>
+    </style>
+
+    <style
+        name="tab.current.port.stat" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingStart" tools:targetApi="17">32dp</item>
+        <item name="android:paddingRight">32dp</item>
+        <item name="android:paddingEnd" tools:targetApi="17">32dp</item>
+    </style>
+
+	<style 
+	    name="tab.current.port.stat.large" >
+        <item name="android:textSize">34sp</item>
+	</style>
+
+    <style
+        name="tab.current.port.stat.small" >
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style
+        name="tab.current.land.stat" >
+        <item name="android:textStyle">bold</item>
+    </style>
+
+	<style 
+	    name="tab.current.land.stat.large" >
+        <item name="android:textSize">34sp</item>
+	</style>
+
+    <style
+        name="tab.current.land.stat.small" >
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style
+        name="tab.current.land.stat.small.left" >
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingEnd" tools:targetApi="17">8dp</item>
+    </style>
+
+    <style name="tab.current.land.stat.large.left" >
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingEnd" tools:targetApi="17">8dp</item>
+    </style>
+
+    <style
+        name="tab.week" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="tab.week.layout" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:minHeight">72dp</item>
+
+    </style>
+
+    <style name="tab.week.layout.group" >
+        <item name="android:paddingLeft">35dp</item> <!-- 3dp(default padding) + 32dp(indicator size) -->
+        <item name="android:paddingStart" tools:targetApi="17">35dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
+    <style name="tab.week.layout.child" >]
+    </style>
+
+    <style name="tab.week.item">
+        <item name="android:textColor">@android:color/secondary_text_light</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="tab.week.item.group" >
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="tab.week.item.group.summary" >
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingStart" tools:targetApi="17">24dp</item>
+        <item name="android:paddingRight">24dp</item>
+        <item name="android:paddingEnd" tools:targetApi="17">24dp</item>
+    </style>
+
+    <style name="tab.week.item.child" >
+
+    </style>
+
+    <style name="tab.week.item.child.land" >
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingStart" tools:targetApi="17">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingEnd" tools:targetApi="17">16dp</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:gravity">left|start|center_vertical</item>
+
+    </style>
+
+    <style name="tab.week.item.child.port" >
+        <item name="android:gravity">center</item>
+    </style>
+    
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppBaseTheme.AppTheme" >
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:icon">@drawable/ic_launcher</item>
+        <item name="android:name">@string/app_name</item>
+        <item name="android:actionBarStyle">@style/ActionBar</item>
+        <item name="android:actionBarWidgetTheme">@style/ActionBarWidget</item>
+        <item name="android:actionBarTabStyle">@style/ActionBarTab</item>
+
+    </style>
+
+    <style name="ActionBar" parent="android:Widget.Holo.Light.ActionBar.Solid.Inverse" >
+        <item name="android:background">@color/green_500</item>
+        <item name="android:backgroundStacked">@color/green_500</item>
+    </style>
+
+    <style name="ActionBarWidget" parent="android:Theme.Holo" >
+        <item name="android:textColorHint">@color/white_secondary</item>
+    </style>
+
+    <style name="ActionBarTab" parent="android:Widget.Holo.Light.ActionBar.TabView.Inverse" >
+        <item name="android:background">@drawable/tab_indicator_ab_weather</item>
+    </style>
+
+</resources>

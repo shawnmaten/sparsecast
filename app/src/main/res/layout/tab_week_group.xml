@@ -1,0 +1,22 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/tab.week.layout.group" >
+
+    <TextView
+        android:id="@+id/day"
+        style="@style/tab.week.item.group"
+        android:layout_width="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/summary"
+        style="@style/tab.week.item.group.summary"
+        android:layout_toRightOf="@id/day"
+        android:layout_toEndOf="@id/day"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>
