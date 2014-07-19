@@ -1,5 +1,6 @@
 package com.shawnaten.weather;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -10,12 +11,12 @@ import android.widget.ExpandableListView;
 
 import com.shawnaten.networking.Forecast;
 
-import Tools.TabDataListener;
+import com.shawnaten.tools.FragmentListener;
 
 /**
  * Created by shawnaten on 7/3/14.
  */
-public class WeekFragment extends Fragment implements TabDataListener {
+public class WeekFragment extends Fragment implements FragmentListener {
     private Forecast.Response forecast;
 
     public WeekFragment() {
@@ -64,4 +65,5 @@ public class WeekFragment extends Fragment implements TabDataListener {
                 this.onResume();
         }
     }
+
 }

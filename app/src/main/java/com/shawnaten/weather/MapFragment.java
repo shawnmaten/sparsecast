@@ -1,6 +1,8 @@
 package com.shawnaten.weather;
 
+import android.app.ActionBar;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
@@ -12,14 +14,14 @@ import android.widget.RelativeLayout;
 
 import com.shawnaten.networking.Forecast;
 
-import Tools.ForecastTools;
-import Tools.TabDataListener;
-import Tools.WeatherBarShape;
+import com.shawnaten.tools.ForecastTools;
+import com.shawnaten.tools.FragmentListener;
+import com.shawnaten.tools.WeatherBarShape;
 
 /**
  * Created by shawnaten on 7/12/14.
  */
-public class MapFragment extends Fragment implements TabDataListener {
+public class MapFragment extends Fragment implements FragmentListener {
     private Forecast.Response forecast;
     private WeatherBarShape weatherBar;
     private RelativeLayout weatherBarTexts;
@@ -103,4 +105,5 @@ public class MapFragment extends Fragment implements TabDataListener {
 
         }
     }
+
 }

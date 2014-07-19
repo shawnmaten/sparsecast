@@ -30,8 +30,8 @@ import com.shawnaten.networking.Places;
 import java.util.Date;
 import java.util.Locale;
 
-import Tools.TabDataListener;
-import Tools.TabListener;
+import com.shawnaten.tools.FragmentListener;
+import com.shawnaten.tools.TabListener;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Header;
@@ -40,7 +40,7 @@ import retrofit.client.Response;
 public class MainActivity extends Activity implements View.OnFocusChangeListener, Callback {
     private Uri uri;
     private AdView bannerAd;
-    private TabDataListener cListen, wListen, mListen;
+    private FragmentListener cListen, wListen, mListen;
 
     public static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 0;
 
@@ -79,27 +79,27 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
 
             cFrag = new CurrentFragment();
             ft.add(R.id.main_fragment, cFrag, "current");
-            cListen = (TabDataListener) cFrag;
+            cListen = (FragmentListener) cFrag;
 
             wFrag = new WeekFragment();
             ft.add(R.id.main_fragment, wFrag, "week");
             ft.detach(wFrag);
-            wListen = (TabDataListener) wFrag;
+            wListen = (FragmentListener) wFrag;
 
             mFrag = new MapFragment();
             ft.add(R.id.main_fragment, mFrag, "map");
             ft.detach(mFrag);
-            mListen = (TabDataListener) mFrag;
+            mListen = (FragmentListener) mFrag;
             ft.commit();
 
             title = getString(R.string.app_name);
         } else {
             cFrag = getFragmentManager().findFragmentByTag("current");
-            cListen = (TabDataListener) cFrag;
+            cListen = (FragmentListener) cFrag;
             wFrag = getFragmentManager().findFragmentByTag("week");
-            wListen = (TabDataListener) wFrag;
+            wListen = (FragmentListener) wFrag;
             mFrag = getFragmentManager().findFragmentByTag("map");
-            mListen = (TabDataListener) mFrag;
+            mListen = (FragmentListener) mFrag;
 
             if(lastForecastResponse != null) {
                 if (lastForecastResponse.getExpiration().after(new Date())) {

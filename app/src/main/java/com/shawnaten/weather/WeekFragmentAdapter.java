@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import Tools.ForecastTools;
-import Tools.WeatherBarShape;
+import com.shawnaten.tools.ForecastTools;
+import com.shawnaten.tools.WeatherBarShape;
 
 import static java.util.Arrays.asList;
 

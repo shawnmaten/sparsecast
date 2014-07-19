@@ -1,4 +1,4 @@
-package com.shawnaten.weather;
+package com.shawnaten.tools;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -14,6 +14,7 @@ import android.widget.Space;
 import android.widget.TextView;
 
 import com.shawnaten.networking.Forecast;
+import com.shawnaten.weather.R;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -31,7 +32,7 @@ import java.util.regex.Pattern;
 /**
  * Created by shawnaten on 7/12/14.
  */
-public class Tabs {
+public class ForecastTools {
 
     public final static double VERY_LIGHT = 0.002, LIGHT = 0.017, MODERATE = 0.1, HEAVY = 0.4,
         SCATTERED = 0.4, BROKEN = 0.75, OVERCAST = 1.0,

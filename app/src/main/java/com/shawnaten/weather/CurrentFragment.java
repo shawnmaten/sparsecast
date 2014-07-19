@@ -1,6 +1,8 @@
 package com.shawnaten.weather;
 
+import android.app.ActionBar;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -18,14 +20,14 @@ import com.larvalabs.svgandroid.SVG;
 import com.larvalabs.svgandroid.SVGBuilder;
 import com.shawnaten.networking.Forecast;
 
-import Tools.ForecastTools;
-import Tools.TabDataListener;
-import Tools.WeatherAlertDialog;
+import com.shawnaten.tools.ForecastTools;
+import com.shawnaten.tools.FragmentListener;
+import com.shawnaten.tools.WeatherAlertDialog;
 
-import static Tools.ForecastTools.capitalize;
+import static com.shawnaten.tools.ForecastTools.capitalize;
 import static java.util.Arrays.asList;
 
-public class CurrentFragment extends Fragment implements TabDataListener {
+public class CurrentFragment extends Fragment implements FragmentListener {
     private Forecast.Response forecast;
     private static Boolean newData = false;
     private RelativeLayout parent;
