@@ -18,7 +18,11 @@ import com.larvalabs.svgandroid.SVG;
 import com.larvalabs.svgandroid.SVGBuilder;
 import com.shawnaten.networking.Forecast;
 
-import static com.shawnaten.weather.Tabs.capitalize;
+import Tools.ForecastTools;
+import Tools.TabDataListener;
+import Tools.WeatherAlertDialog;
+
+import static Tools.ForecastTools.capitalize;
 import static java.util.Arrays.asList;
 
 public class CurrentFragment extends Fragment implements TabDataListener {
@@ -39,7 +43,7 @@ public class CurrentFragment extends Fragment implements TabDataListener {
         if (newData) {
             int windDirection;
 
-            Tabs.timeForm.setTimeZone(forecast.getTimezone());
+            ForecastTools.timeForm.setTimeZone(forecast.getTimezone());
 
             Forecast.DataPoint currently;
             Forecast.DataBlock minutely, hourly, daily;
@@ -49,17 +53,17 @@ public class CurrentFragment extends Fragment implements TabDataListener {
             hourly = forecast.getHourly();
             daily = forecast.getDaily();
 
-            windDirection = Tabs.getWindDirection(currently.getWindBearing());
+            windDirection = ForecastTools.getWindDirection(currently.getWindBearing());
 
-            Tabs.setText(parent, asList(R.id.temp, R.id.humidity, R.id.high_temp, R.id.high_temp_time, R.id.low_temp, R.id.low_temp_time, R.id.feels_like),
+            ForecastTools.setText(parent, asList(R.id.temp, R.id.humidity, R.id.high_temp, R.id.high_temp_time, R.id.low_temp, R.id.low_temp_time, R.id.feels_like),
                     asList(
-                            Tabs.tempForm.format(currently.getTemperature()),
-                            Tabs.percForm.format(currently.getHumidity()),
-                            Tabs.tempForm.format(daily.getData()[0].getTemperatureMax()),
-                            Tabs.timeForm.format(daily.getData()[0].getTemperatureMaxTime()),
-                            Tabs.tempForm.format(daily.getData()[0].getTemperatureMin()),
-                            Tabs.timeForm.format(daily.getData()[0].getTemperatureMinTime()),
-                            String.format("%s %s", getString(R.string.feels_like), Tabs.tempForm.format(currently.getApparentTemperature()))
+                            ForecastTools.tempForm.format(currently.getTemperature()),
+                            ForecastTools.percForm.format(currently.getHumidity()),
+                            ForecastTools.tempForm.format(daily.getData()[0].getTemperatureMax()),
+                            ForecastTools.timeForm.format(daily.getData()[0].getTemperatureMaxTime()),
+                            ForecastTools.tempForm.format(daily.getData()[0].getTemperatureMin()),
+                            ForecastTools.timeForm.format(daily.getData()[0].getTemperatureMinTime()),
+                            String.format("%s %s", getString(R.string.feels_like), ForecastTools.tempForm.format(currently.getApparentTemperature()))
                     )
             );
 
@@ -67,30 +71,31 @@ public class CurrentFragment extends Fragment implements TabDataListener {
             if (precipType == null)
                 precipType = getString(R.string.precipitation);
 
-            Tabs.setSpannableText(parent, asList(R.id.summary, R.id.sun, R.id.details_1, R.id.details_2), asList(2, 2, 2, 2), asList(1, 2, 1, 1),
+            ForecastTools.setSpannableText(parent, asList(R.id.summary, R.id.sun, R.id.details_1, R.id.details_2), asList(2, 2, 2, 2), asList(1, 2, 1, 1),
                     asList("\n", ": ", ": ", ": "), asList("", "", "", ""), asList("", "\t\t", "", ""), asList("", "", "\n", "\n"),
 
                     asList(
-                            asList( getString(R.string.currently), currently.getSummary()),
+                            asList(getString(R.string.currently), currently.getSummary()),
 
-                            asList( getString(R.string.sunrise), Tabs.timeForm.format(daily.getData()[0].getSunriseTime()), getString(R.string.sunset),
-                                    Tabs.timeForm.format(daily.getData()[0].getSunsetTime())),
+                            asList(getString(R.string.sunrise), ForecastTools.timeForm.format(daily.getData()[0].getSunriseTime()), getString(R.string.sunset),
+                                    ForecastTools.timeForm.format(daily.getData()[0].getSunsetTime())),
 
                             asList(
-                                    getString(R.string.sunrise), Tabs.timeForm.format(daily.getData()[0].getSunriseTime()),
-                                    getString(R.string.sunset), Tabs.timeForm.format(daily.getData()[0].getSunsetTime()),
-                                    capitalize(precipType), String.format("%s (%s)", Tabs.percForm.format(hourly.getData()[0].getPrecipProbability()),
+                                    getString(R.string.sunrise), ForecastTools.timeForm.format(daily.getData()[0].getSunriseTime()),
+                                    getString(R.string.sunset), ForecastTools.timeForm.format(daily.getData()[0].getSunsetTime()),
+                                    capitalize(precipType), String.format("%s (%s)", ForecastTools.percForm.format(hourly.getData()[0].getPrecipProbability()),
                                             getString(R.string.hour)),
-                                    getString(R.string.dew_point), Tabs.tempForm.format(currently.getDewPoint())
+                                    getString(R.string.dew_point), ForecastTools.tempForm.format(currently.getDewPoint())
                             ),
 
                             asList(
-                                    getString(R.string.wind), String.format("%s %s %s", Tabs.intForm.format(currently.getWindSpeed()),
+                                    getString(R.string.wind), String.format("%s %s %s", ForecastTools.intForm.format(currently.getWindSpeed()),
                                             getString(R.string.wind_unit), getString(windDirection)),
-                                    getString(R.string.pressure), String.format("%s %s", Tabs.intForm.format(currently.getPressure()), getString(R.string.pressure_unit)),
-                                    getString(R.string.visibility), String.format("%s %s", Tabs.intForm.format(currently.getVisibility()),
+                                    getString(R.string.pressure), String.format("%s %s", ForecastTools.intForm.format(currently.getPressure()), getString(R.string.pressure_unit)),
+                                    getString(R.string.visibility), String.format("%s %s", ForecastTools.intForm.format(currently.getVisibility()),
                                             getString(R.string.visibility_unit)),
-                                    getString(R.string.ozone), String.format("%s %s", Tabs.intForm.format(currently.getOzone()), getString(R.string.ozone_unit)))
+                                    getString(R.string.ozone), String.format("%s %s", ForecastTools.intForm.format(currently.getOzone()), getString(R.string.ozone_unit))
+                            )
                     )
             );
 
@@ -102,7 +107,7 @@ public class CurrentFragment extends Fragment implements TabDataListener {
             else
                 hourSummary = minutely.getSummary();
 
-            Tabs.setSpannableText((ViewGroup) parent.findViewById(R.id.summaries), asList(R.id.next_hour, R.id.next_24_hours), asList(2, 2), asList(1, 1),
+            ForecastTools.setSpannableText((ViewGroup) parent.findViewById(R.id.summaries), asList(R.id.next_hour, R.id.next_24_hours), asList(2, 2), asList(1, 1),
                     asList("\n", "\n"), asList("", ""), asList("", ""), asList("", ""),
 
                     asList(
@@ -168,7 +173,7 @@ public class CurrentFragment extends Fragment implements TabDataListener {
     private void setIcon(ImageView imageView) {
         imageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         SVG svg = new SVGBuilder()
-                .readFromResource(getResources(), Tabs.getIconValue(forecast.getCurrently().getTime(), forecast.getDaily().getData()[0].getSunriseTime(),
+                .readFromResource(getResources(), ForecastTools.getIconValue(forecast.getCurrently().getTime(), forecast.getDaily().getData()[0].getSunriseTime(),
                         forecast.getDaily().getData()[0].getSunsetTime(), forecast.getCurrently().getIcon()))
                 .build();
 
@@ -198,7 +203,7 @@ public class CurrentFragment extends Fragment implements TabDataListener {
 
     private void setAlertText(LinearLayout layout) {
         TextView textView = (TextView) layout.findViewById(R.id.time);
-        textView.setText(String.format("%s %s", getString(R.string.conditions), Tabs.timeForm.format(forecast.getCurrently().getTime())));
+        textView.setText(String.format("%s %s", getString(R.string.conditions), ForecastTools.timeForm.format(forecast.getCurrently().getTime())));
 
         int i = 1;
         if (forecast.getAlerts() != null) {

@@ -1,4 +1,4 @@
-package com.shawnaten.weather;
+package Tools;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;

@@ -30,6 +30,8 @@ import com.shawnaten.networking.Places;
 import java.util.Date;
 import java.util.Locale;
 
+import Tools.TabDataListener;
+import Tools.TabListener;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Header;

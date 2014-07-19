@@ -1,4 +1,4 @@
-package com.shawnaten.weather;
+package Tools;
 
 import android.content.Context;
 import android.graphics.Canvas;

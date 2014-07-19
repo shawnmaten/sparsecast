@@ -12,6 +12,10 @@ import android.widget.RelativeLayout;
 
 import com.shawnaten.networking.Forecast;
 
+import Tools.ForecastTools;
+import Tools.TabDataListener;
+import Tools.WeatherBarShape;
+
 /**
  * Created by shawnaten on 7/12/14.
  */
@@ -43,9 +47,9 @@ public class MapFragment extends Fragment implements TabDataListener {
             if (forecast.getHourly() != null) {
                 Forecast.DataPoint hourly[] = forecast.getHourly().getData();
                 weatherBar = new WeatherBarShape(getActivity(), hourly, 0, 24, 768, 64);
-                weatherBar.setData(getActivity().getResources().getColor(android.R.color.tertiary_text_light), Tabs.parseWeatherPoints(getActivity(), hourly, 0, 24));
-                Tabs.createWeatherBarTextViews((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), weatherBar, weatherBarTexts);
-                Tabs.setWeatherBarText(weatherBar, hourly, forecast.getTimezone(), weatherBarTexts);
+                weatherBar.setData(getActivity().getResources().getColor(android.R.color.tertiary_text_light), ForecastTools.parseWeatherPoints(getActivity(), hourly, 0, 24));
+                ForecastTools.createWeatherBarTextViews((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), weatherBar, weatherBarTexts);
+                ForecastTools.setWeatherBarText(weatherBar, hourly, forecast.getTimezone(), weatherBarTexts);
                 ShapeDrawable drawable = new ShapeDrawable(weatherBar);
                 weatherBarImage.setBackgroundDrawable(drawable);
                 forecast = null;
@@ -71,7 +75,7 @@ public class MapFragment extends Fragment implements TabDataListener {
                 .findViewById(R.id.weather_bar_container).findViewById(R.id.weather_bar);
 
         if (weatherBar != null) {
-            Tabs.createWeatherBarTextViews(inflater, weatherBar, weatherBarTexts);
+            ForecastTools.createWeatherBarTextViews(inflater, weatherBar, weatherBarTexts);
             ShapeDrawable drawable = new ShapeDrawable(weatherBar);
             weatherBarImage.setBackgroundDrawable(drawable);
         }

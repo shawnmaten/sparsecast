@@ -1,4 +1,4 @@
-package com.shawnaten.weather;
+package Tools;
 
 /**
  * Created by shawnaten on 7/11/14.

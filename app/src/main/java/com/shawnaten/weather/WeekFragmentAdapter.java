@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import Tools.ForecastTools;
+import Tools.WeatherBarShape;
+
 import static java.util.Arrays.asList;
 
 /**
@@ -102,7 +105,7 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
         if (convertView == null)
             convertView = inflater.inflate(R.layout.tab_week_group, null);
 
-        Tabs.setText((ViewGroup) convertView, asList(R.id.day, R.id.summary),
+        ForecastTools.setText((ViewGroup) convertView, asList(R.id.day, R.id.summary),
                 asList(
                         cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()),
                         day.getSummary()
@@ -137,19 +140,19 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
                 String precipType = day.getPrecipType();
                 if (precipType == null)
                     precipType = context.getString(R.string.precipitation);
-                Tabs.setSpannableText((ViewGroup) convertView, asList(R.id.sun, R.id.temp, R.id.precip), asList(2, 3, 2), groupSizes,
+                ForecastTools.setSpannableText((ViewGroup) convertView, asList(R.id.sun, R.id.temp, R.id.precip), asList(2, 3, 2), groupSizes,
                         asList(": ", ": ", ": "), asList("", " ", ""), unitSeps, groupEnds,
                         asList(
                                 asList(context.getString(R.string.sunrise), timeForm.format(day.getSunriseTime()),
                                         context.getString(R.string.sunset), timeForm.format(day.getSunsetTime())),
 
-                                asList(context.getString(R.string.high), Tabs.tempForm.format(day.getTemperatureMax()),
+                                asList(context.getString(R.string.high), ForecastTools.tempForm.format(day.getTemperatureMax()),
                                         timeForm.format(day.getTemperatureMaxTime()),
-                                        context.getString(R.string.low), Tabs.tempForm.format(day.getTemperatureMin()),
+                                        context.getString(R.string.low), ForecastTools.tempForm.format(day.getTemperatureMin()),
                                         timeForm.format(day.getTemperatureMinTime())),
 
-                                asList(Tabs.capitalize(precipType), Tabs.percForm.format(day.getPrecipProbability()),
-                                        context.getString(R.string.intensity), context.getString(Tabs.getIntensity(day.getPrecipIntensity())))
+                                asList(ForecastTools.capitalize(precipType), ForecastTools.percForm.format(day.getPrecipProbability()),
+                                        context.getString(R.string.intensity), context.getString(ForecastTools.getIntensity(day.getPrecipIntensity())))
                         )
                 );
                 break;
@@ -185,12 +188,12 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
                 weatherBarImage.setId(childID * 1000);
 
                 weatherBar = new WeatherBarShape(context, hourly, start, 24, 768, 64);
-                weatherBar.setData(tickColor, Tabs.parseWeatherPoints(context, hourly, start, 24));
+                weatherBar.setData(tickColor, ForecastTools.parseWeatherPoints(context, hourly, start, 24));
 
                 if (makeNew)
-                    Tabs.createWeatherBarTextViews(inflater, weatherBar, weatherBarTexts);
+                    ForecastTools.createWeatherBarTextViews(inflater, weatherBar, weatherBarTexts);
 
-                Tabs.setWeatherBarText(weatherBar, hourly, timeZone, weatherBarTexts);
+                ForecastTools.setWeatherBarText(weatherBar, hourly, timeZone, weatherBarTexts);
                 drawable = new ShapeDrawable(weatherBar);
                 weatherBarImage.setBackgroundDrawable(drawable);
         }
