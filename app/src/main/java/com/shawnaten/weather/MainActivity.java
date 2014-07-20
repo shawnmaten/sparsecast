@@ -8,7 +8,6 @@ import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -26,6 +25,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.shawnaten.networking.Forecast;
 import com.shawnaten.networking.Network;
 import com.shawnaten.networking.Places;
+import com.shawnaten.tools.AnimationTools;
+import com.shawnaten.tools.CustomRelativeLayout;
 import com.shawnaten.tools.FragmentListener;
 import com.shawnaten.tools.TabListener;
 
@@ -37,14 +38,14 @@ import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-public class MainActivity extends Activity implements View.OnFocusChangeListener, Callback {
-    private Uri uri;
+public class MainActivity extends Activity implements Callback, CustomRelativeLayout.KeyboardStateListener, View.OnFocusChangeListener {
     private AdView bannerAd;
     private FragmentListener cListen, wListen, mListen;
+    private View fragment, spinner, search;
+    private int shortAnimationDuration;
+    private Boolean fragmentActive = true, spinnerActive = false, searchActive = false, searchActiveChanging = false;
 
     public static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 0;
-    private static final int VISIBILITY_SEARCH_STARTED = 0, VISIBILITY_SEARCH_CANCELED = 1, VISIBILITY_REQUEST_STARTED = 2, VISIBILITY_REQUEST_FINISHED = 3,
-        VISIBILITY_REQUEST_STARTED_NO_SEARCH = 4;
 
     private static MenuItem searchWidget;
     private static String title;
@@ -59,6 +60,12 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.main_activity);
+
+        fragment = findViewById(R.id.main_fragment);
+        ((CustomRelativeLayout) fragment).setKeyboardStateListener(this);
+        spinner = findViewById(R.id.progress_spinner);
+        search = findViewById(R.id.search_logo);
+        shortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
         actionBar = getActionBar();
         assert actionBar != null;
@@ -111,7 +118,6 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
                 cListen.onRestoreData(lastForecastResponse);
                 wListen.onRestoreData(lastForecastResponse);
                 mListen.onRestoreData(lastForecastResponse);
-                changeVisibility(VISIBILITY_REQUEST_FINISHED);
             }
 
         }
@@ -180,7 +186,7 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
         if (lastForecastResponse != null && lastForecastResponse.getExpiration().before(new Date())) {
             Network.getInstance(getApplicationContext()).getForecast(lastForecastResponse.getLatitude(), lastForecastResponse.getLongitude(),
                     Locale.getDefault().getLanguage(), this);
-            changeVisibility(VISIBILITY_REQUEST_STARTED_NO_SEARCH);
+            viewChangeRequest();
         }
 
         if (bannerAd != null)
@@ -229,11 +235,11 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
 
         String action = intent.getAction();
         if (Intent.ACTION_SEARCH.equals(action)) {
-            changeVisibility(VISIBILITY_REQUEST_STARTED);
+            viewChangeRequest();
             String query = intent.getStringExtra(SearchManager.QUERY);
             Network.getInstance(getApplicationContext()).getAutocomplete(query, Locale.getDefault().getLanguage(), this);
         } else if (Intent.ACTION_VIEW.equals(action)) {
-            changeVisibility(VISIBILITY_REQUEST_STARTED);
+            viewChangeRequest();
             Network.getInstance(getApplicationContext()).getDetails(intent.getDataString(), Locale.getDefault().getLanguage(), this);
         }
     }
@@ -265,39 +271,51 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void changeVisibility(int code) {
-        switch (code) {
-            case VISIBILITY_SEARCH_STARTED:
-                findViewById(R.id.main_fragment).setVisibility(View.INVISIBLE);
-                findViewById(R.id.search_logo).setVisibility(View.VISIBLE);
-                break;
-            case VISIBILITY_SEARCH_CANCELED:
-                findViewById(R.id.search_logo).setVisibility(View.INVISIBLE);
-                findViewById(R.id.main_fragment).setVisibility(View.VISIBLE);
-                break;
-            case VISIBILITY_REQUEST_STARTED:
-                findViewById(R.id.search_logo).setVisibility(View.INVISIBLE);
-                findViewById(R.id.progress_spinner).setVisibility(View.VISIBLE);
-                break;
-            case VISIBILITY_REQUEST_FINISHED:
-                findViewById(R.id.progress_spinner).setVisibility(View.INVISIBLE);
-                findViewById(R.id.main_fragment).setVisibility(View.VISIBLE);
-                break;
-            case VISIBILITY_REQUEST_STARTED_NO_SEARCH:
-                findViewById(R.id.main_fragment).setVisibility(View.INVISIBLE);
-                findViewById(R.id.search_logo).setVisibility(View.INVISIBLE);
-                findViewById(R.id.progress_spinner).setVisibility(View.VISIBLE);
+    private void viewChangeRequest() {
+
+        if (fragmentActive) {
+            AnimationTools.crossFadeViews(spinner, fragment, shortAnimationDuration);
+            fragmentActive = false;
+            spinnerActive = true;
+        } else {
+            if (!searchActive)
+                AnimationTools.crossFadeViews(fragment, spinner, shortAnimationDuration);
+            fragmentActive = true;
+            spinnerActive = false;
         }
+
     }
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        if (getIntent() == null) {
-            if (hasFocus)
-                changeVisibility(VISIBILITY_SEARCH_STARTED);
-            else
-                changeVisibility(VISIBILITY_SEARCH_CANCELED);
-        }
+        searchActive = hasFocus;
+        if (hasFocus) {
+            if (fragmentActive)
+                AnimationTools.fadeViewOut(fragment, shortAnimationDuration);
+            else if (spinnerActive)
+                AnimationTools.fadeViewOut(spinner, shortAnimationDuration);
+        } else
+            AnimationTools.fadeViewOut(search, shortAnimationDuration);
+
+        bannerAd.pause();
+
+    }
+
+    @Override
+    public void onKeyboardShown() {
+        AnimationTools.fadeViewIn(search, shortAnimationDuration);
+
+        bannerAd.resume();
+    }
+
+    @Override
+    public void onKeyboardHidden() {
+        if (fragmentActive)
+            AnimationTools.fadeViewIn(fragment, shortAnimationDuration);
+        else if (spinnerActive)
+            AnimationTools.fadeViewIn(spinner, shortAnimationDuration);
+
+        bannerAd.resume();
     }
 
     @Override
@@ -314,7 +332,7 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
             mListen.onNewData(forecast);
             assert getActionBar() != null;
             getActionBar().setTitle(title);
-            changeVisibility(VISIBILITY_REQUEST_FINISHED);
+            viewChangeRequest();
             setIntent(null);
 
             lastForecastResponse = forecast;
@@ -326,7 +344,7 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
                         Locale.getDefault().getLanguage(), this);
             } else {
                 setIntent(null);
-                changeVisibility(VISIBILITY_REQUEST_FINISHED);
+                viewChangeRequest();
             }
 
             if (autocompleteResponse.getStatus().equals("ZERO_RESULTS")) {
@@ -347,7 +365,7 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
                 Network.getInstance(getApplicationContext()).getForecast(location.getLat(), location.getLng(), Locale.getDefault().getLanguage(), this);
             } else {
                 setIntent(null);
-                changeVisibility(VISIBILITY_REQUEST_FINISHED);
+                viewChangeRequest();
                 Toast toast = Toast.makeText(getApplicationContext(), getString(R.string.processing_error), Toast.LENGTH_SHORT);
                 toast.show();
                 Log.e("Place Details Error", details.getStatus());
