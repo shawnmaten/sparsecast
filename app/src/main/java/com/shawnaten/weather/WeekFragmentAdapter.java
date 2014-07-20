@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.shawnaten.networking.Forecast;
+import com.shawnaten.tools.ForecastTools;
+import com.shawnaten.tools.WeatherBarShape;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -19,9 +21,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import com.shawnaten.tools.ForecastTools;
-import com.shawnaten.tools.WeatherBarShape;
 
 import static java.util.Arrays.asList;
 
@@ -182,6 +181,8 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
                     weatherBarTexts = (RelativeLayout) weatherBarContainer.findViewById(prevID * 100);
                     weatherBarImage = (ImageView) weatherBarContainer.findViewById(prevID * 1000);
                 }
+
+                convertView.setScrollX(0);
 
                 weatherBarContainer.setId(childID * 10);
                 weatherBarTexts.setId(childID * 100);
