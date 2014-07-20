@@ -23,7 +23,7 @@ public class Forecast {
 
         private double latitude, longitude;
         private TimeZone timezone;
-        private int offset;
+        private double offset;
 
         private DataPoint currently;
 
@@ -62,7 +62,7 @@ public class Forecast {
             return timezone;
         }
 
-        public int getOffset() {
+        public double getOffset() {
             return offset;
         }
 

@@ -347,8 +347,9 @@ public class MainActivity extends Activity implements View.OnFocusChangeListener
 
     @Override
     public void failure(RetrofitError error) {
-        Toast toast = Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(getApplicationContext(), getString(R.string.processing_error), Toast.LENGTH_SHORT);
         toast.show();
+        Log.e("Retrofit", error.getMessage());
     }
 
 }
