@@ -9,7 +9,7 @@
     
     <ProgressBar
         android:id="@+id/progress_spinner"
-        style="@android:style/Widget.Holo.Light.ProgressBar.Large.Inverse"
+        style="@android:style/Widget.Holo.Light.ProgressBar.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminateOnly="true"
@@ -25,6 +25,35 @@
         android:layout_alignParentTop="true"
         android:layout_above="@id/ad"
         android:visibility="invisible" />
+
+    <RelativeLayout
+        android:id="@+id/search_logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/ad"
+        android:visibility="invisible" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal|top"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:src="@drawable/large_search"
+                android:layout_width="48dp"
+                android:layout_height="48dp" />
+            <ImageView
+                android:src="@drawable/powered_by_google_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <com.google.android.gms.ads.AdView
         android:id="@id/ad"

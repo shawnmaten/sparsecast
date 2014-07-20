@@ -208,7 +208,7 @@
     </style>
 
     <style name="ActionBarWidget" parent="android:Theme.Holo" >
-        <item name="android:textColorHint">@android:color/secondary_text_dark_nodisable</item>
+        <item name="android:textColorHint">@color/secondary_text_dark</item>
     </style>
 
     <style name="ActionBarTab" parent="android:Widget.Holo.Light.ActionBar.TabView.Inverse" >
