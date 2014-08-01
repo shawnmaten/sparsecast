@@ -83,11 +83,14 @@ public class DetailsFragment extends Fragment implements FragmentListener {
     }
 
     @Override
-    public void onNewData(Object data) {
-        if (Forecast.Response.class.isInstance(data)) {
-            forecast = (Forecast.Response) data;
-            if (isVisible())
-                onResume();
-        }
+    public void onNewData(Forecast.Response data) {
+        forecast = data;
+        if (isVisible())
+            onResume();
+    }
+
+    @Override
+    public void onButtonClick(View view) {
+
     }
 }

@@ -252,8 +252,10 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
         }
     }
 
-    public void alertClick(View view) {
-        cListen.onNewData(view);
+    public void onButtonClick(View view) {
+        cListen.onButtonClick(view);
+        wListen.onButtonClick(view);
+        mListen.onButtonClick(view);
     }
 
     public boolean playServicesAvailable() {

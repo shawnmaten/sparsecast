@@ -8,7 +8,6 @@
     <dimen name="expandable_list_start">35dp</dimen>
     <dimen name="list_item">72dp</dimen>
     <dimen name="textLarge">34sp</dimen>
-    <dimen name="textNormal">20sp</dimen>
-    <dimen name="textSmall">16sp</dimen>
+    <dimen name="textNormal">16sp</dimen>
 
 </resources>

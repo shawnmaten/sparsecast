@@ -3,13 +3,11 @@ package com.shawnaten.main.current;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,7 +19,7 @@ import com.shawnaten.tools.FragmentListener;
 
 import java.util.ArrayList;
 
-public class CurrentFragment extends Fragment implements FragmentListener, View.OnClickListener {
+public class CurrentFragment extends Fragment implements FragmentListener {
     private static Forecast.Response forecast;
     private static Boolean newData = false;
     private static ArrayList<String> fragNames;
@@ -97,29 +95,52 @@ public class CurrentFragment extends Fragment implements FragmentListener, View.
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_current, container, false);
 
-        ImageButton prev, next;
-        prev = (ImageButton) view.findViewById(R.id.prev);
-        next = (ImageButton) view.findViewById(R.id.next);
-        prev.setOnClickListener(this);
-        next.setOnClickListener(this);
-
         if (forecast != null)
             createAlertViews((LinearLayout) view.findViewById(R.id.alert_view).findViewById(R.id.alert_view_content));
         return view;
     }
 
 	@Override
-	public void onNewData(Object data) {
-        if (Forecast.Response.class.isInstance(data)) {
-            forecast = (Forecast.Response) data;
-            newData = true;
-            if (isVisible())
-                onResume();
-        } else if (View.class.isInstance(data)) {
-            int id = ((View) data).getId();
+	public void onNewData(Forecast.Response data) {
+        forecast = data;
+        newData = true;
+        if (isVisible())
+            onResume();
+	}
 
-            if (id != R.id.time) {
-                ((View) data).performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+    @Override
+    public void onButtonClick(View view) {
+        int id = view.getId();
+        Fragment toDetach, toAttach;
+
+        toDetach = getChildFragmentManager().findFragmentById(R.id.fragment_2);
+
+        switch (view.getId()) {
+            case R.id.summaries_button:
+                toAttach = getChildFragmentManager().findFragmentByTag("summaries");
+                getChildFragmentManager().beginTransaction()
+                        .detach(toDetach)
+                        .attach(toAttach)
+                        .commit();
+                break;
+            case R.id.details_button:
+                toAttach = getChildFragmentManager().findFragmentByTag("details");
+                getChildFragmentManager().beginTransaction()
+                        .detach(toDetach)
+                        .attach(toAttach)
+                        .commit();
+                break;
+            case R.id.graphics_button:
+                toAttach = getChildFragmentManager().findFragmentByTag("graphics");
+                getChildFragmentManager().beginTransaction()
+                        .detach(toDetach)
+                        .attach(toAttach)
+                        .commit();
+                break;
+            case R.id.time:
+                break;
+            default:
+                view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 CustomAlertDialog temp = new CustomAlertDialog();
                 Bundle args = new Bundle();
                 args.putString("title", forecast.getAlerts()[id-1].getTitle());
@@ -127,10 +148,8 @@ public class CurrentFragment extends Fragment implements FragmentListener, View.
                 args.putInt("code", 1);
                 temp.setArguments(args);
                 temp.show(getFragmentManager(), "current.alert");
-            }
         }
-
-	}
+    }
 
     private void createAlertViews(LinearLayout layout) {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -165,28 +184,4 @@ public class CurrentFragment extends Fragment implements FragmentListener, View.
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        FragmentManager fm = getChildFragmentManager();
-        String last = fragNames.get(fragNames.size() - 1), first = fragNames.get(0), second = fragNames.get(1);
-
-        switch (v.getId()) {
-            case R.id.prev:
-                getChildFragmentManager().beginTransaction()
-                        .detach(fm.findFragmentByTag(first))
-                        .attach(fm.findFragmentByTag(last))
-                        .commit();
-                fragNames.remove(last);
-                fragNames.add(0, last);
-                break;
-            case R.id.next:
-                getChildFragmentManager().beginTransaction()
-                        .detach(fm.findFragmentByTag(first))
-                        .attach(fm.findFragmentByTag(second))
-                        .commit();
-                fragNames.remove(first);
-                fragNames.add(first);
-                break;
-        }
-    }
 }

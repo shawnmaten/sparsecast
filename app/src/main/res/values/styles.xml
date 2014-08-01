@@ -14,14 +14,8 @@
         <item name="android:paddingLeft">@dimen/standard_margin</item>
         <item name="android:paddingEnd" tools:targetApi="17">@dimen/standard_margin</item>
         <item name="android:paddingRight">@dimen/standard_margin</item>
-        <item name="android:textSize">@dimen/textSmall</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@android:color/holo_red_light</item>
-    </style>
-
-    <style
-        name="tab.current.small" >
-        <item name="android:textSize">@dimen/textSmall</item>
     </style>
 
     <style
@@ -33,11 +27,6 @@
     <style
         name="tab.current.stat.large" >
         <item name="android:textSize">@dimen/textLarge</item>
-    </style>
-
-    <style
-        name="tab.current.stat.small" >
-        <item name="android:textSize">@dimen/textSmall</item>
     </style>
 
     <style

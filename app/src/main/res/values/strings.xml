@@ -28,6 +28,9 @@
     <string name="hour">Hour</string>
     <string name="next_24_hours">Next 24 Hours</string>
     <string name="today">Today</string>
+    <string name="summaries">Summaries</string>
+    <string name="details">Details</string>
+    <string name="graphics">Graphics</string>
     
     <string name="north">N</string>
     <string name="south">S</string>

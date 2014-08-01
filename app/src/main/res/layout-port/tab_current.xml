@@ -27,42 +27,52 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/alert_view" />
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/fragment_1"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="@dimen/standard_margin" >
+
+        <Button
+            android:id="@+id/summaries_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/summaries"
+            android:onClick="onButtonClick" />
+
+        <Button
+            android:id="@+id/details_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/details"
+            android:onClick="onButtonClick" />
+
+        <Button
+            android:id="@+id/graphics_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/graphics"
+            android:onClick="onButtonClick" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_2_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_1"
+        android:layout_below="@id/buttons"
         android:layout_alignParentBottom="true" >
-
-        <ImageButton
-            android:id="@+id/prev"
-            android:contentDescription="@string/prev_button_description"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/ic_action_previous_item"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"/>
-
-        <ImageButton
-            android:id="@+id/next"
-            android:contentDescription="@string/next_button_description"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/ic_action_next_item"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
 
         <FrameLayout
             android:id="@+id/fragment_2"
-            android:layout_centerInParent="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/prev"
-            android:layout_toEndOf="@id/prev"
-            android:layout_toLeftOf="@id/next"
-            android:layout_toStartOf="@id/next" />
+            android:layout_gravity="center" />
 
-    </RelativeLayout>
+    </FrameLayout>
+
           
 </RelativeLayout>

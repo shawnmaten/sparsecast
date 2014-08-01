@@ -47,7 +47,7 @@
 
     <TextView
         android:id="@id/high_temp_time"
-        style="@style/tab.current.stat.small"
+        style="@style/tab.current.stat"
         android:layout_below="@id/high_temp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -63,7 +63,7 @@
 
     <TextView
         android:id="@id/low_temp_time"
-        style="@style/tab.current.stat.small"
+        style="@style/tab.current.stat"
         android:layout_below="@id/low_temp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -72,7 +72,7 @@
 
     <TextView
         android:id="@id/feels_like"
-        style="@style/tab.current.small"
+        style="@style/tab.current"
         android:layout_below="@id/low_temp"
         android:layout_centerHorizontal="true"
         android:textStyle="bold"

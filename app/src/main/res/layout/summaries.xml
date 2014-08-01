@@ -12,18 +12,18 @@
 
     <TextView
         android:id="@+id/currently"
-        style="@style/tab.current.normal"
+        style="@style/tab.current"
         android:layout_gravity="center_horizontal" />
 
     <TextView
         android:id="@+id/next_hour"
-        style="@style/tab.current.normal"
+        style="@style/tab.current"
         android:paddingTop="@dimen/vertical_spacing"
         android:layout_gravity="center_horizontal" />
 
     <TextView
         android:id="@+id/next_24_hours"
-        style="@style/tab.current.normal"
+        style="@style/tab.current"
         android:paddingTop="@dimen/vertical_spacing"
         android:layout_gravity="center_horizontal" />
 

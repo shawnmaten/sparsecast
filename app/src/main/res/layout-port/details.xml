@@ -7,38 +7,48 @@
     android:layout_height="match_parent"
     android:padding="@dimen/standard_margin" >
 
+    <Space
+        android:id="@+id/center"
+        android:layout_width="@dimen/standard_margin"
+        android:layout_height="0dp"
+        android:layout_centerHorizontal="true" />
+
     <TextView
         android:id="@+id/details_1"
-        style="@style/tab.current.small"
+        style="@style/tab.current"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical|left|start" />
+        android:gravity="center_vertical|left|start"
+        android:layout_toLeftOf="@id/center"
+        android:layout_toStartOf="@id/center" />
 
     <TextView
         android:id="@+id/details_2"
-        style="@style/tab.current.small"
+        style="@style/tab.current"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@id/center"
+        android:layout_toEndOf="@id/center"
         android:gravity="center_vertical|left|start" />
 
     <TextView
         android:id="@+id/details_3"
-        style="@style/tab.current.small"
+        style="@style/tab.current"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/details_1"
+        android:layout_toLeftOf="@id/center"
+        android:layout_toStartOf="@id/center"
         android:paddingTop="@dimen/standard_margin"
         android:gravity="center_vertical|left|start" />
 
     <TextView
         android:id="@+id/details_4"
-        style="@style/tab.current.small"
+        style="@style/tab.current"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@id/center"
+        android:layout_toEndOf="@id/center"
         android:layout_below="@id/details_2"
         android:paddingTop="@dimen/standard_margin"
         android:gravity="center_vertical|left|start" />

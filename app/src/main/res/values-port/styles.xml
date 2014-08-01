@@ -4,10 +4,6 @@
     <style
         name="tab.current" >
         <item name="android:gravity">center</item>
-    </style>
-
-    <style
-        name="tab.current.normal" >
         <item name="android:textSize">@dimen/textNormal</item>
     </style>
 

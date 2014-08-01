@@ -68,13 +68,16 @@ public class MainStatsFragment extends Fragment implements FragmentListener {
     }
 
     @Override
-    public void onNewData(Object data) {
-        if (Forecast.Response.class.isInstance(data)) {
-            forecast = (Forecast.Response) data;
-            newData = true;
-            if (isVisible())
-                onResume();
-        }
+    public void onNewData(Forecast.Response data) {
+        forecast = data;
+        newData = true;
+        if (isVisible())
+            onResume();
+    }
+
+    @Override
+    public void onButtonClick(View view) {
+
     }
 
     private void setIcon(ImageView imageView) {
