@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tab_current"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <HorizontalScrollView
+        android:id="@+id/alert_view"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/subtitle"
+        android:layout_centerHorizontal="true"
+        android:scrollbars="none" >
+        <LinearLayout
+            android:id="@+id/alert_view_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal" >
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <FrameLayout
+        android:id="@+id/fragment_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/alert_view" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fragment_1"
+        android:layout_alignParentBottom="true" >
+
+        <ImageButton
+            android:id="@+id/prev"
+            android:contentDescription="@string/prev_button_description"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ic_action_previous_item"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+
+        <ImageButton
+            android:id="@+id/next"
+            android:contentDescription="@string/next_button_description"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ic_action_next_item"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <FrameLayout
+            android:id="@+id/fragment_2"
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/prev"
+            android:layout_toEndOf="@id/prev"
+            android:layout_toLeftOf="@id/next"
+            android:layout_toStartOf="@id/next" />
+
+    </RelativeLayout>
+          
+</RelativeLayout>

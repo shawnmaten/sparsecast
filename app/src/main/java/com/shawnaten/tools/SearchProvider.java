@@ -1,4 +1,4 @@
-package com.shawnaten.weather;
+package com.shawnaten.tools;
 
 import android.app.SearchManager;
 import android.content.ContentProvider;
@@ -80,7 +80,7 @@ public class SearchProvider extends ContentProvider implements Callback<Places.A
         String MIME;
         switch (URIMatcher.match(uri)) {
             case 0:
-                MIME = String.format("%s%s%s", "vnd.android.cursor.dir/", "vnd.com.shawnaten.searchprovider.",
+                MIME = String.format("%s%s%s", "vnd.android.cursor.dir/", "vnd.com.shawnaten.weather.searchprovider.",
                         SearchManager.SUGGEST_URI_PATH_QUERY);
                 return MIME;
         }

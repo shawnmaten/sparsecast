@@ -5,6 +5,4 @@ package com.shawnaten.tools;
  */
 public interface FragmentListener {
     public void onNewData(Object data);
-
-    public void onRestoreData(Object data);
 }

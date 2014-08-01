@@ -21,9 +21,11 @@
     <string name="visibility">Visibility</string>
     <string name="ozone">Ozone</string>
 
+    <string name="now">Now</string>
+    <string name="day">Day</string>
     <string name="currently">Currently</string>
     <string name="next_hour">Next Hour</string>
-    <string name="hour">hour</string>
+    <string name="hour">Hour</string>
     <string name="next_24_hours">Next 24 Hours</string>
     <string name="today">Today</string>
     
@@ -42,14 +44,18 @@
     <string name="ozone_unit">du</string> <!-- Dobson units -->
 
     <string name="unknown">\?</string>
-    <string name="device_unsupported">This device is not supported.</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="play_services">Google Play services</string>
+    <string name="play_services_unsupported">This app won\'t run because Google Play services is unsupported for this device.</string>
     <string name="no_search_results">No Search Results</string>
     <string name="processing_error">Error Processing Request</string>
 
     <string name="bottom_banner">ca-app-pub-3720253517224881/2328717056</string>
 
-    <string name="weather_bar_description">Graphic showing weather over time.</string>
-    <string name="weather_icon_description">Icon depicting current weather conditions.</string>
+    <string name="weather_bar_description">graphic showing weather over time</string>
+    <string name="weather_icon_description">icon depicting current weather conditions</string>
+    <string name="prev_button_description">previous view</string>
+    <string name="next_button_description">next view</string>
 
     <string name="feels_like">Feels like</string>
     <string name="intensity">Intensity</string>

@@ -5,7 +5,7 @@ import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.shawnaten.weather.R;
+import com.shawnaten.main.R;
 
 import java.util.Arrays;
 

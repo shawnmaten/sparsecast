@@ -1,9 +1,8 @@
 package com.shawnaten.tools;
 
 import android.app.ActionBar;
-import android.app.ActionBar.Tab;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
 
 public class TabListener implements ActionBar.TabListener {
 	private Fragment fragment;
@@ -13,19 +12,22 @@ public class TabListener implements ActionBar.TabListener {
 	}
 	
 	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+	public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
 		// do nothing
 	}
 
 	@Override
-	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-        assert fragment != null;
-        ft.attach(fragment);
+	public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+        fragment.getFragmentManager().beginTransaction()
+            .attach(fragment)
+            .commit();
 	}
 
 	@Override
-	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-        ft.detach(fragment);
+	public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+        fragment.getFragmentManager().beginTransaction()
+                .detach(fragment)
+                .commit();
 	}
 
 }

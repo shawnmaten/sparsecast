@@ -4,143 +4,45 @@
 	
 	<style 
 	    name="tab" >
-	    <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
+	    <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:freezesText">true</item>
 	</style>
 
-    <style
-        name="tab.current" >
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingStart" tools:targetApi="17">16dp</item>
-        <item name="android:paddingRight">16dp</item>
-        <item name="android:paddingEnd" tools:targetApi="17">16dp</item>
-        <item name="android:textSize">20sp</item>
-    </style>
-
-    <style name="tab.current.bold" >
-        <item name="android:textStyle">bold</item>
-    </style>
-
     <style name="tab.current.alert" >
-        <item name="android:padding">8dp</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:paddingStart" tools:targetApi="17">@dimen/standard_margin</item>
+        <item name="android:paddingLeft">@dimen/standard_margin</item>
+        <item name="android:paddingEnd" tools:targetApi="17">@dimen/standard_margin</item>
+        <item name="android:paddingRight">@dimen/standard_margin</item>
+        <item name="android:textSize">@dimen/textSmall</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:gravity">center</item>
         <item name="android:textColor">@android:color/holo_red_light</item>
     </style>
-	
-	<style 
-	    name="tab.current.port" >
-	    <item name="android:gravity">center</item>
-	</style>
 
     <style
-        name="tab.current.port.small" >
-        <item name="android:textSize">16sp</item>
-    </style>
-	
-	<style 
-	    name="tab.current.land" >
-	    <item name="android:layout_width">wrap_content</item>
-        <item name="android:gravity">center_vertical|left|start</item>
-	</style>
-
-    <style
-        name="tab.current.land.small" >
-        <item name="android:textSize">16sp</item>
+        name="tab.current.small" >
+        <item name="android:textSize">@dimen/textSmall</item>
     </style>
 
     <style
-        name="tab.current.land.small.left" >
-        <item name="android:paddingRight">8dp</item>
-        <item name="android:paddingEnd" tools:targetApi="17">8dp</item>
-    </style>
-
-    <style
-        name="tab.current.land.small.right" >
-        <item name="android:paddingLeft">8dp</item>
-        <item name="android:paddingStart" tools:targetApi="17">8dp</item>
-    </style>
-
-    <style
-        name="tab.current.land.left" >
-        <item name="android:paddingRight">8dp</item>
-        <item name="android:paddingEnd" tools:targetApi="17">8dp</item>
-    </style>
-
-    <style
-        name="tab.current.land.right" >
-        <item name="android:paddingLeft">8dp</item>
-        <item name="android:paddingStart" tools:targetApi="17">8dp</item>
-    </style>
-
-    <style
-        name="tab.current.port.stat" >
+        name="tab.current.stat" >
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:paddingStart" tools:targetApi="17">32dp</item>
-        <item name="android:paddingRight">32dp</item>
-        <item name="android:paddingEnd" tools:targetApi="17">32dp</item>
-    </style>
-
-	<style 
-	    name="tab.current.port.stat.large" >
-        <item name="android:textSize">34sp</item>
-	</style>
-
-    <style
-        name="tab.current.port.stat.small" >
-        <item name="android:textSize">16sp</item>
     </style>
 
     <style
-        name="tab.current.land.stat" >
-        <item name="android:textStyle">bold</item>
-    </style>
-
-	<style 
-	    name="tab.current.land.stat.large" >
-        <item name="android:textSize">34sp</item>
-	</style>
-
-    <style
-        name="tab.current.land.stat.small" >
-        <item name="android:textSize">16sp</item>
+        name="tab.current.stat.large" >
+        <item name="android:textSize">@dimen/textLarge</item>
     </style>
 
     <style
-        name="tab.current.land.stat.small.left" >
-        <item name="android:paddingRight">8dp</item>
-        <item name="android:paddingEnd" tools:targetApi="17">8dp</item>
-    </style>
-
-    <style name="tab.current.land.stat.large.left" >
-        <item name="android:paddingRight">8dp</item>
-        <item name="android:paddingEnd" tools:targetApi="17">8dp</item>
+        name="tab.current.stat.small" >
+        <item name="android:textSize">@dimen/textSmall</item>
     </style>
 
     <style
         name="tab.week" >
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
 
-    <style name="tab.week.layout" >
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:minHeight">72dp</item>
-
-    </style>
-
-    <style name="tab.week.layout.group" >
-        <item name="android:paddingLeft">35dp</item> <!-- 3dp(default padding) + 32dp(indicator size) -->
-        <item name="android:paddingStart" tools:targetApi="17">35dp</item>
-        <item name="android:paddingTop">8dp</item>
-        <item name="android:paddingBottom">8dp</item>
-    </style>
-
-    <style name="tab.week.layout.child" >]
     </style>
 
     <style name="tab.week.item">
@@ -155,10 +57,10 @@
     </style>
 
     <style name="tab.week.item.group.summary" >
-        <item name="android:paddingLeft">24dp</item>
-        <item name="android:paddingStart" tools:targetApi="17">24dp</item>
-        <item name="android:paddingRight">24dp</item>
-        <item name="android:paddingEnd" tools:targetApi="17">24dp</item>
+        <item name="android:paddingLeft">@dimen/large_margin</item>
+        <item name="android:paddingStart" tools:targetApi="17">@dimen/large_margin</item>
+        <item name="android:paddingRight">@dimen/large_margin</item>
+        <item name="android:paddingEnd" tools:targetApi="17">@dimen/large_margin</item>
     </style>
 
     <style name="tab.week.item.child" >
@@ -166,10 +68,10 @@
     </style>
 
     <style name="tab.week.item.child.land" >
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingStart" tools:targetApi="17">16dp</item>
-        <item name="android:paddingRight">16dp</item>
-        <item name="android:paddingEnd" tools:targetApi="17">16dp</item>
+        <item name="android:paddingLeft">@dimen/standard_margin</item>
+        <item name="android:paddingStart" tools:targetApi="17">@dimen/standard_margin</item>
+        <item name="android:paddingRight">@dimen/standard_margin</item>
+        <item name="android:paddingEnd" tools:targetApi="17">@dimen/standard_margin</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:gravity">left|start|center_vertical</item>
 

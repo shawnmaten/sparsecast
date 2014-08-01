@@ -1,6 +1,12 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/tab.week.layout.group" >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/list_item"
+    android:paddingLeft="@dimen/expandable_list_start"
+    android:paddingStart="@dimen/expandable_list_start"
+    android:paddingTop="@dimen/standard_margin"
+    android:paddingBottom="@dimen/standard_margin" >
 
     <TextView
         android:id="@+id/day"
@@ -9,13 +15,12 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:textStyle="bold"
-        android:textSize="20sp" />
+        android:textSize="@dimen/textNormal" />
 
     <TextView
         android:id="@+id/summary"
         style="@style/tab.week.item.group.summary"
         android:layout_toRightOf="@id/day"
-        android:layout_toEndOf="@id/day"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 

@@ -1,8 +1,7 @@
-package com.shawnaten.weather;
+package com.shawnaten.main.week;
 
 import android.content.Context;
 import android.graphics.drawable.ShapeDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +10,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.shawnaten.main.R;
 import com.shawnaten.networking.Forecast;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.WeatherBarShape;
 
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -36,10 +35,14 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
     private DateFormat timeForm = DateFormat.getTimeInstance(DateFormat.SHORT);
     private TimeZone timeZone;
 
-    private int size, tickColor, timeOffset;
+    private int size;
     private final int childCount = 2, childTypeCount = 2, groupTypeCount = 1;
 
+    private WeatherBarShape[] weatherBars;
+
     public WeekFragmentAdapter(Context context, Forecast.Response forecast) {
+        int tickColor, timeOffset;
+
         this.context = context;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         hourly = forecast.getHourly().getData();
@@ -53,7 +56,19 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
         cal.setTime(forecast.getCurrently().getTime());
         timeOffset = 24 - cal.get(Calendar.HOUR_OF_DAY);
 
-        this.tickColor = context.getResources().getColor(android.R.color.tertiary_text_light);
+        tickColor = context.getResources().getColor(android.R.color.tertiary_text_light);
+
+        weatherBars = new WeatherBarShape[size];
+        for (int i = 0; i < size; i++) {
+            int start;
+
+            if (i == 0)
+                start = 0;
+            else
+                start = 24 * (i - 1) + timeOffset;
+
+            weatherBars[i] = new WeatherBarShape(context, hourly, start, 24, 768, 64);
+        }
     }
 
     @Override
@@ -102,7 +117,7 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
         Forecast.DataPoint day = (Forecast.DataPoint) getGroup(groupPosition);
         cal.setTime(day.getTime());
         if (convertView == null)
-            convertView = inflater.inflate(R.layout.tab_week_group, null);
+            convertView = inflater.inflate(R.layout.tab_week_group, parent, false);
 
         ForecastTools.setText((ViewGroup) convertView, asList(R.id.day, R.id.summary),
                 asList(
@@ -122,14 +137,12 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
         switch (childPosition) {
             case 0:
                 Forecast.DataPoint day = (Forecast.DataPoint) getChild(groupPosition, childPosition);
-                Date time = new Date();
                 if (convertView == null)
-                    convertView = inflater.inflate(R.layout.tab_week_child, null);
+                    convertView = inflater.inflate(R.layout.tab_week_child, parent, false);
 
                 List<Integer> groupSizes = asList(1, 1, 1);
                 List<String> unitSeps = asList("", "", ""), groupEnds = asList("\n", "\n", "\n");
 
-                Log.e("id", Integer.toString(convertView.getId()));
                 if (convertView.getTag().equals("tab_week_child_port")) {
                     groupSizes = asList(2, 2, 2);
                     unitSeps = asList("\t\t", "\t\t", "\t\t");
@@ -157,20 +170,13 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
                 break;
             case 1:
                 Boolean makeNew = false;
-                int start;
                 FrameLayout weatherBarContainer;
                 RelativeLayout weatherBarTexts;
                 ImageView weatherBarImage;
-                WeatherBarShape weatherBar;
                 ShapeDrawable drawable;
 
-                if (groupPosition == 0)
-                    start = 0;
-                else
-                    start = 24 * (groupPosition - 1) + timeOffset;
-
                 if (convertView == null) {
-                    convertView = inflater.inflate(R.layout.weather_bar, null);
+                    convertView = inflater.inflate(R.layout.weather_bar, parent, false);
                     weatherBarContainer = (FrameLayout) convertView.findViewById(R.id.weather_bar_container);
                     weatherBarTexts = (RelativeLayout) weatherBarContainer.findViewById(R.id.weather_bar_texts);
                     weatherBarImage = (ImageView) weatherBarContainer.findViewById(R.id.weather_bar_image);
@@ -188,14 +194,11 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
                 weatherBarTexts.setId(childID * 100);
                 weatherBarImage.setId(childID * 1000);
 
-                weatherBar = new WeatherBarShape(context, hourly, start, 24, 768, 64);
-                weatherBar.setData(tickColor, ForecastTools.parseWeatherPoints(context, hourly, start, 24));
-
                 if (makeNew)
-                    ForecastTools.createWeatherBarTextViews(inflater, weatherBar, weatherBarTexts);
+                    ForecastTools.createWeatherBarTextViews(inflater, weatherBars[groupPosition], weatherBarTexts);
 
-                ForecastTools.setWeatherBarText(weatherBar, hourly, timeZone, weatherBarTexts);
-                drawable = new ShapeDrawable(weatherBar);
+                ForecastTools.setWeatherBarText(weatherBars[groupPosition], hourly, timeZone, weatherBarTexts);
+                drawable = new ShapeDrawable(weatherBars[groupPosition]);
                 weatherBarImage.setBackgroundDrawable(drawable);
         }
 

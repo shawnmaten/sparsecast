@@ -3,24 +3,29 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:tag="tab_week_child_land"
-    style="@style/tab.week.layout.child" >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/list_item"
+    android:layout_gravity="center" >
 
     <TextView
         android:id="@+id/precip"
         style="@style/tab.week.item.child.land"
         android:layout_toLeftOf="@+id/temp"
-        android:layout_toStartOf="@+id/temp" />
+        android:layout_toStartOf="@id/temp"
+        android:layout_centerVertical="true" />
 
     <TextView
         android:id="@id/temp"
         style="@style/tab.week.item.child.land"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerInParent="true" />
 
     <TextView
         android:id="@+id/sun"
         style="@style/tab.week.item.child.land"
         android:layout_toRightOf="@+id/temp"
-        android:layout_toEndOf="@+id/temp" />
+        android:layout_toEndOf="@+id/temp"
+        android:layout_centerVertical="true" />
 
 
 </RelativeLayout>

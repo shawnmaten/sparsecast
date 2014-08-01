@@ -2,16 +2,16 @@ package com.shawnaten.tools;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 
 /**
  * Created by shawnaten on 7/20/14.
  */
-public class CustomRelativeLayout extends RelativeLayout {
+public class CustomFrameLayout extends FrameLayout {
     private KeyboardStateListener listener;
     private Boolean keyboardState = false;
 
-    public CustomRelativeLayout(Context context, AttributeSet attrs) {
+    public CustomFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

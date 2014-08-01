@@ -1,19 +1,17 @@
-package com.shawnaten.weather;
+package com.shawnaten.main.map;
 
-import android.app.ActionBar;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.shawnaten.main.R;
 import com.shawnaten.networking.Forecast;
-
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
 import com.shawnaten.tools.WeatherBarShape;
@@ -22,23 +20,14 @@ import com.shawnaten.tools.WeatherBarShape;
  * Created by shawnaten on 7/12/14.
  */
 public class MapFragment extends Fragment implements FragmentListener {
-    private Forecast.Response forecast;
-    private WeatherBarShape weatherBar;
+    private static Forecast.Response forecast;
+    private static WeatherBarShape weatherBar;
+
     private RelativeLayout weatherBarTexts;
     private ImageView weatherBarImage;
 
     public MapFragment() {
 
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey("weatherBar"))
-                weatherBar = savedInstanceState.getParcelable("weatherBar");
-        }
     }
 
     @Override
@@ -49,22 +38,14 @@ public class MapFragment extends Fragment implements FragmentListener {
             if (forecast.getHourly() != null) {
                 Forecast.DataPoint hourly[] = forecast.getHourly().getData();
                 weatherBar = new WeatherBarShape(getActivity(), hourly, 0, 24, 768, 64);
-                weatherBar.setData(getActivity().getResources().getColor(android.R.color.tertiary_text_light), ForecastTools.parseWeatherPoints(getActivity(), hourly, 0, 24));
                 ForecastTools.createWeatherBarTextViews((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), weatherBar, weatherBarTexts);
                 ForecastTools.setWeatherBarText(weatherBar, hourly, forecast.getTimezone(), weatherBarTexts);
                 ShapeDrawable drawable = new ShapeDrawable(weatherBar);
                 weatherBarImage.setBackgroundDrawable(drawable);
-                forecast = null;
             }
+            forecast = null;
         }
 
-    }
-
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        if (weatherBar != null)
-            outState.putParcelable("weatherBar", weatherBar);
     }
 
     @Override
@@ -91,18 +72,6 @@ public class MapFragment extends Fragment implements FragmentListener {
             this.forecast = (Forecast.Response) data;
             if (isVisible())
                 onResume();
-        }
-    }
-
-    @Override
-    public void onRestoreData(Object data) {
-        if (Forecast.Response.class.isInstance(data)) {
-            if(weatherBar == null) {
-                this.forecast = (Forecast.Response) data;
-                if (isVisible())
-                    onResume();
-            }
-
         }
     }
 

@@ -13,8 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.Space;
 import android.widget.TextView;
 
+import com.shawnaten.main.R;
 import com.shawnaten.networking.Forecast;
-import com.shawnaten.weather.R;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -89,18 +89,12 @@ public class ForecastTools {
     }
 
     public static int getIconValue (Date currentTime, Date sunrise, Date sunset, String iconName) {
+        iconName = iconName.replaceAll("-day|-night", "");
+
         if (currentTime.before(sunrise) || currentTime.after(sunset)) { // it's night
-            if (iconName.endsWith("-night")) {
-                // do nothing
-            } else {
-                iconName = iconName.concat("-night");
-            }
-        } else { // it's day
-            if (iconName.endsWith("-day")) {
-                // do nothing
-            } else {
-                iconName = iconName.concat("-day");
-            }
+            iconName = iconName.concat("-night");
+        } else {
+            iconName = iconName.concat("-day");
         }
 
         if (icons.containsKey(iconName))
@@ -217,7 +211,7 @@ public class ForecastTools {
     }
 
     public static int getIntensity(double rate) {
-        if (rate < VERY_LIGHT)
+        if (rate == 0)
             return R.string.none;
         if (rate < LIGHT)
             return R.string.very_light;
@@ -247,34 +241,32 @@ public class ForecastTools {
     }
 
     public static int getPrecipitationID(Context context, String name) {
-        SparseArray<String> types = new SparseArray<>();
-        types.put(R.string.rain, context.getString(R.string.rain));
-        types.put(R.string.snow, context.getString(R.string.snow));
-        types.put(R.string.sleet, context.getString(R.string.sleet));
-        types.put(R.string.hail, context.getString(R.string.hail));
+        if (name != null) {
+            SparseArray<String> types = new SparseArray<>();
+            types.put(R.string.rain, context.getString(R.string.rain));
+            types.put(R.string.snow, context.getString(R.string.snow));
+            types.put(R.string.sleet, context.getString(R.string.sleet));
+            types.put(R.string.hail, context.getString(R.string.hail));
 
-        final int count = types.size();
-        for (int i = 0; i < count; i++) {
-            if (name.equalsIgnoreCase(types.valueAt(i)))
-                return types.keyAt(i);
+            final int count = types.size();
+            for (int i = 0; i < count; i++) {
+                if (name.equalsIgnoreCase(types.valueAt(i)))
+                    return types.keyAt(i);
+            }
         }
 
-        return -1;
+        return R.string.precipitation;
     }
 
-    public static void createWeatherBarTextViews(LayoutInflater inflater, WeatherBarShape weatherBar, RelativeLayout layout) {
-        int[] dimensions;
-
-        int width, leftOffset, tickCount, to_end_of, parent_start, tickSize;
+    public static void createWeatherBarTextViews(LayoutInflater inflater, WeatherBarShape weatherBar, RelativeLayout layout) {int width, leftOffset, tickCount, to_end_of, parent_start, tickSize;
 
         RelativeLayout.LayoutParams params;
 
         // set up
-        dimensions = weatherBar.getDimensions();
-        width = dimensions[9] * 2;
-        leftOffset = dimensions[11];
-        tickCount = dimensions[7];
-        tickSize = dimensions[8];
+        width = weatherBar.getTickSpacing() * 2;
+        leftOffset = weatherBar.getLeftOffset();
+        tickCount = weatherBar.getTickCount();
+        tickSize = weatherBar.getTickSize();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             to_end_of = RelativeLayout.END_OF;
@@ -335,14 +327,11 @@ public class ForecastTools {
         TextView textView;
         SimpleDateFormat timeForm;
         int unitStart, unitCount, unitSkip, tickCount;
-        int[] dimensions;
 
-        dimensions = weatherBar.getDimensions();
-
-        unitStart = dimensions[2];
-        unitCount = dimensions[3];
-        unitSkip = dimensions[5];
-        tickCount = dimensions[7];
+        unitStart = weatherBar.getUnitStart();
+        unitCount = weatherBar.getUnitCount();
+        unitSkip = weatherBar.getUnitSkip();
+        tickCount = weatherBar.getTickCount();
 
         timeForm = (SimpleDateFormat) DateFormat.getTimeInstance(DateFormat.SHORT);
         timeForm.setTimeZone(timeZone);

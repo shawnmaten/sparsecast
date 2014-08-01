@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.shapes.Shape;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.DisplayMetrics;
 
 import com.shawnaten.networking.Forecast;
@@ -13,14 +11,14 @@ import com.shawnaten.networking.Forecast;
 /**
  * Created by shawnaten on 7/14/14.
  */
-public class WeatherBarShape extends Shape implements Parcelable {
+public class WeatherBarShape extends Shape {
     private float density;
 
     private int width, height,
                 unitStart, unitCount, unitSize, unitSkip, barSize, tickCount, tickSize, tickSpacing, tickColor,
                 leftOffset, rightOffset;
 
-    private int[] ticks;
+    private float[] ticks;
     private WeatherBlock[] blocks;
 
     public WeatherBarShape(Context context, Forecast.DataPoint[] data, int start, int count, int widthDP, int heightDP) {
@@ -31,6 +29,7 @@ public class WeatherBarShape extends Shape implements Parcelable {
         density = metrics.density;
 
         setDimensions((int) (widthDP * density), (int) (heightDP * density));
+        setData(context.getResources().getColor(android.R.color.tertiary_text_light), ForecastTools.parseWeatherPoints(context, data, start, count));
     }
 
     private void setDimensions(int width, int height) {
@@ -49,69 +48,30 @@ public class WeatherBarShape extends Shape implements Parcelable {
         tickCount = unitCount / unitSkip - 1;
         tickSpacing = unitSize * unitSkip;
 
-        ticks = new int[tickCount];
+        ticks = new float[tickCount * 4];
 
-        for (int i = 0; i < tickCount; i++)
-            ticks[i] = ((i + 1) * tickSpacing) + leftOffset;
+        int yStop = barSize + tickSize;
+        int j = 0;
+        for (int i = 0; i < tickCount; i++) {
+            int x = ((i + 1) * tickSpacing) + leftOffset;
+            ticks[j++] = x;
+            ticks[j++] = barSize;
+            ticks[j++] = x;
+            ticks[j++] = yStop;
+        }
 
     }
 
-    public void setData(int tickColor, WeatherBlock[] blocks) {
+    private void setData(int tickColor, WeatherBlock[] blocks) {
         this.tickColor = tickColor;
         this.blocks = blocks;
-    }
-
-    // for parcelable functionality
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeFloat(density);
-        dest.writeIntArray(new int[]{width, height,
-                unitStart, unitCount, unitSize, unitSkip, barSize, tickCount, tickSize, tickSpacing, tickColor,
-                leftOffset, rightOffset});
-        dest.writeInt(ticks.length);
-        dest.writeIntArray(ticks);
-        dest.writeParcelableArray(blocks, 0);
-    }
-
-    public static final Parcelable.Creator<WeatherBarShape> CREATOR
-            = new Parcelable.Creator<WeatherBarShape>() {
-        public WeatherBarShape createFromParcel(Parcel in) {
-            return new WeatherBarShape(in);
-        }
-
-        public WeatherBarShape[] newArray(int size) {
-            return new WeatherBarShape[size];
-        }
-    };
-
-    private WeatherBarShape(Parcel in) {
-        density = in.readFloat();
-        int[] temp = new int[12];
-        in.readIntArray(temp);
-        ticks = new int[in.readInt()];
-        in.readIntArray(ticks);
-
-        int i = 0;
-        width = temp[i++]; height = temp[i++];
-        unitStart = temp[i++]; unitCount = temp[i++]; unitSize = temp[i++]; unitSkip = temp[i++]; barSize = temp[i++];
-        tickCount = temp[i++]; tickSize = temp[i++]; tickSpacing = temp[i++]; tickColor = temp[i++];
-        leftOffset = temp[i++]; rightOffset = temp[i];
-
-        blocks = (WeatherBlock[]) in.readParcelableArray(null);
     }
 
     @Override
     public void draw(Canvas canvas, Paint paint) {
         paint.setColor(tickColor);
 
-        int yStop = barSize + tickSize;
-        for (int tick : ticks)
-            canvas.drawLine(tick, barSize, tick, yStop, paint);
+        canvas.drawLines(ticks, paint);
 
         for(WeatherBlock block : blocks) {
             paint.setColor(block.getColor());
@@ -128,8 +88,59 @@ public class WeatherBarShape extends Shape implements Parcelable {
         }
     }
 
-    public int[] getDimensions() {
-        return new int[] {width, height, unitStart, unitCount, unitSize, unitSkip, barSize, tickCount, tickSize, tickSpacing, tickColor, leftOffset, rightOffset};
+    public float getDensity() {
+        return density;
     }
 
+    public int getUnitStart() {
+        return unitStart;
+    }
+
+    public int getUnitCount() {
+        return unitCount;
+    }
+
+    public int getUnitSize() {
+        return unitSize;
+    }
+
+    public int getUnitSkip() {
+        return unitSkip;
+    }
+
+    public int getBarSize() {
+        return barSize;
+    }
+
+    public int getTickCount() {
+        return tickCount;
+    }
+
+    public int getTickSize() {
+        return tickSize;
+    }
+
+    public int getTickSpacing() {
+        return tickSpacing;
+    }
+
+    public int getTickColor() {
+        return tickColor;
+    }
+
+    public int getLeftOffset() {
+        return leftOffset;
+    }
+
+    public int getRightOffset() {
+        return rightOffset;
+    }
+
+    public float[] getTicks() {
+        return ticks;
+    }
+
+    public WeatherBlock[] getBlocks() {
+        return blocks;
+    }
 }
