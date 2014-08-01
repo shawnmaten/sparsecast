@@ -31,7 +31,7 @@ public class GraphicsFragment extends Fragment implements FragmentListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.graphics, container, false);
         RelativeLayout weatherBarTexts = (RelativeLayout) view.findViewById(R.id.weather_bar_texts);
-        if (weatherBarShape != null) {
+        if (forecast == null && weatherBarShape != null) {
             ForecastTools.createWeatherBarTextViews((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), weatherBarShape, weatherBarTexts);
             ShapeDrawable drawable = new ShapeDrawable(weatherBarShape);
             ImageView weatherBarImage = (ImageView) view.findViewById(R.id.weather_bar_image);
