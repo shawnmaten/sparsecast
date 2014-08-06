@@ -29,7 +29,7 @@ public class SearchProvider extends ContentProvider implements Callback<Places.A
 	
 	private static final UriMatcher URIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	static {
-		URIMatcher.addURI("com.shawnaten.weather.searchprovider", SearchManager.SUGGEST_URI_PATH_QUERY+"/*", 0);
+		URIMatcher.addURI("com.shawnaten.simpleweather.searchprovider", SearchManager.SUGGEST_URI_PATH_QUERY+"/*", 0);
 	}
 
     @Override
@@ -80,7 +80,7 @@ public class SearchProvider extends ContentProvider implements Callback<Places.A
         String MIME;
         switch (URIMatcher.match(uri)) {
             case 0:
-                MIME = String.format("%s%s%s", "vnd.android.cursor.dir/", "vnd.com.shawnaten.weather.searchprovider.",
+                MIME = String.format("%s%s%s", "vnd.android.cursor.dir/", "vnd.com.shawnaten.simpleweather.searchprovider.",
                         SearchManager.SUGGEST_URI_PATH_QUERY);
                 return MIME;
         }

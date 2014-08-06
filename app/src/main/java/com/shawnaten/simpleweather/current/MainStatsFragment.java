@@ -1,4 +1,4 @@
-package com.shawnaten.main.current;
+package com.shawnaten.simpleweather.current;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -11,8 +11,8 @@ import android.widget.RelativeLayout;
 
 import com.larvalabs.svgandroid.SVG;
 import com.larvalabs.svgandroid.SVGBuilder;
-import com.shawnaten.main.R;
 import com.shawnaten.networking.Forecast;
+import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
 

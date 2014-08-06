@@ -1,4 +1,4 @@
-package com.shawnaten.main;
+package com.shawnaten.simpleweather;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -6,11 +6,13 @@ import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,18 +26,27 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.mediation.admob.AdMobExtras;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.shawnaten.main.current.CurrentFragment;
-import com.shawnaten.main.map.MapFragment;
-import com.shawnaten.main.week.WeekFragment;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.shawnaten.networking.Forecast;
 import com.shawnaten.networking.Network;
 import com.shawnaten.networking.Places;
+import com.shawnaten.simpleweather.backend.keysEndpoint.KeysEndpoint;
+import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
+import com.shawnaten.simpleweather.current.CurrentFragment;
+import com.shawnaten.simpleweather.map.MapFragment;
+import com.shawnaten.simpleweather.week.WeekFragment;
 import com.shawnaten.tools.AnimationTools;
+import com.shawnaten.tools.Constants;
 import com.shawnaten.tools.CustomAlertDialog;
 import com.shawnaten.tools.CustomFrameLayout;
 import com.shawnaten.tools.FragmentListener;
 import com.shawnaten.tools.TabListener;
 
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Locale;
 
@@ -50,14 +61,19 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
     private View fragment, spinner, search;
     private int shortAnimationDuration;
     private Boolean fragmentActive = true, spinnerActive = false, searchActive = false, searchActiveChanging = false;
+    private SharedPreferences settings;
+    private GoogleAccountCredential credential;
+    private String accountName;
 
     private Dialog playServicesError;
-    public static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 0;
+    public static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 0, REQUEST_CODE_ACCOUNT_PICKER = 1;
 
     private static MenuItem searchWidget;
     private static String title;
     private static Forecast.Response lastForecastResponse;
     private static int navItem;
+
+    private static final String PREF_ACCOUNT_NAME = "prefAccountName";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +97,23 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
 
         if (savedInstanceState == null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+            // testing
+
+            settings = getSharedPreferences("Weather", 0);
+            credential = GoogleAccountCredential.usingAudience(getApplicationContext(), "server:client_id:" + Constants.WEB_ID);
+            credential.setSelectedAccountName(credential.getAllAccounts()[0].name);
+            //setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
+
+            /*
+            if (credential.getSelectedAccountName() == null)
+                startActivityForResult(credential.newChooseAccountIntent(), REQUEST_CODE_ACCOUNT_PICKER);
+            */
+
+            if (credential.getSelectedAccountName() != null)
+                new APIKeysTask().execute();
+
+            // testing
 
             cFrag = new CurrentFragment();
             ft.add(R.id.main_fragment, cFrag, "current");
@@ -129,6 +162,41 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
 
     }
 
+    // testing
+
+    /*
+    private void setSelectedAccountName(String accountName) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(PREF_ACCOUNT_NAME, accountName);
+        editor.commit();
+        credential.setSelectedAccountName(accountName);
+        this.accountName = accountName;
+    }
+    */
+
+    private class APIKeysTask extends AsyncTask<Void, Void, Keys> {
+
+        protected Keys doInBackground(Void... unused) {
+
+            KeysEndpoint.Builder keysEndpointBuilder =
+                    new KeysEndpoint.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), credential);
+            KeysEndpoint service = keysEndpointBuilder.build();
+
+            Keys keys = null;
+            try {
+                keys = service.getKeys().execute();
+                if (keys != null)
+                    Network.setKeys(keys);
+            } catch (IOException e) {
+                Log.e("Keys", e.getMessage(), e);
+            }
+            return keys;
+        }
+
+    }
+
+    // testing
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -174,14 +242,10 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
             bannerAd = (AdView) findViewById(R.id.ad);
             bannerAd.loadAd(new AdRequest.Builder()
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                    .addTestDevice("15205FD74742674BD0B4A04EC2C27A8D")
-                    .addTestDevice("FBAAB721579DF3944BE6549A1F9385A7")
+                    .addTestDevice(MD5(Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID)))
                     .addNetworkExtras(extras)
                     .build());
         }
-
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        Log.e("display", displayMetrics.toString());
 
         ActionBar actionBar = getActionBar();
         assert actionBar != null;
@@ -350,22 +414,25 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
             lastForecastResponse = forecast;
         } else if (Places.AutocompleteResponse.class.isInstance(response)) {
             Places.AutocompleteResponse autocompleteResponse = (Places.AutocompleteResponse) response;
+            Toast toast;
 
-            if (autocompleteResponse.getStatus().equals("OK")) {
-                Network.getInstance(getApplicationContext()).getDetails(autocompleteResponse.getPredictions()[0].getPlace_id(),
-                        Locale.getDefault().getLanguage(), this);
-            } else {
-                setIntent(null);
-                viewChangeRequest();
-            }
-
-            if (autocompleteResponse.getStatus().equals("ZERO_RESULTS")) {
-                Toast toast = Toast.makeText(getApplicationContext(), getString(R.string.no_search_results), Toast.LENGTH_SHORT);
-                toast.show();
-            } else {
-                Toast toast = Toast.makeText(getApplicationContext(), getString(R.string.processing_error), Toast.LENGTH_SHORT);
-                toast.show();
-                Log.e("Autocomplete Error", autocompleteResponse.getStatus());
+            switch (autocompleteResponse.getStatus()) {
+                case "OK":
+                    Network.getInstance(getApplicationContext()).getDetails(autocompleteResponse.getPredictions()[0].getPlace_id(),
+                            Locale.getDefault().getLanguage(), this);
+                    break;
+                case "ZERO_RESULTS":
+                    setIntent(null);
+                    viewChangeRequest();
+                    toast = Toast.makeText(getApplicationContext(), getString(R.string.no_search_results), Toast.LENGTH_SHORT);
+                    toast.show();
+                    break;
+                default:
+                    setIntent(null);
+                    viewChangeRequest();
+                    toast = Toast.makeText(getApplicationContext(), getString(R.string.processing_error), Toast.LENGTH_SHORT);
+                    toast.show();
+                    Log.e("Autocomplete Error", autocompleteResponse.getStatus());
             }
 
         } else if (Places.DetailsResponse.class.isInstance(response)) {
@@ -401,4 +468,51 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
                 break;
         }
     }
+
+    public static final String MD5(final String s) {
+        final String MD5 = "MD5";
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest
+                    .getInstance(MD5);
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigest) {
+                String h = Integer.toHexString(0xFF & aMessageDigest);
+                while (h.length() < 2)
+                    h = "0" + h;
+                hexString.append(h);
+            }
+            return hexString.toString().toUpperCase();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    /*
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_ACCOUNT_PICKER:
+                if (data != null && data.getExtras() != null) {
+                    String accountName = data.getExtras().getString(AccountManager.KEY_ACCOUNT_NAME);
+                    if (accountName != null) {
+                        setSelectedAccountName(accountName);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString(PREF_ACCOUNT_NAME, accountName);
+                        editor.commit();
+                        // User is authorized.
+                    }
+                }
+                break;
+        }
+    }
+    */
+
 }

@@ -1,4 +1,4 @@
-package com.shawnaten.main.current;
+package com.shawnaten.simpleweather.current;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.shawnaten.main.R;
 import com.shawnaten.networking.Forecast;
+import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
 

@@ -1,4 +1,4 @@
-package com.shawnaten.main.map;
+package com.shawnaten.simpleweather.map;
 
 import android.content.Context;
 import android.graphics.drawable.ShapeDrawable;
@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.shawnaten.main.R;
 import com.shawnaten.networking.Forecast;
+import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
 import com.shawnaten.tools.WeatherBarShape;

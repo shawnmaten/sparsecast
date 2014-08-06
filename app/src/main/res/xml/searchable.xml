@@ -4,7 +4,7 @@
     android:hint="@string/search_hint"
     android:imeOptions="actionSearch"
     android:voiceSearchMode="showVoiceSearchButton|launchRecognizer" 
-    android:searchSuggestAuthority="com.shawnaten.weather.searchprovider"
+    android:searchSuggestAuthority="com.shawnaten.simpleweather.searchprovider"
     android:searchSuggestIntentAction="android.intent.action.VIEW"
     android:searchSuggestThreshold="1" >
 </searchable>

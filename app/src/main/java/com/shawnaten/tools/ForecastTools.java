@@ -5,7 +5,6 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -13,14 +12,13 @@ import android.widget.RelativeLayout;
 import android.widget.Space;
 import android.widget.TextView;
 
-import com.shawnaten.main.R;
 import com.shawnaten.networking.Forecast;
+import com.shawnaten.simpleweather.R;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -258,11 +256,13 @@ public class ForecastTools {
         return R.string.precipitation;
     }
 
-    public static void createWeatherBarTextViews(LayoutInflater inflater, WeatherBarShape weatherBar, RelativeLayout layout) {int width, leftOffset, tickCount, to_end_of, parent_start, tickSize;
+    public static void createWeatherBarTextViews(LayoutInflater inflater, WeatherBarShape weatherBar, RelativeLayout layout) {
+        int width, leftOffset, tickCount, to_end_of, parent_start, tickSize;
 
         RelativeLayout.LayoutParams params;
 
         // set up
+        layout.removeAllViews();
         width = weatherBar.getTickSpacing() * 2;
         leftOffset = weatherBar.getLeftOffset();
         tickCount = weatherBar.getTickCount();
@@ -413,7 +413,6 @@ public class ForecastTools {
             count++;
         }
 
-        Log.e("blocks", Arrays.toString(blocks.toArray()));
         return blocks.toArray(new WeatherBlock[blocks.size()]);
     }
 

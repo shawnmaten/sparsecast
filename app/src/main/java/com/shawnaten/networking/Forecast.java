@@ -355,7 +355,7 @@ public class Forecast {
     }
 
     public static interface Service {
-        @GET("/e72c4d02b1f2888c44c2bc73b7a73a08/{lat},{lng}?extend=hourly")
-        void getForecast(@Path("lat") double lat, @Path("lng") double lng, @Query("lang") String lang, Callback<Response> cb);
+        @GET("/{key}/{lat},{lng}?extend=hourly")
+        void getForecast(@Path("key") String key, @Path("lat") double lat, @Path("lng") double lng, @Query("lang") String lang, Callback<Response> cb);
     }
 }

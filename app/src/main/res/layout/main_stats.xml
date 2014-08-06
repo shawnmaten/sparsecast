@@ -4,11 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main_stats"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/standard_margin"
-    android:paddingStart="@dimen/standard_margin"
-    android:paddingRight="@dimen/standard_margin"
-    android:paddingEnd="@dimen/standard_margin" >
+    android:layout_height="wrap_content" >
 
     <ImageView
         android:id="@+id/weather_icon"

@@ -3,15 +3,9 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/details"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/standard_margin" >
-
-    <Space
-        android:id="@+id/center"
-        android:layout_width="@dimen/standard_margin"
-        android:layout_height="0dp"
-        android:layout_centerHorizontal="true" />
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center" >
 
     <TextView
         android:id="@+id/details_1"
@@ -19,17 +13,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical|left|start"
-        android:layout_toLeftOf="@id/center"
-        android:layout_toStartOf="@id/center" />
+        android:padding="@dimen/half_margin" />
 
     <TextView
         android:id="@+id/details_2"
         style="@style/tab.current"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/center"
-        android:layout_toEndOf="@id/center"
-        android:gravity="center_vertical|left|start" />
+        android:gravity="center_vertical|left|start"
+        android:layout_toRightOf="@id/details_1"
+        android:layout_toEndOf="@id/details_1"
+        android:padding="@dimen/half_margin"/>
 
     <TextView
         android:id="@+id/details_3"
@@ -37,20 +31,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/details_1"
-        android:layout_toLeftOf="@id/center"
-        android:layout_toStartOf="@id/center"
-        android:paddingTop="@dimen/standard_margin"
-        android:gravity="center_vertical|left|start" />
+        android:gravity="center_vertical|left|start"
+        android:padding="@dimen/half_margin" />
 
     <TextView
         android:id="@+id/details_4"
         style="@style/tab.current"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/center"
-        android:layout_toEndOf="@id/center"
         android:layout_below="@id/details_2"
-        android:paddingTop="@dimen/standard_margin"
-        android:gravity="center_vertical|left|start" />
+        android:layout_toRightOf="@id/details_1"
+        android:layout_toEndOf="@id/details_1"
+        android:gravity="center_vertical|left|start"
+        android:padding="@dimen/half_margin"/>
 
 </RelativeLayout>

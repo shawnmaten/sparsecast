@@ -1,8 +1,10 @@
-package com.shawnaten.main.current;
+package com.shawnaten.simpleweather.current;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
@@ -11,18 +13,17 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.shawnaten.main.R;
 import com.shawnaten.networking.Forecast;
+import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.CustomAlertDialog;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
 
-import java.util.ArrayList;
+import static junit.framework.Assert.assertNotNull;
 
 public class CurrentFragment extends Fragment implements FragmentListener {
     private static Forecast.Response forecast;
     private static Boolean newData = false;
-    private static ArrayList<String> fragNames;
 	
 	public CurrentFragment() {
 		
@@ -32,28 +33,20 @@ public class CurrentFragment extends Fragment implements FragmentListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Fragment mFrag, sFrag, dFrag, gFrag;
+
         if (savedInstanceState == null) {
             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-            Fragment mFrag, sFrag, dFrag, gFrag;
-
-            fragNames = new ArrayList<>();
 
             mFrag = new MainStatsFragment();
-            ft.add(R.id.fragment_1, mFrag, "mainStats");
-
             sFrag = new SummariesFragment();
-            ft.add(R.id.fragment_2, sFrag, "summaries");
-            fragNames.add("summaries");
-
             dFrag = new DetailsFragment();
-            ft.add(R.id.fragment_2, dFrag, "details");
-            fragNames.add("details");
-            ft.detach(dFrag);
-
             gFrag = new GraphicsFragment();
+
+            ft.add(R.id.fragment_1, mFrag, "mainStats");
+            ft.add(R.id.fragment_2, sFrag, "summaries");
+            ft.add(R.id.fragment_2, dFrag, "details");
             ft.add(R.id.fragment_2, gFrag, "graphics");
-            fragNames.add("graphics");
-            ft.detach(gFrag);
 
             ft.commit();
         }
@@ -64,25 +57,53 @@ public class CurrentFragment extends Fragment implements FragmentListener {
 	public void onResume () {
 		super.onResume();
 
+        Fragment mFrag, sFrag, dFrag, gFrag;
+        FragmentListener mListen, sListen, dListen, gListen;
+        FragmentManager fm = getChildFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        mFrag = fm.findFragmentByTag("mainStats");
+        sFrag = fm.findFragmentByTag("summaries");
+        dFrag = fm.findFragmentByTag("details");
+        gFrag = fm.findFragmentByTag("graphics");
+
+        assertNotNull(mFrag);
+        assertNotNull(sFrag);
+        assertNotNull(dFrag);
+        assertNotNull(gFrag);
+
+        mListen = (FragmentListener) mFrag;
+        sListen = (FragmentListener) sFrag;
+        dListen = (FragmentListener) dFrag;
+        gListen = (FragmentListener) gFrag;
+
+        ft.remove(dFrag);
+        ft.remove(gFrag);
+        ft.commit();
+        fm.executePendingTransactions();
+
+        ft = fm.beginTransaction();
+        switch (getResources().getConfiguration().orientation) {
+            case Configuration.ORIENTATION_PORTRAIT:
+                ft.add(R.id.fragment_2, dFrag, "details");
+                ft.detach(dFrag);
+                ft.add(R.id.fragment_2, gFrag, "graphics");
+                ft.detach(gFrag);
+                break;
+            case Configuration.ORIENTATION_LANDSCAPE:
+                ft.add(R.id.fragment_3, dFrag, "details");
+                ft.add(R.id.fragment_3, gFrag, "graphics");
+                ft.detach(gFrag);
+                break;
+        }
+        ft.attach(sFrag).commit();
+
         if (newData) {
             LinearLayout alertView = (LinearLayout) getView().findViewById(R.id.alert_view).findViewById(R.id.alert_view_content);
-            FragmentListener mListen, sListen, dListen, gListen;
-            Fragment mFrag, sFrag, dFrag, gFrag;
 
-            mFrag = getChildFragmentManager().findFragmentByTag("mainStats");
-            mListen = (FragmentListener) mFrag;
             mListen.onNewData(forecast);
-
-            sFrag = getChildFragmentManager().findFragmentByTag("summaries");
-            sListen = (FragmentListener) sFrag;
             sListen.onNewData(forecast);
-
-            dFrag = getChildFragmentManager().findFragmentByTag("details");
-            dListen = (FragmentListener) dFrag;
             dListen.onNewData(forecast);
-
-            gFrag = getChildFragmentManager().findFragmentByTag("graphics");
-            gListen = (FragmentListener) gFrag;
             gListen.onNewData(forecast);
 
             createAlertViews(alertView);
@@ -111,31 +132,31 @@ public class CurrentFragment extends Fragment implements FragmentListener {
     @Override
     public void onButtonClick(View view) {
         int id = view.getId();
-        Fragment toDetach, toAttach;
+        Fragment toDetach = null, toAttach;
+        FragmentManager fm = getChildFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
 
-        toDetach = getChildFragmentManager().findFragmentById(R.id.fragment_2);
+        switch (getResources().getConfiguration().orientation) {
+            case Configuration.ORIENTATION_PORTRAIT:
+                toDetach = fm.findFragmentById(R.id.fragment_2);
+                break;
+            case Configuration.ORIENTATION_LANDSCAPE:
+                toDetach = fm.findFragmentById(R.id.fragment_3);
+                break;
+        }
 
         switch (view.getId()) {
             case R.id.summaries_button:
                 toAttach = getChildFragmentManager().findFragmentByTag("summaries");
-                getChildFragmentManager().beginTransaction()
-                        .detach(toDetach)
-                        .attach(toAttach)
-                        .commit();
+                ft.detach(toDetach).attach(toAttach).commit();
                 break;
             case R.id.details_button:
                 toAttach = getChildFragmentManager().findFragmentByTag("details");
-                getChildFragmentManager().beginTransaction()
-                        .detach(toDetach)
-                        .attach(toAttach)
-                        .commit();
+                ft.detach(toDetach).attach(toAttach).commit();
                 break;
             case R.id.graphics_button:
                 toAttach = getChildFragmentManager().findFragmentByTag("graphics");
-                getChildFragmentManager().beginTransaction()
-                        .detach(toDetach)
-                        .attach(toAttach)
-                        .commit();
+                ft.detach(toDetach).attach(toAttach).commit();
                 break;
             case R.id.time:
                 break;

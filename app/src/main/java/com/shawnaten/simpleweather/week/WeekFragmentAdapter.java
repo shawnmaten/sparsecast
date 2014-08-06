@@ -1,4 +1,4 @@
-package com.shawnaten.main.week;
+package com.shawnaten.simpleweather.week;
 
 import android.content.Context;
 import android.graphics.drawable.ShapeDrawable;
@@ -10,8 +10,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.shawnaten.main.R;
 import com.shawnaten.networking.Forecast;
+import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.WeatherBarShape;
 
@@ -176,7 +176,7 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
                 ShapeDrawable drawable;
 
                 if (convertView == null) {
-                    convertView = inflater.inflate(R.layout.weather_bar, parent, false);
+                    convertView = inflater.inflate(R.layout.weather_bar_week, parent, false);
                     weatherBarContainer = (FrameLayout) convertView.findViewById(R.id.weather_bar_container);
                     weatherBarTexts = (RelativeLayout) weatherBarContainer.findViewById(R.id.weather_bar_texts);
                     weatherBarImage = (ImageView) weatherBarContainer.findViewById(R.id.weather_bar_image);

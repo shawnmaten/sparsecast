@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="green_500">#259b24</color>
+    <color name="pink_a100">#ff80ab</color>
+    <color name="pink_a100_50">#7fff80ab</color>
+    <color name="pink_a200">#ff4081</color>
     <color name="secondary_text_dark">#89ffffff</color>
 
     <color name="scattered_rain">#b3e5fc</color>

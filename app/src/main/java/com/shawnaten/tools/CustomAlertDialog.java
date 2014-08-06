@@ -7,7 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
-import com.shawnaten.main.R;
+import com.shawnaten.simpleweather.R;
 
 import junit.framework.Assert;
 

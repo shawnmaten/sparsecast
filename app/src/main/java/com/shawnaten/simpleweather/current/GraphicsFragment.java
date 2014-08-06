@@ -1,4 +1,4 @@
-package com.shawnaten.main.current;
+package com.shawnaten.simpleweather.current;
 
 import android.content.Context;
 import android.graphics.drawable.ShapeDrawable;
@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.shawnaten.main.R;
 import com.shawnaten.networking.Forecast;
+import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
 import com.shawnaten.tools.WeatherBarShape;
@@ -31,7 +31,7 @@ public class GraphicsFragment extends Fragment implements FragmentListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.graphics, container, false);
         RelativeLayout weatherBarTexts = (RelativeLayout) view.findViewById(R.id.weather_bar_texts);
-        if (forecast == null && weatherBarShape != null) {
+        if (weatherBarShape != null) {
             ForecastTools.createWeatherBarTextViews((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), weatherBarShape, weatherBarTexts);
             ShapeDrawable drawable = new ShapeDrawable(weatherBarShape);
             ImageView weatherBarImage = (ImageView) view.findViewById(R.id.weather_bar_image);

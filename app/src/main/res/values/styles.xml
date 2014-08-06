@@ -10,10 +10,7 @@
 	</style>
 
     <style name="tab.current.alert" >
-        <item name="android:paddingStart" tools:targetApi="17">@dimen/standard_margin</item>
-        <item name="android:paddingLeft">@dimen/standard_margin</item>
-        <item name="android:paddingEnd" tools:targetApi="17">@dimen/standard_margin</item>
-        <item name="android:paddingRight">@dimen/standard_margin</item>
+        <item name="android:padding">@dimen/quarter_margin</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@android:color/holo_red_light</item>
     </style>
@@ -85,7 +82,6 @@
     <!-- Application theme. -->
     <style name="AppBaseTheme.AppTheme" >
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="android:icon">@drawable/ic_launcher</item>
         <item name="android:name">@string/app_name</item>
         <item name="android:actionBarStyle">@style/ActionBar</item>
         <item name="android:actionBarWidgetTheme">@style/ActionBarWidget</item>

@@ -1,10 +1,11 @@
 <resources>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="quarter_margin">4dp</dimen>
+    <dimen name="half_margin">8dp</dimen>
     <dimen name="standard_margin">16dp</dimen>
     <dimen name="large_margin">24dp</dimen>
     <dimen name="vertical_spacing">8dp</dimen>
-    <dimen name="subtitle">48dp</dimen>
     <dimen name="expandable_list_start">35dp</dimen>
     <dimen name="list_item">72dp</dimen>
     <dimen name="textLarge">34sp</dimen>

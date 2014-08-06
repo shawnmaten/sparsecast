@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -22,6 +23,7 @@ import retrofit.converter.GsonConverter;
  */
 public class Network {
     private static Network instance;
+    private static Keys keys;
     private Forecast.Service forecastService;
     private Places.Service placesService, detailsService;
 
@@ -44,7 +46,6 @@ public class Network {
                 .create();
 
         RestAdapter forecastAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.HEADERS)
                 .setEndpoint("https://api.forecast.io/forecast")
                 .setClient(new OkClient(okHttpClient))
                 .setConverter(new GsonConverter(gson))
@@ -52,19 +53,21 @@ public class Network {
         forecastService = forecastAdapter.create(Forecast.Service.class);
 
         RestAdapter placesAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.HEADERS)
                 .setEndpoint("https://maps.googleapis.com/maps/api/place/autocomplete")
                 .setClient(new OkClient(okHttpClient))
                 .build();
         placesService = placesAdapter.create(Places.Service.class);
 
         RestAdapter detailsAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.HEADERS)
                 .setEndpoint("https://maps.googleapis.com/maps/api/place/details")
                 .setClient(new OkClient(okHttpClient))
                 .build();
         detailsService = detailsAdapter.create(Places.Service.class);
 
+    }
+
+    public static void setKeys(Keys newKeys) {
+        keys = newKeys;
     }
 
     public static synchronized Network getInstance(Context context) {
@@ -74,15 +77,15 @@ public class Network {
     }
 
     public void getForecast(double lat, double lng, String langCode, Callback<Forecast.Response> cb) {
-        forecastService.getForecast(lat, lng, langCode, cb);
+        forecastService.getForecast(keys.getForecastAPIKey(), lat, lng, langCode, cb);
     }
 
     public void getAutocomplete(String query, String langCode, Callback<Places.AutocompleteResponse> cb) {
-        placesService.getAutocomplete(query, langCode, cb);
+        placesService.getAutocomplete(keys.getGoogleAPIKey(), query, langCode, cb);
     }
 
     public void getDetails(String placeid, String langCode, Callback<Places.DetailsResponse> cb) {
-        detailsService.getDetails(placeid, langCode, cb);
+        detailsService.getDetails(keys.getGoogleAPIKey(), placeid, langCode, cb);
     }
 
 }

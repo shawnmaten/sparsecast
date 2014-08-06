@@ -105,11 +105,11 @@ public class Places {
     }
 
     public static interface Service {
-        @GET("/json?key=AIzaSyCJN0mGkoAB-XqEy--H8uddVxgjkXtiASM")
-        void getAutocomplete(@Query("input") String query, @Query("language") String langCode, Callback<AutocompleteResponse> cb);
+        @GET("/json")
+        void getAutocomplete(@Query("key") String key, @Query("input") String query, @Query("language") String langCode, Callback<AutocompleteResponse> cb);
 
-        @GET("/json?key=AIzaSyCJN0mGkoAB-XqEy--H8uddVxgjkXtiASM")
-        void getDetails(@Query("placeid") String placeid, @Query("language") String langCode, Callback<DetailsResponse> cb);
+        @GET("/json")
+        void getDetails(@Query("key") String key, @Query("placeid") String placeid, @Query("language") String langCode, Callback<DetailsResponse> cb);
     }
 
 }
