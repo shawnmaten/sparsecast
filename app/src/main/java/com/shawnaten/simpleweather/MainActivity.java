@@ -216,9 +216,9 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
         assert actionBar != null;
 
         if (title == null)
-            actionBar.setTitle(getString(R.string.app_name));
+            setTitle(getString(R.string.app_name));
         else
-            actionBar.setTitle(title);
+            setTitle(title);
 
         if (lastForecastResponse != null && lastForecastResponse.getExpiration().before(new Date())) {
             Network.getInstance().getForecast(lastForecastResponse.getLatitude(), lastForecastResponse.getLongitude(),
@@ -314,7 +314,7 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
             wListen.onNewData(forecast);
             mListen.onNewData(forecast);
 
-            getActionBar().setTitle(title);
+            setTitle(title);
             lastForecastResponse = forecast;
             modes.setLoading(false);
             setIntent(null);
