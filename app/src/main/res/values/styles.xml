@@ -10,11 +10,11 @@
 	</style>
 
     <style name="tab.current.alert" >
-        <item name="android:paddingLeft">@dimen/half_margin</item>
-        <item name="android:paddingStart" tools:targetApi="17">@dimen/half_margin</item>
-        <item name="android:paddingRight">@dimen/half_margin</item>
-        <item name="android:paddingEnd" tools:targetApi="17">@dimen/half_margin</item>
-        <item name="android:minHeight">@dimen/button</item>
+        <item name="android:paddingLeft">@dimen/standard_margin</item>
+        <item name="android:paddingStart" tools:targetApi="17">@dimen/standard_margin</item>
+        <item name="android:paddingRight">@dimen/standard_margin</item>
+        <item name="android:paddingEnd" tools:targetApi="17">@dimen/standard_margin</item>
+        <item name="android:minHeight">@dimen/alert_views</item>
         <item name="android:gravity">center</item>
         <item name="android:textSize">@dimen/textSmall</item>
         <item name="android:textStyle">bold</item>
