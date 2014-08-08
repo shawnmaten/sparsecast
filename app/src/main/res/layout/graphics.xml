@@ -14,8 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="@string/next_24_hours"
-        android:layout_marginBottom="@dimen/half_margin" />
+        android:text="@string/next_24_hours" />
 
     <include
         layout="@layout/weather_bar"

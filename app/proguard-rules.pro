@@ -59,3 +59,9 @@
 -keep class com.shawnaten.networking.** { *; }
 
 # end of retrofit
+
+# Needed by google-api-client to keep generic types and @Key annotations accessed via reflection
+
+-keepclassmembers class * {
+  @com.google.api.client.util.Key <fields>;
+}

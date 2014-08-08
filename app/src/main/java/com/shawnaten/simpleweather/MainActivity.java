@@ -2,16 +2,13 @@ package com.shawnaten.simpleweather;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
-import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
@@ -21,32 +18,17 @@ import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.mediation.admob.AdMobExtras;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.shawnaten.networking.Forecast;
 import com.shawnaten.networking.Network;
 import com.shawnaten.networking.Places;
-import com.shawnaten.simpleweather.backend.keysEndpoint.KeysEndpoint;
-import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
 import com.shawnaten.simpleweather.current.CurrentFragment;
 import com.shawnaten.simpleweather.map.MapFragment;
 import com.shawnaten.simpleweather.week.WeekFragment;
-import com.shawnaten.tools.AnimationTools;
-import com.shawnaten.tools.Constants;
 import com.shawnaten.tools.CustomAlertDialog;
-import com.shawnaten.tools.CustomFrameLayout;
 import com.shawnaten.tools.FragmentListener;
 import com.shawnaten.tools.TabListener;
 
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Locale;
 
@@ -55,65 +37,54 @@ import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-public class MainActivity extends FragmentActivity implements Callback, CustomFrameLayout.KeyboardStateListener, View.OnFocusChangeListener, CustomAlertDialog.CustomAlertListener {
+public class MainActivity extends FragmentActivity implements Callback, CustomAlertDialog.CustomAlertListener {
     private AdView bannerAd;
     private FragmentListener cListen, wListen, mListen;
-    private View fragment, spinner, search;
-    private int shortAnimationDuration;
-    private Boolean fragmentActive = true, spinnerActive = false, searchActive = false, searchActiveChanging = false;
+    private TabListener currentTab, weekTab, mapTab;
+    private Boolean isActive = false;
+    /* to allow user to select account
     private SharedPreferences settings;
     private GoogleAccountCredential credential;
     private String accountName;
+    private static final String PREF_ACCOUNT_NAME = "prefAccountName";
+    */
 
-    private Dialog playServicesError;
     public static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 0, REQUEST_CODE_ACCOUNT_PICKER = 1;
 
     private static MenuItem searchWidget;
     private static String title;
     private static Forecast.Response lastForecastResponse;
     private static int navItem;
-
-    private static final String PREF_ACCOUNT_NAME = "prefAccountName";
+    private static Modes modes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Fragment cFrag, wFrag, mFrag;
+        Fragment cFrag, wFrag, mFrag, lFrag, sFrag;
         ActionBar actionBar;
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.main_activity);
+        Network.setup(this);
+        modes = new Modes();
 
-        fragment = findViewById(R.id.main_fragment);
-        ((CustomFrameLayout) fragment).setKeyboardStateListener(this);
-        spinner = findViewById(R.id.interstitial).findViewById(R.id.progress_spinner);
-        search = findViewById(R.id.interstitial).findViewById(R.id.search_logo);
-        shortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        setContentView(R.layout.main_activity);
 
         actionBar = getActionBar();
         assert actionBar != null;
 
-
-
         if (savedInstanceState == null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-            // testing
+            /* to allow user to select account
 
             settings = getSharedPreferences("Weather", 0);
             credential = GoogleAccountCredential.usingAudience(getApplicationContext(), "server:client_id:" + Constants.WEB_ID);
-            credential.setSelectedAccountName(credential.getAllAccounts()[0].name);
-            //setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
+            setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
 
-            /*
             if (credential.getSelectedAccountName() == null)
                 startActivityForResult(credential.newChooseAccountIntent(), REQUEST_CODE_ACCOUNT_PICKER);
+
             */
-
-            if (credential.getSelectedAccountName() != null)
-                new APIKeysTask().execute();
-
-            // testing
 
             cFrag = new CurrentFragment();
             ft.add(R.id.main_fragment, cFrag, "current");
@@ -127,6 +98,20 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
             ft.add(R.id.main_fragment, mFrag, "map");
             ft.detach(mFrag);
 
+            lFrag = new GenericFragment();
+            Bundle args = new Bundle();
+            args.putInt("layout", R.layout.loading);
+            lFrag.setArguments(args);
+            ft.add(R.id.main_fragment, lFrag, "loading");
+            ft.detach(lFrag);
+
+            sFrag = new GenericFragment();
+            args = new Bundle();
+            args.putInt("layout", R.layout.searching);
+            sFrag.setArguments(args);
+            ft.add(R.id.main_fragment, sFrag, "searching");
+            ft.detach(sFrag);
+
             ft.commit();
 
         } else {
@@ -134,6 +119,9 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
             cFrag = getSupportFragmentManager().findFragmentByTag("current");
             wFrag = getSupportFragmentManager().findFragmentByTag("week");
             mFrag = getSupportFragmentManager().findFragmentByTag("map");
+
+            if (lastForecastResponse == null)
+                ft.detach(fm.findFragmentById(R.id.main_fragment)).commit();
 
         }
 
@@ -143,59 +131,25 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
 
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        TabListener currentTab, weekTab, mapTab;
         currentTab = new TabListener(cFrag);
         weekTab = new TabListener(wFrag);
         mapTab = new TabListener(mFrag);
 
-        Tab tab = actionBar.newTab().setText(R.string.tab_current).setTabListener(currentTab);
+        Tab tab = actionBar.newTab().setText(R.string.tab_current).setTag("current").setTabListener(currentTab);
         actionBar.addTab(tab);
-        tab = actionBar.newTab().setText(R.string.tab_week).setTabListener(weekTab);
+        tab = actionBar.newTab().setText(R.string.tab_week).setTag("week").setTabListener(weekTab);
         actionBar.addTab(tab);
-        tab = actionBar.newTab().setText(R.string.tab_map).setTabListener(mapTab);
+        tab = actionBar.newTab().setText(R.string.tab_map).setTag("map").setTabListener(mapTab);
         actionBar.addTab(tab);
-
-        if (lastForecastResponse != null)
-            actionBar.setSelectedNavigationItem(navItem);
-
         setIntent(null);
 
-    }
-
-    // testing
-
-    /*
-    private void setSelectedAccountName(String accountName) {
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(PREF_ACCOUNT_NAME, accountName);
-        editor.commit();
-        credential.setSelectedAccountName(accountName);
-        this.accountName = accountName;
-    }
-    */
-
-    private class APIKeysTask extends AsyncTask<Void, Void, Keys> {
-
-        protected Keys doInBackground(Void... unused) {
-
-            KeysEndpoint.Builder keysEndpointBuilder =
-                    new KeysEndpoint.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), credential);
-            KeysEndpoint service = keysEndpointBuilder.build();
-
-            Keys keys = null;
-            try {
-                keys = service.getKeys().execute();
-                if (keys != null)
-                    Network.setKeys(keys);
-            } catch (IOException e) {
-                Log.e("Keys", e.getMessage(), e);
-            }
-            return keys;
+        if (lastForecastResponse != null) {
+            modes.enableTabs(true);
+            actionBar.setSelectedNavigationItem(navItem);
         }
 
     }
 
-    // testing
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -208,11 +162,20 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
-        int searchTextId = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-        View searchText = searchView.findViewById(searchTextId);
-        searchText.setOnFocusChangeListener(this);
-
         searchWidget = menu.findItem(R.id.action_search);
+        searchWidget.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                modes.setSearching(true);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                modes.setSearching(false);
+                return true;
+            }
+        });
 
         int searchPlateId = searchView.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
         int submitAreaId = searchView.getContext().getResources().getIdentifier("android:id/submit_area", null, null);
@@ -231,7 +194,8 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
 
         super.onResume();
 
-        if (playServicesAvailable() && bannerAd == null) {
+        /*
+        if (PlayServices.playServicesAvailable(this) && bannerAd == null) {
 
             Bundle bundle = new Bundle();
             bundle.putString("color_bg", "#ff80ab");
@@ -242,10 +206,11 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
             bannerAd = (AdView) findViewById(R.id.ad);
             bannerAd.loadAd(new AdRequest.Builder()
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                    .addTestDevice(MD5(Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID)))
+                    .addTestDevice(Hash.MD5(Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID)))
                     .addNetworkExtras(extras)
                     .build());
         }
+        */
 
         ActionBar actionBar = getActionBar();
         assert actionBar != null;
@@ -256,9 +221,8 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
             actionBar.setTitle(title);
 
         if (lastForecastResponse != null && lastForecastResponse.getExpiration().before(new Date())) {
-            Network.getInstance(getApplicationContext()).getForecast(lastForecastResponse.getLatitude(), lastForecastResponse.getLongitude(),
+            Network.getInstance().getForecast(lastForecastResponse.getLatitude(), lastForecastResponse.getLongitude(),
                     Locale.getDefault().getLanguage(), this);
-            viewChangeRequest();
         }
 
         if (bannerAd != null)
@@ -267,8 +231,18 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
     }
 
     @Override
+    protected void onResumeFragments () {
+        super.onResumeFragments();
+
+        isActive = true;
+        modes.updateFragments();
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
+
+        isActive = false;
 
         navItem = getActionBar().getSelectedNavigationIndex();
 
@@ -279,6 +253,7 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         if (bannerAd != null)
             bannerAd.destroy();
     }
@@ -302,17 +277,19 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
     }
 
     private void handleIntent(Intent intent) {
+
         if (searchWidget != null)
             searchWidget.collapseActionView();
 
         String action = intent.getAction();
+
         if (Intent.ACTION_SEARCH.equals(action)) {
-            viewChangeRequest();
+            modes.setLoading(true);
             String query = intent.getStringExtra(SearchManager.QUERY);
-            Network.getInstance(getApplicationContext()).getAutocomplete(query, Locale.getDefault().getLanguage(), this);
+            Network.getInstance().getAutocomplete(query, Locale.getDefault().getLanguage(), this);
         } else if (Intent.ACTION_VIEW.equals(action)) {
-            viewChangeRequest();
-            Network.getInstance(getApplicationContext()).getDetails(intent.getDataString(), Locale.getDefault().getLanguage(), this);
+            modes.setLoading(true);
+            Network.getInstance().getDetails(intent.getDataString(), Locale.getDefault().getLanguage(), this);
         }
     }
 
@@ -320,76 +297,6 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
         cListen.onButtonClick(view);
         wListen.onButtonClick(view);
         mListen.onButtonClick(view);
-    }
-
-    public boolean playServicesAvailable() {
-        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
-        if (status != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(status)) {
-                if (playServicesError == null || !playServicesError.isShowing()) {
-                    playServicesError = GooglePlayServicesUtil.getErrorDialog(status, this, REQUEST_CODE_RECOVER_PLAY_SERVICES);
-                    playServicesError.setCancelable(false);
-                    playServicesError.show();
-                }
-            } else if (getSupportFragmentManager().findFragmentByTag("playServicesError") == null) {
-                CustomAlertDialog playServicesError = new CustomAlertDialog();
-                playServicesError.setCancelable(false);
-                Bundle args = new Bundle();
-                args.putString("title", getString(R.string.play_services));
-                args.putString("message", getString(R.string.play_services_unsupported));
-                args.putInt("code", 0);
-                playServicesError.setArguments(args);
-                playServicesError.show(getSupportFragmentManager(), "playServicesError");
-            }
-            return false;
-        }
-        return true;
-    }
-
-    private void viewChangeRequest() {
-
-        if (fragmentActive) {
-            AnimationTools.crossFadeViews(spinner, fragment, shortAnimationDuration);
-            fragmentActive = false;
-            spinnerActive = true;
-        } else {
-            if (!searchActive)
-                AnimationTools.crossFadeViews(fragment, spinner, shortAnimationDuration);
-            fragmentActive = true;
-            spinnerActive = false;
-        }
-
-    }
-
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        searchActive = hasFocus;
-        if (hasFocus) {
-            if (fragmentActive)
-                AnimationTools.fadeViewOut(fragment, shortAnimationDuration);
-            else if (spinnerActive)
-                AnimationTools.fadeViewOut(spinner, shortAnimationDuration);
-        } else
-            AnimationTools.fadeViewOut(search, shortAnimationDuration);
-
-        bannerAd.pause();
-
-    }
-
-    @Override
-    public void onKeyboardShown() {
-        AnimationTools.fadeViewIn(search, shortAnimationDuration);
-        bannerAd.resume();
-    }
-
-    @Override
-    public void onKeyboardHidden() {
-        if (fragmentActive)
-            AnimationTools.fadeViewIn(fragment, shortAnimationDuration);
-        else if (spinnerActive)
-            AnimationTools.fadeViewIn(spinner, shortAnimationDuration);
-
-        bannerAd.resume();
     }
 
     @Override
@@ -408,28 +315,27 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
             mListen.onNewData(forecast);
 
             getActionBar().setTitle(title);
-            viewChangeRequest();
-            setIntent(null);
-
             lastForecastResponse = forecast;
+            modes.setLoading(false);
+            setIntent(null);
         } else if (Places.AutocompleteResponse.class.isInstance(response)) {
             Places.AutocompleteResponse autocompleteResponse = (Places.AutocompleteResponse) response;
             Toast toast;
 
             switch (autocompleteResponse.getStatus()) {
                 case "OK":
-                    Network.getInstance(getApplicationContext()).getDetails(autocompleteResponse.getPredictions()[0].getPlace_id(),
+                    Network.getInstance().getDetails(autocompleteResponse.getPredictions()[0].getPlace_id(),
                             Locale.getDefault().getLanguage(), this);
                     break;
                 case "ZERO_RESULTS":
                     setIntent(null);
-                    viewChangeRequest();
+                    modes.setLoading(false);
                     toast = Toast.makeText(getApplicationContext(), getString(R.string.no_search_results), Toast.LENGTH_SHORT);
                     toast.show();
                     break;
                 default:
                     setIntent(null);
-                    viewChangeRequest();
+                    modes.setLoading(false);
                     toast = Toast.makeText(getApplicationContext(), getString(R.string.processing_error), Toast.LENGTH_SHORT);
                     toast.show();
                     Log.e("Autocomplete Error", autocompleteResponse.getStatus());
@@ -441,10 +347,10 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
             if (details.getStatus().equals("OK")) {
                 title = details.getResult().getName();
                 Places.Location location = details.getResult().getGeometry().getLocation();
-                Network.getInstance(getApplicationContext()).getForecast(location.getLat(), location.getLng(), Locale.getDefault().getLanguage(), this);
+                Network.getInstance().getForecast(location.getLat(), location.getLng(), Locale.getDefault().getLanguage(), this);
             } else {
                 setIntent(null);
-                viewChangeRequest();
+                modes.setLoading(false);
                 Toast toast = Toast.makeText(getApplicationContext(), getString(R.string.processing_error), Toast.LENGTH_SHORT);
                 toast.show();
                 Log.e("Place Details Error", details.getStatus());
@@ -460,6 +366,61 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
         Log.e("Retrofit", error.getMessage());
     }
 
+    private class Modes {
+        private static final int LOADING = 1, SEARCHING = 2;
+        private Boolean isLoading = false, isSearching = false, needsUpdate = false;
+
+        public void setLoading(Boolean state) {
+            isLoading = state;
+            needsUpdate = true;
+            updateFragments();
+        }
+
+        public void setSearching(Boolean state) {
+            isSearching = state;
+            needsUpdate = true;
+            updateFragments();
+        }
+
+        public void updateFragments() {
+            if (isActive && needsUpdate) {
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+
+                ft.detach(fm.findFragmentById(R.id.main_fragment));
+
+                if (isLoading) {
+                    enableTabs(false);
+                    if (isSearching)
+                        ft.attach(fm.findFragmentByTag("searching"));
+                    else
+                        ft.attach(fm.findFragmentByTag("loading"));
+                } else {
+                    if (isSearching) {
+                        enableTabs(false);
+                        ft.attach(fm.findFragmentByTag("searching"));
+                    } else {
+                        if (lastForecastResponse != null) {
+                            enableTabs(true);
+                            ActionBar ab = getActionBar();
+                            ft.attach(fm.findFragmentByTag((String) ab.getTabAt(ab.getSelectedNavigationIndex()).getTag()));
+                        }
+                    }
+                }
+                ft.commit();
+                fm.executePendingTransactions();
+                needsUpdate = false;
+            }
+        }
+
+        public void enableTabs(Boolean enabled) {
+            currentTab.setEnabled(enabled);
+            weekTab.setEnabled(enabled);
+            mapTab.setEnabled(enabled);
+        }
+
+    }
+
     @Override
     public void onDialogClosed(int code) {
         switch (code) {
@@ -469,32 +430,16 @@ public class MainActivity extends FragmentActivity implements Callback, CustomFr
         }
     }
 
-    public static final String MD5(final String s) {
-        final String MD5 = "MD5";
-        try {
-            // Create MD5 Hash
-            MessageDigest digest = java.security.MessageDigest
-                    .getInstance(MD5);
-            digest.update(s.getBytes());
-            byte messageDigest[] = digest.digest();
+    /* to allow user to select account
 
-            // Create Hex String
-            StringBuilder hexString = new StringBuilder();
-            for (byte aMessageDigest : messageDigest) {
-                String h = Integer.toHexString(0xFF & aMessageDigest);
-                while (h.length() < 2)
-                    h = "0" + h;
-                hexString.append(h);
-            }
-            return hexString.toString().toUpperCase();
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return "";
+    private void setSelectedAccountName(String accountName) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(PREF_ACCOUNT_NAME, accountName);
+        editor.commit();
+        credential.setSelectedAccountName(accountName);
+        this.accountName = accountName;
     }
 
-    /*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

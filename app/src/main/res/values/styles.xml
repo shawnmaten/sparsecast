@@ -10,7 +10,13 @@
 	</style>
 
     <style name="tab.current.alert" >
-        <item name="android:padding">@dimen/quarter_margin</item>
+        <item name="android:paddingLeft">@dimen/half_margin</item>
+        <item name="android:paddingStart" tools:targetApi="17">@dimen/half_margin</item>
+        <item name="android:paddingRight">@dimen/half_margin</item>
+        <item name="android:paddingEnd" tools:targetApi="17">@dimen/half_margin</item>
+        <item name="android:minHeight">@dimen/button</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/textSmall</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@android:color/holo_red_light</item>
     </style>
@@ -33,7 +39,7 @@
 
     <style name="tab.week.item">
         <item name="android:textColor">@android:color/secondary_text_light</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">@dimen/textSmall</item>
     </style>
 
     <style name="tab.week.item.group" >

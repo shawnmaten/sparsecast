@@ -4,7 +4,7 @@
 	<style 
 	    name="tab.current" >
 	    <item name="android:gravity">center_vertical|left|start</item>
-        <item name="android:textSize">@dimen/textNormal</item>
+        <item name="android:textSize">@dimen/textSmall</item>
 	</style>
 
 </resources>

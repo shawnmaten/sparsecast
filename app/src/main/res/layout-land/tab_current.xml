@@ -28,37 +28,40 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-    <FrameLayout
-        android:id="@+id/fragment_1"
+    <LinearLayout
+        android:id="@+id/fragment_1_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/alert_view"
-        android:layout_toLeftOf="@id/center"
-        android:layout_toStartOf="@id/center"
-        android:layout_marginLeft="@dimen/standard_margin"
-        android:layout_marginStart="@dimen/standard_margin"
-        android:layout_marginRight="@dimen/half_margin"
-        android:layout_marginEnd="@dimen/half_margin" />
+        android:orientation="horizontal" >
 
-    <FrameLayout
-        android:id="@+id/fragment_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/alert_view"
-        android:layout_toRightOf="@id/center"
-        android:layout_toEndOf="@id/center"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginLeft="@dimen/half_margin"
-        android:layout_marginStart="@dimen/half_margin"
-        android:layout_marginRight="@dimen/standard_margin"
-        android:layout_marginEnd="@dimen/standard_margin" />
+        <FrameLayout
+            android:id="@+id/fragment_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/standard_margin"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginRight="@dimen/half_margin"
+            android:layout_marginEnd="@dimen/half_margin"
+            android:layout_weight="1" />
+
+        <FrameLayout
+            android:id="@+id/fragment_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/half_margin"
+            android:layout_marginStart="@dimen/half_margin"
+            android:layout_marginRight="@dimen/standard_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:layout_weight="1" />
+
+        </LinearLayout>
 
     <FrameLayout
         android:id="@+id/buttons_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_1"
+        android:layout_below="@id/fragment_1_2"
         android:layout_alignParentBottom="true" >
 
         <LinearLayout
@@ -71,8 +74,8 @@
             <Button
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/details_button"
-                android:layout_width="96dp"
-                android:layout_height="32dp"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/button"
                 android:onClick="onButtonClick"
                 android:background="@drawable/custom_button"
                 android:text="@string/detail"
@@ -85,11 +88,11 @@
             <Button
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/graphics_button"
-                android:layout_width="96dp"
-                android:layout_height="32dp"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/button"
                 android:onClick="onButtonClick"
                 android:background="@drawable/custom_button"
-                android:text="@string/graphic"
+                android:text="@string/graph"
                 android:textColor="@android:color/primary_text_dark_nodisable"
                 android:layout_marginLeft="@dimen/standard_margin"
                 android:layout_marginStart="@dimen/standard_margin"
@@ -105,7 +108,7 @@
         android:id="@+id/fragment_3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_1"
+        android:layout_below="@id/fragment_1_2"
         android:layout_toRightOf="@id/buttons_holder"
         android:layout_toEndOf="@id/buttons_holder"
         android:layout_alignParentBottom="true"

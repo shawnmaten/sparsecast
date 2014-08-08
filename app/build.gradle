@@ -1,22 +1,22 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-    }
     compileSdkVersion 20
     buildToolsVersion '20.0.0'
     defaultConfig {
         applicationId 'com.shawnaten.simpleweather'
         minSdkVersion 14
         targetSdkVersion 20
-        versionCode 1
+        versionCode 4
         versionName '1.0'
     }
     buildTypes {
-        /*debug {
+        /*
+        debug {
             runProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }*/
+        }
+        */
         release {
             runProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -27,6 +27,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
     productFlavors {
+        localhost {
+        }
+        internet {
+        }
     }
 }
 

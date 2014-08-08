@@ -30,7 +30,7 @@
     <string name="today">Today</string>
     <string name="text">Text</string>
     <string name="detail">Detail</string>
-    <string name="graphic">Graphic</string>
+    <string name="graph">Graph</string>
     
     <string name="north">N</string>
     <string name="south">S</string>
@@ -57,8 +57,6 @@
 
     <string name="weather_bar_description">graphic showing weather over time</string>
     <string name="weather_icon_description">icon depicting current weather conditions</string>
-    <string name="prev_button_description">previous view</string>
-    <string name="next_button_description">next view</string>
 
     <string name="feels_like">Feels like</string>
     <string name="intensity">Intensity</string>

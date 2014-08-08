@@ -3,7 +3,8 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/list_item"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/list_item"
     android:paddingLeft="@dimen/standard_margin"
     android:paddingStart="@dimen/standard_margin"
     android:paddingRight="@dimen/standard_margin"

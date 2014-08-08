@@ -14,8 +14,9 @@ import java.util.logging.Logger;
         version = "v1",
         namespace = @ApiNamespace(ownerDomain = "backend.simpleweather.shawnaten.com",
         ownerName = "backend.simpleweather.shawnaten.com", packagePath=""),
-        clientIds = {Constants.WEB_ID, Constants.ANDROID_ID},
-        audiences = {Constants.ANDROID_AUDIENCE}
+        clientIds = {Constants.WEB_LOCAL_ID, Constants.WEB_APP_ENGINE_ID,
+                Constants.ANDROID_DEBUG_ID, Constants.ANDROID_RELEASE_ID},
+        audiences = {Constants.WEB_LOCAL_ID, Constants.WEB_APP_ENGINE_ID}
 )
 
 public class KeysEndpoint {

@@ -9,17 +9,19 @@
     <FrameLayout
         android:id="@+id/weather_bar_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/half_margin"
+        android:paddingBottom="@dimen/half_margin" >
 
         <RelativeLayout
             android:id="@+id/weather_bar_texts"
             android:layout_width="768dp"
-            android:layout_height="64dp" />
+            android:layout_height="@dimen/weather_bar_height" />
 
         <ImageView
             android:id="@+id/weather_bar_image"
             android:layout_width="768dp"
-            android:layout_height="64dp"
+            android:layout_height="@dimen/weather_bar_height"
             android:contentDescription="@string/weather_bar_description" />
 
     </FrameLayout>

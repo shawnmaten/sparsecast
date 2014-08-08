@@ -6,19 +6,27 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/currently"
-        style="@style/tab.current"
-        android:layout_gravity="left|start" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
 
-    <TextView
-        android:id="@+id/next_hour"
-        style="@style/tab.current"
-        android:layout_gravity="left|start" />
+        <TextView
+            android:id="@+id/currently"
+            style="@style/tab.current"
+            android:layout_marginRight="@dimen/half_margin"
+            android:layout_marginEnd="@dimen/half_margin" />
+
+        <TextView
+            android:id="@+id/next_hour"
+            style="@style/tab.current"
+            android:layout_marginLeft="@dimen/half_margin"
+            android:layout_marginStart="@dimen/half_margin" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/next_24_hours"
-        style="@style/tab.current"
-        android:layout_gravity="left|start" />
+        style="@style/tab.current" />
 
 </LinearLayout>

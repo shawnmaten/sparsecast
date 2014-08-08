@@ -1,56 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
-    <com.shawnaten.tools.CustomFrameLayout
+    <FrameLayout
         android:id="@+id/main_fragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent" />
+        <!--
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/ad" />
-
-    <RelativeLayout
-        android:id="@+id/interstitial"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_above="@id/ad" >
-
-        <LinearLayout
-            android:id="@+id/search_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center_horizontal|top"
-            android:orientation="vertical"
-            android:visibility="invisible" >
-
-            <ImageView
-                android:src="@drawable/large_search"
-                android:layout_width="48dp"
-                android:layout_height="48dp" />
-            <ImageView
-                android:src="@drawable/powered_by_google_light"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="8dp" />
-
-        </LinearLayout>
-
-        <ProgressBar
-            android:id="@+id/progress_spinner"
-            style="@android:style/Widget.Holo.Light.ProgressBar.Large"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminateOnly="true"
-            android:layout_centerInParent="true"
-            android:visibility="invisible" />
-
-    </RelativeLayout>
+        android:layout_above="@+id/ad"/>
 
     <com.google.android.gms.ads.AdView
         android:id="@id/ad"
@@ -59,5 +19,6 @@
         android:layout_alignParentBottom="true"
         ads:adSize="SMART_BANNER"
         ads:adUnitId="@string/bottom_banner" />
+        -->
 
 </RelativeLayout>

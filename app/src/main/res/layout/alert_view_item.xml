@@ -5,4 +5,4 @@
     style="@style/tab.current.alert"
     android:hapticFeedbackEnabled="true"
     android:clickable="true"
-    android:onClick="alertClick" />
+    android:onClick="onButtonClick" />

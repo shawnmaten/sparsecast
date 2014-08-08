@@ -41,7 +41,7 @@ public class SearchProvider extends ContentProvider implements Callback<Places.A
             if (!query.equals("search_suggest_query")) {
                 MatrixCursor cursor = new MatrixCursor(pColumns);
 
-                Network.getInstance(getContext()).getAutocomplete(query, Locale.getDefault().getLanguage(), this);
+                Network.getInstance().getAutocomplete(query, Locale.getDefault().getLanguage(), this);
 
                 waitForData();
 

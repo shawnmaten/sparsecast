@@ -107,7 +107,6 @@ public class CurrentFragment extends Fragment implements FragmentListener {
             gListen.onNewData(forecast);
 
             createAlertViews(alertView);
-            setAlertText(alertView);
             newData = false;
         }
 	}
@@ -177,32 +176,21 @@ public class CurrentFragment extends Fragment implements FragmentListener {
 
         layout.removeAllViews();
 
-        TextView textView = (TextView) inflater.inflate(R.layout.alert_view_item, null);
+        TextView textView = (TextView) inflater.inflate(R.layout.alert_view_item, (ViewGroup) getView(), false);
         textView.setId(R.id.time);
+        textView.setText(String.format("%s %s", getString(R.string.conditions), ForecastTools.timeForm.format(forecast.getCurrently().getTime())));
         layout.addView(textView);
 
         int i = 1;
         if (forecast.getAlerts() != null) {
             for (Forecast.Alert alert : forecast.getAlerts()) {
-                textView = (TextView) inflater.inflate(R.layout.alert_view_item, null);
+                textView = (TextView) inflater.inflate(R.layout.alert_view_item, (ViewGroup) getView(), false);
                 textView.setId(i++);
+                textView.setText(alert.getTitle());
                 layout.addView(textView);
             }
         } else
             textView.setTextColor(getResources().getColor(android.R.color.secondary_text_light));
-    }
-
-    private void setAlertText(LinearLayout layout) {
-        TextView textView = (TextView) layout.findViewById(R.id.time);
-        textView.setText(String.format("%s %s", getString(R.string.conditions), ForecastTools.timeForm.format(forecast.getCurrently().getTime())));
-
-        int i = 1;
-        if (forecast.getAlerts() != null) {
-            for (Forecast.Alert alert : forecast.getAlerts()) {
-                textView = (TextView) layout.findViewById(i++);
-                textView.setText(alert.getTitle());
-            }
-        }
     }
 
 }

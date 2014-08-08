@@ -1,34 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/details"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center" >
+    android:layout_gravity="center"
+    android:orientation="horizontal" >
 
-    <TextView
-        android:id="@+id/details_1"
-        style="@style/tab.current"
+    <LinearLayout
+        android:id="@+id/details_1_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical|left|start"
-        android:layout_marginLeft="@dimen/half_margin"
-        android:layout_marginStart="@dimen/half_margin"
-        android:layout_marginRight="@dimen/half_margin"
-        android:layout_marginEnd="@dimen/half_margin" />
+        android:orientation="vertical"
+        android:layout_margin="@dimen/half_margin" >
 
-    <TextView
-        android:id="@+id/details_2"
-        style="@style/tab.current"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical|left|start"
-        android:layout_below="@id/details_1"
-        android:layout_marginLeft="@dimen/half_margin"
-        android:layout_marginStart="@dimen/half_margin"
-        android:layout_marginRight="@dimen/half_margin"
-        android:layout_marginEnd="@dimen/half_margin" />
+        <TextView
+            android:id="@+id/details_1"
+            style="@style/tab.current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left|start" />
+
+        <TextView
+            android:id="@+id/details_2"
+            style="@style/tab.current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left|start" />
+
+        </LinearLayout>
 
     <TextView
         android:id="@+id/details_3"
@@ -36,13 +37,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical|left|start"
-        android:layout_toRightOf="@id/details_2"
-        android:layout_toEndOf="@id/details_2"
-        android:layout_marginLeft="@dimen/half_margin"
-        android:layout_marginStart="@dimen/half_margin"
-        android:layout_marginRight="@dimen/half_margin"
-        android:layout_marginEnd="@dimen/half_margin"
-        android:layout_centerVertical="true" />
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/half_margin" />
 
     <TextView
         android:id="@+id/details_4"
@@ -50,12 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical|left|start"
-        android:layout_toRightOf="@id/details_3"
-        android:layout_toEndOf="@id/details_3"
-        android:layout_marginLeft="@dimen/half_margin"
-        android:layout_marginStart="@dimen/half_margin"
-        android:layout_marginRight="@dimen/half_margin"
-        android:layout_marginEnd="@dimen/half_margin"
-        android:layout_centerVertical="true" />
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/half_margin" />
 
-</RelativeLayout>
+</LinearLayout>
