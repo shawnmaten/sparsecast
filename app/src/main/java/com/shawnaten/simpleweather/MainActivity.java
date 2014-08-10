@@ -19,6 +19,8 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
 import com.shawnaten.networking.Forecast;
 import com.shawnaten.networking.Network;
 import com.shawnaten.networking.Places;
@@ -42,6 +44,8 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
     private FragmentListener cListen, wListen, mListen;
     private TabListener currentTab, weekTab, mapTab;
     private Boolean isActive = false;
+    private GoogleMap map;
+    private Marker marker;
     /* to allow user to select account
     private SharedPreferences settings;
     private GoogleAccountCredential credential;
@@ -236,6 +240,7 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
 
         isActive = true;
         modes.updateFragments();
+
     }
 
     @Override
@@ -355,7 +360,6 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
                 toast.show();
                 Log.e("Place Details Error", details.getStatus());
             }
-
         }
     }
 

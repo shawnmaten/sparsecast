@@ -1,76 +1,113 @@
 package com.shawnaten.simpleweather.map;
 
-import android.content.Context;
-import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.shawnaten.networking.Forecast;
-import com.shawnaten.simpleweather.R;
-import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
-import com.shawnaten.tools.WeatherBarShape;
 
 /**
  * Created by shawnaten on 7/12/14.
  */
 public class MapFragment extends Fragment implements FragmentListener {
     private static Forecast.Response forecast;
-    private static WeatherBarShape weatherBar;
+    private MapView mapView;
+    private GoogleMap map;
+    private Marker marker;
 
-    private RelativeLayout weatherBarTexts;
-    private ImageView weatherBarImage;
+    private static final float defaultZoom = 9;
 
     public MapFragment() {
 
     }
 
     @Override
-    public void onResume () {
-        super.onResume();
+    public void onCreate (Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        GoogleMapOptions options = new GoogleMapOptions();
+        options
+                .mapType(GoogleMap.MAP_TYPE_TERRAIN)
+                .compassEnabled(false)
+                .rotateGesturesEnabled(false)
+                .tiltGesturesEnabled(false);
+        mapView = new MapView(getActivity(), options);
+        mapView.onCreate(savedInstanceState);
+        map = mapView.getMap();
 
+        MarkerOptions markerOptions = new MarkerOptions();
+        LatLng position = null;
         if (forecast != null) {
-            if (forecast.getHourly() != null) {
-                Forecast.DataPoint hourly[] = forecast.getHourly().getData();
-                weatherBar = new WeatherBarShape(getActivity(), hourly, 0, 24, 768, 64);
-                ForecastTools.createWeatherBarTextViews((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), weatherBar, weatherBarTexts);
-                ForecastTools.setWeatherBarText(weatherBar, hourly, forecast.getTimezone(), weatherBarTexts);
-                ShapeDrawable drawable = new ShapeDrawable(weatherBar);
-                weatherBarImage.setBackgroundDrawable(drawable);
-            }
-            forecast = null;
+            position = new LatLng(forecast.getLatitude(), forecast.getLongitude());
+            markerOptions.visible(true);
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, defaultZoom));
+        } else {
+            position = new LatLng(0, 0);
+            markerOptions.visible(false);
         }
+        markerOptions.position(position);
+        marker = map.addMarker(markerOptions);
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.tab_map, container, false);
+        return mapView;
+    }
 
-        weatherBarTexts = (RelativeLayout) view.findViewById(R.id.scroll_container)
-                .findViewById(R.id.weather_bar_container).findViewById(R.id.weather_bar_texts);
-        weatherBarImage = (ImageView) view.findViewById(R.id.scroll_container)
-                .findViewById(R.id.weather_bar_container).findViewById(R.id.weather_bar);
+    @Override
+    public void onDestroyView () {
+        super.onDestroyView();
+        ((ViewGroup)getView()).removeAllViews();
+    }
 
-        if (weatherBar != null) {
-            ForecastTools.createWeatherBarTextViews(inflater, weatherBar, weatherBarTexts);
-            ShapeDrawable drawable = new ShapeDrawable(weatherBar);
-            weatherBarImage.setBackgroundDrawable(drawable);
-        }
+    @Override
+    public void onResume () {
+        super.onResume();
+        mapView.onResume();
+    }
 
-        return view;
+    @Override
+    public void onPause () {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onDestroy () {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onSaveInstanceState (Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onLowMemory () {
+        super.onLowMemory();
+        mapView.onLowMemory();
     }
 
     @Override
     public void onNewData(Forecast.Response data) {
-        this.forecast = data;
-        if (isVisible())
-            onResume();
+        forecast = data;
+        marker.setPosition(new LatLng(forecast.getLatitude(), forecast.getLongitude()));
+        marker.setVisible(true);
+        MapsInitializer.initialize(getActivity());
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), defaultZoom));
     }
 
     @Override

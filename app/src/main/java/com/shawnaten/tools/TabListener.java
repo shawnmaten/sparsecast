@@ -24,9 +24,9 @@ public class TabListener implements ActionBar.TabListener {
 	@Override
 	public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
         if (enabled) {
-            fragment.getFragmentManager().beginTransaction()
-                    .attach(fragment)
-                    .commit();
+           fragment.getFragmentManager().beginTransaction()
+                   .attach(fragment)
+                   .commit();
         }
 	}
 

@@ -8,7 +8,7 @@
     <dimen name="expandable_list_start">35dp</dimen>
     <dimen name="list_item">72dp</dimen>
     <dimen name="button">32dp</dimen>
-    <dimen name="alert_views">48dp</dimen>
+    <dimen name="alert_views">40dp</dimen>
     <dimen name="weather_bar_height">56dp</dimen>
     <dimen name="textLarge">24sp</dimen>
     <dimen name="textNormal">16sp</dimen>

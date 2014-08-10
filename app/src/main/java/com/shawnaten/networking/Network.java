@@ -9,9 +9,9 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.keysEndpoint.KeysEndpoint;
 import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
-import com.shawnaten.tools.Constants;
 import com.shawnaten.tools.PlayServices;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
@@ -77,13 +77,13 @@ public class Network {
                 .build();
         detailsService = detailsAdapter.create(Places.Service.class);
 
-        GoogleAccountCredential credential = GoogleAccountCredential.usingAudience(activity, "server:client_id:" + Constants.WEB_ID);
+        GoogleAccountCredential credential = GoogleAccountCredential.usingAudience(activity, "server:client_id:" + activity.getString(R.string.WEB_ID));
         credential.setSelectedAccountName(credential.getAllAccounts()[0].name);
 
         KeysEndpoint.Builder keysEndpointBuilder =
                 new KeysEndpoint.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), credential);
-        if (Constants.localhost)
-            keysEndpointBuilder.setRootUrl(Constants.rootURL);
+        if (activity.getResources().getBoolean(R.bool.localhost))
+            keysEndpointBuilder.setRootUrl(activity.getString(R.string.root_url));
         keysService = keysEndpointBuilder.build();
 
         keysTask = (getKeysTask) new getKeysTask().execute();
