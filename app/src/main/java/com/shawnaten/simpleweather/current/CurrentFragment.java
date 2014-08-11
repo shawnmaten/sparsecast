@@ -1,6 +1,5 @@
 package com.shawnaten.simpleweather.current;
 
-import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,20 +11,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 
-import com.shawnaten.networking.Forecast;
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.tools.CustomAlertDialog;
 import com.shawnaten.tools.FragmentListener;
 
 public class CurrentFragment extends Fragment implements FragmentListener, PopupMenu.OnMenuItemClickListener {
-    private Forecast.Response forecast;
-    private Boolean newData = false;
     private MenuItem colorInfo;
-	
+	private FragmentListener mListen, sListen, dListen, gListen;
+
 	public CurrentFragment() {
 		
 	}
@@ -60,7 +54,6 @@ public class CurrentFragment extends Fragment implements FragmentListener, Popup
 		super.onResume();
 
         Fragment mFrag, sFrag, dFrag, gFrag;
-        FragmentListener mListen, sListen, dListen, gListen;
         FragmentManager fm = getChildFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
@@ -95,26 +88,11 @@ public class CurrentFragment extends Fragment implements FragmentListener, Popup
         }
         ft.attach(sFrag).commit();
 
-        if (forecast != null) {
-            //LinearLayout alertView = (LinearLayout) getView().findViewById(R.id.alert_view).findViewById(R.id.alert_view_content);
-
-            mListen.onReceiveData(forecast);
-            sListen.onReceiveData(forecast);
-            dListen.onReceiveData(forecast);
-            gListen.onReceiveData(forecast);
-
-            //createAlertViews(alertView);
-        }
 	}
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.tab_current, container, false);
-
-        if (forecast != null) {
-            //createAlertViews((LinearLayout) view.findViewById(R.id.alert_view).findViewById(R.id.alert_view_content));
-        }
-        return view;
+        return inflater.inflate(R.layout.tab_current, container, false);
     }
 
     @Override
@@ -144,74 +122,6 @@ public class CurrentFragment extends Fragment implements FragmentListener, Popup
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-	@Override
-	public void onReceiveData(Forecast.Response data) {
-        forecast = data;
-        if (isVisible())
-            onResume();
-	}
-
-    @Override
-    public void onButtonClick(int id) {
-        /*
-        Fragment toDetach = null, toAttach;
-        FragmentManager fm = getChildFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
-        switch (getResources().getConfiguration().orientation) {
-            case Configuration.ORIENTATION_PORTRAIT:
-                toDetach = fm.findFragmentById(R.id.fragment_2);
-                break;
-            case Configuration.ORIENTATION_LANDSCAPE:
-                toDetach = fm.findFragmentById(R.id.fragment_3);
-                break;
-        }
-        */
-
-        switch (id) {
-            /*
-            case R.id.summaries_button:
-                toAttach = getChildFragmentManager().findFragmentByTag("summaries");
-                ft.detach(toDetach).attach(toAttach).commit();
-                break;
-            case R.id.details_button:
-                toAttach = getChildFragmentManager().findFragmentByTag("details");
-                ft.detach(toDetach).attach(toAttach).commit();
-                break;
-            case R.id.graphics_button:
-                toAttach = getChildFragmentManager().findFragmentByTag("graphics");
-                ft.detach(toDetach).attach(toAttach).commit();
-                break;
-                */
-            case R.id.time:
-                break;
-            default:
-                CustomAlertDialog temp = new CustomAlertDialog();
-                Bundle args = new Bundle();
-                args.putString("title", forecast.getAlerts()[id-1].getTitle());
-                args.putString("message", forecast.getAlerts()[id - 1].getDescription());
-                args.putInt("code", 1);
-                temp.setArguments(args);
-                temp.show(getFragmentManager(), "current.alert");
-        }
-    }
-
-    private void createAlertViews(LinearLayout layout) {
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        layout.removeAllViews();
-
-        int i = 1;
-        if (forecast.getAlerts() != null) {
-            for (Forecast.Alert alert : forecast.getAlerts()) {
-                TextView textView = (TextView) inflater.inflate(R.layout.alert_view_item, (ViewGroup) getView(), false);
-                textView.setId(i++);
-                textView.setText(alert.getTitle());
-                layout.addView(textView);
-            }
         }
     }
 
@@ -249,4 +159,41 @@ public class CurrentFragment extends Fragment implements FragmentListener, Popup
         }
         return true;
     }
+
+    @Override
+    public void onButtonClick(int id) {
+        /*
+        switch (id) {
+            case R.id.time:
+                break;
+            default:
+                CustomAlertDialog temp = new CustomAlertDialog();
+                Bundle args = new Bundle();
+                args.putString("title", forecast.getAlerts()[id-1].getTitle());
+                args.putString("message", forecast.getAlerts()[id - 1].getDescription());
+                args.putInt("code", 1);
+                temp.setArguments(args);
+                temp.show(getFragmentManager(), "current.alert");
+        }
+        */
+    }
+
+    /*
+    private void createAlertViews(LinearLayout layout) {
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        layout.removeAllViews();
+
+        int i = 1;
+        if (forecast.getAlerts() != null) {
+            for (Forecast.Alert alert : forecast.getAlerts()) {
+                TextView textView = (TextView) inflater.inflate(R.layout.alert_view_item, (ViewGroup) getView(), false);
+                textView.setId(i++);
+                textView.setText(alert.getTitle());
+                layout.addView(textView);
+            }
+        }
+    }
+    */
+
 }

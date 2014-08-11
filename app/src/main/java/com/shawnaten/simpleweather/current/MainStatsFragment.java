@@ -23,7 +23,6 @@ import static java.util.Arrays.asList;
  * Created by Shawn Aten on 7/20/14.
  */
 public class MainStatsFragment extends Fragment implements FragmentListener {
-    private Forecast.Response forecast;
 
     public MainStatsFragment() {
 
@@ -38,12 +37,14 @@ public class MainStatsFragment extends Fragment implements FragmentListener {
     public void onResume () {
         super.onResume();
 
-        if (forecast != null) {
+        if (MainActivity.hasForecast()) {
+            Forecast.Response forecast = MainActivity.getForecast();
+
             RelativeLayout parent = (RelativeLayout) getView().findViewById(R.id.main_stats);
             ImageView weatherIcon = (ImageView) parent.findViewById(R.id.weather_icon);
-            setIcon(weatherIcon);
+            setIcon(weatherIcon, forecast);
 
-            if (forecast.getNewData()) {
+            if (forecast.isUnread(getTag())) {
 
                 ForecastTools.timeForm.setTimeZone(forecast.getTimezone());
                 Forecast.DataPoint currently = forecast.getCurrently();
@@ -62,14 +63,8 @@ public class MainStatsFragment extends Fragment implements FragmentListener {
                         )
                 );
             }
+            forecast.setRead(getTag());
         }
-    }
-
-    @Override
-    public void onReceiveData(Forecast.Response data) {
-        forecast = data;
-        if (isVisible())
-            onResume();
     }
 
     @Override
@@ -77,7 +72,7 @@ public class MainStatsFragment extends Fragment implements FragmentListener {
 
     }
 
-    private void setIcon(ImageView imageView) {
+    private void setIcon(ImageView imageView, Forecast.Response forecast) {
         imageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         SVG svg = new SVGBuilder()
                 .readFromResource(getResources(), ForecastTools.getIconValue(forecast.getCurrently().getTime(), forecast.getDaily().getData()[0].getSunriseTime(),

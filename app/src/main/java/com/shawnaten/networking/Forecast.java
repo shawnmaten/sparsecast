@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -33,18 +34,18 @@ public class Forecast {
 
         private Flag flags;
 
-        public Boolean getNewData() {
-            return newData;
-        }
-
-        public void setNewData(Boolean newData) {
-            this.newData = newData;
-        }
-
-        private Boolean newData = false;
+        private ArrayList<String> readStamps = new ArrayList<>();
 
         public Response() {
 
+        }
+
+        public void setRead(String name) {
+            readStamps.add(name);
+        }
+
+        public boolean isUnread(String name) {
+            return !readStamps.contains(name);
         }
 
         public void setExpiration(String expirationString) {

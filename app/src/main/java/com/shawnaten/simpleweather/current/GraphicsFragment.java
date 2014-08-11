@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.shawnaten.networking.Forecast;
+import com.shawnaten.simpleweather.MainActivity;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
@@ -20,7 +21,6 @@ import com.shawnaten.tools.WeatherBarShape;
  * Created by shawnaten on 7/20/14.
  */
 public class GraphicsFragment extends Fragment implements FragmentListener {
-    private Forecast.Response forecast;
     private static WeatherBarShape weatherBarShape;
 
     public GraphicsFragment() {
@@ -44,7 +44,9 @@ public class GraphicsFragment extends Fragment implements FragmentListener {
     public void onResume () {
         super.onResume();
 
-        if (forecast != null && forecast.getNewData() || weatherBarShape == null) {
+        if (MainActivity.hasForecast() && (MainActivity.getForecast().isUnread(getTag()) || weatherBarShape == null)) {
+            Forecast.Response forecast = MainActivity.getForecast();
+
             Forecast.DataPoint[] hourly = forecast.getHourly().getData();
             RelativeLayout weatherBarTexts = (RelativeLayout) getView().findViewById(R.id.weather_bar_texts);
             ImageView weatherBarImage = (ImageView) getView().findViewById(R.id.weather_bar_image);
@@ -55,15 +57,10 @@ public class GraphicsFragment extends Fragment implements FragmentListener {
             weatherBarImage.setBackgroundDrawable(drawable);
             ForecastTools.createWeatherBarTextViews((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), weatherBarShape, weatherBarTexts);
             ForecastTools.setWeatherBarText(weatherBarShape, hourly, forecast.getTimezone(), weatherBarTexts);
+
+            forecast.setRead(getTag());
         }
 
-    }
-
-    @Override
-    public void onReceiveData(Forecast.Response data) {
-        forecast = data;
-        if (isVisible())
-            onResume();
     }
 
     @Override

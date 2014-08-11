@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
-import com.shawnaten.networking.Forecast;
+import com.shawnaten.simpleweather.MainActivity;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.FragmentListener;
 
@@ -15,7 +15,6 @@ import com.shawnaten.tools.FragmentListener;
  * Created by shawnaten on 7/3/14.
  */
 public class WeekFragment extends Fragment implements FragmentListener {
-    private Forecast.Response forecast;
     private static WeekFragmentAdapter adapter;
 
     public WeekFragment() {
@@ -33,19 +32,13 @@ public class WeekFragment extends Fragment implements FragmentListener {
     public void onResume () {
         super.onResume();
 
-        if (forecast != null && forecast.getNewData() || adapter == null) {
+        if (MainActivity.hasForecast() && (MainActivity.getForecast().isUnread(getTag()) || adapter == null)) {
             ExpandableListView view = (ExpandableListView) getView().findViewById(R.id.tab_week);
-            adapter = new WeekFragmentAdapter(getActivity(), forecast);
+            adapter = new WeekFragmentAdapter(getActivity(), MainActivity.getForecast());
             view.setAdapter(adapter);
+            MainActivity.getForecast().setRead(getTag());
         }
 
-    }
-
-    @Override
-    public void onReceiveData(Forecast.Response data) {
-        forecast = data;
-        if (isVisible())
-            this.onResume();
     }
 
     @Override

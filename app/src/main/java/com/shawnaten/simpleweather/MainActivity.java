@@ -153,10 +153,6 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
         if (lastForecastResponse != null) {
             modes.enableTabs(true);
             actionBar.setSelectedNavigationItem(navItem);
-            lastForecastResponse.setNewData(false);
-            cListen.onReceiveData(lastForecastResponse);
-            wListen.onReceiveData(lastForecastResponse);
-            mListen.onReceiveData(lastForecastResponse);
             if (lastForecastResponse.getExpiration().before(new Date())) {
                 Network.getInstance().getForecast(lastForecastResponse.getLatitude(), lastForecastResponse.getLongitude(),
                         Locale.getDefault().getLanguage(), this);
@@ -324,13 +320,7 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
                 if (header.getName() != null && header.getName().equals("Expires"))
                     forecast.setExpiration(header.getValue());
 
-            forecast.setNewData(true);
-
             getActionBar().setSelectedNavigationItem(navItem);
-
-            cListen.onReceiveData(forecast);
-            wListen.onReceiveData(forecast);
-            mListen.onReceiveData(forecast);
 
             setTitle(locationName);
             lastForecastResponse = forecast;
@@ -449,6 +439,16 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
 
     public String getLocationName() {
         return locationName;
+    }
+
+    public static boolean hasForecast() {
+        if (lastForecastResponse != null)
+            return true;
+        return false;
+    }
+
+    public static Forecast.Response getForecast() {
+        return lastForecastResponse;
     }
 
     /* to allow user to select account

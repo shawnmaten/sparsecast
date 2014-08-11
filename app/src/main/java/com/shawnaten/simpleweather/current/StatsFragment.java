@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.shawnaten.networking.Forecast;
+import com.shawnaten.simpleweather.MainActivity;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
@@ -17,8 +18,6 @@ import static java.util.Arrays.asList;
  * Created by shawnaten on 7/20/14.
  */
 public class StatsFragment extends Fragment implements FragmentListener {
-    private Forecast.Response forecast;
-    private static boolean dataParsed = false;
 
     public StatsFragment() {
 
@@ -33,8 +32,9 @@ public class StatsFragment extends Fragment implements FragmentListener {
     public void onResume () {
         super.onResume();
 
-        if (forecast != null && forecast.getNewData() || !dataParsed) {
+        if (MainActivity.hasForecast() && MainActivity.getForecast().isUnread(getTag())) {
 
+            Forecast.Response forecast = MainActivity.getForecast();
             Forecast.DataPoint currently, hour, today;
 
             ForecastTools.timeForm.setTimeZone(forecast.getTimezone());
@@ -79,15 +79,8 @@ public class StatsFragment extends Fragment implements FragmentListener {
                     )
             );
 
-            dataParsed = true;
+            forecast.setRead(getTag());
         }
-    }
-
-    @Override
-    public void onReceiveData(Forecast.Response data) {
-        forecast = data;
-        if (isVisible())
-            onResume();
     }
 
     @Override
