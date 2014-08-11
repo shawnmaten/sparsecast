@@ -56,7 +56,7 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
     public static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 0, REQUEST_CODE_ACCOUNT_PICKER = 1;
 
     private static MenuItem searchWidget;
-    private static String title;
+    private static String locationName;
     private static Forecast.Response lastForecastResponse;
     private static int navItem;
     private static Modes modes;
@@ -134,6 +134,9 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
         mListen = (FragmentListener) mFrag;
 
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setIcon(getResources().getDrawable(R.drawable.ic_logo));
 
         currentTab = new TabListener(cFrag);
         weekTab = new TabListener(wFrag);
@@ -150,6 +153,14 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
         if (lastForecastResponse != null) {
             modes.enableTabs(true);
             actionBar.setSelectedNavigationItem(navItem);
+            lastForecastResponse.setNewData(false);
+            cListen.onReceiveData(lastForecastResponse);
+            wListen.onReceiveData(lastForecastResponse);
+            mListen.onReceiveData(lastForecastResponse);
+            if (lastForecastResponse.getExpiration().before(new Date())) {
+                Network.getInstance().getForecast(lastForecastResponse.getLatitude(), lastForecastResponse.getLongitude(),
+                        Locale.getDefault().getLanguage(), this);
+            }
         }
 
     }
@@ -160,7 +171,7 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
         super.onCreateOptionsMenu(menu);
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu, menu);
+        inflater.inflate(R.menu.main, menu);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
@@ -181,6 +192,7 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
             }
         });
 
+        /*
         int searchPlateId = searchView.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
         int submitAreaId = searchView.getContext().getResources().getIdentifier("android:id/submit_area", null, null);
         View searchPlate = searchView.findViewById(searchPlateId);
@@ -189,6 +201,7 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
             searchPlate.setBackgroundResource(R.drawable.textfield_searchview_holo_dark);
         if (submitArea != null)
             submitArea.setBackgroundResource(R.drawable.textfield_searchview_right_holo_dark);
+        */
 
         return true;
     }
@@ -215,19 +228,6 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
                     .build());
         }
         */
-
-        ActionBar actionBar = getActionBar();
-        assert actionBar != null;
-
-        if (title == null)
-            setTitle(getString(R.string.app_name));
-        else
-            setTitle(title);
-
-        if (lastForecastResponse != null && lastForecastResponse.getExpiration().before(new Date())) {
-            Network.getInstance().getForecast(lastForecastResponse.getLatitude(), lastForecastResponse.getLongitude(),
-                    Locale.getDefault().getLanguage(), this);
-        }
 
         if (bannerAd != null)
             bannerAd.resume();
@@ -299,9 +299,20 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
     }
 
     public void onButtonClick(View view) {
-        cListen.onButtonClick(view);
-        wListen.onButtonClick(view);
-        mListen.onButtonClick(view);
+        int id = view.getId();
+
+        switch ((String) view.getTag()) {
+            case "current":
+                cListen.onButtonClick(id);
+                break;
+            case "week":
+                wListen.onButtonClick(id);
+                break;
+            case "map":
+                mListen.onButtonClick(id);
+                break;
+        }
+
     }
 
     @Override
@@ -313,13 +324,15 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
                 if (header.getName() != null && header.getName().equals("Expires"))
                     forecast.setExpiration(header.getValue());
 
+            forecast.setNewData(true);
+
             getActionBar().setSelectedNavigationItem(navItem);
 
-            cListen.onNewData(forecast);
-            wListen.onNewData(forecast);
-            mListen.onNewData(forecast);
+            cListen.onReceiveData(forecast);
+            wListen.onReceiveData(forecast);
+            mListen.onReceiveData(forecast);
 
-            setTitle(title);
+            setTitle(locationName);
             lastForecastResponse = forecast;
             modes.setLoading(false);
             setIntent(null);
@@ -350,7 +363,7 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
             Places.DetailsResponse details = (Places.DetailsResponse) response;
 
             if (details.getStatus().equals("OK")) {
-                title = details.getResult().getName();
+                locationName = details.getResult().getName();
                 Places.Location location = details.getResult().getGeometry().getLocation();
                 Network.getInstance().getForecast(location.getLat(), location.getLng(), Locale.getDefault().getLanguage(), this);
             } else {
@@ -432,6 +445,10 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
                 finish();
                 break;
         }
+    }
+
+    public String getLocationName() {
+        return locationName;
     }
 
     /* to allow user to select account

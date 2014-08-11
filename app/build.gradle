@@ -7,7 +7,7 @@ android {
         applicationId 'com.shawnaten.simpleweather'
         minSdkVersion 14
         targetSdkVersion 20
-        versionCode 4
+        versionCode 5
         versionName '1.0'
     }
     buildTypes {

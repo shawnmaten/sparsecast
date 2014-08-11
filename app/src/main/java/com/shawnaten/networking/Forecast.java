@@ -33,6 +33,16 @@ public class Forecast {
 
         private Flag flags;
 
+        public Boolean getNewData() {
+            return newData;
+        }
+
+        public void setNewData(Boolean newData) {
+            this.newData = newData;
+        }
+
+        private Boolean newData = false;
+
         public Response() {
 
         }

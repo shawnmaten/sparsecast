@@ -17,7 +17,7 @@ import static java.util.Arrays.asList;
  * Created by shawnaten on 7/20/14.
  */
 public class SummariesFragment extends Fragment implements FragmentListener {
-    private static Forecast.Response forecast;
+    private Forecast.Response forecast;
 
     public SummariesFragment() {
 
@@ -32,7 +32,7 @@ public class SummariesFragment extends Fragment implements FragmentListener {
     public void onResume () {
         super.onResume();
 
-        if (forecast != null) {
+        if (forecast != null && forecast.getNewData()) {
 
             String hourSummary;
             if (forecast.getMinutely() == null)
@@ -53,20 +53,18 @@ public class SummariesFragment extends Fragment implements FragmentListener {
 
                     )
             );
-
-            forecast = null;
         }
     }
 
     @Override
-    public void onNewData(Forecast.Response data) {
+    public void onReceiveData(Forecast.Response data) {
         forecast = data;
         if (isVisible())
             onResume();
     }
 
     @Override
-    public void onButtonClick(View view) {
+    public void onButtonClick(int id) {
 
     }
 }

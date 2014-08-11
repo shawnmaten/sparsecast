@@ -20,7 +20,7 @@ import com.shawnaten.tools.WeatherBarShape;
  * Created by shawnaten on 7/20/14.
  */
 public class GraphicsFragment extends Fragment implements FragmentListener {
-    private static Forecast.Response forecast;
+    private Forecast.Response forecast;
     private static WeatherBarShape weatherBarShape;
 
     public GraphicsFragment() {
@@ -44,7 +44,7 @@ public class GraphicsFragment extends Fragment implements FragmentListener {
     public void onResume () {
         super.onResume();
 
-        if (forecast != null) {
+        if (forecast != null && forecast.getNewData() || weatherBarShape == null) {
             Forecast.DataPoint[] hourly = forecast.getHourly().getData();
             RelativeLayout weatherBarTexts = (RelativeLayout) getView().findViewById(R.id.weather_bar_texts);
             ImageView weatherBarImage = (ImageView) getView().findViewById(R.id.weather_bar_image);
@@ -55,21 +55,19 @@ public class GraphicsFragment extends Fragment implements FragmentListener {
             weatherBarImage.setBackgroundDrawable(drawable);
             ForecastTools.createWeatherBarTextViews((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), weatherBarShape, weatherBarTexts);
             ForecastTools.setWeatherBarText(weatherBarShape, hourly, forecast.getTimezone(), weatherBarTexts);
-
-            forecast = null;
         }
 
     }
 
     @Override
-    public void onNewData(Forecast.Response data) {
+    public void onReceiveData(Forecast.Response data) {
         forecast = data;
         if (isVisible())
             onResume();
     }
 
     @Override
-    public void onButtonClick(View view) {
+    public void onButtonClick(int id) {
 
     }
 }

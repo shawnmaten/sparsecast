@@ -6,11 +6,27 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+
+   <FrameLayout
+        android:id="@+id/fragment_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/standard_margin"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginRight="@dimen/standard_margin"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:layout_marginBottom="@dimen/half_margin" />
+
+    <!--
     <HorizontalScrollView
         android:id="@+id/alert_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/fragment_1"
         android:layout_centerHorizontal="true"
+        android:paddingTop="@dimen/half_margin"
+        android:paddingBottom="@dimen/half_margin"
         android:scrollbars="none" >
         <LinearLayout
             android:id="@+id/alert_view_content"
@@ -20,77 +36,20 @@
             android:orientation="horizontal" >
         </LinearLayout>
     </HorizontalScrollView>
-
-    <FrameLayout
-        android:id="@+id/fragment_1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/alert_view"
-        android:layout_marginLeft="@dimen/standard_margin"
-        android:layout_marginStart="@dimen/standard_margin"
-        android:layout_marginRight="@dimen/standard_margin"
-        android:layout_marginEnd="@dimen/standard_margin" />
-
-    <LinearLayout
-        android:id="@+id/buttons"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/fragment_1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/standard_margin" >
-
-        <Button
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/summaries_button"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/button"
-            android:onClick="onButtonClick"
-            android:background="@drawable/custom_button"
-            android:text="@string/text"
-            android:textColor="@android:color/primary_text_dark_nodisable"
-            android:layout_marginLeft="@dimen/half_margin"
-            android:layout_marginStart="@dimen/half_margin"
-            android:layout_marginRight="@dimen/half_margin"
-            android:layout_marginEnd="@dimen/half_margin" />
-
-        <Button
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/details_button"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/button"
-            android:onClick="onButtonClick"
-            android:background="@drawable/custom_button"
-            android:text="@string/detail"
-            android:textColor="@android:color/primary_text_dark_nodisable"
-            android:layout_marginLeft="@dimen/half_margin"
-            android:layout_marginStart="@dimen/half_margin"
-            android:layout_marginRight="@dimen/half_margin"
-            android:layout_marginEnd="@dimen/half_margin" />
-
-        <Button
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/graphics_button"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/button"
-            android:onClick="onButtonClick"
-            android:background="@drawable/custom_button"
-            android:text="@string/graph"
-            android:textColor="@android:color/primary_text_dark_nodisable"
-            android:layout_marginLeft="@dimen/half_margin"
-            android:layout_marginStart="@dimen/half_margin"
-            android:layout_marginRight="@dimen/half_margin"
-            android:layout_marginEnd="@dimen/half_margin" />
-
-    </LinearLayout>
+    -->
 
     <FrameLayout
         android:id="@+id/fragment_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/buttons"
+        android:layout_below="@id/fragment_1"
         android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/standard_margin" />
+        android:layout_marginTop="@dimen/half_margin"
+        android:layout_marginBottom="@dimen/standard_margin"
+        android:layout_marginLeft="@dimen/standard_margin"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginRight="@dimen/standard_margin"
+        android:layout_marginEnd="@dimen/standard_margin" />
 
           
 </RelativeLayout>

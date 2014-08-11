@@ -5,6 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
     <string name="action_current_location">Current Location</string>
+    <string name="action_marker">Location Marker</string>
     <string name="search_hint">Search locations</string>
     <string name="tab_current">Current</string>
     <string name="tab_week">Week</string>
@@ -28,9 +29,11 @@
     <string name="hour">Hour</string>
     <string name="next_24_hours">Next 24 Hours</string>
     <string name="today">Today</string>
-    <string name="text">Text</string>
-    <string name="detail">Detail</string>
-    <string name="graph">Graph</string>
+    <string name="popup">Info Selector</string>
+    <string name="summaries">Summaries</string>
+    <string name="stats">Stats</string>
+    <string name="graphics">Graphics</string>
+    <string name="color_info">Color Info</string>
     
     <string name="north">N</string>
     <string name="south">S</string>

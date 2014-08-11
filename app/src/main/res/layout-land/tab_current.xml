@@ -7,27 +7,52 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <HorizontalScrollView
-        android:id="@+id/alert_view"
+    <!--
+    <LinearLayout
+        android:id="@+id/title_alerts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:scrollbars="none" >
-        <LinearLayout
-            android:id="@+id/alert_view_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:layout_marginBottom="@dimen/standard_margin" >
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/tab.current"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
-        </LinearLayout>
-    </HorizontalScrollView>
+            android:layout_marginLeft="@dimen/standard_margin"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginRight="@dimen/standard_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:textStyle="bold"
+            android:text="San Antonio (3:11)" />
+
+        <HorizontalScrollView
+            android:id="@+id/alert_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="none" >
+            <LinearLayout
+                android:id="@+id/alert_view_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
+
+    </LinearLayout>
+    -->
 
     <LinearLayout
         android:id="@+id/fragment_1_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/alert_view"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:layout_marginBottom="@dimen/half_margin" >
 
         <FrameLayout
             android:id="@+id/fragment_1"
@@ -52,60 +77,15 @@
         </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/buttons_holder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_1_2"
-        android:layout_alignParentBottom="true" >
-
-        <LinearLayout
-            android:id="@+id/buttons"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center_vertical" >
-
-            <Button
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/details_button"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/button"
-                android:onClick="onButtonClick"
-                android:background="@drawable/custom_button"
-                android:text="@string/detail"
-                android:textColor="@android:color/primary_text_dark_nodisable"
-                android:layout_marginLeft="@dimen/standard_margin"
-                android:layout_marginStart="@dimen/standard_margin"
-                android:layout_marginRight="@dimen/standard_margin"
-                android:layout_marginEnd="@dimen/standard_margin"/>
-
-            <Button
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/graphics_button"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/button"
-                android:onClick="onButtonClick"
-                android:background="@drawable/custom_button"
-                android:text="@string/graph"
-                android:textColor="@android:color/primary_text_dark_nodisable"
-                android:layout_marginLeft="@dimen/standard_margin"
-                android:layout_marginStart="@dimen/standard_margin"
-                android:layout_marginRight="@dimen/standard_margin"
-                android:layout_marginEnd="@dimen/standard_margin"
-                android:layout_marginTop="@dimen/standard_margin" />
-
-        </LinearLayout>
-
-    </FrameLayout>
-
-    <FrameLayout
         android:id="@+id/fragment_3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/fragment_1_2"
-        android:layout_toRightOf="@id/buttons_holder"
-        android:layout_toEndOf="@id/buttons_holder"
         android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/half_margin"
+        android:layout_marginBottom="@dimen/standard_margin"
+        android:layout_marginLeft="@dimen/standard_margin"
+        android:layout_marginStart="@dimen/standard_margin"
         android:layout_marginRight="@dimen/standard_margin"
         android:layout_marginEnd="@dimen/standard_margin" />
           

@@ -6,24 +6,25 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.shawnaten.networking.Forecast;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.CustomAlertDialog;
-import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
 
-import static junit.framework.Assert.assertNotNull;
-
-public class CurrentFragment extends Fragment implements FragmentListener {
-    private static Forecast.Response forecast;
-    private static Boolean newData = false;
+public class CurrentFragment extends Fragment implements FragmentListener, PopupMenu.OnMenuItemClickListener {
+    private Forecast.Response forecast;
+    private Boolean newData = false;
+    private MenuItem colorInfo;
 	
 	public CurrentFragment() {
 		
@@ -32,6 +33,7 @@ public class CurrentFragment extends Fragment implements FragmentListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
         Fragment mFrag, sFrag, dFrag, gFrag;
 
@@ -40,12 +42,12 @@ public class CurrentFragment extends Fragment implements FragmentListener {
 
             mFrag = new MainStatsFragment();
             sFrag = new SummariesFragment();
-            dFrag = new DetailsFragment();
+            dFrag = new StatsFragment();
             gFrag = new GraphicsFragment();
 
             ft.add(R.id.fragment_1, mFrag, "mainStats");
             ft.add(R.id.fragment_2, sFrag, "summaries");
-            ft.add(R.id.fragment_2, dFrag, "details");
+            ft.add(R.id.fragment_2, dFrag, "stats");
             ft.add(R.id.fragment_2, gFrag, "graphics");
 
             ft.commit();
@@ -64,13 +66,8 @@ public class CurrentFragment extends Fragment implements FragmentListener {
 
         mFrag = fm.findFragmentByTag("mainStats");
         sFrag = fm.findFragmentByTag("summaries");
-        dFrag = fm.findFragmentByTag("details");
+        dFrag = fm.findFragmentByTag("stats");
         gFrag = fm.findFragmentByTag("graphics");
-
-        assertNotNull(mFrag);
-        assertNotNull(sFrag);
-        assertNotNull(dFrag);
-        assertNotNull(gFrag);
 
         mListen = (FragmentListener) mFrag;
         sListen = (FragmentListener) sFrag;
@@ -85,29 +82,28 @@ public class CurrentFragment extends Fragment implements FragmentListener {
         ft = fm.beginTransaction();
         switch (getResources().getConfiguration().orientation) {
             case Configuration.ORIENTATION_PORTRAIT:
-                ft.add(R.id.fragment_2, dFrag, "details");
+                ft.add(R.id.fragment_2, dFrag, "stats");
                 ft.detach(dFrag);
                 ft.add(R.id.fragment_2, gFrag, "graphics");
                 ft.detach(gFrag);
                 break;
             case Configuration.ORIENTATION_LANDSCAPE:
-                ft.add(R.id.fragment_3, dFrag, "details");
+                ft.add(R.id.fragment_3, dFrag, "stats");
                 ft.add(R.id.fragment_3, gFrag, "graphics");
                 ft.detach(gFrag);
                 break;
         }
         ft.attach(sFrag).commit();
 
-        if (newData) {
-            LinearLayout alertView = (LinearLayout) getView().findViewById(R.id.alert_view).findViewById(R.id.alert_view_content);
+        if (forecast != null) {
+            //LinearLayout alertView = (LinearLayout) getView().findViewById(R.id.alert_view).findViewById(R.id.alert_view_content);
 
-            mListen.onNewData(forecast);
-            sListen.onNewData(forecast);
-            dListen.onNewData(forecast);
-            gListen.onNewData(forecast);
+            mListen.onReceiveData(forecast);
+            sListen.onReceiveData(forecast);
+            dListen.onReceiveData(forecast);
+            gListen.onReceiveData(forecast);
 
-            createAlertViews(alertView);
-            newData = false;
+            //createAlertViews(alertView);
         }
 	}
 	
@@ -115,22 +111,52 @@ public class CurrentFragment extends Fragment implements FragmentListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tab_current, container, false);
 
-        if (forecast != null)
-            createAlertViews((LinearLayout) view.findViewById(R.id.alert_view).findViewById(R.id.alert_view_content));
+        if (forecast != null) {
+            //createAlertViews((LinearLayout) view.findViewById(R.id.alert_view).findViewById(R.id.alert_view_content));
+        }
         return view;
     }
 
+    @Override
+    public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.tab_current, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu (Menu menu) {
+        colorInfo = menu.findItem(R.id.color_info);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.popup:
+                PopupMenu popup = new PopupMenu(getActivity(), getActivity().findViewById(R.id.popup));
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.tab_current_popup, popup.getMenu());
+                switch (getResources().getConfiguration().orientation) {
+                    case Configuration.ORIENTATION_LANDSCAPE:
+                        popup.getMenu().removeItem(R.id.summaries);
+                        break;
+                }
+                popup.setOnMenuItemClickListener(this);
+                popup.show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 	@Override
-	public void onNewData(Forecast.Response data) {
+	public void onReceiveData(Forecast.Response data) {
         forecast = data;
-        newData = true;
         if (isVisible())
             onResume();
 	}
 
     @Override
-    public void onButtonClick(View view) {
-        int id = view.getId();
+    public void onButtonClick(int id) {
+        /*
         Fragment toDetach = null, toAttach;
         FragmentManager fm = getChildFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -143,8 +169,10 @@ public class CurrentFragment extends Fragment implements FragmentListener {
                 toDetach = fm.findFragmentById(R.id.fragment_3);
                 break;
         }
+        */
 
-        switch (view.getId()) {
+        switch (id) {
+            /*
             case R.id.summaries_button:
                 toAttach = getChildFragmentManager().findFragmentByTag("summaries");
                 ft.detach(toDetach).attach(toAttach).commit();
@@ -157,10 +185,10 @@ public class CurrentFragment extends Fragment implements FragmentListener {
                 toAttach = getChildFragmentManager().findFragmentByTag("graphics");
                 ft.detach(toDetach).attach(toAttach).commit();
                 break;
+                */
             case R.id.time:
                 break;
             default:
-                view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 CustomAlertDialog temp = new CustomAlertDialog();
                 Bundle args = new Bundle();
                 args.putString("title", forecast.getAlerts()[id-1].getTitle());
@@ -176,21 +204,49 @@ public class CurrentFragment extends Fragment implements FragmentListener {
 
         layout.removeAllViews();
 
-        TextView textView = (TextView) inflater.inflate(R.layout.alert_view_item, (ViewGroup) getView(), false);
-        textView.setId(R.id.time);
-        textView.setText(String.format("%s %s", getString(R.string.conditions), ForecastTools.timeForm.format(forecast.getCurrently().getTime())));
-        layout.addView(textView);
-
         int i = 1;
         if (forecast.getAlerts() != null) {
             for (Forecast.Alert alert : forecast.getAlerts()) {
-                textView = (TextView) inflater.inflate(R.layout.alert_view_item, (ViewGroup) getView(), false);
+                TextView textView = (TextView) inflater.inflate(R.layout.alert_view_item, (ViewGroup) getView(), false);
                 textView.setId(i++);
                 textView.setText(alert.getTitle());
                 layout.addView(textView);
             }
-        } else
-            textView.setTextColor(getResources().getColor(android.R.color.secondary_text_light));
+        }
     }
 
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        Fragment toDetach = null, toAttach;
+        FragmentManager fm = getChildFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        switch (getResources().getConfiguration().orientation) {
+            case Configuration.ORIENTATION_PORTRAIT:
+                toDetach = fm.findFragmentById(R.id.fragment_2);
+                break;
+            case Configuration.ORIENTATION_LANDSCAPE:
+                toDetach = fm.findFragmentById(R.id.fragment_3);
+                break;
+        }
+
+        switch (item.getItemId()) {
+            case R.id.summaries:
+                toAttach = getChildFragmentManager().findFragmentByTag("summaries");
+                ft.detach(toDetach).attach(toAttach).commit();
+                colorInfo.setVisible(false);
+                break;
+            case R.id.stats:
+                toAttach = getChildFragmentManager().findFragmentByTag("stats");
+                ft.detach(toDetach).attach(toAttach).commit();
+                colorInfo.setVisible(false);
+                break;
+            case R.id.graphics:
+                toAttach = getChildFragmentManager().findFragmentByTag("graphics");
+                ft.detach(toDetach).attach(toAttach).commit();
+                colorInfo.setVisible(true);
+                break;
+        }
+        return true;
+    }
 }

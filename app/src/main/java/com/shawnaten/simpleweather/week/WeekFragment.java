@@ -15,7 +15,7 @@ import com.shawnaten.tools.FragmentListener;
  * Created by shawnaten on 7/3/14.
  */
 public class WeekFragment extends Fragment implements FragmentListener {
-    private static Forecast.Response forecast;
+    private Forecast.Response forecast;
     private static WeekFragmentAdapter adapter;
 
     public WeekFragment() {
@@ -33,25 +33,23 @@ public class WeekFragment extends Fragment implements FragmentListener {
     public void onResume () {
         super.onResume();
 
-        if (forecast != null) {
-            ExpandableListView view = (ExpandableListView) getView().findViewById(R.id.list);
+        if (forecast != null && forecast.getNewData() || adapter == null) {
+            ExpandableListView view = (ExpandableListView) getView().findViewById(R.id.tab_week);
             adapter = new WeekFragmentAdapter(getActivity(), forecast);
             view.setAdapter(adapter);
-            forecast = null;
-            forecast = null;
         }
 
     }
 
     @Override
-    public void onNewData(Forecast.Response data) {
+    public void onReceiveData(Forecast.Response data) {
         forecast = data;
         if (isVisible())
             this.onResume();
     }
 
     @Override
-    public void onButtonClick(View view) {
+    public void onButtonClick(int id) {
 
     }
 

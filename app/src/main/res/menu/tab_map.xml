@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_marker"
+        android:icon="@drawable/ic_action_place"
+        android:title="@string/action_marker"
+        android:showAsAction="ifRoom"
+        android:orderInCategory="2" />
+</menu>

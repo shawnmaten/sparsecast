@@ -14,9 +14,7 @@
         <item name="android:paddingStart" tools:targetApi="17">@dimen/standard_margin</item>
         <item name="android:paddingRight">@dimen/standard_margin</item>
         <item name="android:paddingEnd" tools:targetApi="17">@dimen/standard_margin</item>
-        <item name="android:minHeight">@dimen/alert_views</item>
         <item name="android:gravity">center</item>
-        <item name="android:textSize">@dimen/textSmall</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@android:color/holo_red_light</item>
     </style>
@@ -77,7 +75,7 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -89,15 +87,18 @@
     <style name="AppBaseTheme.AppTheme" >
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:name">@string/app_name</item>
+        <!--
         <item name="android:actionBarStyle">@style/ActionBar</item>
         <item name="android:actionBarWidgetTheme">@style/ActionBarWidget</item>
         <item name="android:actionBarTabStyle">@style/ActionBarTab</item>
+        -->
 
     </style>
 
     <style name="ActionBar" parent="android:Widget.Holo.Light.ActionBar.Solid.Inverse" >
         <item name="android:background">@color/green_500</item>
         <item name="android:backgroundStacked">@color/green_500</item>
+        <item name="android:backgroundSplit">@color/green_500</item>
     </style>
 
     <style name="ActionBarWidget" parent="android:Theme.Holo" >
@@ -105,7 +106,7 @@
     </style>
 
     <style name="ActionBarTab" parent="android:Widget.Holo.Light.ActionBar.TabView.Inverse" >
-        <item name="android:background">@drawable/tab_indicator_ab_weather</item>
+        <!--<item name="android:background">@drawable/tab_indicator_ab_weather</item>-->
     </style>
 
 </resources>
