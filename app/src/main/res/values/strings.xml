@@ -10,7 +10,16 @@
     <string name="tab_current">Current</string>
     <string name="tab_week">Week</string>
     <string name="tab_map">Map</string>
-   
+
+    <string name="north">N</string>
+    <string name="northeast">NE</string>
+    <string name="east">E</string>
+    <string name="southeast">SE</string>
+    <string name="south">S</string>
+    <string name="southwest">SW</string>
+    <string name="west">W</string>
+    <string name="northwest">NW</string>
+
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
     <string name="precipitation">Precip</string>
@@ -18,31 +27,19 @@
     <string name="wind">Wind</string>
     <string name="cloud_cover">Cloud Cover</string>
     <string name="humidity">Humid</string>
-    <string name="pressure">Press</string>
+    <string name="pressure">pr</string>
     <string name="visibility">Visibility</string>
-    <string name="ozone">Ozone</string>
+    <string name="ozone">oz</string>
 
-    <string name="now">Now</string>
-    <string name="day">Day</string>
+    <string name="now">now</string>
+    <string name="day">day</string>
     <string name="currently">Currently</string>
     <string name="next_hour">Next Hour</string>
-    <string name="hour">Hour</string>
     <string name="next_24_hours">Next 24 Hours</string>
-    <string name="today">Today</string>
-    <string name="popup">Info Selector</string>
-    <string name="summaries">Summaries</string>
+    <string name="info_switch">Info Switcher</string>
     <string name="stats">Stats</string>
     <string name="graphics">Graphics</string>
     <string name="color_info">Color Info</string>
-    
-    <string name="north">N</string>
-    <string name="south">S</string>
-    <string name="east">E</string>
-    <string name="west">W</string>
-    <string name="northwest">NW</string>
-    <string name="northeast">NE</string>
-    <string name="southwest">SW</string>
-    <string name="southeast">SE</string>
 
     <string name="wind_unit">mph</string> <!-- miles per hour -->
     <string name="pressure_unit">mb</string> <!-- millibars -->

@@ -1,6 +1,5 @@
 package com.shawnaten.simpleweather.current;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,14 +10,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupMenu;
 
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.FragmentListener;
 
-public class CurrentFragment extends Fragment implements FragmentListener, PopupMenu.OnMenuItemClickListener {
-    private MenuItem colorInfo;
-	private FragmentListener mListen, sListen, dListen, gListen;
+public class CurrentFragment extends Fragment implements FragmentListener {
+    private boolean frag2ToDetach = false;
+    private int frag2Selected = R.id.summaries;
 
 	public CurrentFragment() {
 		
@@ -29,66 +27,26 @@ public class CurrentFragment extends Fragment implements FragmentListener, Popup
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        Fragment mFrag, sFrag, dFrag, gFrag;
+        Fragment stFrag, smFrag, iFrag, gFrag;
 
         if (savedInstanceState == null) {
             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
 
-            mFrag = new MainStatsFragment();
-            sFrag = new SummariesFragment();
-            dFrag = new StatsFragment();
+            stFrag = new StatsFragment();
+            smFrag = new SummariesFragment();
+            iFrag = new InfoFragment();
             gFrag = new GraphicsFragment();
 
-            ft.add(R.id.fragment_1, mFrag, "mainStats");
-            ft.add(R.id.fragment_2, sFrag, "summaries");
-            ft.add(R.id.fragment_2, dFrag, "stats");
-            ft.add(R.id.fragment_2, gFrag, "graphics");
+            ft.add(R.id.fragment_1, stFrag, "stats");
+            ft.add(R.id.fragment_2, smFrag, "summaries");
+            ft.add(R.id.fragment_2, iFrag, "info");
+            ft.add(R.id.fragment_3, gFrag, "graphics");
+            frag2ToDetach = true;
 
             ft.commit();
         }
 
     }
-
-	@Override
-	public void onResume () {
-		super.onResume();
-
-        Fragment mFrag, sFrag, dFrag, gFrag;
-        FragmentManager fm = getChildFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
-        mFrag = fm.findFragmentByTag("mainStats");
-        sFrag = fm.findFragmentByTag("summaries");
-        dFrag = fm.findFragmentByTag("stats");
-        gFrag = fm.findFragmentByTag("graphics");
-
-        mListen = (FragmentListener) mFrag;
-        sListen = (FragmentListener) sFrag;
-        dListen = (FragmentListener) dFrag;
-        gListen = (FragmentListener) gFrag;
-
-        ft.remove(dFrag);
-        ft.remove(gFrag);
-        ft.commit();
-        fm.executePendingTransactions();
-
-        ft = fm.beginTransaction();
-        switch (getResources().getConfiguration().orientation) {
-            case Configuration.ORIENTATION_PORTRAIT:
-                ft.add(R.id.fragment_2, dFrag, "stats");
-                ft.detach(dFrag);
-                ft.add(R.id.fragment_2, gFrag, "graphics");
-                ft.detach(gFrag);
-                break;
-            case Configuration.ORIENTATION_LANDSCAPE:
-                ft.add(R.id.fragment_3, dFrag, "stats");
-                ft.add(R.id.fragment_3, gFrag, "graphics");
-                ft.detach(gFrag);
-                break;
-        }
-        ft.attach(sFrag).commit();
-
-	}
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -101,63 +59,58 @@ public class CurrentFragment extends Fragment implements FragmentListener, Popup
     }
 
     @Override
-    public void onPrepareOptionsMenu (Menu menu) {
-        colorInfo = menu.findItem(R.id.color_info);
+    public void onActivityCreated (Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (frag2ToDetach || savedInstanceState != null) {
+            FragmentManager fm = getChildFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+
+            if (savedInstanceState != null) {
+                frag2Selected = savedInstanceState.getInt("frag2Selected");
+            }
+
+            switch (frag2Selected) {
+                case R.id.summaries:
+                    ft.detach(fm.findFragmentByTag("info")).commit();
+                    break;
+                case R.id.info:
+                    ft.detach(fm.findFragmentByTag("summaries")).commit();
+                    break;
+            }
+
+            frag2ToDetach = false;
+        }
+
+    }
+
+    @Override
+    public void onSaveInstanceState (Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt("frag2Selected", frag2Selected);
     }
 
     @Override
     public boolean onOptionsItemSelected (MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.popup:
-                PopupMenu popup = new PopupMenu(getActivity(), getActivity().findViewById(R.id.popup));
-                MenuInflater inflater = popup.getMenuInflater();
-                inflater.inflate(R.menu.tab_current_popup, popup.getMenu());
-                switch (getResources().getConfiguration().orientation) {
-                    case Configuration.ORIENTATION_LANDSCAPE:
-                        popup.getMenu().removeItem(R.id.summaries);
+            case R.id.info_switch:
+                FragmentManager fm = getChildFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                switch (frag2Selected) {
+                    case R.id.summaries:
+                        ft.detach(fm.findFragmentByTag("summaries")).attach(fm.findFragmentByTag("info")).commit();
+                        frag2Selected = R.id.info;
+                        break;
+                    case R.id.info:
+                        ft.detach(fm.findFragmentByTag("info")).attach(fm.findFragmentByTag("summaries")).commit();
+                        frag2Selected = R.id.summaries;
                         break;
                 }
-                popup.setOnMenuItemClickListener(this);
-                popup.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        Fragment toDetach = null, toAttach;
-        FragmentManager fm = getChildFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
-        switch (getResources().getConfiguration().orientation) {
-            case Configuration.ORIENTATION_PORTRAIT:
-                toDetach = fm.findFragmentById(R.id.fragment_2);
-                break;
-            case Configuration.ORIENTATION_LANDSCAPE:
-                toDetach = fm.findFragmentById(R.id.fragment_3);
-                break;
-        }
-
-        switch (item.getItemId()) {
-            case R.id.summaries:
-                toAttach = getChildFragmentManager().findFragmentByTag("summaries");
-                ft.detach(toDetach).attach(toAttach).commit();
-                colorInfo.setVisible(false);
-                break;
-            case R.id.stats:
-                toAttach = getChildFragmentManager().findFragmentByTag("stats");
-                ft.detach(toDetach).attach(toAttach).commit();
-                colorInfo.setVisible(false);
-                break;
-            case R.id.graphics:
-                toAttach = getChildFragmentManager().findFragmentByTag("graphics");
-                ft.detach(toDetach).attach(toAttach).commit();
-                colorInfo.setVisible(true);
-                break;
-        }
-        return true;
     }
 
     @Override

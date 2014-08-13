@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style
+        name="tab.stat" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/textSmall</item>
+    </style>
+
+    <style
+        name="tab.stat.large" >
+        <item name="android:textSize">@dimen/textLarge</item>
+    </style>
+
+    <style
+        name="tab.stat.long" >
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+</resources>

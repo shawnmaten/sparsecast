@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" >
+
+    <style
+        name="tab.current" >
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/textNormal</item>
+    </style>
+
+    <style
+        name="tab.current.fragment" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginTop">@dimen/standard_margin</item>
+        <item name="android:layout_marginBottom">@dimen/standard_margin</item>
+        <item name="android:layout_marginLeft">@dimen/standard_margin</item>
+        <item name="android:layout_marginStart" tools:targetApi="17">@dimen/standard_margin</item>
+        <item name="android:layout_marginRight">@dimen/standard_margin</item>
+        <item name="android:layout_marginEnd" tools:targetApi="17">@dimen/standard_margin</item>
+    </style>
+
+    <style
+        name="tab.current.fragment.1" >
+        <item name="android:layout_marginBottom">@dimen/half_margin</item>
+    </style>
+
+    <style
+        name="tab.current.fragment.2" >
+        <item name="android:layout_below">@id/fragment_1</item>
+        <item name="android:layout_above">@id/fragment_3</item>
+        <item name="android:layout_marginTop">@dimen/half_margin</item>
+        <item name="android:layout_marginBottom">@dimen/half_margin</item>
+    </style>
+
+    <style
+        name="tab.current.fragment.3" >
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_marginTop">@dimen/half_margin</item>
+    </style>
+
+</resources>

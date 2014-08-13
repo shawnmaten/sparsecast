@@ -2,16 +2,9 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/popup"
-        android:icon="@drawable/ic_action_view_as_list"
-        android:title="@string/popup"
+        android:id="@+id/info_switch"
+        android:icon="@drawable/ic_action_about"
+        android:title="@string/info_switch"
         android:showAsAction="ifRoom"
         android:orderInCategory="3" />
-    <item
-        android:id="@+id/color_info"
-        android:icon="@drawable/ic_action_about"
-        android:title="@string/color_info"
-        android:showAsAction="ifRoom"
-        android:orderInCategory="4"
-        android:visible="false" />
 </menu>

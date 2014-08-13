@@ -19,7 +19,6 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +31,10 @@ import java.util.regex.Pattern;
  */
 public class ForecastTools {
 
+    public static final char CLIMACONS_SUNRISE = 'L', CLIMACONS_SUNSET = 'M', CLIMACONS_WIND = 'B', CLIMACONS_VISIBILITY = '<',
+            CLIMACONS_DEW = '\'', CLIMACONS_RAIN = '*', CLIMACONS_SNOW = '9', CLIMACONS_SLEET = '6', CLIMACONS_HAIL = '3',
+            CLIMACONS_CLEAR_DAY = 'I', CLIMACONS_CLOUDY = '!', CLIMACONS_FALLBACK = 'H';
+
     public final static double VERY_LIGHT = 0.002, LIGHT = 0.017, MODERATE = 0.1, HEAVY = 0.4,
         SCATTERED = 0.4, BROKEN = 0.75, OVERCAST = 1.0,
         FOG = 0.6214, MIST = 1.2427, HAZE = 3.1069;
@@ -41,32 +44,102 @@ public class ForecastTools {
 
     public static final DateFormat timeForm = DateFormat.getTimeInstance(DateFormat.SHORT);
 
-    private static final HashMap<String, Integer> icons = new HashMap<>();
-    static {
-        icons.put("clear-day", R.raw.sun);
-        icons.put("clear-night", R.raw.moon);
-        icons.put("rain-day", R.raw.cloud_rain_sun);
-        icons.put("rain-night", R.raw.cloud_rain_moon);
-        icons.put("snow-day", R.raw.cloud_snow_sun_alt);
-        icons.put("snow-night", R.raw.cloud_snow_moon_alt);
-        icons.put("sleet-day", R.raw.cloud_snow_sun);
-        icons.put("sleet-night", R.raw.cloud_snow_moon);
-        icons.put("wind-day", R.raw.cloud_wind_sun);
-        icons.put("wind-night", R.raw.cloud_wind_moon);
-        icons.put("fog-day", R.raw.cloud_fog_sun);
-        icons.put("fog-night", R.raw.cloud_fog_moon);
-        icons.put("cloudy-day", R.raw.cloud);
-        icons.put("cloudy-night", R.raw.cloud);
-        icons.put("partly-cloudy-day", R.raw.cloud_sun);
-        icons.put("partly-cloudy-night", R.raw.cloud_moon);
-        icons.put("hail-day", R.raw.cloud_hail_sun_alt);
-        icons.put("hail-night", R.raw.cloud_hail_moon_alt);
-        icons.put("thunderstorm-day", R.raw.cloud_lightning_sun);
-        icons.put("thunderstorm-night", R.raw.cloud_lightning_moon);
-        icons.put("tornado-day", R.raw.tornado);
-        icons.put("tornado-night", R.raw.tornado);
-        icons.put("default", R.raw.cloud_refresh);
+    public static final String SPACING = "\t\t";
+
+    public static int getWindString (double bearing) {
+        int b = (int) (bearing / 22.5);
+        if ((b % 2) != 0)
+            b += 1;
+        if (b == 16)
+            b = 0;
+
+        switch (b) {
+            case 0:
+                return R.string.south;
+            case 2:
+                return R.string.southwest;
+            case 4:
+                return R.string.west;
+            case 6:
+                return R.string.northwest;
+            case 8:
+                return R.string.north;
+            case 10:
+                return R.string.northeast;
+            case 12:
+                return R.string.east;
+            case 14:
+                return R.string.southeast;
+            default:
+                return 0;
+        }
     }
+
+    private static HashMap<String, Integer> weatherIcons = new HashMap<>();
+    static {
+        weatherIcons.put("clear-day", R.raw.clear_day);
+        weatherIcons.put("clear-night", R.raw.clear_night);
+        weatherIcons.put("rain", R.raw.rain);
+        weatherIcons.put("snow", R.raw.snow);
+        weatherIcons.put("sleet", R.raw.sleet);
+        weatherIcons.put("wind", R.raw.wind);
+        weatherIcons.put("fog", R.raw.fog);
+        weatherIcons.put("cloudy", R.raw.cloudy);
+        weatherIcons.put("partly-cloudy-day", R.raw.partly_cloudy_day);
+        weatherIcons.put("partly-cloudy-night", R.raw.partly_cloudy_night);
+        weatherIcons.put("hail", R.raw.hail);
+        weatherIcons.put("thunderstorm", R.raw.thunderstorm);
+        weatherIcons.put("tornado", R.raw.tornado);
+    }
+
+    public static int getWeatherIcon(String icon) {
+        if (icon == null)
+            return weatherIcons.get("clear-day");
+        if (weatherIcons.containsKey(icon)) {
+            return weatherIcons.get(icon);
+        }
+
+        return R.raw.fallback;
+    }
+
+    /*
+    private static HashMap<String, Character> precipCodes = new HashMap<>();
+    static {
+        precipCodes.put("rain", CLIMACONS_RAIN);
+        precipCodes.put("snow", CLIMACONS_SNOW);
+        precipCodes.put("sleet", CLIMACONS_SLEET);
+        precipCodes.put("hail", CLIMACONS_HAIL);
+        precipCodes.put("fallback", CLIMACONS_FALLBACK);
+    }
+
+    public static char getPrecipCode(String precipType) {
+        if (precipType == null)
+            return CLIMACONS_CLEAR_DAY;
+        if (precipCodes.containsKey(precipType))
+            return precipCodes.get(precipType);
+        else
+            return precipCodes.get("fallback");
+    }
+    */
+
+    /*
+    public static void setClimaconSpans
+            (ViewGroup parent, HashMap<Integer, SpannableStringBuilder> strings, HashMap<Integer, ArrayList<int[]>> spanIndices) {
+
+        for (int key : strings.keySet()) {
+            TextView textView = (TextView) parent.findViewById(key);
+            SpannableStringBuilder tempString = strings.get(key);
+            ArrayList<int[]> tempSpanIndices = spanIndices.get(key);
+            if (tempSpanIndices != null) {
+                for (int[] indices : tempSpanIndices) {
+                    ClimaconTypefaceSpan span = new ClimaconTypefaceSpan();
+                    tempString.setSpan(span, indices[0], indices[0] + indices[1], 0);
+                }
+            }
+            textView.setText(tempString);
+        }
+    }
+    */
 
     public static String capitalize(String string) {
         int start, end;
@@ -84,60 +157,6 @@ public class ForecastTools {
         }
 
         return editable.toString();
-    }
-
-    public static int getIconValue (Date currentTime, Date sunrise, Date sunset, String iconName) {
-        iconName = iconName.replaceAll("-day|-night", "");
-
-        if (currentTime.before(sunrise) || currentTime.after(sunset)) { // it's night
-            iconName = iconName.concat("-night");
-        } else {
-            iconName = iconName.concat("-day");
-        }
-
-        if (icons.containsKey(iconName))
-            return icons.get(iconName);
-        return icons.get("default");
-    }
-
-    public static int getWindDirection (double bearing) {
-        int windDirection;
-        int b = (int) (bearing / 22.5);
-        if ((b % 2) != 0)
-            b += 1;
-        if (b == 16)
-            b = 0;
-
-        switch (b) {
-            case 0:
-                windDirection = R.string.south;
-                break;
-            case 2:
-                windDirection = R.string.southwest;
-                break;
-            case 4:
-                windDirection = R.string.west;
-                break;
-            case 6:
-                windDirection = R.string.northwest;
-                break;
-            case 8:
-                windDirection = R.string.north;
-                break;
-            case 10:
-                windDirection = R.string.northeast;
-                break;
-            case 12:
-                windDirection = R.string.east;
-                break;
-            case 14:
-                windDirection = R.string.southeast;
-                break;
-            default:
-                windDirection = R.string.unknown;
-
-        }
-        return windDirection;
     }
 
     public static void setSpannableText(ViewGroup parent, List<Integer> childIDs, List<Integer> unitSizes, List<Integer> groupSizes,

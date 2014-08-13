@@ -7,15 +7,6 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center" >
 
-    <TextView
-        android:id="@+id/next_24_hours"
-        style="@style/tab.current"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/next_24_hours" />
-
     <include
         layout="@layout/weather_bar"
         android:layout_width="wrap_content"

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" >
+
+    <style
+        name="tab.info" >
+        <item name="android:textSize">@dimen/textNormal</item>
+    </style>
+
+    <style
+        name="tab.info.icon" >
+        <item name="android:width">@dimen/textNormal</item>
+        <item name="android:layout_height">@dimen/textNormal</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_marginLeft">@dimen/standard_margin</item>
+        <item name="android:layout_marginStart" tools:targetApi="17">@dimen/standard_margin</item>
+        <item name="android:layout_marginRight">@dimen/standard_margin</item>
+        <item name="android:layout_marginEnd" tools:targetApi="17">@dimen/standard_margin</item>
+    </style>
+
+</resources>

@@ -322,7 +322,6 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
 
             getActionBar().setSelectedNavigationItem(navItem);
 
-            setTitle(locationName);
             lastForecastResponse = forecast;
             modes.setLoading(false);
             setIntent(null);
@@ -442,9 +441,7 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
     }
 
     public static boolean hasForecast() {
-        if (lastForecastResponse != null)
-            return true;
-        return false;
+        return lastForecastResponse != null;
     }
 
     public static Forecast.Response getForecast() {

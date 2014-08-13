@@ -20,17 +20,6 @@
     </style>
 
     <style
-        name="tab.current.stat" >
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style
-        name="tab.current.stat.large" >
-        <item name="android:textSize">@dimen/textLarge</item>
-    </style>
-
-    <style
         name="tab.week" >
 
     </style>

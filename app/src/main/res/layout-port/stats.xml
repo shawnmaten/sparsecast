@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/stats"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <HorizontalScrollView
+        android:id="@+id/title_holder"
+        style="@style/tab.stat.long" >
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/tab.stat.long"
+            android:textSize="@dimen/textNormal"
+            android:textStyle="bold" />
+
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/temp"
+        style="@style/tab.stat.large"
+        android:layout_below="@id/title_holder" />
+
+    <TextView
+        android:id="@+id/humidity"
+        style="@style/tab.stat.large"
+        android:layout_below="@id/title_holder"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/low_temp"
+        style="@style/tab.stat.large"
+        android:layout_below="@id/temp" />
+
+    <TextView
+        android:id="@id/low_temp_time"
+        style="@style/tab.stat"
+        android:layout_below="@id/low_temp" />
+
+    <TextView
+        android:id="@+id/high_temp"
+        style="@style/tab.stat.large"
+        android:layout_below="@id/humidity"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@id/high_temp_time"
+        style="@style/tab.stat"
+        android:layout_below="@id/high_temp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <HorizontalScrollView
+        style="@style/tab.stat.long"
+        android:layout_below="@id/low_temp_time" >
+
+        <TextView
+            android:id="@+id/currently"
+            style="@style/tab.stat.long"
+            />
+
+    </HorizontalScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:svgimageview="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/info" android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_gravity="center" >
+
+    <LinearLayout
+        android:id="@+id/sun"
+        style="@style/tab.info"
+        android:layout_centerHorizontal="true" >
+
+        <com.caverock.androidsvg.SVGImageView
+            style="@style/tab.info.icon"
+            android:layout_marginLeft="0dp"
+            android:layout_marginStart="0dp"
+            svgimageview:svg="@raw/sunrise" />
+        <TextView
+            android:id="@+id/sunrise"
+            style="@style/tab.info" />
+        <com.caverock.androidsvg.SVGImageView
+            style="@style/tab.info.icon"
+            svgimageview:svg="@raw/sunset" />
+        <TextView
+            android:id="@+id/sunset"
+            style="@style/tab.info" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/precip"
+        style="@style/tab.info"
+        android:layout_below="@id/sun"
+        android:layout_centerHorizontal="true" >
+
+        <com.caverock.androidsvg.SVGImageView
+            android:id="@+id/precip_hour_icon"
+            style="@style/tab.info.icon"
+            android:layout_marginLeft="0dp"
+            android:layout_marginStart="0dp" />
+        <TextView
+            android:id="@+id/precip_hour_text"
+            style="@style/tab.info" />
+
+        <com.caverock.androidsvg.SVGImageView
+            android:id="@+id/precip_day_icon"
+            style="@style/tab.info.icon" />
+        <TextView
+            android:id="@+id/precip_day_text"
+            style="@style/tab.info" />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -31,7 +31,8 @@ public class MapFragment extends SupportMapFragment implements FragmentListener 
     public MapFragment() {
         GoogleMapOptions options = new GoogleMapOptions();
         Bundle args = new Bundle();
-        options.compassEnabled(false).tiltGesturesEnabled(false).mapType(GoogleMap.MAP_TYPE_TERRAIN);
+        options.compassEnabled(false).rotateGesturesEnabled(false).tiltGesturesEnabled(false).zoomControlsEnabled(false)
+                .mapType(GoogleMap.MAP_TYPE_TERRAIN);
         args.putParcelable(SUPPORT_MAP_BUNDLE_KEY, options);
         setArguments(args);
     }

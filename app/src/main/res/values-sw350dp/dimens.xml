@@ -1,6 +1,7 @@
 <resources>
 
     <dimen name="textLarge">34sp</dimen>
+    <dimen name="textMedium">24sp</dimen>
     <dimen name="textNormal">20sp</dimen>
 
 </resources>

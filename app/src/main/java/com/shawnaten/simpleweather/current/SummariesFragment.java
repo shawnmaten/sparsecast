@@ -41,12 +41,10 @@ public class SummariesFragment extends Fragment implements FragmentListener {
             else
                 hourSummary = forecast.getMinutely().getSummary();
 
-            ForecastTools.setSpannableText((ViewGroup) getView(), asList(R.id.currently, R.id.next_hour, R.id.next_24_hours), asList(2, 2, 2), asList(1, 1, 1),
-                    asList("\n", "\n", "\n"), asList("", "", ""), asList("", "", ""), asList("", "", ""),
+            ForecastTools.setSpannableText((ViewGroup) getView(), asList(R.id.next_hour, R.id.next_24_hours), asList(2, 2), asList(1, 1),
+                    asList("\n", "\n"), asList("", ""), asList("", ""), asList("", ""),
 
                     asList(
-
-                            asList(getString(R.string.currently), forecast.getCurrently().getSummary()),
 
                             asList(getString(R.string.next_hour), hourSummary),
 
