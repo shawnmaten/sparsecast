@@ -55,21 +55,21 @@ public class ForecastTools {
 
         switch (b) {
             case 0:
-                return R.string.south;
+                return R.raw.south;
             case 2:
-                return R.string.southwest;
+                return R.raw.southwest;
             case 4:
-                return R.string.west;
+                return R.raw.west;
             case 6:
-                return R.string.northwest;
+                return R.raw.northwest;
             case 8:
-                return R.string.north;
+                return R.raw.north;
             case 10:
-                return R.string.northeast;
+                return R.raw.northeast;
             case 12:
-                return R.string.east;
+                return R.raw.east;
             case 14:
-                return R.string.southeast;
+                return R.raw.southeast;
             default:
                 return 0;
         }

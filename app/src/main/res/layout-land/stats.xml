@@ -6,24 +6,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <HorizontalScrollView
-        android:id="@+id/title_holder"
-        style="@style/tab.stat.long" >
-
-        <TextView
-            android:id="@+id/title"
-            style="@style/tab.stat.long"
-            android:textSize="@dimen/textNormal"
-            android:textStyle="bold" />
-
-    </HorizontalScrollView>
+    <TextView
+        android:id="@+id/title"
+        style="@style/tab.stat.long"
+        android:textSize="@dimen/textNormal"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:id="@+id/holder_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@id/title_holder"
+        android:layout_below="@id/title"
         android:layout_toLeftOf="@+id/holder_2"
         android:layout_toStartOf="@id/holder_2"
         android:layout_marginRight="@dimen/standard_margin"
@@ -48,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@id/title_holder"
+        android:layout_below="@id/title"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" >
 
@@ -66,16 +60,9 @@
 
     </LinearLayout>
 
-    <HorizontalScrollView
+    <TextView
+        android:id="@+id/currently"
         style="@style/tab.stat.long"
-        android:layout_below="@id/holder_1" >
-
-        <TextView
-            android:id="@+id/currently"
-            style="@style/tab.stat.long"
-            />
-
-    </HorizontalScrollView>
-
+        android:layout_below="@id/holder_1" />
 
 </RelativeLayout>

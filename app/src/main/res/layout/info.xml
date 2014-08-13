@@ -52,4 +52,35 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/wind_visib"
+        style="@style/tab.info"
+        android:layout_below="@id/precip"
+        android:layout_centerHorizontal="true" >
+
+        <com.caverock.androidsvg.SVGImageView
+            style="@style/tab.info.icon"
+            android:layout_marginLeft="0dp"
+            android:layout_marginStart="0dp"
+            svgimageview:svg="@raw/wind" />
+        <TextView
+            android:id="@+id/wind_speed"
+            style="@style/tab.info" />
+        <com.caverock.androidsvg.SVGImageView
+            android:id="@+id/wind_bearing_icon"
+            style="@style/tab.info.icon"
+            android:layout_marginLeft="0dp"
+            android:layout_marginStart="0dp" />
+
+        <com.caverock.androidsvg.SVGImageView
+            style="@style/tab.info.icon"
+            svgimageview:svg="@raw/fog"
+            android:layout_marginLeft="0dp"
+            android:layout_marginStart="0dp" />
+        <TextView
+            android:id="@+id/visiblity"
+            style="@style/tab.info" />
+
+    </LinearLayout>
+
 </RelativeLayout>

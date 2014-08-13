@@ -18,6 +18,7 @@
         name="tab.stat.long" >
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">middle</item>
         <item name="android:textStyle">normal</item>
     </style>
 

@@ -6,27 +6,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <HorizontalScrollView
-        android:id="@+id/title_holder"
-        style="@style/tab.stat.long" >
-
-        <TextView
-            android:id="@+id/title"
-            style="@style/tab.stat.long"
-            android:textSize="@dimen/textNormal"
-            android:textStyle="bold" />
-
-    </HorizontalScrollView>
+    <TextView
+        android:id="@+id/title"
+        style="@style/tab.stat.long"
+        android:textSize="@dimen/textNormal"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/temp"
         style="@style/tab.stat.large"
-        android:layout_below="@id/title_holder" />
+        android:layout_below="@id/title" />
 
     <TextView
         android:id="@+id/humidity"
         style="@style/tab.stat.large"
-        android:layout_below="@id/title_holder"
+        android:layout_below="@id/title"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
@@ -54,15 +48,9 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <HorizontalScrollView
+    <TextView
+        android:id="@+id/currently"
         style="@style/tab.stat.long"
-        android:layout_below="@id/low_temp_time" >
-
-        <TextView
-            android:id="@+id/currently"
-            style="@style/tab.stat.long"
-            />
-
-    </HorizontalScrollView>
+        android:layout_below="@id/low_temp_time" />
 
 </RelativeLayout>

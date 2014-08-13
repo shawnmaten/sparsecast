@@ -1,9 +1,7 @@
 package com.shawnaten.simpleweather.current;
 
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,8 +38,6 @@ public class InfoFragment extends Fragment implements FragmentListener {
 
         if (MainActivity.hasForecast() && MainActivity.getForecast().isUnread(getTag())) {
 
-            Log.e("settingData", Long.toString(SystemClock.currentThreadTimeMillis()));
-
             Forecast.Response forecast = MainActivity.getForecast();
             Forecast.DataPoint currently, hour, today;
 
@@ -51,12 +47,16 @@ public class InfoFragment extends Fragment implements FragmentListener {
             hour = forecast.getHourly().getData()[0];
             today = forecast.getDaily().getData()[0];
 
-            ForecastTools.setText(parent, asList(R.id.sunrise, R.id.sunset, R.id.precip_hour_text, R.id.precip_day_text),
+            ForecastTools.setText(parent, asList(R.id.sunrise, R.id.sunset,
+                            R.id.precip_hour_text, R.id.precip_day_text,
+                            R.id.wind_speed, R.id.visiblity),
                     asList(
 
                             ForecastTools.timeForm.format(today.getSunriseTime()), ForecastTools.timeForm.format(today.getSunsetTime()),
                             String.format("%s %s", ForecastTools.percForm.format(hour.getPrecipProbability()), getString(R.string.now)),
-                            String.format("%s %s", ForecastTools.percForm.format(today.getPrecipProbability()), getString(R.string.day))
+                            String.format("%s %s", ForecastTools.percForm.format(today.getPrecipProbability()), getString(R.string.day)),
+                            String.format("%s %s ", ForecastTools.intForm.format(currently.getWindSpeed()), getString(R.string.wind_unit)),
+                            String.format("%s %s", ForecastTools.intForm.format(currently.getVisibility()), getString(R.string.visibility_unit))
 
                     ));
 
@@ -64,6 +64,8 @@ public class InfoFragment extends Fragment implements FragmentListener {
             iconValues.add(ForecastTools.getWeatherIcon(hour.getPrecipType()));
             iconIds.add(R.id.precip_day_icon);
             iconValues.add(ForecastTools.getWeatherIcon(today.getPrecipType()));
+            iconIds.add(R.id.wind_bearing_icon);
+            iconValues.add(ForecastTools.getWindString(currently.getWindBearing()));
 
             forecast.setRead(getTag());
         }
