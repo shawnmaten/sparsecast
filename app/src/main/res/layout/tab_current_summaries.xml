@@ -9,22 +9,24 @@
     android:orientation="vertical" >
 
     <TextView
-        style="@style/text.body_2"
+        style="@style/text.subhead"
         android:layout_gravity="center_horizontal"
         android:text="@string/next_hour" />
     <TextView
         android:id="@+id/next_hour"
         style="@style/text.body_1"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:gravity="center" />
 
     <TextView
-        style="@style/text.body_2"
+        style="@style/text.subhead"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/standard_margin"
         android:text="@string/next_24_hours" />
     <TextView
         android:id="@+id/next_24_hours"
         style="@style/text.body_1"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:gravity="center" />
 
 </LinearLayout>

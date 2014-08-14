@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/title"
-        style="@style/text.title"
+        style="@style/text.headline"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -48,9 +48,15 @@
         android:layout_alignParentEnd="true" />
 
     <TextView
+        android:id="@+id/time"
+        style="@style/text.subhead"
+        android:layout_below="@id/low_temp"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
         android:id="@+id/currently"
-        style="@style/text.body_1"
-        android:layout_below="@id/low_temp_time"
+        style="@style/text.subhead"
+        android:layout_below="@id/time"
         android:layout_centerHorizontal="true" />
 
     <com.caverock.androidsvg.SVGImageView
@@ -58,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
-        android:layout_above="@id/currently"
+        android:layout_above="@id/time"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/standard_margin"
         android:layout_marginBottom="@dimen/standard_margin" />

@@ -60,15 +60,16 @@ public class StatsFragment extends Fragment implements FragmentListener {
 
             weatherIconValue = ForecastTools.getWeatherIcon(currently.getIcon());
 
-            ForecastTools.setText(parent, asList(R.id.title, R.id.temp, R.id.humidity, R.id.high_temp, R.id.high_temp_time, R.id.low_temp, R.id.low_temp_time, R.id.currently),
+            ForecastTools.setText(parent, asList(R.id.title, R.id.temp, R.id.humidity, R.id.high_temp, R.id.high_temp_time, R.id.low_temp, R.id.low_temp_time, R.id.time, R.id.currently),
                     asList(
-                            String.format("%s (%s)", ((MainActivity) getActivity()).getLocationName(), ForecastTools.timeForm.format(forecast.getCurrently().getTime())),
+                            ((MainActivity) getActivity()).getLocationName(),
                             ForecastTools.tempForm.format(currently.getTemperature()),
                             ForecastTools.percForm.format(currently.getHumidity()),
                             ForecastTools.tempForm.format(today.getTemperatureMax()),
                             ForecastTools.timeForm.format(today.getTemperatureMaxTime()),
                             ForecastTools.tempForm.format(today.getTemperatureMin()),
                             ForecastTools.timeForm.format(today.getTemperatureMinTime()),
+                            ForecastTools.timeForm.format(currently.getTime()),
                             String.format("%s - %s %s", currently.getSummary(), getString(R.string.feels_like), ForecastTools.tempForm.format(currently.getApparentTemperature()))
                     )
             );
