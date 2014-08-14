@@ -25,7 +25,7 @@ public class SummariesFragment extends Fragment implements FragmentListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.summaries, container, false);
+        return inflater.inflate(R.layout.tab_current_summaries, container, false);
     }
 
     @Override
@@ -41,17 +41,8 @@ public class SummariesFragment extends Fragment implements FragmentListener {
             else
                 hourSummary = forecast.getMinutely().getSummary();
 
-            ForecastTools.setSpannableText((ViewGroup) getView(), asList(R.id.next_hour, R.id.next_24_hours), asList(2, 2), asList(1, 1),
-                    asList("\n", "\n"), asList("", ""), asList("", ""), asList("", ""),
-
-                    asList(
-
-                            asList(getString(R.string.next_hour), hourSummary),
-
-                            asList(getString(R.string.next_24_hours), forecast.getHourly().getSummary())
-
-                    )
-            );
+            ForecastTools.setText((ViewGroup) getView(), asList(R.id.next_hour, R.id.next_24_hours),
+                    asList(hourSummary, forecast.getHourly().getSummary()));
 
             forecast.setRead(getTag());
         }

@@ -28,16 +28,27 @@ public class InfoFragment extends Fragment implements FragmentListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup parent = (ViewGroup) inflater.inflate(R.layout.info, container, false);
+    public void onCreate (Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
             iconIds = savedInstanceState.getIntegerArrayList("iconIds");
             iconValues = savedInstanceState.getIntegerArrayList("iconValues");
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.info, container, false);
+    }
+
+    @Override
+    public void onResume () {
+        super.onResume();
+
+        ViewGroup parent = (ViewGroup) getView();
 
         if (MainActivity.hasForecast() && MainActivity.getForecast().isUnread(getTag())) {
-
             Forecast.Response forecast = MainActivity.getForecast();
             Forecast.DataPoint currently, hour, today;
 
@@ -47,18 +58,21 @@ public class InfoFragment extends Fragment implements FragmentListener {
             hour = forecast.getHourly().getData()[0];
             today = forecast.getDaily().getData()[0];
 
-            ForecastTools.setText(parent, asList(R.id.sunrise, R.id.sunset,
+            ForecastTools.setText(parent, asList(R.id.sunrise_text, R.id.sunset_text,
                             R.id.precip_hour_text, R.id.precip_day_text,
-                            R.id.wind_speed, R.id.visiblity),
+                            R.id.wind_speed, R.id.visibility_text),
                     asList(
 
                             ForecastTools.timeForm.format(today.getSunriseTime()), ForecastTools.timeForm.format(today.getSunsetTime()),
                             String.format("%s %s", ForecastTools.percForm.format(hour.getPrecipProbability()), getString(R.string.now)),
                             String.format("%s %s", ForecastTools.percForm.format(today.getPrecipProbability()), getString(R.string.day)),
-                            String.format("%s %s ", ForecastTools.intForm.format(currently.getWindSpeed()), getString(R.string.wind_unit)),
+                            String.format("%s %s", ForecastTools.intForm.format(currently.getWindSpeed()), getString(R.string.wind_unit)),
                             String.format("%s %s", ForecastTools.intForm.format(currently.getVisibility()), getString(R.string.visibility_unit))
 
                     ));
+
+            iconIds.clear();
+            iconValues.clear();
 
             iconIds.add(R.id.precip_hour_icon);
             iconValues.add(ForecastTools.getWeatherIcon(hour.getPrecipType()));
@@ -72,94 +86,7 @@ public class InfoFragment extends Fragment implements FragmentListener {
 
         for (int i = 0; i < iconIds.size(); i++)
             ((SVGImageView) parent.findViewById(iconIds.get(i))).setImageResource(iconValues.get(i));
-
-        return parent;
     }
-
-    /*
-    @Override
-    public void onResume () {
-        super.onResume();
-
-        if (MainActivity.hasForecast() && MainActivity.getForecast().isUnread(getTag())) {
-
-            Forecast.Response forecast = MainActivity.getForecast();
-            Forecast.DataPoint currently, hour, today;
-            ViewGroup parent = (ViewGroup) getView();
-
-            ForecastTools.timeForm.setTimeZone(forecast.getTimezone());
-
-            currently = forecast.getCurrently();
-            hour = forecast.getHourly().getData()[0];
-            today = forecast.getDaily().getData()[0];
-
-            ForecastTools.setText(parent, asList(R.id.sunrise, R.id.sunset, R.id.precip_hour_text, R.id.precip_day_text),
-                    asList(
-
-                            ForecastTools.timeForm.format(today.getSunriseTime()), ForecastTools.timeForm.format(today.getSunsetTime()),
-                            String.format("%s %s", ForecastTools.percForm.format(hour.getPrecipProbability()), getString(R.string.hour)),
-                            String.format("%s %s", ForecastTools.percForm.format(today.getPrecipProbability()), getString(R.string.day))
-
-            ));
-
-            iconIds.add(R.id.precip_hour_icon);
-            iconValues.add(ForecastTools.getWeatherIcon(hour.getPrecipType()));
-
-
-            HashMap<Integer, ArrayList<int[]>> spanIndices = new HashMap<>();
-            HashMap<Integer, SpannableStringBuilder> strings = new HashMap<>();
-            SpannableStringBuilder tempString;
-            ArrayList<int[]> tempSpanIndices;
-
-            // line one
-            tempString = new SpannableStringBuilder();
-            tempSpanIndices = new ArrayList<>();
-            tempSpanIndices.add(new int[]{0, 1});
-            tempSpanIndices.add(new int[]{tempString.append(ForecastTools.CLIMACONS_SUNRISE).append(' ')
-                    .append(ForecastTools.timeForm.format(today.getSunriseTime())).append(ForecastTools.SPACING).length(), 1});
-            tempString.append(ForecastTools.CLIMACONS_SUNSET).append(' ').append(ForecastTools.timeForm.format(today.getSunsetTime()));
-            strings.put(R.id.one, tempString);
-            spanIndices.put(R.id.one, tempSpanIndices);
-
-            // line two
-            tempString = new SpannableStringBuilder();
-            tempSpanIndices = new ArrayList<>();
-            tempSpanIndices.add(new int[]{0, 1});
-            tempString.append(ForecastTools.CLIMACONS_WIND);
-            tempString.append(String.format(" %s %s ", ForecastTools.intForm.format(currently.getWindSpeed()), getString(R.string.wind_unit)));
-            tempSpanIndices.add(new int[]{tempString.append(getString(ForecastTools.getWindString(currently.getWindBearing())))
-                    .append(ForecastTools.SPACING).length(), 1});
-
-            tempString.append(ForecastTools.CLIMACONS_VISIBILITY).append(' ');
-            tempString.append(String.format("%s %s%s", ForecastTools.intForm.format(currently.getVisibility()),
-                    getString(R.string.visibility_unit), ForecastTools.SPACING));
-            strings.put(R.id.three, tempString);
-            spanIndices.put(R.id.three, tempSpanIndices);
-
-            // line three
-            tempString = new SpannableStringBuilder();
-            tempSpanIndices = new ArrayList<>();
-
-            tempSpanIndices.add(new int[]{tempString.append(ForecastTools.percForm.format(hour.getPrecipProbability()))
-                    .append(' ').length(), 1});
-            tempString.append(ForecastTools.getPrecipCode(hour.getPrecipType())).append(' ');
-            tempString.append(getString(R.string.hour)).append(ForecastTools.SPACING);
-
-            tempSpanIndices.add(new int[]{tempString.append(ForecastTools.percForm.format(today.getPrecipProbability()))
-                    .append(' ').length(), 1});
-            tempString.append(ForecastTools.getPrecipCode(today.getPrecipType())).append(' ');
-            tempString.append(getString(R.string.day));
-            strings.put(R.id.two, tempString);
-            spanIndices.put(R.id.two, tempSpanIndices);
-
-            ClimaconTypefaceSpan.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "fonts/climacons.ttf"));
-            ForecastTools.setClimaconSpans((ViewGroup) getView(), strings, spanIndices);
-
-
-            forecast.setRead(getTag());
-        }
-    }
-    */
 
     @Override
     public void onSaveInstanceState (Bundle outState) {
