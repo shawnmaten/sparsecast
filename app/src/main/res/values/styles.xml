@@ -16,9 +16,10 @@
     </style>
 
     <style
-        name="text.headline" >
-        <item name="android:textSize">24sp</item>
+        name="text.title" >
+        <item name="android:textSize">20sp</item>
         <item name="android:textColor">#de000000</item>
+        <item name="android:fontFamily" tools:targetApi="16">sans-serif-medium</item>
     </style>
 
     <style
@@ -31,7 +32,7 @@
         name="text.body_2" >
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">#de000000</item>
-        <item name="android:fontFamily" tools:targetApi="17">sans-serif-medium</item>
+        <item name="android:fontFamily" tools:targetApi="16">sans-serif-medium</item>
     </style>
 
     <style

@@ -29,7 +29,7 @@ public class WeatherBarShape extends Shape {
         density = metrics.density;
 
         setDimensions((int) (widthDP * density), (int) (heightDP * density));
-        setData(context.getResources().getColor(android.R.color.tertiary_text_light), ForecastTools.parseWeatherPoints(context, data, start, count));
+        setData(0x8a000000, ForecastTools.parseWeatherPoints(context, data, start, count));
     }
 
     private void setDimensions(int width, int height) {
@@ -39,8 +39,8 @@ public class WeatherBarShape extends Shape {
         unitSize = width / unitCount;
         leftOffset = (width - (unitSize * unitCount)) / 2;
         rightOffset = leftOffset + unitSize;
-        barSize = height / 2;
-        tickSize = barSize / 4;
+        tickSize = (int) (8 * density);
+        barSize = height - tickSize;
 
         unitSkip = (int) (64 * density) / unitSize;
         while (unitCount % unitSkip != 0)

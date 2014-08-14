@@ -16,7 +16,8 @@
         android:id="@+id/next_hour"
         style="@style/text.body_1"
         android:layout_gravity="center_horizontal"
-        android:gravity="center" />
+        android:gravity="center"
+        android:maxEms="40" />
 
     <TextView
         style="@style/text.subhead"
@@ -27,6 +28,7 @@
         android:id="@+id/next_24_hours"
         style="@style/text.body_1"
         android:layout_gravity="center_horizontal"
-        android:gravity="center" />
+        android:gravity="center"
+        android:maxEms="40" />
 
 </LinearLayout>

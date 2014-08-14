@@ -285,7 +285,6 @@ public class ForecastTools {
         width = weatherBar.getTickSpacing() * 2;
         leftOffset = weatherBar.getLeftOffset();
         tickCount = weatherBar.getTickCount();
-        tickSize = weatherBar.getTickSize();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             to_end_of = RelativeLayout.END_OF;
@@ -315,7 +314,6 @@ public class ForecastTools {
         TextView textView = (TextView) inflater.inflate(R.layout.time, null);
         //noinspection ResourceType
         textView.setId(1);
-        textView.setPadding(0, tickSize, 0, 0);
         layout.addView(textView, params);
 
         params = new RelativeLayout.LayoutParams(width + leftOffset, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -324,7 +322,6 @@ public class ForecastTools {
         textView = (TextView) inflater.inflate(R.layout.time, null);
         //noinspection ResourceType
         textView.setId(2);
-        textView.setPadding(0, tickSize, 0, 0);
         layout.addView(textView, params);
 
         tickCount+=2;
@@ -334,7 +331,6 @@ public class ForecastTools {
             params.addRule(to_end_of, i-2);
 
             textView = (TextView) inflater.inflate(R.layout.time, null);
-            textView.setPadding(0, tickSize, 0, 0);
             //noinspection ResourceType
             textView.setId(i);
             layout.addView(textView, params);

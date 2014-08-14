@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/title"
-        style="@style/text.headline"
+        style="@style/text.title"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -50,14 +50,15 @@
     <TextView
         android:id="@+id/time"
         style="@style/text.subhead"
-        android:layout_below="@id/low_temp"
+        android:layout_alignBottom="@id/low_temp_time"
         android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/currently"
-        style="@style/text.subhead"
+        style="@style/text.body_1"
         android:layout_below="@id/time"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:maxEms="40" />
 
     <com.caverock.androidsvg.SVGImageView
         android:id="@+id/weather_icon"

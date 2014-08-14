@@ -3,24 +3,22 @@
 <HorizontalScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center" >
+    android:layout_height="wrap_content" >
 
     <FrameLayout
         android:id="@+id/weather_bar_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/half_margin"
-        android:paddingBottom="@dimen/half_margin" >
+        android:layout_height="wrap_content" >
 
         <RelativeLayout
             android:id="@+id/weather_bar_texts"
-            android:layout_width="768dp"
-            android:layout_height="@dimen/weather_bar_height" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/weather_bar_height" />
 
         <ImageView
             android:id="@+id/weather_bar_image"
-            android:layout_width="768dp"
+            android:layout_width="@dimen/weather_bar_width"
             android:layout_height="@dimen/weather_bar_height"
             android:contentDescription="@string/weather_bar_description" />
 
