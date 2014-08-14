@@ -57,8 +57,7 @@
         android:id="@+id/currently"
         style="@style/text.body_1"
         android:layout_below="@id/time"
-        android:layout_centerHorizontal="true"
-        android:maxEms="40" />
+        android:layout_centerHorizontal="true" />
 
     <com.caverock.androidsvg.SVGImageView
         android:id="@+id/weather_icon"

@@ -17,7 +17,7 @@
         style="@style/text.body_1"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:maxEms="40" />
+        android:ems="15" />
 
     <TextView
         style="@style/text.subhead"
@@ -29,6 +29,6 @@
         style="@style/text.body_1"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:maxEms="40" />
+        android:ems="15" />
 
 </LinearLayout>
