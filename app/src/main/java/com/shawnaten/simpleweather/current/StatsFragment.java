@@ -37,9 +37,7 @@ public class StatsFragment extends Fragment implements FragmentListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.tab_current_stats, container, false);
-        view.setSelected(true);
-        return view;
+        return inflater.inflate(R.layout.tab_current_stats, container, false);
     }
 
     @Override

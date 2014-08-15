@@ -138,7 +138,7 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
             case 0:
                 Forecast.DataPoint day = (Forecast.DataPoint) getChild(groupPosition, childPosition);
                 if (convertView == null)
-                    convertView = inflater.inflate(R.layout.tab_week_child, parent, false);
+                    convertView = inflater.inflate(R.layout.tab_week_child_info, parent, false);
 
                 List<Integer> groupSizes = asList(1, 1, 1);
                 List<String> unitSeps = asList("", "", ""), groupEnds = asList("\n", "\n", "\n");
@@ -176,7 +176,7 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
                 ShapeDrawable drawable;
 
                 if (convertView == null) {
-                    convertView = inflater.inflate(R.layout.weather_bar_week, parent, false);
+                    convertView = inflater.inflate(R.layout.tab_week_child_weather_bar, parent, false);
                     weatherBarContainer = (FrameLayout) convertView.findViewById(R.id.weather_bar_container);
                     weatherBarTexts = (RelativeLayout) weatherBarContainer.findViewById(R.id.weather_bar_texts);
                     weatherBarImage = (ImageView) weatherBarContainer.findViewById(R.id.weather_bar_image);

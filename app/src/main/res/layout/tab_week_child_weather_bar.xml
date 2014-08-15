@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/standard_margin"
     android:paddingEnd="@dimen/standard_margin" >
 
-    <include layout="@layout/weather_bar"
+    <include layout="@layout/weather_bar_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center" />

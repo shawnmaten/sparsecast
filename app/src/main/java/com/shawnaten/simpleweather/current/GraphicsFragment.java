@@ -29,7 +29,7 @@ public class GraphicsFragment extends Fragment implements FragmentListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.graphics, container, false);
+        View view = inflater.inflate(R.layout.tab_current_graphics, container, false);
         RelativeLayout weatherBarTexts = (RelativeLayout) view.findViewById(R.id.weather_bar_texts);
         if (weatherBarShape != null) {
             ForecastTools.createWeatherBarTextViews((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), weatherBarShape, weatherBarTexts);

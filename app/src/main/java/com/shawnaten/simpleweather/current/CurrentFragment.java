@@ -50,7 +50,7 @@ public class CurrentFragment extends Fragment implements FragmentListener {
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.tab_current, container, false);
+        return inflater.inflate(R.layout.tab_current_main, container, false);
     }
 
     @Override

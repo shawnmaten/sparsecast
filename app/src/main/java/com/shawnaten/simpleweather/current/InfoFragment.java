@@ -28,23 +28,18 @@ public class InfoFragment extends Fragment implements FragmentListener {
     }
 
     @Override
-    public void onCreate (Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.tab_current_info, container, false);
+    }
+
+    @Override
+    public void onViewStateRestored (Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
 
         if (savedInstanceState != null) {
             iconIds = savedInstanceState.getIntegerArrayList("iconIds");
             iconValues = savedInstanceState.getIntegerArrayList("iconValues");
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.info, container, false);
-    }
-
-    @Override
-    public void onResume () {
-        super.onResume();
 
         ViewGroup parent = (ViewGroup) getView();
 
@@ -84,8 +79,10 @@ public class InfoFragment extends Fragment implements FragmentListener {
             forecast.setRead(getTag());
         }
 
-        for (int i = 0; i < iconIds.size(); i++)
+        for (int i = 0; i < iconIds.size(); i++) {
             ((SVGImageView) parent.findViewById(iconIds.get(i))).setImageResource(iconValues.get(i));
+        }
+
     }
 
     @Override

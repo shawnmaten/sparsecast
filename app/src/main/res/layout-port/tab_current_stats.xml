@@ -65,8 +65,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
         android:layout_above="@id/time"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/standard_margin"
-        android:layout_marginBottom="@dimen/standard_margin" />
+        android:layout_alignLeft="@id/currently"
+        android:layout_alignStart="@id/currently"
+        android:layout_alignRight="@id/currently"
+        android:layout_alignEnd="@id/currently"
+        android:layout_margin="@dimen/standard_margin" />
 
 </RelativeLayout>

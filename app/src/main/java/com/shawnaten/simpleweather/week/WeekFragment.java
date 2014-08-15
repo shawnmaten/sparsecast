@@ -23,7 +23,7 @@ public class WeekFragment extends Fragment implements FragmentListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ExpandableListView view = (ExpandableListView) inflater.inflate(R.layout.tab_week, container, false);
+        ExpandableListView view = (ExpandableListView) inflater.inflate(R.layout.tab_week_main, container, false);
         view.setAdapter(adapter);
         return view;
     }
