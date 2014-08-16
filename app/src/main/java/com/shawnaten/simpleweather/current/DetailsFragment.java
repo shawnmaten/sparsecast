@@ -20,16 +20,16 @@ import static java.util.Arrays.asList;
 /**
  * Created by shawnaten on 7/20/14.
  */
-public class InfoFragment extends Fragment implements FragmentListener {
+public class DetailsFragment extends Fragment implements FragmentListener {
     private ArrayList<Integer> iconIds = new ArrayList<>(), iconValues = new ArrayList<>();
 
-    public InfoFragment() {
+    public DetailsFragment() {
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.tab_current_info, container, false);
+        return inflater.inflate(R.layout.tab_current_details, container, false);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class InfoFragment extends Fragment implements FragmentListener {
                             ForecastTools.timeForm.format(today.getSunriseTime()), ForecastTools.timeForm.format(today.getSunsetTime()),
                             String.format("%s %s", ForecastTools.percForm.format(hour.getPrecipProbability()), getString(R.string.now)),
                             String.format("%s %s", ForecastTools.percForm.format(today.getPrecipProbability()), getString(R.string.day)),
-                            String.format("%s %s", ForecastTools.intForm.format(currently.getWindSpeed()), getString(R.string.wind_unit)),
+                            String.format("%s %s ", ForecastTools.intForm.format(currently.getWindSpeed()), getString(R.string.wind_unit)),
                             String.format("%s %s", ForecastTools.intForm.format(currently.getVisibility()), getString(R.string.visibility_unit))
 
                     ));

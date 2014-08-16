@@ -6,69 +6,89 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <TextView
-        android:id="@+id/title"
-        style="@style/text.title"
-        android:layout_centerHorizontal="true" />
+    <HorizontalScrollView
+        android:id="@+id/title_holder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:requiresFadingEdge="horizontal"
+        android:scrollbars="none" >
 
-    <TextView
+        <com.shawnaten.tools.MaterialTextView
+            android:id="@+id/title"
+            style="@style/text.title" />
+
+    </HorizontalScrollView>
+
+
+    <com.shawnaten.tools.MaterialTextView
         android:id="@+id/temp"
         style="@style/text.display_1"
-        android:layout_below="@id/title" />
+        android:layout_below="@id/title_holder" />
 
-    <TextView
+    <com.shawnaten.tools.MaterialTextView
         android:id="@+id/humidity"
         style="@style/text.display_1"
-        android:layout_below="@id/title"
+        android:layout_below="@id/title_holder"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <TextView
+    <com.shawnaten.tools.MaterialTextView
         android:id="@+id/low_temp"
         style="@style/text.display_1"
         android:layout_below="@id/temp" />
 
-    <TextView
+    <com.shawnaten.tools.MaterialTextView
         android:id="@id/low_temp_time"
         style="@style/text.caption"
         android:layout_below="@id/low_temp" />
 
-    <TextView
+    <com.shawnaten.tools.MaterialTextView
         android:id="@+id/high_temp"
         style="@style/text.display_1"
         android:layout_below="@id/humidity"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <TextView
+    <com.shawnaten.tools.MaterialTextView
         android:id="@id/high_temp_time"
         style="@style/text.caption"
         android:layout_below="@id/high_temp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <TextView
+    <com.shawnaten.tools.MaterialTextView
         android:id="@+id/time"
         style="@style/text.subhead"
         android:layout_alignBottom="@id/low_temp_time"
         android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:id="@+id/currently"
-        style="@style/text.body_1"
+    <HorizontalScrollView
+        android:id="@+id/currently_holder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/time"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:requiresFadingEdge="horizontal"
+        android:scrollbars="none" >
+
+        <com.shawnaten.tools.MaterialTextView
+            android:id="@+id/currently"
+            style="@style/text.body_1" />
+
+    </HorizontalScrollView>
 
     <com.caverock.androidsvg.SVGImageView
         android:id="@+id/weather_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title"
+        android:layout_below="@id/title_holder"
         android:layout_above="@id/time"
-        android:layout_alignLeft="@id/currently"
-        android:layout_alignStart="@id/currently"
-        android:layout_alignRight="@id/currently"
-        android:layout_alignEnd="@id/currently"
+        android:layout_alignLeft="@id/currently_holder"
+        android:layout_alignStart="@id/currently_holder"
+        android:layout_alignRight="@id/currently_holder"
+        android:layout_alignEnd="@id/currently_holder"
         android:layout_margin="@dimen/standard_margin" />
 
 </RelativeLayout>

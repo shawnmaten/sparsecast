@@ -17,15 +17,15 @@ import static java.util.Arrays.asList;
 /**
  * Created by shawnaten on 7/20/14.
  */
-public class SummariesFragment extends Fragment implements FragmentListener {
+public class SummaryFragment extends Fragment implements FragmentListener {
 
-    public SummariesFragment() {
+    public SummaryFragment() {
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.tab_current_summaries, container, false);
+        return inflater.inflate(R.layout.tab_current_summary, container, false);
     }
 
     @Override

@@ -13,22 +13,23 @@ import com.shawnaten.networking.Forecast;
  */
 public class WeatherBarShape extends Shape {
     private float density;
+    private final int TICK_SIZE_DP = 8, UNIT_SKIP = 2, TICK_COUNT = 11;
 
     private int width, height,
-                unitStart, unitCount, unitSize, unitSkip, barSize, tickCount, tickSize, tickSpacing, tickColor,
+                unitStart, unitCount, unitSize, barSize, tickSize, tickSpacing, tickColor,
                 leftOffset, rightOffset;
 
     private float[] ticks;
     private WeatherBlock[] blocks;
 
-    public WeatherBarShape(Context context, Forecast.DataPoint[] data, int start, int count, int widthDP, int heightDP) {
+    public WeatherBarShape(Context context, Forecast.DataPoint[] data, int start, int count, int width, int height) {
         unitStart = start;
         unitCount = count;
 
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         density = metrics.density;
 
-        setDimensions((int) (widthDP * density), (int) (heightDP * density));
+        setDimensions(width, height);
         setData(0x8a000000, ForecastTools.parseWeatherPoints(context, data, start, count));
     }
 
@@ -39,20 +40,16 @@ public class WeatherBarShape extends Shape {
         unitSize = width / unitCount;
         leftOffset = (width - (unitSize * unitCount)) / 2;
         rightOffset = leftOffset + unitSize;
-        tickSize = (int) (8 * density);
+        tickSize = (int) (TICK_SIZE_DP * density);
         barSize = height - tickSize;
 
-        unitSkip = (int) (64 * density) / unitSize;
-        while (unitCount % unitSkip != 0)
-            unitSkip++;
-        tickCount = unitCount / unitSkip - 1;
-        tickSpacing = unitSize * unitSkip;
+        tickSpacing = unitSize * UNIT_SKIP;
 
-        ticks = new float[tickCount * 4];
+        ticks = new float[TICK_COUNT * 4];
 
         int yStop = barSize + tickSize;
         int j = 0;
-        for (int i = 0; i < tickCount; i++) {
+        for (int i = 0; i < TICK_COUNT; i++) {
             int x = ((i + 1) * tickSpacing) + leftOffset;
             ticks[j++] = x;
             ticks[j++] = barSize;
@@ -105,7 +102,7 @@ public class WeatherBarShape extends Shape {
     }
 
     public int getUnitSkip() {
-        return unitSkip;
+        return UNIT_SKIP;
     }
 
     public int getBarSize() {
@@ -113,7 +110,7 @@ public class WeatherBarShape extends Shape {
     }
 
     public int getTickCount() {
-        return tickCount;
+        return TICK_COUNT;
     }
 
     public int getTickSize() {

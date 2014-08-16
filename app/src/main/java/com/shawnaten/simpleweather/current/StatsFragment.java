@@ -12,6 +12,7 @@ import com.shawnaten.simpleweather.MainActivity;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
+import com.shawnaten.tools.SVGManager;
 
 import static java.util.Arrays.asList;
 
@@ -19,7 +20,7 @@ import static java.util.Arrays.asList;
  * Created by Shawn Aten on 7/20/14.
  */
 public class StatsFragment extends Fragment implements FragmentListener {
-    private final String weatherIconValueKey = "weatherIconValue";
+    private static final String WEATHER_ICON_KEY = "weatherIconKey";
     private int weatherIconValue;
 
     public StatsFragment() {
@@ -31,7 +32,7 @@ public class StatsFragment extends Fragment implements FragmentListener {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
-            weatherIconValue = savedInstanceState.getInt(weatherIconValueKey);
+            weatherIconValue = savedInstanceState.getInt(WEATHER_ICON_KEY);
         }
     }
 
@@ -75,7 +76,7 @@ public class StatsFragment extends Fragment implements FragmentListener {
             forecast.setRead(getTag());
         }
 
-        ((SVGImageView) parent.findViewById(R.id.weather_icon)).setImageResource(weatherIconValue);
+        ((SVGImageView) parent.findViewById(R.id.weather_icon)).setSVG(SVGManager.getSVG(getActivity(), weatherIconValue));
 
     }
 
@@ -83,7 +84,7 @@ public class StatsFragment extends Fragment implements FragmentListener {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putInt(weatherIconValueKey, weatherIconValue);
+        outState.putInt(WEATHER_ICON_KEY, weatherIconValue);
     }
 
     @Override

@@ -67,7 +67,9 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
             else
                 start = 24 * (i - 1) + timeOffset;
 
-            weatherBars[i] = new WeatherBarShape(context, hourly, start, 24, 768, 64);
+            weatherBars[i] = new WeatherBarShape(context, hourly, start, 24,
+                    context.getResources().getDimensionPixelSize(R.dimen.weather_bar_width),
+                    context.getResources().getDimensionPixelSize(R.dimen.weather_bar_height));
         }
     }
 

@@ -1,16 +1,25 @@
 <resources>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
+
     <dimen name="half_margin">8dp</dimen>
     <dimen name="standard_margin">16dp</dimen>
-    <dimen name="large_margin">24dp</dimen>
-    <dimen name="vertical_spacing">8dp</dimen>
     <dimen name="expandable_list_start">35dp</dimen>
     <dimen name="list_item">72dp</dimen>
+    <dimen name="button_min_width">88dp</dimen>
+    <dimen name="button_height">36dp</dimen>
+
+    <dimen name="tab_current_details_icon">34sp</dimen>
+
+    <integer name="summary_max_ems">18</integer>
+
+    <dimen name="weather_bar_width">960dp</dimen>
+    <dimen name="weather_bar_height">40dp</dimen>
+
+    <!-- going to remove these -->
+    <dimen name="large_margin">24dp</dimen>
     <dimen name="info_icon">32dp</dimen>
     <dimen name="alert_views">40dp</dimen>
-    <dimen name="weather_bar_width">768dp</dimen>
-    <dimen name="weather_bar_height">40dp</dimen>
     <dimen name="textLarge">24sp</dimen>
     <dimen name="textMedium">20sp</dimen>
     <dimen name="textNormal">16sp</dimen>

@@ -52,7 +52,9 @@ public class GraphicsFragment extends Fragment implements FragmentListener {
             ImageView weatherBarImage = (ImageView) getView().findViewById(R.id.weather_bar_image);
             ShapeDrawable drawable;
 
-            weatherBarShape = new WeatherBarShape(getActivity().getApplicationContext(), hourly, 0, 24, 768, 64);
+            weatherBarShape = new WeatherBarShape(getActivity().getApplicationContext(), hourly, 0, 24,
+                    getResources().getDimensionPixelSize(R.dimen.weather_bar_width),
+                    getResources().getDimensionPixelSize(R.dimen.weather_bar_height));
             drawable = new ShapeDrawable(weatherBarShape);
             weatherBarImage.setBackgroundDrawable(drawable);
             ForecastTools.createWeatherBarTextViews((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), weatherBarShape, weatherBarTexts);

@@ -3,13 +3,13 @@ package com.shawnaten.tools;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.SystemClock;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.Space;
 import android.widget.TextView;
 
 import com.shawnaten.networking.Forecast;
@@ -31,10 +31,6 @@ import java.util.regex.Pattern;
  */
 public class ForecastTools {
 
-    public static final char CLIMACONS_SUNRISE = 'L', CLIMACONS_SUNSET = 'M', CLIMACONS_WIND = 'B', CLIMACONS_VISIBILITY = '<',
-            CLIMACONS_DEW = '\'', CLIMACONS_RAIN = '*', CLIMACONS_SNOW = '9', CLIMACONS_SLEET = '6', CLIMACONS_HAIL = '3',
-            CLIMACONS_CLEAR_DAY = 'I', CLIMACONS_CLOUDY = '!', CLIMACONS_FALLBACK = 'H';
-
     public final static double VERY_LIGHT = 0.002, LIGHT = 0.017, MODERATE = 0.1, HEAVY = 0.4,
         SCATTERED = 0.4, BROKEN = 0.75, OVERCAST = 1.0,
         FOG = 0.6214, MIST = 1.2427, HAZE = 3.1069;
@@ -43,8 +39,6 @@ public class ForecastTools {
             intForm = new DecimalFormat("###");
 
     public static final DateFormat timeForm = DateFormat.getTimeInstance(DateFormat.SHORT);
-
-    public static final String SPACING = "\t\t";
 
     public static int getWindString (double bearing) {
         int b = (int) (bearing / 22.5);
@@ -101,45 +95,6 @@ public class ForecastTools {
 
         return R.raw.fallback;
     }
-
-    /*
-    private static HashMap<String, Character> precipCodes = new HashMap<>();
-    static {
-        precipCodes.put("rain", CLIMACONS_RAIN);
-        precipCodes.put("snow", CLIMACONS_SNOW);
-        precipCodes.put("sleet", CLIMACONS_SLEET);
-        precipCodes.put("hail", CLIMACONS_HAIL);
-        precipCodes.put("fallback", CLIMACONS_FALLBACK);
-    }
-
-    public static char getPrecipCode(String precipType) {
-        if (precipType == null)
-            return CLIMACONS_CLEAR_DAY;
-        if (precipCodes.containsKey(precipType))
-            return precipCodes.get(precipType);
-        else
-            return precipCodes.get("fallback");
-    }
-    */
-
-    /*
-    public static void setClimaconSpans
-            (ViewGroup parent, HashMap<Integer, SpannableStringBuilder> strings, HashMap<Integer, ArrayList<int[]>> spanIndices) {
-
-        for (int key : strings.keySet()) {
-            TextView textView = (TextView) parent.findViewById(key);
-            SpannableStringBuilder tempString = strings.get(key);
-            ArrayList<int[]> tempSpanIndices = spanIndices.get(key);
-            if (tempSpanIndices != null) {
-                for (int[] indices : tempSpanIndices) {
-                    ClimaconTypefaceSpan span = new ClimaconTypefaceSpan();
-                    tempString.setSpan(span, indices[0], indices[0] + indices[1], 0);
-                }
-            }
-            textView.setText(tempString);
-        }
-    }
-    */
 
     public static String capitalize(String string) {
         int start, end;
@@ -276,9 +231,9 @@ public class ForecastTools {
     }
 
     public static void createWeatherBarTextViews(LayoutInflater inflater, WeatherBarShape weatherBar, RelativeLayout layout) {
-        int width, leftOffset, tickCount, to_end_of, parent_start, tickSize;
-
-        RelativeLayout.LayoutParams params;
+        int width, leftOffset, tickCount, to_end_of, parent_start;
+        RelativeLayout.LayoutParams params1, params2;
+        ArrayList<RelativeLayout.LayoutParams> paramsList = new ArrayList<>();
 
         // set up
         layout.removeAllViews();
@@ -286,14 +241,41 @@ public class ForecastTools {
         leftOffset = weatherBar.getLeftOffset();
         tickCount = weatherBar.getTickCount();
 
+        params1 = new RelativeLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params2 = new RelativeLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             to_end_of = RelativeLayout.END_OF;
             parent_start = RelativeLayout.ALIGN_PARENT_START;
+            params1.setMarginStart(leftOffset);
+            params2.setMarginStart(leftOffset + (width / 2));
         } else {
             to_end_of = RelativeLayout.RIGHT_OF;
             parent_start = RelativeLayout.ALIGN_PARENT_LEFT;
+            params1.setMargins(leftOffset, 0, 0, 0);
+            params2.setMargins(leftOffset + (width / 2), 0, 0, 0);
         }
 
+        params1.addRule(parent_start, 1);
+        params2.addRule(parent_start, 1);
+        paramsList.add(params1);
+        paramsList.add(params2);
+
+        for (int i = 1; i <= tickCount - 2; i++) {
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.addRule(to_end_of, i);
+            paramsList.add(params);
+        }
+
+        for (int i = 1; i <= tickCount; i++) {
+            TextView textView = (TextView) inflater.inflate(R.layout.weather_bar_time, layout, false);
+            //noinspection ResourceType
+            textView.setId(i);
+            textView.setText(Long.toString(SystemClock.currentThreadTimeMillis()));
+            layout.addView(textView, paramsList.get(i - 1));
+        }
+
+        /*
         params = new RelativeLayout.LayoutParams(0, 0);
         params.addRule(RelativeLayout.CENTER_IN_PARENT, 1);
         Space space = (Space) inflater.inflate(R.layout.weather_bar_space, null);
@@ -301,15 +283,17 @@ public class ForecastTools {
         layout.addView(space, params);
 
         params = new RelativeLayout.LayoutParams((width / 2) + leftOffset, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.BELOW, R.id.center);
+        //params.addRule(RelativeLayout.BELOW, R.id.center);
         params.addRule(parent_start, 1);
-        space = (Space) inflater.inflate(R.layout.weather_bar_space, null);
+        Space space = (Space) inflater.inflate(R.layout.weather_bar_space, null);
         space.setId(R.id.left_offset);
         layout.addView(space, params);
         // end of set up
 
+
+
         params = new RelativeLayout.LayoutParams(width + leftOffset, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.BELOW, R.id.center);
+        //params.addRule(RelativeLayout.BELOW, R.id.center);
         params.addRule(parent_start, 1);
         TextView textView = (TextView) inflater.inflate(R.layout.weather_bar_time, null);
         //noinspection ResourceType
@@ -317,7 +301,7 @@ public class ForecastTools {
         layout.addView(textView, params);
 
         params = new RelativeLayout.LayoutParams(width + leftOffset, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.BELOW, R.id.center);
+        //params.addRule(RelativeLayout.BELOW, R.id.center);
         params.addRule(to_end_of, R.id.left_offset);
         textView = (TextView) inflater.inflate(R.layout.weather_bar_time, null);
         //noinspection ResourceType
@@ -327,7 +311,7 @@ public class ForecastTools {
         tickCount+=2;
         for(int i = 3; i < tickCount; i++) {
             params = new RelativeLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.BELOW, R.id.center);
+            //params.addRule(RelativeLayout.BELOW, R.id.center);
             params.addRule(to_end_of, i-2);
 
             textView = (TextView) inflater.inflate(R.layout.weather_bar_time, null);
@@ -335,6 +319,7 @@ public class ForecastTools {
             textView.setId(i);
             layout.addView(textView, params);
         }
+        */
 
     }
 
@@ -367,11 +352,11 @@ public class ForecastTools {
         timeForm.applyPattern(pattern);
 
         for (int i = 0; i < tickCount; i++) {
-            //noinspection ResourceType
+            Forecast.DataPoint dataPoint = data[((i + 1) * unitSkip) + unitStart];
             textView = (TextView) layout.findViewById(i + 1);
-            textView.setText(timeForm.format(data[((i + 1) * unitSkip) + unitStart].getTime()));
+            textView.setText(String.format("%s\n%s", timeForm.format(dataPoint.getTime()),
+                    ForecastTools.tempForm.format(dataPoint.getTemperature())));
         }
-
 
     }
 

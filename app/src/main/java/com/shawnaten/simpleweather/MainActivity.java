@@ -1,7 +1,6 @@
 package com.shawnaten.simpleweather;
 
 import android.app.ActionBar;
-import android.app.ActionBar.Tab;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -14,22 +13,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Marker;
 import com.shawnaten.networking.Forecast;
 import com.shawnaten.networking.Network;
 import com.shawnaten.networking.Places;
 import com.shawnaten.simpleweather.current.CurrentFragment;
 import com.shawnaten.simpleweather.map.MapFragment;
 import com.shawnaten.simpleweather.week.WeekFragment;
+import com.shawnaten.tools.ActionBarListener;
 import com.shawnaten.tools.CustomAlertDialog;
 import com.shawnaten.tools.FragmentListener;
-import com.shawnaten.tools.TabListener;
 
 import java.util.Date;
 import java.util.Locale;
@@ -42,10 +39,9 @@ import retrofit.client.Response;
 public class MainActivity extends FragmentActivity implements Callback, CustomAlertDialog.CustomAlertListener {
     private AdView bannerAd;
     private FragmentListener cListen, wListen, mListen;
-    private TabListener currentTab, weekTab, mapTab;
+    private ActionBarListener actionBarListener;
+    private String[] mainFragments, helperFragments;
     private Boolean isActive = false;
-    private GoogleMap map;
-    private Marker marker;
     /* to allow user to select account
     private SharedPreferences settings;
     private GoogleAccountCredential credential;
@@ -63,12 +59,15 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         Fragment cFrag, wFrag, mFrag, lFrag, sFrag;
         ActionBar actionBar;
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        super.onCreate(savedInstanceState);
+        mainFragments = getResources().getStringArray(R.array.main_fragments);
+        helperFragments = getResources().getStringArray(R.array.helper_fragments);
 
         Network.setup(this);
         modes = new Modes();
@@ -91,38 +90,38 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
             */
 
             cFrag = new CurrentFragment();
-            ft.add(R.id.main_fragment, cFrag, "current");
+            ft.add(R.id.main_fragment, cFrag, mainFragments[0]);
             ft.detach(cFrag);
 
             wFrag = new WeekFragment();
-            ft.add(R.id.main_fragment, wFrag, "week");
+            ft.add(R.id.main_fragment, wFrag, mainFragments[1]);
             ft.detach(wFrag);
 
             mFrag = new MapFragment();
-            ft.add(R.id.main_fragment, mFrag, "map");
+            ft.add(R.id.main_fragment, mFrag, mainFragments[2]);
             ft.detach(mFrag);
 
             lFrag = new GenericFragment();
             Bundle args = new Bundle();
-            args.putInt("layout", R.layout.loading);
+            args.putInt(GenericFragment.LAYOUT, R.layout.loading);
             lFrag.setArguments(args);
-            ft.add(R.id.main_fragment, lFrag, "loading");
+            ft.add(R.id.main_fragment, lFrag, helperFragments[1]);
             ft.detach(lFrag);
 
             sFrag = new GenericFragment();
             args = new Bundle();
-            args.putInt("layout", R.layout.searching);
+            args.putInt(GenericFragment.LAYOUT, R.layout.searching);
             sFrag.setArguments(args);
-            ft.add(R.id.main_fragment, sFrag, "searching");
+            ft.add(R.id.main_fragment, sFrag, helperFragments[0]);
             ft.detach(sFrag);
 
             ft.commit();
 
         } else {
 
-            cFrag = getSupportFragmentManager().findFragmentByTag("current");
-            wFrag = getSupportFragmentManager().findFragmentByTag("week");
-            mFrag = getSupportFragmentManager().findFragmentByTag("map");
+            cFrag = getSupportFragmentManager().findFragmentByTag(mainFragments[0]);
+            wFrag = getSupportFragmentManager().findFragmentByTag(mainFragments[1]);
+            mFrag = getSupportFragmentManager().findFragmentByTag(mainFragments[2]);
 
             if (lastForecastResponse == null)
                 ft.detach(fm.findFragmentById(R.id.main_fragment)).commit();
@@ -133,6 +132,16 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
         wListen = (FragmentListener) wFrag;
         mListen = (FragmentListener) mFrag;
 
+        actionBarListener = new ActionBarListener(this);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        actionBar.setListNavigationCallbacks(
+                ArrayAdapter.createFromResource(this, R.array.main_fragments, android.R.layout.simple_spinner_dropdown_item),
+                actionBarListener);
+
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setIcon(R.drawable.ic_logo);
+
+        /*
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setDisplayShowTitleEnabled(false);
@@ -149,9 +158,10 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
         tab = actionBar.newTab().setText(R.string.tab_map).setTag("map").setTabListener(mapTab);
         actionBar.addTab(tab);
         setIntent(null);
+        */
 
         if (lastForecastResponse != null) {
-            modes.enableTabs(true);
+            actionBarListener.setEnabled(true);
             actionBar.setSelectedNavigationItem(navItem);
             if (lastForecastResponse.getExpiration().before(new Date())) {
                 Network.getInstance().getForecast(lastForecastResponse.getLatitude(), lastForecastResponse.getLongitude(),
@@ -160,7 +170,6 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
         }
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -294,23 +303,6 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
         }
     }
 
-    public void onButtonClick(View view) {
-        int id = view.getId();
-
-        switch ((String) view.getTag()) {
-            case "current":
-                cListen.onButtonClick(id);
-                break;
-            case "week":
-                wListen.onButtonClick(id);
-                break;
-            case "map":
-                mListen.onButtonClick(id);
-                break;
-        }
-
-    }
-
     @Override
     public void success(Object response, Response response2) {
         if (Forecast.Response.class.isInstance(response)) {
@@ -392,37 +384,32 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
             if (isActive && needsUpdate) {
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
+                Fragment toDetach, toAttach = null;
 
-                ft.detach(fm.findFragmentById(R.id.main_fragment));
+                toDetach = fm.findFragmentById(R.id.main_fragment);
 
                 if (isLoading) {
-                    enableTabs(false);
+                    actionBarListener.setEnabled(false);
                     if (isSearching)
-                        ft.attach(fm.findFragmentByTag("searching"));
+                        toAttach = fm.findFragmentByTag(helperFragments[0]);
                     else
-                        ft.attach(fm.findFragmentByTag("loading"));
+                        toAttach = fm.findFragmentByTag(helperFragments[1]);
                 } else {
                     if (isSearching) {
-                        enableTabs(false);
-                        ft.attach(fm.findFragmentByTag("searching"));
+                        actionBarListener.setEnabled(false);
+                        toAttach = fm.findFragmentByTag(helperFragments[0]);
                     } else {
                         if (lastForecastResponse != null) {
-                            enableTabs(true);
-                            ActionBar ab = getActionBar();
-                            ft.attach(fm.findFragmentByTag((String) ab.getTabAt(ab.getSelectedNavigationIndex()).getTag()));
+                            toAttach = fm.findFragmentByTag(mainFragments[getActionBar().getSelectedNavigationIndex()]);
+                            actionBarListener.setEnabled(true);
                         }
                     }
                 }
+                ft.detach(toDetach).attach(toAttach);
                 ft.commit();
                 fm.executePendingTransactions();
                 needsUpdate = false;
             }
-        }
-
-        public void enableTabs(Boolean enabled) {
-            currentTab.setEnabled(enabled);
-            weekTab.setEnabled(enabled);
-            mapTab.setEnabled(enabled);
         }
 
     }
@@ -447,6 +434,25 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
     public static Forecast.Response getForecast() {
         return lastForecastResponse;
     }
+
+    /*
+    public void onButtonClick(View view) {
+        int id = view.getId();
+
+        switch ((String) view.getTag()) {
+            case "current":
+                cListen.onButtonClick(id);
+                break;
+            case "week":
+                wListen.onButtonClick(id);
+                break;
+            case "map":
+                mListen.onButtonClick(id);
+                break;
+        }
+
+    }
+    */
 
     /* to allow user to select account
 

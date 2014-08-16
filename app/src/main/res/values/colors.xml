@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="accent_87">#de2196F3</color>
+    <color name="text_primary">#de000000</color>
+    <color name="text_secondary">#8a000000</color>
+
     <color name="green_500">#259b24</color>
     <color name="pink_a100">#ff80ab</color>
     <color name="pink_a100_50">#7fff80ab</color>
