@@ -2,141 +2,112 @@
 
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:svgimageview="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_vertical" >
+    android:layout_gravity="center_vertical"
+    android:requiresFadingEdge="vertical" >
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:svgimageview="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal" >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-        <RelativeLayout
-            android:id="@+id/holder_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/standard_margin"
-            android:layout_marginEnd="@dimen/standard_margin" >
+        <Space
+            android:id="@+id/center"
+            android:layout_width="@dimen/standard_margin"
+            android:layout_height="@dimen/standard_margin"
+            android:layout_centerHorizontal="true" />
 
-            <LinearLayout
-                android:id="@+id/line_1"
-                style="@style/tab_current_details_line"
-                android:layout_alignParentTop="true" >
+        <!-- left side -->
 
-                <com.caverock.androidsvg.SVGImageView
-                    android:id="@+id/sunrise_icon"
-                    style="@style/tab_current_details_icon"
-                    svgimageview:svg="@raw/sunrise" />
-                <com.shawnaten.tools.MaterialTextView
-                    android:id="@+id/sunrise_text"
-                    style="@style/text.subhead"
-                    android:layout_gravity="center_vertical" />
+        <com.caverock.androidsvg.SVGImageView
+            android:id="@+id/sunrise_icon"
+            style="@style/details_icon"
+            android:layout_alignLeft="@+id/wind_icon"
+            android:layout_alignStart="@id/wind_icon"
+            android:layout_marginBottom="@dimen/half_margin" />
+        <com.shawnaten.tools.MaterialTextView
+            android:id="@+id/sunrise_text"
+            style="@style/text.subhead.details"
+            android:layout_toRightOf="@id/sunrise_icon"
+            android:layout_toEndOf="@id/sunrise_icon" />
 
-            </LinearLayout>
+        <com.caverock.androidsvg.SVGImageView
+            android:id="@+id/precip_hour_icon"
+            style="@style/details_icon"
+            android:layout_below="@id/sunrise_icon"
+            android:layout_alignLeft="@id/wind_icon"
+            android:layout_alignStart="@id/wind_icon"
+            android:layout_marginBottom="@dimen/half_margin" />
+        <com.shawnaten.tools.MaterialTextView
+            android:id="@+id/precip_hour_text"
+            style="@style/text.subhead.details"
+            android:layout_below="@id/sunrise_icon"
+            android:layout_toRightOf="@id/precip_hour_icon"
+            android:layout_toEndOf="@id/precip_hour_icon" />
 
-            <LinearLayout
-                android:id="@+id/line_2"
-                style="@style/tab_current_details_line"
-                android:layout_below="@id/line_1" >
+        <com.caverock.androidsvg.SVGImageView
+            android:id="@id/wind_icon"
+            style="@style/details_icon"
+            android:layout_below="@id/precip_hour_icon"
+            android:layout_toLeftOf="@+id/wind_speed"
+            android:layout_toStartOf="@id/wind_speed" />
+        <com.shawnaten.tools.MaterialTextView
+            android:id="@id/wind_speed"
+            style="@style/text.subhead.details"
+            android:layout_below="@id/precip_hour_icon"
+            android:layout_toLeftOf="@+id/wind_bearing_icon"
+            android:layout_toStartOf="@id/wind_bearing_icon" />
+        <com.caverock.androidsvg.SVGImageView
+            android:id="@id/wind_bearing_icon"
+            style="@style/details_icon"
+            android:layout_width="16sp"
+            android:layout_below="@id/precip_hour_icon"
+            android:layout_toLeftOf="@id/center"
+            android:layout_toStartOf="@id/center"
+            android:layout_marginRight="0dp"
+            android:layout_marginEnd="0dp" />
 
-                <com.caverock.androidsvg.SVGImageView
-                    android:id="@+id/precip_hour_icon"
-                    style="@style/tab_current_details_icon" />
-                <com.shawnaten.tools.MaterialTextView
-                    android:id="@+id/precip_hour_text"
-                    style="@style/text.subhead"
-                    android:layout_gravity="center_vertical" />
+        <!-- right side -->
 
-            </LinearLayout>
+        <com.caverock.androidsvg.SVGImageView
+            android:id="@+id/sunset_icon"
+            style="@style/details_icon"
+            android:layout_toRightOf="@id/center"
+            android:layout_toEndOf="@id/center"
+            android:layout_marginBottom="@dimen/half_margin" />
+        <com.shawnaten.tools.MaterialTextView
+            android:id="@+id/sunset_text"
+            style="@style/text.subhead.details"
+            android:layout_toRightOf="@id/sunset_icon"
+            android:layout_toEndOf="@id/sunset_icon" />
 
-            <LinearLayout
-                android:id="@+id/line_3"
-                style="@style/tab_current_details_line"
-                android:layout_below="@id/line_2"
-                android:layout_marginBottom="0dp" >
+        <com.caverock.androidsvg.SVGImageView
+            android:id="@+id/precip_day_icon"
+            style="@style/details_icon"
+            android:layout_below="@id/sunset_icon"
+            android:layout_toRightOf="@id/center"
+            android:layout_toEndOf="@id/center"
+            android:layout_marginBottom="@dimen/half_margin" />
+        <com.shawnaten.tools.MaterialTextView
+            android:id="@+id/precip_day_text"
+            style="@style/text.subhead.details"
+            android:layout_below="@id/sunset_icon"
+            android:layout_toRightOf="@id/precip_day_icon"
+            android:layout_toEndOf="@id/precip_day_icon" />
 
-                <com.caverock.androidsvg.SVGImageView
-                    android:id="@+id/wind_icon"
-                    style="@style/tab_current_details_icon"
-                    svgimageview:svg="@raw/wind" />
-                <com.shawnaten.tools.MaterialTextView
-                    android:id="@+id/wind_speed"
-                    style="@style/text.subhead"
-                    android:layout_gravity="center_vertical" />
-                <com.caverock.androidsvg.SVGImageView
-                    android:id="@+id/wind_bearing_icon"
-                    style="@style/tab_current_details_icon"
-                    android:layout_width="16sp"
-                    android:layout_marginRight="0dp"
-                    android:layout_marginEnd="0dp" />
-
-            </LinearLayout>
-
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/holder_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/standard_margin"
-            android:layout_marginStart="@dimen/standard_margin"
-            android:layout_toRightOf="@id/holder_1"
-            android:layout_toEndOf="@id/holder_1" >
-
-            <LinearLayout
-                android:id="@id/line_1"
-                style="@style/tab_current_details_line"
-                android:layout_alignParentTop="true" >
-
-                <com.caverock.androidsvg.SVGImageView
-                    android:id="@+id/sunset_icon"
-                    style="@style/tab_current_details_icon"
-                    svgimageview:svg="@raw/sunset" />
-                <com.shawnaten.tools.MaterialTextView
-                    android:id="@+id/sunset_text"
-                    style="@style/text.subhead"
-                    android:layout_gravity="center_vertical" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@id/line_2"
-                style="@style/tab_current_details_line"
-                android:layout_below="@id/line_1" >
-
-                <com.caverock.androidsvg.SVGImageView
-                    android:id="@+id/precip_day_icon"
-                    style="@style/tab_current_details_icon" />
-                <com.shawnaten.tools.MaterialTextView
-                    android:id="@+id/precip_day_text"
-                    style="@style/text.subhead"
-                    android:layout_gravity="center_vertical" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@id/line_3"
-                style="@style/tab_current_details_line"
-                android:layout_below="@id/line_2"
-                android:layout_marginBottom="0dp" >
-
-                <com.caverock.androidsvg.SVGImageView
-                    android:id="@+id/visibility_icon"
-                    style="@style/tab_current_details_icon"
-                    svgimageview:svg="@raw/fog" />
-                <com.shawnaten.tools.MaterialTextView
-                    android:id="@+id/visibility_text"
-                    style="@style/text.subhead"
-                    android:layout_gravity="center_vertical" />
-
-            </LinearLayout>
-
-        </RelativeLayout>
+        <com.caverock.androidsvg.SVGImageView
+            android:id="@+id/visibility_icon"
+            style="@style/details_icon"
+            android:layout_below="@id/precip_day_icon"
+            android:layout_toRightOf="@id/center"
+            android:layout_toEndOf="@id/center" />
+        <com.shawnaten.tools.MaterialTextView
+            android:id="@+id/visibility_text"
+            style="@style/text.subhead.details"
+            android:layout_below="@id/precip_day_icon"
+            android:layout_toRightOf="@id/visibility_icon"
+            android:layout_toEndOf="@id/visibility_icon" />
 
     </RelativeLayout>
 

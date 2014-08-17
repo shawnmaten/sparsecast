@@ -6,18 +6,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.caverock.androidsvg.SVGImageView;
 import com.shawnaten.networking.Forecast;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.ForecastTools;
+import com.shawnaten.tools.SVGManager;
 import com.shawnaten.tools.WeatherBarShape;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -27,6 +28,9 @@ import static java.util.Arrays.asList;
  * Created by shawnaten on 7/4/14.
  */
 public class WeekFragmentAdapter extends BaseExpandableListAdapter {
+    private static final int[] iconIds = {R.id.temp_min_icon, R.id.temp_max_icon, R.id.sunrise_icon, R.id.sunset_icon};
+    private static final int[] iconValues = {R.raw.temp_0, R.raw.temp_100, R.raw.sunrise, R.raw.sunset};
+
     private Context context;
     private LayoutInflater inflater;
     private Forecast.DataPoint[] hourly, daily;
@@ -36,12 +40,12 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
     private TimeZone timeZone;
 
     private int size;
-    private final int childCount = 2, childTypeCount = 2, groupTypeCount = 1;
+    private final int childCount = 1, childTypeCount = 1, groupTypeCount = 1;
 
     private WeatherBarShape[] weatherBars;
 
     public WeekFragmentAdapter(Context context, Forecast.Response forecast) {
-        int tickColor, timeOffset;
+        int timeOffset;
 
         this.context = context;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -55,8 +59,6 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
 
         cal.setTime(forecast.getCurrently().getTime());
         timeOffset = 24 - cal.get(Calendar.HOUR_OF_DAY);
-
-        tickColor = context.getResources().getColor(android.R.color.tertiary_text_light);
 
         weatherBars = new WeatherBarShape[size];
         for (int i = 0; i < size; i++) {
@@ -121,10 +123,14 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
         if (convertView == null)
             convertView = inflater.inflate(R.layout.tab_week_group, parent, false);
 
+        ((SVGImageView) convertView.findViewById(R.id.weather_icon))
+                .setSVG(SVGManager.getSVG(context, ForecastTools.getWeatherIcon(day.getIcon())));
+
         ForecastTools.setText((ViewGroup) convertView, asList(R.id.day, R.id.summary),
                 asList(
-                        cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()),
-                        day.getSummary()
+                        cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()),
+                        String.format("%s - %s", ForecastTools.percForm.format(day.getPrecipProbability()),
+                                day.getSummary())
                 )
         );
 
@@ -134,77 +140,42 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        int childID = (int) getChildId(groupPosition, childPosition);
+        Forecast.DataPoint day = (Forecast.DataPoint) getChild(groupPosition, childPosition);
+        Boolean makeNewTextViews = false;
+        RelativeLayout weatherBarTexts;
+        ImageView weatherBarImage;
 
-        switch (childPosition) {
-            case 0:
-                Forecast.DataPoint day = (Forecast.DataPoint) getChild(groupPosition, childPosition);
-                if (convertView == null)
-                    convertView = inflater.inflate(R.layout.tab_week_child_info, parent, false);
-
-                List<Integer> groupSizes = asList(1, 1, 1);
-                List<String> unitSeps = asList("", "", ""), groupEnds = asList("\n", "\n", "\n");
-
-                if (convertView.getTag().equals("tab_week_child_port")) {
-                    groupSizes = asList(2, 2, 2);
-                    unitSeps = asList("\t\t", "\t\t", "\t\t");
-                    groupEnds = asList("", "", "");
-                }
-
-                String precipType = day.getPrecipType();
-                if (precipType == null)
-                    precipType = context.getString(R.string.precipitation);
-                ForecastTools.setSpannableText((ViewGroup) convertView, asList(R.id.sun, R.id.temp, R.id.precip), asList(2, 3, 2), groupSizes,
-                        asList(": ", ": ", ": "), asList("", " ", ""), unitSeps, groupEnds,
-                        asList(
-                                asList(context.getString(R.string.sunrise), timeForm.format(day.getSunriseTime()),
-                                        context.getString(R.string.sunset), timeForm.format(day.getSunsetTime())),
-
-                                asList(context.getString(R.string.high), ForecastTools.tempForm.format(day.getTemperatureMax()),
-                                        timeForm.format(day.getTemperatureMaxTime()),
-                                        context.getString(R.string.low), ForecastTools.tempForm.format(day.getTemperatureMin()),
-                                        timeForm.format(day.getTemperatureMinTime())),
-
-                                asList(ForecastTools.capitalize(precipType), ForecastTools.percForm.format(day.getPrecipProbability()),
-                                        context.getString(R.string.intensity), context.getString(ForecastTools.getIntensity(day.getPrecipIntensity())))
-                        )
-                );
-                break;
-            case 1:
-                Boolean makeNew = false;
-                FrameLayout weatherBarContainer;
-                RelativeLayout weatherBarTexts;
-                ImageView weatherBarImage;
-                ShapeDrawable drawable;
-
-                if (convertView == null) {
-                    convertView = inflater.inflate(R.layout.tab_week_child_weather_bar, parent, false);
-                    weatherBarContainer = (FrameLayout) convertView.findViewById(R.id.weather_bar_container);
-                    weatherBarTexts = (RelativeLayout) weatherBarContainer.findViewById(R.id.weather_bar_texts);
-                    weatherBarImage = (ImageView) weatherBarContainer.findViewById(R.id.weather_bar_image);
-                    makeNew = true;
-                } else {
-                    int prevID = convertView.getId();
-                    weatherBarContainer = (FrameLayout) convertView.findViewById(prevID * 10);
-                    weatherBarTexts = (RelativeLayout) weatherBarContainer.findViewById(prevID * 100);
-                    weatherBarImage = (ImageView) weatherBarContainer.findViewById(prevID * 1000);
-                }
-
-                convertView.setScrollX(0);
-
-                weatherBarContainer.setId(childID * 10);
-                weatherBarTexts.setId(childID * 100);
-                weatherBarImage.setId(childID * 1000);
-
-                if (makeNew)
-                    ForecastTools.createWeatherBarTextViews(inflater, weatherBars[groupPosition], weatherBarTexts);
-
-                ForecastTools.setWeatherBarText(weatherBars[groupPosition], hourly, timeZone, weatherBarTexts);
-                drawable = new ShapeDrawable(weatherBars[groupPosition]);
-                weatherBarImage.setBackgroundDrawable(drawable);
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.tab_week_child, parent, false);
+            makeNewTextViews = true;
         }
 
-        convertView.setId(childID);
+        for (int i = 0; i < iconIds.length; i++) {
+            ((SVGImageView) convertView.findViewById(iconIds[i])).setSVG(SVGManager.getSVG(context, iconValues[i]));
+        }
+
+        ForecastTools.timeForm.setTimeZone(timeZone);
+        SimpleDateFormat shortTimeForm = ForecastTools.getShortTimeForm(timeZone, 24);
+        ForecastTools.setText((ViewGroup) convertView, asList(R.id.temp_min_text, R.id.temp_max_text, R.id.sunrise_text, R.id.sunset_text),
+                asList(
+                        String.format("%s %s", ForecastTools.tempForm.format(day.getTemperatureMin()),
+                                shortTimeForm.format(day.getTemperatureMinTime())),
+                        String.format("%s %s", ForecastTools.tempForm.format(day.getTemperatureMax()),
+                                shortTimeForm.format(day.getTemperatureMaxTime())),
+                        ForecastTools.timeForm.format(day.getSunriseTime()), ForecastTools.timeForm.format(day.getSunsetTime())
+                ));
+
+        weatherBarTexts = (RelativeLayout) convertView.findViewById(R.id.weather_bar_texts);
+        weatherBarImage = (ImageView) convertView.findViewById(R.id.weather_bar_image);
+
+        if (makeNewTextViews)
+            ForecastTools.createWeatherBarTextViews(inflater, weatherBars[groupPosition], weatherBarTexts);
+
+        ForecastTools.setWeatherBarText(weatherBars[groupPosition], hourly, timeZone, weatherBarTexts);
+        weatherBarImage.setBackgroundDrawable(new ShapeDrawable(weatherBars[groupPosition]));
+        convertView.findViewById(R.id.weather_bar).setScrollX(0);
+
+        convertView.setId((int) getChildId(groupPosition, childPosition));
         return convertView;
     }
 

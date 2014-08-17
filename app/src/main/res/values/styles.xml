@@ -65,67 +65,19 @@
     </style>
 
     <style
-        name="tab_current_details_line" >
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">@dimen/half_margin</item>
-        <item name="android:orientation">horizontal</item>
-    </style>
-
-    <style
-        name="tab_current_details_icon" >
-        <item name="android:layout_width">@dimen/tab_current_details_icon</item>
-        <item name="android:layout_height">@dimen/tab_current_details_icon</item>
+        name="details_icon" >
+        <item name="android:layout_width">@dimen/details_icon</item>
+        <item name="android:layout_height">@dimen/details_icon</item>
         <item name="android:layout_marginRight">@dimen/standard_margin</item>
         <item name="android:layout_marginEnd" tools:targetApi="17">@dimen/standard_margin</item>
     </style>
 
-	<style 
-	    name="tab" >
-	    <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:freezesText">true</item>
-	</style>
-
     <style
-        name="tab.week" >
-
-    </style>
-
-    <style name="tab.week.item">
-        <item name="android:textColor">@android:color/secondary_text_light</item>
-        <item name="android:textSize">@dimen/textSmall</item>
-    </style>
-
-    <style name="tab.week.item.group" >
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:gravity">center</item>
-    </style>
-
-    <style name="tab.week.item.group.summary" >
-        <item name="android:paddingLeft">@dimen/large_margin</item>
-        <item name="android:paddingStart" tools:targetApi="17">@dimen/large_margin</item>
-        <item name="android:paddingRight">@dimen/large_margin</item>
-        <item name="android:paddingEnd" tools:targetApi="17">@dimen/large_margin</item>
-    </style>
-
-    <style name="tab.week.item.child" >
-
-    </style>
-
-    <style name="tab.week.item.child.land" >
-        <item name="android:paddingLeft">@dimen/standard_margin</item>
-        <item name="android:paddingStart" tools:targetApi="17">@dimen/standard_margin</item>
-        <item name="android:paddingRight">@dimen/standard_margin</item>
-        <item name="android:paddingEnd" tools:targetApi="17">@dimen/standard_margin</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:gravity">left|start|center_vertical</item>
-
-    </style>
-
-    <style name="tab.week.item.child.port" >
-        <item name="android:gravity">center</item>
+        name="text.subhead.details" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/details_text_height</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:layout_marginTop">@dimen/details_text_top_margin</item>
     </style>
     
     <!--
@@ -152,6 +104,7 @@
 
     </style>
 
+    <!--
     <style name="ActionBar" parent="android:Widget.Holo.Light.ActionBar.Solid.Inverse" >
         <item name="android:background">@color/green_500</item>
         <item name="android:backgroundStacked">@color/green_500</item>
@@ -163,7 +116,8 @@
     </style>
 
     <style name="ActionBarTab" parent="android:Widget.Holo.Light.ActionBar.TabView.Inverse" >
-        <!--<item name="android:background">@drawable/tab_indicator_ab_weather</item>-->
+        <item name="android:background">@drawable/tab_indicator_ab_weather</item>
     </style>
+    -->
 
 </resources>

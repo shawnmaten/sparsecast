@@ -333,23 +333,7 @@ public class ForecastTools {
         unitSkip = weatherBar.getUnitSkip();
         tickCount = weatherBar.getTickCount();
 
-        timeForm = (SimpleDateFormat) DateFormat.getTimeInstance(DateFormat.SHORT);
-        timeForm.setTimeZone(timeZone);
-
-        String pattern = timeForm.toPattern();
-
-        if (pattern.contains("a")) {
-            switch (unitCount) {
-                case 60:
-                    pattern = pattern.replaceAll("\\s*a", "");
-                    break;
-                case 24:
-                    pattern = pattern.replaceAll(":mm\\s*", "");
-                    break;
-            }
-        }
-
-        timeForm.applyPattern(pattern);
+        timeForm = getShortTimeForm(timeZone, unitCount);
 
         for (int i = 0; i < tickCount; i++) {
             Forecast.DataPoint dataPoint = data[((i + 1) * unitSkip) + unitStart];
@@ -414,6 +398,27 @@ public class ForecastTools {
         }
 
         return blocks.toArray(new WeatherBlock[blocks.size()]);
+    }
+
+    public static SimpleDateFormat getShortTimeForm(TimeZone  timeZone, int unitCount) {
+        SimpleDateFormat shortTimeForm = (SimpleDateFormat) DateFormat.getTimeInstance(DateFormat.SHORT);
+
+        shortTimeForm.setTimeZone(timeZone);
+        String pattern = shortTimeForm.toPattern();
+
+        if (pattern.contains("a")) {
+            switch (unitCount) {
+                case 60:
+                    pattern = pattern.replaceAll("\\s*a", "");
+                    break;
+                case 24:
+                    pattern = pattern.replaceAll(":mm\\s*", "");
+                    break;
+            }
+        }
+
+        shortTimeForm.applyPattern(pattern);
+        return shortTimeForm;
     }
 
 }

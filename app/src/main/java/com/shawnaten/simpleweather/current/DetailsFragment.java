@@ -12,6 +12,7 @@ import com.shawnaten.simpleweather.MainActivity;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
+import com.shawnaten.tools.SVGManager;
 
 import java.util.ArrayList;
 
@@ -21,10 +22,26 @@ import static java.util.Arrays.asList;
  * Created by shawnaten on 7/20/14.
  */
 public class DetailsFragment extends Fragment implements FragmentListener {
+    private static final int[] permIconIds = {R.id.sunrise_icon, R.id.sunset_icon,
+        R.id.wind_icon, R.id.visibility_icon};
+    private static final int[] permIconValues = {R.raw.sunrise, R.raw.sunset,
+        R.raw.wind, R.raw.fog};
+
     private ArrayList<Integer> iconIds = new ArrayList<>(), iconValues = new ArrayList<>();
 
     public DetailsFragment() {
 
+    }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            iconIds = savedInstanceState.getIntegerArrayList("iconIds");
+            iconValues = savedInstanceState.getIntegerArrayList("iconValues");
+        }
     }
 
     @Override
@@ -33,13 +50,8 @@ public class DetailsFragment extends Fragment implements FragmentListener {
     }
 
     @Override
-    public void onViewStateRestored (Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            iconIds = savedInstanceState.getIntegerArrayList("iconIds");
-            iconValues = savedInstanceState.getIntegerArrayList("iconValues");
-        }
+    public void onResume () {
+        super.onResume();
 
         ViewGroup parent = (ViewGroup) getView();
 
@@ -79,8 +91,12 @@ public class DetailsFragment extends Fragment implements FragmentListener {
             forecast.setRead(getTag());
         }
 
+        for (int i = 0; i < permIconIds.length; i++) {
+            ((SVGImageView) parent.findViewById(permIconIds[i])).setSVG(SVGManager.getSVG(getActivity(), permIconValues[i]));
+        }
+
         for (int i = 0; i < iconIds.size(); i++) {
-            ((SVGImageView) parent.findViewById(iconIds.get(i))).setImageResource(iconValues.get(i));
+            ((SVGImageView) parent.findViewById(iconIds.get(i))).setSVG(SVGManager.getSVG(getActivity(), iconValues.get(i)));
         }
 
     }

@@ -40,7 +40,7 @@
         android:layout_below="@id/temp" />
 
     <com.shawnaten.tools.MaterialTextView
-        android:id="@id/low_temp_time"
+        android:id="@+id/low_temp_time"
         style="@style/text.caption"
         android:layout_below="@id/low_temp" />
 
@@ -52,16 +52,28 @@
         android:layout_alignParentEnd="true" />
 
     <com.shawnaten.tools.MaterialTextView
-        android:id="@id/high_temp_time"
+        android:id="@+id/high_temp_time"
         style="@style/text.caption"
         android:layout_below="@id/high_temp"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
+    <com.caverock.androidsvg.SVGImageView
+        android:id="@+id/weather_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_holder"
+        android:layout_above="@id/time"
+        android:layout_alignLeft="@id/currently_holder"
+        android:layout_alignStart="@id/currently_holder"
+        android:layout_alignRight="@id/currently_holder"
+        android:layout_alignEnd="@id/currently_holder"
+        android:layout_margin="@dimen/standard_margin" />
+
     <com.shawnaten.tools.MaterialTextView
         android:id="@+id/time"
-        style="@style/text.subhead"
-        android:layout_alignBottom="@id/low_temp_time"
+        style="@style/text.body_2"
+        android:layout_below="@id/low_temp"
         android:layout_centerHorizontal="true" />
 
     <HorizontalScrollView
@@ -78,17 +90,5 @@
             style="@style/text.body_1" />
 
     </HorizontalScrollView>
-
-    <com.caverock.androidsvg.SVGImageView
-        android:id="@+id/weather_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title_holder"
-        android:layout_above="@id/time"
-        android:layout_alignLeft="@id/currently_holder"
-        android:layout_alignStart="@id/currently_holder"
-        android:layout_alignRight="@id/currently_holder"
-        android:layout_alignEnd="@id/currently_holder"
-        android:layout_margin="@dimen/standard_margin" />
 
 </RelativeLayout>

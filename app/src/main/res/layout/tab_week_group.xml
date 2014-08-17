@@ -1,27 +1,43 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="@dimen/list_item"
-    android:paddingLeft="@dimen/expandable_list_start"
-    android:paddingStart="@dimen/expandable_list_start"
-    android:paddingTop="@dimen/standard_margin"
-    android:paddingBottom="@dimen/standard_margin" >
+    android:layout_height="@dimen/list_height"
+    android:paddingTop="@dimen/half_margin"
+    android:paddingBottom="@dimen/half_margin"
+    android:paddingLeft="@dimen/list_start"
+    android:paddingStart="@dimen/list_start"
+    android:paddingRight="@dimen/standard_margin"
+    android:paddingEnd="@dimen/standard_margin" >
 
-    <TextView
-        android:id="@+id/day"
-        style="@style/tab.week.item.group"
+    <com.caverock.androidsvg.SVGImageView
+        android:id="@+id/weather_icon"
+        android:layout_width="@dimen/list_avatar"
+        android:layout_height="@dimen/list_avatar"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/standard_margin"
+        android:layout_marginEnd="@dimen/standard_margin" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:textStyle="bold"
-        android:textSize="@dimen/textNormal" />
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/weather_icon"
+        android:layout_toEndOf="@id/weather_icon"
+        android:layout_centerVertical="true"
+        android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/summary"
-        style="@style/tab.week.item.group.summary"
-        android:layout_toRightOf="@id/day"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        <com.shawnaten.tools.MaterialTextView
+            android:id="@+id/day"
+            style="@style/text.subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false" />
+
+        <com.shawnaten.tools.MaterialTextView
+            android:id="@+id/summary"
+            style="@style/text.body_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
 </RelativeLayout>

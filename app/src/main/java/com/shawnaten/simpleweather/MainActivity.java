@@ -405,7 +405,12 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
                         }
                     }
                 }
-                ft.detach(toDetach).attach(toAttach);
+
+                if (toDetach != null)
+                    ft.detach(toDetach);
+                if (toAttach != null)
+                    ft.attach(toAttach);
+
                 ft.commit();
                 fm.executePendingTransactions();
                 needsUpdate = false;
