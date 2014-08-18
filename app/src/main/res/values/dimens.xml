@@ -16,8 +16,7 @@
     <dimen name="tab_current_stats_icon">45sp</dimen>
 
     <dimen name="details_icon">34sp</dimen>
-    <dimen name="details_text_top_margin">9sp</dimen>
-    <dimen name="details_text_height">16sp</dimen>
+    <dimen name="details_text_top_margin">6.25sp</dimen>
 
     <integer name="summary_max_ems">18</integer>
 

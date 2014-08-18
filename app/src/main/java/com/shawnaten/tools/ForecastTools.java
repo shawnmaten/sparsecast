@@ -31,15 +31,27 @@ import java.util.regex.Pattern;
  */
 public class ForecastTools {
 
-    public final static double VERY_LIGHT = 0.002, LIGHT = 0.017, MODERATE = 0.1, HEAVY = 0.4,
+    private final static double VERY_LIGHT = 0.002, LIGHT = 0.017, MODERATE = 0.1, HEAVY = 0.4,
         SCATTERED = 0.4, BROKEN = 0.75, OVERCAST = 1.0,
         FOG = 0.6214, MIST = 1.2427, HAZE = 3.1069;
 
-    public static final DecimalFormat tempForm = new DecimalFormat("###\u00b0"), percForm = new DecimalFormat("###%"),
-            intForm = new DecimalFormat("###");
+    public static DateFormat getTimeForm(TimeZone timeZone) {
+        DateFormat timeForm = DateFormat.getTimeInstance(DateFormat.SHORT);
+        timeForm.setTimeZone(timeZone);
+        return timeForm;
+    }
 
-    public static final DateFormat timeForm = DateFormat.getTimeInstance(DateFormat.SHORT);
+    public static DecimalFormat getTempForm() {
+        return new DecimalFormat("###\u00b0");
+    }
 
+    public static DecimalFormat getPercForm() {
+        return new DecimalFormat("###%");
+    }
+
+    public static DecimalFormat getIntForm() {
+        return new DecimalFormat("###");
+    }
     public static int getWindString (double bearing) {
         int b = (int) (bearing / 22.5);
         if ((b % 2) != 0)
@@ -339,7 +351,7 @@ public class ForecastTools {
             Forecast.DataPoint dataPoint = data[((i + 1) * unitSkip) + unitStart];
             textView = (TextView) layout.findViewById(i + 1);
             textView.setText(String.format("%s\n%s", timeForm.format(dataPoint.getTime()),
-                    ForecastTools.tempForm.format(dataPoint.getTemperature())));
+                    ForecastTools.getTempForm().format(dataPoint.getTemperature())));
         }
 
     }

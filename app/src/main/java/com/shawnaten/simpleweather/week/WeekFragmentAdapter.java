@@ -17,6 +17,7 @@ import com.shawnaten.tools.SVGManager;
 import com.shawnaten.tools.WeatherBarShape;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -119,6 +120,7 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         Forecast.DataPoint day = (Forecast.DataPoint) getGroup(groupPosition);
+        DecimalFormat percForm = ForecastTools.getPercForm();
         cal.setTime(day.getTime());
         if (convertView == null)
             convertView = inflater.inflate(R.layout.tab_week_group, parent, false);
@@ -129,7 +131,7 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
         ForecastTools.setText((ViewGroup) convertView, asList(R.id.day, R.id.summary),
                 asList(
                         cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()),
-                        String.format("%s - %s", ForecastTools.percForm.format(day.getPrecipProbability()),
+                        String.format("%s - %s", percForm.format(day.getPrecipProbability()),
                                 day.getSummary())
                 )
         );
@@ -154,15 +156,17 @@ public class WeekFragmentAdapter extends BaseExpandableListAdapter {
             ((SVGImageView) convertView.findViewById(iconIds[i])).setSVG(SVGManager.getSVG(context, iconValues[i]));
         }
 
-        ForecastTools.timeForm.setTimeZone(timeZone);
+        DateFormat timeForm = ForecastTools.getTimeForm(timeZone);
         SimpleDateFormat shortTimeForm = ForecastTools.getShortTimeForm(timeZone, 24);
+        DecimalFormat tempForm = ForecastTools.getTempForm();
+
         ForecastTools.setText((ViewGroup) convertView, asList(R.id.temp_min_text, R.id.temp_max_text, R.id.sunrise_text, R.id.sunset_text),
                 asList(
-                        String.format("%s %s", ForecastTools.tempForm.format(day.getTemperatureMin()),
+                        String.format("%s %s", tempForm.format(day.getTemperatureMin()),
                                 shortTimeForm.format(day.getTemperatureMinTime())),
-                        String.format("%s %s", ForecastTools.tempForm.format(day.getTemperatureMax()),
+                        String.format("%s %s", tempForm.format(day.getTemperatureMax()),
                                 shortTimeForm.format(day.getTemperatureMaxTime())),
-                        ForecastTools.timeForm.format(day.getSunriseTime()), ForecastTools.timeForm.format(day.getSunsetTime())
+                        timeForm.format(day.getSunriseTime()), timeForm.format(day.getSunsetTime())
                 ));
 
         weatherBarTexts = (RelativeLayout) convertView.findViewById(R.id.weather_bar_texts);

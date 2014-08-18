@@ -15,7 +15,6 @@ import com.shawnaten.tools.FragmentListener;
  * Created by shawnaten on 7/3/14.
  */
 public class WeekFragment extends Fragment implements FragmentListener {
-    private static WeekFragmentAdapter adapter;
 
     public WeekFragment() {
 
@@ -24,7 +23,6 @@ public class WeekFragment extends Fragment implements FragmentListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ExpandableListView view = (ExpandableListView) inflater.inflate(R.layout.tab_week_main, container, false);
-        view.setAdapter(adapter);
         return view;
     }
 
@@ -32,18 +30,25 @@ public class WeekFragment extends Fragment implements FragmentListener {
     public void onResume () {
         super.onResume();
 
-        if (MainActivity.hasForecast() && (MainActivity.getForecast().isUnread(getTag()) || adapter == null)) {
-            ExpandableListView view = (ExpandableListView) getView().findViewById(R.id.tab_week);
-            adapter = new WeekFragmentAdapter(getActivity(), MainActivity.getForecast());
-            view.setAdapter(adapter);
-            MainActivity.getForecast().setRead(getTag());
-        }
+        updateView();
 
     }
 
     @Override
-    public void onButtonClick(int id) {
+    public void onNewData() {
+        if (isVisible()) {
+            updateView();
+        }
+    }
 
+    private void updateView() {
+        MainActivity activity = (MainActivity) getActivity();
+
+        if (activity.hasForecast()) {
+            ExpandableListView view = (ExpandableListView) getView().findViewById(R.id.tab_week);
+            WeekFragmentAdapter adapter = new WeekFragmentAdapter(getActivity(), activity.getForecast());
+            view.setAdapter(adapter);
+        }
     }
 
 }

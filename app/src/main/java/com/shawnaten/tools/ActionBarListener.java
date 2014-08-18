@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentTransaction;
 import com.shawnaten.simpleweather.R;
 
 public class ActionBarListener implements ActionBar.OnNavigationListener {
-    private Boolean enabled = false;
     private FragmentActivity activity;
     private String[] fragments;
 	
@@ -17,22 +16,15 @@ public class ActionBarListener implements ActionBar.OnNavigationListener {
         this.activity = activity;
 	}
 
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
     @Override
     public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-        if (enabled) {
-            FragmentManager fm = activity.getSupportFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft
-                    .detach(fm.findFragmentById(R.id.main_fragment))
-                    .attach(fm.findFragmentByTag(fragments[itemPosition]))
-                    .commit();
-            return true;
-        }
-        return false;
+        FragmentManager fm = activity.getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft
+                .detach(fm.findFragmentById(R.id.main_fragment))
+                .attach(fm.findFragmentByTag(fragments[itemPosition]))
+                .commit();
+        return true;
     }
 
     /*

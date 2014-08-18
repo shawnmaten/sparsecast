@@ -74,9 +74,6 @@
 
     <style
         name="text.subhead.details" >
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">@dimen/details_text_height</item>
-        <item name="android:includeFontPadding">false</item>
         <item name="android:layout_marginTop">@dimen/details_text_top_margin</item>
     </style>
     

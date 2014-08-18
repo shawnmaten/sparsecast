@@ -32,8 +32,22 @@ public class SummaryFragment extends Fragment implements FragmentListener {
     public void onResume () {
         super.onResume();
 
-        if (MainActivity.hasForecast() && MainActivity.getForecast().isUnread(getTag())) {
-            Forecast.Response forecast = MainActivity.getForecast();
+        updateView();
+
+    }
+
+    @Override
+    public void onNewData() {
+        if (isVisible()) {
+            updateView();
+        }
+    }
+
+    private void updateView() {
+        MainActivity activity = (MainActivity) getActivity();
+
+        if (activity.hasForecast()) {
+            Forecast.Response forecast = activity.getForecast();
 
             String hourSummary;
             if (forecast.getMinutely() == null)
@@ -43,13 +57,7 @@ public class SummaryFragment extends Fragment implements FragmentListener {
 
             ForecastTools.setText((ViewGroup) getView(), asList(R.id.next_hour, R.id.next_24_hours),
                     asList(hourSummary, forecast.getHourly().getSummary()));
-
-            forecast.setRead(getTag());
         }
     }
 
-    @Override
-    public void onButtonClick(int id) {
-
-    }
 }

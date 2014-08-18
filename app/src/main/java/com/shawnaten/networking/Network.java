@@ -12,7 +12,6 @@ import com.google.gson.GsonBuilder;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.keysEndpoint.KeysEndpoint;
 import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
-import com.shawnaten.tools.PlayServices;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -92,12 +91,10 @@ public class Network {
 
     public static void setup(FragmentActivity newActivity) {
         activity = newActivity;
-        getInstance();
+        instance = new Network();
     }
 
     public static synchronized Network getInstance() {
-        if (instance == null && PlayServices.playServicesAvailable(activity))
-            instance = new Network();
         return instance;
     }
 

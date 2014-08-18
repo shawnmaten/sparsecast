@@ -40,14 +40,6 @@ public class Forecast {
 
         }
 
-        public void setRead(String name) {
-            readStamps.add(name);
-        }
-
-        public boolean isUnread(String name) {
-            return !readStamps.contains(name);
-        }
-
         public void setExpiration(String expirationString) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
             try {

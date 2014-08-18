@@ -1,9 +1,6 @@
 package com.shawnaten.simpleweather.map;
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -15,7 +12,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.shawnaten.networking.Forecast;
 import com.shawnaten.simpleweather.MainActivity;
-import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.FragmentListener;
 
 /**
@@ -38,45 +34,11 @@ public class MapFragment extends SupportMapFragment implements FragmentListener 
     }
 
     @Override
-    public void onCreate (Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-
-        if (savedInstanceState != null) {
-            position = savedInstanceState.getParcelable(MAP_POSITION);
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.tab_map, menu);
-    }
-
-    @Override
     public void onViewCreated (View view, Bundle savedInstanceState) {
-        GoogleMap map = getMap();
-        if (MainActivity.hasForecast() && map != null) {
-            Forecast.Response forecast = MainActivity.getForecast();
-            position = new LatLng(forecast.getLatitude(), forecast.getLongitude());
-            if (marker == null) {
-                marker = map.addMarker(new MarkerOptions().position(position));
-            } else {
-                marker.setPosition(position);
-            }
-
-            if (forecast.isUnread(getTag())) {
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, defaultZoom));
-                forecast.setRead(getTag());
-            }
-        }
+        updateView();
     }
 
-    @Override
-    public void onSaveInstanceState (Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(MAP_POSITION, position);
-    }
-
+    /*
     @Override
     public boolean onOptionsItemSelected (MenuItem item) {
         switch (item.getItemId()) {
@@ -92,10 +54,30 @@ public class MapFragment extends SupportMapFragment implements FragmentListener 
 
         return  true;
     }
+    */
 
     @Override
-    public void onButtonClick(int id) {
+    public void onNewData() {
+        if (isVisible()) {
+            updateView();
+        }
+    }
 
+    private void updateView() {
+        MainActivity activity = (MainActivity) getActivity();
+
+        GoogleMap map = getMap();
+        if (map != null && activity.hasForecast()) {
+            Forecast.Response forecast = activity.getForecast();
+            position = new LatLng(forecast.getLatitude(), forecast.getLongitude());
+            if (marker == null) {
+                marker = map.addMarker(new MarkerOptions().position(position));
+            } else {
+                marker.setPosition(position);
+            }
+
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, defaultZoom));
+        }
     }
 
 }

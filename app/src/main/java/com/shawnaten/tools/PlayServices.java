@@ -1,18 +1,10 @@
 package com.shawnaten.tools;
 
-import android.app.Dialog;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.shawnaten.simpleweather.MainActivity;
-import com.shawnaten.simpleweather.R;
-
 /**
  * Created by Shawn Aten on 8/7/14.
  */
 public class PlayServices {
+    /*
     private static Dialog playServicesError;
 
     public static boolean playServicesAvailable(FragmentActivity activity) {
@@ -38,4 +30,5 @@ public class PlayServices {
         }
         return true;
     }
+    */
 }

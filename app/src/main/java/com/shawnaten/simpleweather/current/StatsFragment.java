@@ -14,26 +14,19 @@ import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
 import com.shawnaten.tools.SVGManager;
 
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+
 import static java.util.Arrays.asList;
 
 /**
  * Created by Shawn Aten on 7/20/14.
  */
 public class StatsFragment extends Fragment implements FragmentListener {
-    private static final String WEATHER_ICON_KEY = "weatherIconKey";
-    private int weatherIconValue;
 
     public StatsFragment() {
 
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            weatherIconValue = savedInstanceState.getInt(WEATHER_ICON_KEY);
-        }
     }
 
     @Override
@@ -45,50 +38,52 @@ public class StatsFragment extends Fragment implements FragmentListener {
     public void onResume() {
         super.onResume();
 
-        ViewGroup parent = (ViewGroup) getView().findViewById(R.id.stats);
+        updateView();
 
-        if (MainActivity.hasForecast() && MainActivity.getForecast().isUnread(getTag())) {
-            Forecast.Response forecast = MainActivity.getForecast();
+    }
+
+    @Override
+    public void onNewData() {
+        if(isVisible()) {
+            updateView();
+        }
+    }
+
+    private void updateView() {
+        MainActivity activity = (MainActivity) getActivity();
+
+        if (activity.hasForecast()) {
+            ViewGroup parent = (ViewGroup) getView();
+            Forecast.Response forecast = activity.getForecast();
 
             Forecast.DataPoint currently, hour, today;
             currently = forecast.getCurrently();
             hour = forecast.getHourly().getData()[0];
             today = forecast.getDaily().getData()[0];
 
-            ForecastTools.timeForm.setTimeZone(forecast.getTimezone());
-
-            weatherIconValue = ForecastTools.getWeatherIcon(currently.getIcon());
+            DateFormat timeForm = ForecastTools.getTimeForm(forecast.getTimezone());
+            SimpleDateFormat shortTimeForm = ForecastTools.getShortTimeForm(forecast.getTimezone(), 24);
+            DecimalFormat percForm = ForecastTools.getPercForm();
+            DecimalFormat tempForm = ForecastTools.getTempForm();
 
             ForecastTools.setText(parent, asList(R.id.title, R.id.temp, R.id.humidity, R.id.high_temp, R.id.high_temp_time, R.id.low_temp, R.id.low_temp_time, R.id.time, R.id.currently),
                     asList(
                             ((MainActivity) getActivity()).getLocationName(),
-                            ForecastTools.tempForm.format(currently.getTemperature()),
-                            ForecastTools.percForm.format(currently.getHumidity()),
-                            ForecastTools.tempForm.format(today.getTemperatureMax()),
-                            ForecastTools.timeForm.format(today.getTemperatureMaxTime()),
-                            ForecastTools.tempForm.format(today.getTemperatureMin()),
-                            ForecastTools.timeForm.format(today.getTemperatureMinTime()),
-                            ForecastTools.timeForm.format(currently.getTime()),
-                            String.format("%s - %s %s", currently.getSummary(), getString(R.string.feels_like), ForecastTools.tempForm.format(currently.getApparentTemperature()))
+                            tempForm.format(currently.getTemperature()),
+                            percForm.format(currently.getHumidity()),
+                            tempForm.format(today.getTemperatureMax()),
+                            shortTimeForm.format(today.getTemperatureMaxTime()),
+                            tempForm.format(today.getTemperatureMin()),
+                            shortTimeForm.format(today.getTemperatureMinTime()),
+                            timeForm.format(currently.getTime()),
+                            String.format("%s - %s %s", currently.getSummary(), getString(R.string.feels_like), tempForm.format(currently.getApparentTemperature()))
                     )
             );
 
-            forecast.setRead(getTag());
+
+            ((SVGImageView) parent.findViewById(R.id.weather_icon)).setSVG(SVGManager.getSVG(getActivity(),
+                    ForecastTools.getWeatherIcon(currently.getIcon())));
         }
-
-        ((SVGImageView) parent.findViewById(R.id.weather_icon)).setSVG(SVGManager.getSVG(getActivity(), weatherIconValue));
-
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putInt(WEATHER_ICON_KEY, weatherIconValue);
-    }
-
-    @Override
-    public void onButtonClick(int id) {
 
     }
 

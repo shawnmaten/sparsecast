@@ -4,6 +4,8 @@ import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -17,7 +19,10 @@ import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdView;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationClient;
 import com.shawnaten.networking.Forecast;
 import com.shawnaten.networking.Network;
 import com.shawnaten.networking.Places;
@@ -28,7 +33,6 @@ import com.shawnaten.tools.ActionBarListener;
 import com.shawnaten.tools.CustomAlertDialog;
 import com.shawnaten.tools.FragmentListener;
 
-import java.util.Date;
 import java.util.Locale;
 
 import retrofit.Callback;
@@ -36,12 +40,24 @@ import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-public class MainActivity extends FragmentActivity implements Callback, CustomAlertDialog.CustomAlertListener {
-    private AdView bannerAd;
-    private FragmentListener cListen, wListen, mListen;
-    private ActionBarListener actionBarListener;
-    private String[] mainFragments, helperFragments;
+public class MainActivity extends FragmentActivity implements Callback, CustomAlertDialog.CustomAlertListener,
+        GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
+
+    private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 0, REQUEST_CODE_ACCOUNT_PICKER = 1;
+    private static final String[] helperFragNames = {"searching", "loading"};
+    private static final String NAV_ITEM_KEY = "navIndex";
+
+    private String[] mainFragments;
+    private int navItem;
+    private Modes modes;
+    private MenuItem searchWidget;
+    private LocationClient locationClient;
+
+    private Forecast.Response lastForecastResponse;
+
+    private String locationName;
     private Boolean isActive = false;
+
     /* to allow user to select account
     private SharedPreferences settings;
     private GoogleAccountCredential credential;
@@ -49,124 +65,76 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
     private static final String PREF_ACCOUNT_NAME = "prefAccountName";
     */
 
-    public static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 0, REQUEST_CODE_ACCOUNT_PICKER = 1;
-
-    private static MenuItem searchWidget;
-    private static String locationName;
-    private static Forecast.Response lastForecastResponse;
-    private static int navItem;
-    private static Modes modes;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Fragment cFrag, wFrag, mFrag, lFrag, sFrag;
-        ActionBar actionBar;
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
+        if (playServicesAvailable()) {
+            ActionBar actionBar = getActionBar();
 
-        mainFragments = getResources().getStringArray(R.array.main_fragments);
-        helperFragments = getResources().getStringArray(R.array.helper_fragments);
+            Network.setup(this);
+            setContentView(R.layout.main_activity);
 
-        Network.setup(this);
-        modes = new Modes();
+            mainFragments = getResources().getStringArray(R.array.main_fragments);
+            locationClient = new LocationClient(this, this, this);
+            modes = new Modes();
 
-        setContentView(R.layout.main_activity);
+            if (savedInstanceState == null) {
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                Fragment cFrag, wFrag, mFrag, lFrag, sFrag;
 
-        actionBar = getActionBar();
-        assert actionBar != null;
+                /* to allow user to select account
 
-        if (savedInstanceState == null) {
-            /* to allow user to select account
+                settings = getSharedPreferences("Weather", 0);
+                credential = GoogleAccountCredential.usingAudience(getApplicationContext(), "server:client_id:" + Constants.WEB_ID);
+                setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
 
-            settings = getSharedPreferences("Weather", 0);
-            credential = GoogleAccountCredential.usingAudience(getApplicationContext(), "server:client_id:" + Constants.WEB_ID);
-            setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
+                if (credential.getSelectedAccountName() == null)
+                    startActivityForResult(credential.newChooseAccountIntent(), REQUEST_CODE_ACCOUNT_PICKER);
 
-            if (credential.getSelectedAccountName() == null)
-                startActivityForResult(credential.newChooseAccountIntent(), REQUEST_CODE_ACCOUNT_PICKER);
+                */
 
-            */
+                cFrag = new CurrentFragment();
+                ft.add(R.id.main_fragment, cFrag, mainFragments[0]);
+                ft.detach(cFrag);
 
-            cFrag = new CurrentFragment();
-            ft.add(R.id.main_fragment, cFrag, mainFragments[0]);
-            ft.detach(cFrag);
+                wFrag = new WeekFragment();
+                ft.add(R.id.main_fragment, wFrag, mainFragments[1]);
+                ft.detach(wFrag);
 
-            wFrag = new WeekFragment();
-            ft.add(R.id.main_fragment, wFrag, mainFragments[1]);
-            ft.detach(wFrag);
+                mFrag = new MapFragment();
+                ft.add(R.id.main_fragment, mFrag, mainFragments[2]);
+                ft.detach(mFrag);
 
-            mFrag = new MapFragment();
-            ft.add(R.id.main_fragment, mFrag, mainFragments[2]);
-            ft.detach(mFrag);
+                lFrag = new GenericFragment();
+                Bundle args = new Bundle();
+                args.putInt(GenericFragment.LAYOUT, R.layout.loading);
+                lFrag.setArguments(args);
+                ft.add(R.id.main_fragment, lFrag, helperFragNames[1]);
+                ft.detach(lFrag);
 
-            lFrag = new GenericFragment();
-            Bundle args = new Bundle();
-            args.putInt(GenericFragment.LAYOUT, R.layout.loading);
-            lFrag.setArguments(args);
-            ft.add(R.id.main_fragment, lFrag, helperFragments[1]);
-            ft.detach(lFrag);
+                sFrag = new GenericFragment();
+                args = new Bundle();
+                args.putInt(GenericFragment.LAYOUT, R.layout.searching);
+                sFrag.setArguments(args);
+                ft.add(R.id.main_fragment, sFrag, helperFragNames[0]);
+                ft.detach(sFrag);
 
-            sFrag = new GenericFragment();
-            args = new Bundle();
-            args.putInt(GenericFragment.LAYOUT, R.layout.searching);
-            sFrag.setArguments(args);
-            ft.add(R.id.main_fragment, sFrag, helperFragments[0]);
-            ft.detach(sFrag);
+                ft.commit();
 
-            ft.commit();
-
-        } else {
-
-            cFrag = getSupportFragmentManager().findFragmentByTag(mainFragments[0]);
-            wFrag = getSupportFragmentManager().findFragmentByTag(mainFragments[1]);
-            mFrag = getSupportFragmentManager().findFragmentByTag(mainFragments[2]);
-
-            if (lastForecastResponse == null)
-                ft.detach(fm.findFragmentById(R.id.main_fragment)).commit();
-
-        }
-
-        cListen = (FragmentListener) cFrag;
-        wListen = (FragmentListener) wFrag;
-        mListen = (FragmentListener) mFrag;
-
-        actionBarListener = new ActionBarListener(this);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        actionBar.setListNavigationCallbacks(
-                ArrayAdapter.createFromResource(this, R.array.main_fragments, android.R.layout.simple_spinner_dropdown_item),
-                actionBarListener);
-
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setIcon(R.drawable.ic_logo);
-
-        /*
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        actionBar.setDisplayShowHomeEnabled(false);
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setIcon(getResources().getDrawable(R.drawable.ic_logo));
-
-        currentTab = new TabListener(cFrag);
-        weekTab = new TabListener(wFrag);
-        mapTab = new TabListener(mFrag);
-
-        Tab tab = actionBar.newTab().setText(R.string.tab_current).setTag("current").setTabListener(currentTab);
-        actionBar.addTab(tab);
-        tab = actionBar.newTab().setText(R.string.tab_week).setTag("week").setTabListener(weekTab);
-        actionBar.addTab(tab);
-        tab = actionBar.newTab().setText(R.string.tab_map).setTag("map").setTabListener(mapTab);
-        actionBar.addTab(tab);
-        setIntent(null);
-        */
-
-        if (lastForecastResponse != null) {
-            actionBarListener.setEnabled(true);
-            actionBar.setSelectedNavigationItem(navItem);
-            if (lastForecastResponse.getExpiration().before(new Date())) {
-                Network.getInstance().getForecast(lastForecastResponse.getLatitude(), lastForecastResponse.getLongitude(),
-                        Locale.getDefault().getLanguage(), this);
+            } else {
+                navItem = savedInstanceState.getInt(NAV_ITEM_KEY, 0);
             }
+
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            actionBar.setListNavigationCallbacks(
+                    ArrayAdapter.createFromResource(this, R.array.main_fragments, android.R.layout.simple_spinner_dropdown_item),
+                    new ActionBarListener(this));
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setIcon(R.drawable.ic_logo);
+            actionBar.setSelectedNavigationItem(navItem);
+
         }
 
     }
@@ -216,6 +184,8 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
 
         super.onResume();
 
+        //locationClient.connect();
+
         /*
         if (PlayServices.playServicesAvailable(this) && bannerAd == null) {
 
@@ -234,9 +204,6 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
         }
         */
 
-        if (bannerAd != null)
-            bannerAd.resume();
-
     }
 
     @Override
@@ -254,18 +221,25 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
 
         isActive = false;
 
-        navItem = getActionBar().getSelectedNavigationIndex();
+    }
 
-        if (bannerAd != null)
-            bannerAd.pause();
+    @Override
+    protected void onSaveInstanceState (Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(NAV_ITEM_KEY, navItem);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        //locationClient.disconnect();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        if (bannerAd != null)
-            bannerAd.destroy();
     }
 
     @Override
@@ -292,7 +266,6 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
             searchWidget.collapseActionView();
 
         String action = intent.getAction();
-
         if (Intent.ACTION_SEARCH.equals(action)) {
             modes.setLoading(true);
             String query = intent.getStringExtra(SearchManager.QUERY);
@@ -301,22 +274,26 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
             modes.setLoading(true);
             Network.getInstance().getDetails(intent.getDataString(), Locale.getDefault().getLanguage(), this);
         }
+
     }
 
     @Override
     public void success(Object response, Response response2) {
         if (Forecast.Response.class.isInstance(response)) {
+            FragmentManager fm = getSupportFragmentManager();
             Forecast.Response forecast = (Forecast.Response) response;
 
             for (Header header : response2.getHeaders())
                 if (header.getName() != null && header.getName().equals("Expires"))
                     forecast.setExpiration(header.getValue());
 
-            getActionBar().setSelectedNavigationItem(navItem);
-
             lastForecastResponse = forecast;
             modes.setLoading(false);
-            setIntent(null);
+
+            for (String name : mainFragments) {
+                ((FragmentListener) fm.findFragmentByTag(name)).onNewData();
+            }
+
         } else if (Places.AutocompleteResponse.class.isInstance(response)) {
             Places.AutocompleteResponse autocompleteResponse = (Places.AutocompleteResponse) response;
             Toast toast;
@@ -389,19 +366,16 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
                 toDetach = fm.findFragmentById(R.id.main_fragment);
 
                 if (isLoading) {
-                    actionBarListener.setEnabled(false);
                     if (isSearching)
-                        toAttach = fm.findFragmentByTag(helperFragments[0]);
+                        toAttach = fm.findFragmentByTag(helperFragNames[0]);
                     else
-                        toAttach = fm.findFragmentByTag(helperFragments[1]);
+                        toAttach = fm.findFragmentByTag(helperFragNames[1]);
                 } else {
                     if (isSearching) {
-                        actionBarListener.setEnabled(false);
-                        toAttach = fm.findFragmentByTag(helperFragments[0]);
+                        toAttach = fm.findFragmentByTag(helperFragNames[0]);
                     } else {
                         if (lastForecastResponse != null) {
                             toAttach = fm.findFragmentByTag(mainFragments[getActionBar().getSelectedNavigationIndex()]);
-                            actionBarListener.setEnabled(true);
                         }
                     }
                 }
@@ -432,32 +406,51 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
         return locationName;
     }
 
-    public static boolean hasForecast() {
+    public boolean hasForecast() {
         return lastForecastResponse != null;
     }
 
-    public static Forecast.Response getForecast() {
+    public Forecast.Response getForecast() {
         return lastForecastResponse;
     }
 
-    /*
-    public void onButtonClick(View view) {
-        int id = view.getId();
+    private boolean playServicesAvailable() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 
-        switch ((String) view.getTag()) {
-            case "current":
-                cListen.onButtonClick(id);
-                break;
-            case "week":
-                wListen.onButtonClick(id);
-                break;
-            case "map":
-                mListen.onButtonClick(id);
-                break;
+        if (ConnectionResult.SUCCESS == resultCode) {
+            return true;
+        } else {
+            GooglePlayServicesUtil.showErrorNotification(resultCode, this);
+            finish();
+            return false;
         }
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Location location = locationClient.getLastLocation();
+        modes.setLoading(true);
+        Network.getInstance().getForecast(location.getLatitude(), location.getLongitude(), Locale.getDefault().getLanguage(), this);
+    }
+
+    @Override
+    public void onDisconnected() {
 
     }
-    */
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        if (connectionResult.hasResolution()) {
+            try {
+                connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
+            } catch (IntentSender.SendIntentException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Toast toast = Toast.makeText(this, connectionResult.toString(), Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
 
     /* to allow user to select account
 
@@ -484,7 +477,7 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
                         // User is authorized.
                     }
                 }
-                break;
+            break;
         }
     }
     */

@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -17,7 +16,13 @@ import com.shawnaten.tools.FragmentListener;
 public class CurrentFragment extends Fragment implements FragmentListener, View.OnClickListener {
     private int frag2Selected = R.id.summary;
 
-    private SparseArray<String> childFragments = new SparseArray<>();
+    private static final SparseArray<String> childFragNames = new SparseArray<>();
+    static {
+        childFragNames.put(R.id.stats, "stats");
+        childFragNames.put(R.id.summary, "summary");
+        childFragNames.put(R.id.details, "details");
+        childFragNames.put(R.id.graphics, "graphics");
+    }
 
 	public CurrentFragment() {
 		
@@ -27,27 +32,15 @@ public class CurrentFragment extends Fragment implements FragmentListener, View.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Fragment stFrag, smFrag, dFrag, gFrag;
-        String names[] = getResources().getStringArray(R.array.tab_current_child_fragments);
-        childFragments.put(R.id.stats, names[0]);
-        childFragments.put(R.id.summary, names[1]);
-        childFragments.put(R.id.details, names[2]);
-        childFragments.put(R.id.graphics, names[3]);
-
         if (savedInstanceState == null) {
-            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+            getChildFragmentManager().beginTransaction()
 
-            stFrag = new StatsFragment();
-            smFrag = new SummaryFragment();
-            dFrag = new DetailsFragment();
-            gFrag = new GraphicsFragment();
+            .add(R.id.fragment_1, new StatsFragment(), childFragNames.valueAt(0))
+            .add(R.id.fragment_2, new SummaryFragment(), childFragNames.valueAt(1))
+            .add(R.id.fragment_2, new DetailsFragment(), childFragNames.valueAt(2))
+            .add(R.id.fragment_3, new GraphicsFragment(), childFragNames.valueAt(3))
 
-            ft.add(R.id.fragment_1, stFrag, names[0]);
-            ft.add(R.id.fragment_2, smFrag, names[1]);
-            ft.add(R.id.fragment_2, dFrag, names[2]);
-            ft.add(R.id.fragment_3, gFrag, names[3]);
-
-            ft.commit();
+            .commit();
         }
 
     }
@@ -80,49 +73,6 @@ public class CurrentFragment extends Fragment implements FragmentListener, View.
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item) {
-        /*
-        switch (item.getItemId()) {
-            case R.id.info_switch:
-                FragmentManager fm = getChildFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                switch (frag2Selected) {
-                    case R.id.summaries:
-                        ft.detach(fm.findFragmentByTag("summaries")).attach(fm.findFragmentByTag("info")).commit();
-                        frag2Selected = R.id.info;
-                        break;
-                    case R.id.info:
-                        ft.detach(fm.findFragmentByTag("info")).attach(fm.findFragmentByTag("summaries")).commit();
-                        frag2Selected = R.id.summaries;
-                        break;
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-        */
-        return true;
-    }
-
-    @Override
-    public void onButtonClick(int id) {
-        /*
-        switch (id) {
-            case R.id.time:
-                break;
-            default:
-                CustomAlertDialog temp = new CustomAlertDialog();
-                Bundle args = new Bundle();
-                args.putString("title", forecast.getAlerts()[id-1].getTitle());
-                args.putString("message", forecast.getAlerts()[id - 1].getDescription());
-                args.putInt("code", 1);
-                temp.setArguments(args);
-                temp.show(getFragmentManager(), "current.alert");
-        }
-        */
-    }
-
-    @Override
     public void onClick(View v) {
         frag2Selected = v.getId();
         switchFragments();
@@ -144,8 +94,8 @@ public class CurrentFragment extends Fragment implements FragmentListener, View.
                 break;
         }
 
-        ft.detach(fm.findFragmentByTag(childFragments.get(toDetach)));
-        ft.attach(fm.findFragmentByTag(childFragments.get(toAttach)));
+        ft.detach(fm.findFragmentByTag(childFragNames.get(toDetach)));
+        ft.attach(fm.findFragmentByTag(childFragNames.get(toAttach)));
         //noinspection ConstantConditions
         ((TextView) getView().findViewById(toAttach)).setTextColor(getResources().getColor(R.color.accent_87));
         ((TextView) getView().findViewById(toDetach)).setTextColor(getResources().getColor(R.color.text_primary));
@@ -153,22 +103,14 @@ public class CurrentFragment extends Fragment implements FragmentListener, View.
         ft.commit();
     }
 
-    /*
-    private void createAlertViews(LinearLayout layout) {
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        layout.removeAllViews();
-
-        int i = 1;
-        if (forecast.getAlerts() != null) {
-            for (Forecast.Alert alert : forecast.getAlerts()) {
-                TextView textView = (TextView) inflater.inflate(R.layout.alert_view_item, (ViewGroup) getView(), false);
-                textView.setId(i++);
-                textView.setText(alert.getTitle());
-                layout.addView(textView);
+    @Override
+    public void onNewData() {
+        for (int i = 0; i < childFragNames.size(); i++) {
+            FragmentListener listener = (FragmentListener) getChildFragmentManager().findFragmentByTag(childFragNames.valueAt(i));
+            if (listener != null) {
+                listener.onNewData();
             }
         }
     }
-    */
 
 }

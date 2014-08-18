@@ -21,7 +21,6 @@ import com.shawnaten.tools.WeatherBarShape;
  * Created by shawnaten on 7/20/14.
  */
 public class GraphicsFragment extends Fragment implements FragmentListener {
-    private static WeatherBarShape weatherBarShape;
 
     public GraphicsFragment() {
 
@@ -29,27 +28,34 @@ public class GraphicsFragment extends Fragment implements FragmentListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.tab_current_graphics, container, false);
-        RelativeLayout weatherBarTexts = (RelativeLayout) view.findViewById(R.id.weather_bar_texts);
-        if (weatherBarShape != null) {
-            ForecastTools.createWeatherBarTextViews((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), weatherBarShape, weatherBarTexts);
-            ShapeDrawable drawable = new ShapeDrawable(weatherBarShape);
-            ImageView weatherBarImage = (ImageView) view.findViewById(R.id.weather_bar_image);
-            weatherBarImage.setBackgroundDrawable(drawable);
-        }
-        return view;
+        return inflater.inflate(R.layout.tab_current_graphics, container, false);
     }
 
     @Override
     public void onResume () {
         super.onResume();
 
-        if (MainActivity.hasForecast() && (MainActivity.getForecast().isUnread(getTag()) || weatherBarShape == null)) {
-            Forecast.Response forecast = MainActivity.getForecast();
+        updateView();
+    }
+
+    @Override
+    public void onNewData() {
+        if (isVisible()) {
+            updateView();
+        }
+    }
+
+    private void updateView() {
+        MainActivity activity = (MainActivity) getActivity();
+
+        if (activity.hasForecast()) {
+            View parent = getView();
+            Forecast.Response forecast = activity.getForecast();
+            WeatherBarShape weatherBarShape;
 
             Forecast.DataPoint[] hourly = forecast.getHourly().getData();
-            RelativeLayout weatherBarTexts = (RelativeLayout) getView().findViewById(R.id.weather_bar_texts);
-            ImageView weatherBarImage = (ImageView) getView().findViewById(R.id.weather_bar_image);
+            RelativeLayout weatherBarTexts = (RelativeLayout) parent.findViewById(R.id.weather_bar_texts);
+            ImageView weatherBarImage = (ImageView) parent.findViewById(R.id.weather_bar_image);
             ShapeDrawable drawable;
 
             weatherBarShape = new WeatherBarShape(getActivity().getApplicationContext(), hourly, 0, 24,
@@ -59,14 +65,7 @@ public class GraphicsFragment extends Fragment implements FragmentListener {
             weatherBarImage.setBackgroundDrawable(drawable);
             ForecastTools.createWeatherBarTextViews((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), weatherBarShape, weatherBarTexts);
             ForecastTools.setWeatherBarText(weatherBarShape, hourly, forecast.getTimezone(), weatherBarTexts);
-
-            forecast.setRead(getTag());
         }
-
     }
 
-    @Override
-    public void onButtonClick(int id) {
-
-    }
 }

@@ -2,6 +2,7 @@ package com.shawnaten.simpleweather.current;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
 import com.shawnaten.tools.SVGManager;
 
+import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
@@ -22,26 +25,17 @@ import static java.util.Arrays.asList;
  * Created by shawnaten on 7/20/14.
  */
 public class DetailsFragment extends Fragment implements FragmentListener {
-    private static final int[] permIconIds = {R.id.sunrise_icon, R.id.sunset_icon,
-        R.id.wind_icon, R.id.visibility_icon};
-    private static final int[] permIconValues = {R.raw.sunrise, R.raw.sunset,
-        R.raw.wind, R.raw.fog};
 
-    private ArrayList<Integer> iconIds = new ArrayList<>(), iconValues = new ArrayList<>();
+    private static final SparseArray<Integer> permIcons = new SparseArray<>();
+    static {
+        permIcons.put(R.id.sunrise_icon, R.raw.sunrise);
+        permIcons.put(R.id.sunset_icon, R.raw.sunset);
+        permIcons.put(R.id.wind_icon, R.raw.wind);
+        permIcons.put(R.id.visibility_icon, R.raw.fog);
+    }
 
     public DetailsFragment() {
 
-    }
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            iconIds = savedInstanceState.getIntegerArrayList("iconIds");
-            iconValues = savedInstanceState.getIntegerArrayList("iconValues");
-        }
     }
 
     @Override
@@ -53,13 +47,29 @@ public class DetailsFragment extends Fragment implements FragmentListener {
     public void onResume () {
         super.onResume();
 
-        ViewGroup parent = (ViewGroup) getView();
+        updateView();
 
-        if (MainActivity.hasForecast() && MainActivity.getForecast().isUnread(getTag())) {
-            Forecast.Response forecast = MainActivity.getForecast();
+    }
+
+    @Override
+    public void onNewData() {
+        if(isVisible()) {
+            updateView();
+        }
+    }
+
+    private void updateView() {
+        ViewGroup parent = (ViewGroup) getView();
+        MainActivity activity = (MainActivity) getActivity();
+
+        if (activity.hasForecast()) {
+            ArrayList<Integer> iconIds = new ArrayList<>(), iconValues = new ArrayList<>();
+            Forecast.Response forecast = activity.getForecast();
             Forecast.DataPoint currently, hour, today;
 
-            ForecastTools.timeForm.setTimeZone(forecast.getTimezone());
+            DateFormat timeForm = ForecastTools.getTimeForm(forecast.getTimezone());
+            DecimalFormat percForm = ForecastTools.getPercForm();
+            DecimalFormat intForm = ForecastTools.getIntForm();
 
             currently = forecast.getCurrently();
             hour = forecast.getHourly().getData()[0];
@@ -70,11 +80,11 @@ public class DetailsFragment extends Fragment implements FragmentListener {
                             R.id.wind_speed, R.id.visibility_text),
                     asList(
 
-                            ForecastTools.timeForm.format(today.getSunriseTime()), ForecastTools.timeForm.format(today.getSunsetTime()),
-                            String.format("%s %s", ForecastTools.percForm.format(hour.getPrecipProbability()), getString(R.string.now)),
-                            String.format("%s %s", ForecastTools.percForm.format(today.getPrecipProbability()), getString(R.string.day)),
-                            String.format("%s %s ", ForecastTools.intForm.format(currently.getWindSpeed()), getString(R.string.wind_unit)),
-                            String.format("%s %s", ForecastTools.intForm.format(currently.getVisibility()), getString(R.string.visibility_unit))
+                            timeForm.format(today.getSunriseTime()), timeForm.format(today.getSunsetTime()),
+                            String.format("%s %s", percForm.format(hour.getPrecipProbability()), getString(R.string.now)),
+                            String.format("%s %s", percForm.format(today.getPrecipProbability()), getString(R.string.day)),
+                            String.format("%s %s ", intForm.format(currently.getWindSpeed()), getString(R.string.wind_unit)),
+                            String.format("%s %s", intForm.format(currently.getVisibility()), getString(R.string.visibility_unit))
 
                     ));
 
@@ -88,29 +98,15 @@ public class DetailsFragment extends Fragment implements FragmentListener {
             iconIds.add(R.id.wind_bearing_icon);
             iconValues.add(ForecastTools.getWindString(currently.getWindBearing()));
 
-            forecast.setRead(getTag());
-        }
+            for (int i = 0; i < permIcons.size(); i++) {
+                ((SVGImageView) parent.findViewById(permIcons.keyAt(i))).setSVG(SVGManager.getSVG(getActivity(), permIcons.valueAt(i)));
+            }
 
-        for (int i = 0; i < permIconIds.length; i++) {
-            ((SVGImageView) parent.findViewById(permIconIds[i])).setSVG(SVGManager.getSVG(getActivity(), permIconValues[i]));
-        }
-
-        for (int i = 0; i < iconIds.size(); i++) {
-            ((SVGImageView) parent.findViewById(iconIds.get(i))).setSVG(SVGManager.getSVG(getActivity(), iconValues.get(i)));
+            for (int i = 0; i < iconIds.size(); i++) {
+                ((SVGImageView) parent.findViewById(iconIds.get(i))).setSVG(SVGManager.getSVG(getActivity(), iconValues.get(i)));
+            }
         }
 
     }
 
-    @Override
-    public void onSaveInstanceState (Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putIntegerArrayList("iconIds", iconIds);
-        outState.putIntegerArrayList("iconValues", iconValues);
-    }
-
-    @Override
-    public void onButtonClick(int id) {
-
-    }
 }
