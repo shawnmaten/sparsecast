@@ -1,11 +1,11 @@
 package com.shawnaten.networking;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.net.URI;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -22,35 +22,23 @@ public class Forecast {
     public static class Response {
         private Date expiration;
 
-        private double latitude, longitude;
+        private double latitude;
+        private double longitude;
         private TimeZone timezone;
         private double offset;
 
         private DataPoint currently;
 
-        private DataBlock minutely, hourly, daily;
+        private DataBlock minutely;
+        private DataBlock hourly;
+        private DataBlock daily;
 
         private Alert[] alerts;
 
-        private Flag flags;
-
-        private ArrayList<String> readStamps = new ArrayList<>();
+        private Flags flags;
 
         public Response() {
 
-        }
-
-        public void setExpiration(String expirationString) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
-            try {
-                expiration = simpleDateFormat.parse(expirationString);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public Date getExpiration() {
-            return expiration;
         }
 
         public double getLatitude() {
@@ -89,7 +77,7 @@ public class Forecast {
             return alerts;
         }
 
-        public Flag getFlags() {
+        public Flags getFlags() {
             return flags;
         }
     }
@@ -120,7 +108,8 @@ public class Forecast {
         private Date time;
         private String summary;
         private String icon;
-        private Date sunriseTime, sunsetTime;
+        private Date sunriseTime;
+        private Date sunsetTime;
         private double moonPhase;
         private double nearestStormDistance;
         private double nearestStormBearing;
@@ -131,11 +120,15 @@ public class Forecast {
         private String precipType;
         private double precipAccumulation;
         private double temperature;
-        private double temperatureMin, temperatureMax;
-        private Date temperatureMinTime, temperatureMaxTime;
+        private double temperatureMin;
+        private double temperatureMax;
+        private Date temperatureMinTime;
+        private Date temperatureMaxTime;
         private double apparentTemperature;
-        private double apparentTemperatureMin, apparentTemperatureMax;
-        private Date apparentTemperatureMinTime, apparentTemperatureMaxTime;
+        private double apparentTemperatureMin;
+        private double apparentTemperatureMax;
+        private Date apparentTemperatureMinTime;
+        private Date apparentTemperatureMaxTime;
         private double dewPoint;
         private double windSpeed;
         private double windBearing;
@@ -305,47 +298,47 @@ public class Forecast {
         }
     }
 
-    public static class Flag {
-        @SerializedName("darksky-unavailable") private Boolean darksky_unavailable;
-        @SerializedName("darksky-stations") private String[] darksky_stations;
-        @SerializedName("datapoint-stations") private String[] datapoint_stations;
-        @SerializedName("isd-stations") private String[] isd_stations;
-        @SerializedName("lamp-stations") private String[] lamp_stations;
-        @SerializedName("metar-stations") private String[] metar_stations;
-        @SerializedName("metno-license") private Boolean metno_license;
+    public static class Flags implements Parcelable {
+        @SerializedName("darksky-unavailable") private Boolean darkskyUnavailable;
+        @SerializedName("darksky-stations") private String[] darkskyStations;
+        @SerializedName("datapoint-stations") private String[] datapointStations;
+        @SerializedName("isd-stations") private String[] isdStations;
+        @SerializedName("lamp-stations") private String[] lampStations;
+        @SerializedName("metar-stations") private String[] metarStations;
+        @SerializedName("metno-license") private Boolean metnoLicense;
         private String[] sources;
         private String units;
 
-        public Flag() {
+        public Flags() {
 
         }
 
-        public Boolean getDarksky_unavailable() {
-            return darksky_unavailable;
+        public Boolean getDarkskyUnavailable() {
+            return darkskyUnavailable;
         }
 
-        public String[] getDarksky_stations() {
-            return darksky_stations;
+        public String[] getDarkskyStations() {
+            return darkskyStations;
         }
 
-        public String[] getDatapoint_stations() {
-            return datapoint_stations;
+        public String[] getDatapointStations() {
+            return datapointStations;
         }
 
-        public String[] getIsd_stations() {
-            return isd_stations;
+        public String[] getIsdStations() {
+            return isdStations;
         }
 
-        public String[] getLamp_stations() {
-            return lamp_stations;
+        public String[] getLampStations() {
+            return lampStations;
         }
 
-        public String[] getMetar_stations() {
-            return metar_stations;
+        public String[] getMetarStations() {
+            return metarStations;
         }
 
-        public Boolean getMetno_license() {
-            return metno_license;
+        public Boolean getMetnoLicense() {
+            return metnoLicense;
         }
 
         public String[] getSources() {
@@ -355,6 +348,52 @@ public class Forecast {
         public String getUnits() {
             return units;
         }
+
+        public int describeContents() {
+            return 0;
+        }
+
+        public void writeToParcel(Parcel out, int flags) {
+            out.writeByte((byte) (darkskyUnavailable ? 1 : 0));
+            out.writeInt(darkskyStations.length);
+            out.writeStringArray(darkskyStations);
+            out.writeInt(datapointStations.length);
+            out.writeStringArray(datapointStations);
+            out.writeInt(isdStations.length);
+            out.writeStringArray(isdStations);
+            out.writeInt(lampStations.length);
+            out.writeStringArray(lampStations);
+            out.writeInt(metarStations.length);
+            out.writeStringArray(metarStations);
+            out.writeByte((byte) (metnoLicense ? 1 : 0));
+            out.writeInt(sources.length);
+            out.writeStringArray(sources);
+            out.writeString(units);
+        }
+
+        public static final Parcelable.Creator<Flags> CREATOR
+                = new Parcelable.Creator<Flags>() {
+            public Flags createFromParcel(Parcel in) {
+                return new Flags(in);
+            }
+
+            public Flags[] newArray(int size) {
+                return new Flags[size];
+            }
+        };
+
+        private Flags(Parcel in) {
+            darkskyUnavailable = in.readByte() != 0;
+            darkskyStations = new String[in.readInt()]; in.readStringArray(darkskyStations);
+            datapointStations = new String[in.readInt()]; in.readStringArray(datapointStations);
+            isdStations = new String[in.readInt()]; in.readStringArray(isdStations);
+            lampStations = new String[in.readInt()]; in.readStringArray(lampStations);
+            metarStations = new String[in.readInt()]; in.readStringArray(metarStations);
+            metnoLicense = in.readByte() != 0;
+            sources = new String[in.readInt()]; in.readStringArray(sources);
+            units = in.readString();
+        }
+
     }
 
     public static interface Service {
