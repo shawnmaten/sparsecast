@@ -1,12 +1,16 @@
 package com.shawnaten.simpleweather;
 
+import android.accounts.AccountManager;
 import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -23,29 +27,38 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.shawnaten.networking.Forecast;
 import com.shawnaten.networking.Network;
 import com.shawnaten.networking.Places;
+import com.shawnaten.simpleweather.backend.keysEndpoint.KeysEndpoint;
+import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
 import com.shawnaten.simpleweather.current.CurrentFragment;
 import com.shawnaten.simpleweather.map.MapFragment;
 import com.shawnaten.simpleweather.week.WeekFragment;
 import com.shawnaten.tools.ActionBarListener;
-import com.shawnaten.tools.CustomAlertDialog;
 import com.shawnaten.tools.FragmentListener;
+import com.shawnaten.tools.GeneralAlertDialog;
 
+import java.io.IOException;
 import java.util.Locale;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Header;
 import retrofit.client.Response;
 
-public class MainActivity extends FragmentActivity implements Callback, CustomAlertDialog.CustomAlertListener,
+public class MainActivity extends FragmentActivity implements Callback, GeneralAlertDialog.OnClickListener,
         GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
 
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 0, REQUEST_CODE_ACCOUNT_PICKER = 1;
     private static final String[] helperFragNames = {"searching", "loading"};
-    private static final String NAV_ITEM_KEY = "navIndex";
+    private static final String NAV_ITEM_KEY = "navIndex", FORECAST_KEY = "forecast",
+            PREFS = "prefs", PREF_ACCOUNT_NAME = "prefAccountName", ACCOUNT_SELECTION_DIALOG = "accountSelectionDialog",
+            GOOGLE_API_KEY = "googleAPIKey", FORECAST_API_KEY = "forecastAPIKey";
+
+    private KeysEndpoint keysService;
 
     private String[] mainFragments;
     private int navItem;
@@ -58,13 +71,6 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
     private String locationName;
     private Boolean isActive = false;
 
-    /* to allow user to select account
-    private SharedPreferences settings;
-    private GoogleAccountCredential credential;
-    private String accountName;
-    private static final String PREF_ACCOUNT_NAME = "prefAccountName";
-    */
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +78,19 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
         if (playServicesAvailable()) {
             ActionBar actionBar = getActionBar();
 
-            Network.setup(this);
+            SharedPreferences settings = getSharedPreferences(PREFS, MODE_PRIVATE);
+            String googleAPIKey = settings.getString(GOOGLE_API_KEY, null);
+            String forecastAPIKey = settings.getString(FORECAST_API_KEY, null);
+            Keys keys = new Keys();
+            if (googleAPIKey != null && forecastAPIKey != null) {
+                keys.setGoogleAPIKey(googleAPIKey);
+                keys.setForecastAPIKey(forecastAPIKey);
+            } else {
+                getKeys();
+                keys = null;
+            }
+            Network.setup(this, keys);
+
             setContentView(R.layout.main_activity);
 
             mainFragments = getResources().getStringArray(R.array.main_fragments);
@@ -83,17 +101,6 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 Fragment cFrag, wFrag, mFrag, lFrag, sFrag;
-
-                /* to allow user to select account
-
-                settings = getSharedPreferences("Weather", 0);
-                credential = GoogleAccountCredential.usingAudience(getApplicationContext(), "server:client_id:" + Constants.WEB_ID);
-                setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
-
-                if (credential.getSelectedAccountName() == null)
-                    startActivityForResult(credential.newChooseAccountIntent(), REQUEST_CODE_ACCOUNT_PICKER);
-
-                */
 
                 cFrag = new CurrentFragment();
                 ft.add(R.id.main_fragment, cFrag, mainFragments[0]);
@@ -125,6 +132,7 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
 
             } else {
                 navItem = savedInstanceState.getInt(NAV_ITEM_KEY, 0);
+                lastForecastResponse = savedInstanceState.getParcelable(FORECAST_KEY);
             }
 
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -184,7 +192,9 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
 
         super.onResume();
 
-        //locationClient.connect();
+        if (Network.getInstance().isSetup()) {
+            launchTasks();
+        }
 
         /*
         if (PlayServices.playServicesAvailable(this) && bannerAd == null) {
@@ -204,6 +214,10 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
         }
         */
 
+    }
+
+    private void launchTasks() {
+        locationClient.connect();
     }
 
     @Override
@@ -228,13 +242,14 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
         super.onSaveInstanceState(outState);
 
         outState.putInt(NAV_ITEM_KEY, navItem);
+        outState.putParcelable(FORECAST_KEY, lastForecastResponse);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        //locationClient.disconnect();
+        locationClient.disconnect();
     }
 
     @Override
@@ -281,17 +296,16 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
     public void success(Object response, Response response2) {
         if (Forecast.Response.class.isInstance(response)) {
             FragmentManager fm = getSupportFragmentManager();
-            Forecast.Response forecast = (Forecast.Response) response;
 
-            for (Header header : response2.getHeaders())
-                if (header.getName() != null && header.getName().equals("Expires"))
-                    forecast.setExpiration(header.getValue());
-
-            lastForecastResponse = forecast;
+            lastForecastResponse = (Forecast.Response) response;
+            lastForecastResponse.setName(locationName);
             modes.setLoading(false);
 
             for (String name : mainFragments) {
-                ((FragmentListener) fm.findFragmentByTag(name)).onNewData();
+                FragmentListener listener = (FragmentListener) fm.findFragmentByTag(name);
+                if (listener != null) {
+                    listener.onNewData();
+                }
             }
 
         } else if (Places.AutocompleteResponse.class.isInstance(response)) {
@@ -393,19 +407,6 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
 
     }
 
-    @Override
-    public void onDialogClosed(int code) {
-        switch (code) {
-            case 0:
-                finish();
-                break;
-        }
-    }
-
-    public String getLocationName() {
-        return locationName;
-    }
-
     public boolean hasForecast() {
         return lastForecastResponse != null;
     }
@@ -452,14 +453,61 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
         }
     }
 
-    /* to allow user to select account
+    private void getKeys() {
+        SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String accountName = defaultPrefs.getString(PREF_ACCOUNT_NAME, null);
+        GoogleAccountCredential credential = GoogleAccountCredential.usingAudience(this, "server:client_id:" + getString(R.string.WEB_ID));
+        if (accountName == null) {
+            if (getSupportFragmentManager().findFragmentByTag(ACCOUNT_SELECTION_DIALOG) == null) {
+                GeneralAlertDialog dialog = GeneralAlertDialog.newInstance(
+                        ACCOUNT_SELECTION_DIALOG,
+                        getString(R.string.account_selection_title),
+                        getString(R.string.account_selection_message),
+                        null,
+                        getString(R.string.account_selection_positive_button)
+                );
+                dialog.setCancelable(false);
+                dialog.show(getSupportFragmentManager(), ACCOUNT_SELECTION_DIALOG);
+            }
 
-    private void setSelectedAccountName(String accountName) {
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(PREF_ACCOUNT_NAME, accountName);
-        editor.commit();
-        credential.setSelectedAccountName(accountName);
-        this.accountName = accountName;
+        } else {
+            credential.setSelectedAccountName(accountName);
+
+            KeysEndpoint.Builder keysEndpointBuilder =
+                    new KeysEndpoint.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), credential);
+            if (getResources().getBoolean(R.bool.localhost))
+                keysEndpointBuilder.setRootUrl(getString(R.string.root_url));
+            keysService = keysEndpointBuilder.build();
+
+            new getKeysTask().execute();
+        }
+    }
+
+    private class getKeysTask extends AsyncTask<Void, Void, Keys> {
+        @Override
+        protected Keys doInBackground(Void... unused) {
+            Keys keys = new Keys();
+            try {
+                Log.d("getKeysTask", "getting keys");
+                keys = keysService.getKeys().execute();
+                if (keys != null) {
+                    Network.getInstance().setKeys(keys);
+                    getSharedPreferences(PREFS, MODE_PRIVATE).edit()
+                            .putString(GOOGLE_API_KEY, keys.getGoogleAPIKey())
+                            .putString(FORECAST_API_KEY, keys.getForecastAPIKey())
+                            .apply();
+                }
+            } catch (IOException e) {
+                Log.e("getKeysTask", e.getMessage(), e);
+            }
+            return keys;
+        }
+
+        @Override
+        protected void onPostExecute (Keys result) {
+            launchTasks();
+        }
+
     }
 
     @Override
@@ -470,16 +518,25 @@ public class MainActivity extends FragmentActivity implements Callback, CustomAl
                 if (data != null && data.getExtras() != null) {
                     String accountName = data.getExtras().getString(AccountManager.KEY_ACCOUNT_NAME);
                     if (accountName != null) {
-                        setSelectedAccountName(accountName);
-                        SharedPreferences.Editor editor = settings.edit();
-                        editor.putString(PREF_ACCOUNT_NAME, accountName);
-                        editor.commit();
-                        // User is authorized.
+                        SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+                        defaultPrefs.edit().putString(PREF_ACCOUNT_NAME, accountName).apply();
+                        getKeys();
                     }
                 }
             break;
         }
     }
-    */
+
+    @Override
+    public void onDialogClick(String tag, Boolean positive) {
+        switch (tag) {
+            case ACCOUNT_SELECTION_DIALOG:
+                if (positive) {
+                    GoogleAccountCredential credential = GoogleAccountCredential.usingAudience(this, "server:client_id:" + getString(R.string.WEB_ID));
+                    startActivityForResult(credential.newChooseAccountIntent(), REQUEST_CODE_ACCOUNT_PICKER);
+                }
+
+        }
+    }
 
 }

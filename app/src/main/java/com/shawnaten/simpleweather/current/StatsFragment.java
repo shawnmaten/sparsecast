@@ -68,7 +68,7 @@ public class StatsFragment extends Fragment implements FragmentListener {
 
             ForecastTools.setText(parent, asList(R.id.title, R.id.temp, R.id.humidity, R.id.high_temp, R.id.high_temp_time, R.id.low_temp, R.id.low_temp_time, R.id.time, R.id.currently),
                     asList(
-                            ((MainActivity) getActivity()).getLocationName(),
+                            forecast.getName(),
                             tempForm.format(currently.getTemperature()),
                             percForm.format(currently.getHumidity()),
                             tempForm.format(today.getTemperatureMax()),
