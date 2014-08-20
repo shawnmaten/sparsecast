@@ -18,6 +18,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,7 +29,6 @@ import android.widget.Toast;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -42,6 +42,7 @@ import com.shawnaten.simpleweather.current.CurrentFragment;
 import com.shawnaten.simpleweather.map.MapFragment;
 import com.shawnaten.simpleweather.week.WeekFragment;
 import com.shawnaten.tools.ActionBarListener;
+import com.shawnaten.tools.PlayServices;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +56,11 @@ public class MainActivity extends FragmentActivity implements Callback,
         GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
 
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 0, REQUEST_CODE_ACCOUNT_PICKER = 1;
-    private static final String[] helperFragNames = {"searching", "loading"};
+    private static final SparseArray<String> helperFragNames = new SparseArray<>();
+    static {
+        helperFragNames.put(R.layout.searching, "searching");
+        helperFragNames.put(R.layout.loading, "loading");
+    }
     private static final String NAV_ITEM = "navIndex", FRESH_LAUNCH = "freshLaunch", FORECAST = "forecast",
             PREF_ACCOUNT_NAME = "prefAccountName", ACCOUNT_SELECTION_DIALOG = "accountSelectionDialog",
             IS_CURRENT_LOCATION_ENABLED ="isCurrentLocationEnabled";
@@ -65,11 +70,10 @@ public class MainActivity extends FragmentActivity implements Callback,
 
     private String[] mainFragments;
     private MenuItem searchWidget;
-    private Boolean isLoading = false, isSearching = false, needsUpdate = false;
+    private Boolean isLoading = false, isSearching = false;
     private LocationClient locationClient;
     private ActionBarListener actionBarListener;
 
-    private boolean isActive = false;
     private boolean isFreshLaunch = true;
 
     private Forecast.Response lastForecastResponse;
@@ -81,7 +85,7 @@ public class MainActivity extends FragmentActivity implements Callback,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (playServicesAvailable()) {
+        if (PlayServices.playServicesAvailable(this)) {
             int navItem = 0;
 
             setContentView(R.layout.main_activity);
@@ -113,7 +117,7 @@ public class MainActivity extends FragmentActivity implements Callback,
 
                 cFrag = new CurrentFragment();
                 ft.add(R.id.main_fragment, cFrag, mainFragments[0]);
-                ft.detach(cFrag);
+                //ft.detach(cFrag);
 
                 wFrag = new WeekFragment();
                 ft.add(R.id.main_fragment, wFrag, mainFragments[1]);
@@ -123,6 +127,7 @@ public class MainActivity extends FragmentActivity implements Callback,
                 ft.add(R.id.main_fragment, mFrag, mainFragments[2]);
                 ft.detach(mFrag);
 
+                /*
                 lFrag = new GenericFragment();
                 Bundle args = new Bundle();
                 args.putInt(GenericFragment.LAYOUT, R.layout.loading);
@@ -136,6 +141,7 @@ public class MainActivity extends FragmentActivity implements Callback,
                 sFrag.setArguments(args);
                 ft.add(R.id.main_fragment, sFrag, helperFragNames[0]);
                 ft.detach(sFrag);
+                */
 
                 ft.commit();
 
@@ -156,6 +162,8 @@ public class MainActivity extends FragmentActivity implements Callback,
             actionBar.setIcon(R.drawable.ic_logo);
             actionBar.setSelectedNavigationItem(navItem);
 
+        } else {
+            finish();
         }
 
     }
@@ -163,7 +171,7 @@ public class MainActivity extends FragmentActivity implements Callback,
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        // Inflate the menu items for use in the action bar
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
 
@@ -175,13 +183,13 @@ public class MainActivity extends FragmentActivity implements Callback,
         searchWidget.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                setSearching(true);
+                setViewState(R.layout.searching, true);
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                setSearching(false);
+                setViewState(R.layout.searching, false);
                 return true;
             }
         });
@@ -214,22 +222,17 @@ public class MainActivity extends FragmentActivity implements Callback,
 
     }
 
+    /*
     @Override
     protected void onResumeFragments () {
-        super.onResumeFragments();
+        //super.onResumeFragments();
 
-        isActive = true;
-        updateFragments();
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        isActive = false;
+        if (searchWidget != null) {
+            searchWidget.collapseActionView();
+        }
 
     }
+    */
 
     @Override
     protected void onSaveInstanceState (Bundle outState) {
@@ -284,17 +287,16 @@ public class MainActivity extends FragmentActivity implements Callback,
     }
 
     private void handleIntent(Intent intent) {
-
-        if (searchWidget != null)
-            searchWidget.collapseActionView();
-
         String action = intent.getAction();
+
+        searchWidget.collapseActionView();
+
         if (Intent.ACTION_SEARCH.equals(action)) {
-            setLoading(true);
+            setViewState(R.layout.loading, true);
             String query = intent.getStringExtra(SearchManager.QUERY);
             Network.getInstance().getAutocomplete(query, Locale.getDefault().getLanguage(), this);
         } else if (Intent.ACTION_VIEW.equals(action)) {
-            setLoading(true);
+            setViewState(R.layout.loading, true);
             Network.getInstance().getDetails(intent.getDataString(), Locale.getDefault().getLanguage(), this);
         }
 
@@ -303,17 +305,15 @@ public class MainActivity extends FragmentActivity implements Callback,
     private void refreshForecast() {
         if (isCurrentLocationEnabled) {
             if (locationClient.isConnected()) {
-                lastCurrentLocation = locationClient.getLastLocation();
                 new getLocationNameTask(new Geocoder(this)).execute();
             }
-            else
+            else {
                 locationClient.connect();
-        } else {
-            if (lastForecastResponse != null) {
-                setLoading(true);
-                Network.getInstance().getForecast(lastForecastResponse.getLatitude(), lastForecastResponse.getLongitude(),
-                        Locale.getDefault().getLanguage(), this);
             }
+        } else if (lastForecastResponse != null) {
+            setViewState(R.layout.loading, true);
+            Network.getInstance().getForecast(lastForecastResponse.getLatitude(), lastForecastResponse.getLongitude(),
+                    Locale.getDefault().getLanguage(), this);
         }
     }
 
@@ -323,7 +323,7 @@ public class MainActivity extends FragmentActivity implements Callback,
 
             lastForecastResponse = (Forecast.Response) response;
             lastForecastResponse.setName(lastLocationName);
-            setLoading(false);
+            setViewState(R.layout.loading, false);
 
         } else if (Places.AutocompleteResponse.class.isInstance(response)) {
             Places.AutocompleteResponse autocompleteResponse = (Places.AutocompleteResponse) response;
@@ -332,7 +332,7 @@ public class MainActivity extends FragmentActivity implements Callback,
                 Network.getInstance().getDetails(autocompleteResponse.getPredictions()[0].getPlace_id(),
                         Locale.getDefault().getLanguage(), this);
             } else {
-                setLoading(false);
+                setViewState(R.layout.loading, false);
             }
 
         } else if (Places.DetailsResponse.class.isInstance(response)) {
@@ -344,14 +344,14 @@ public class MainActivity extends FragmentActivity implements Callback,
                 isCurrentLocationEnabled = false;
                 Network.getInstance().getForecast(location.getLat(), location.getLng(), Locale.getDefault().getLanguage(), this);
             } else  {
-                setLoading(false);
+                setViewState(R.layout.loading, false);
             }
         }
     }
 
     @Override
     public void failure(RetrofitError error) {
-        setLoading(false);
+        setViewState(R.layout.loading, false);
         Toast toast = Toast.makeText(getApplicationContext(), getString(R.string.network_error), Toast.LENGTH_SHORT);
         toast.show();
         Log.e("Retrofit", error.getMessage());
@@ -363,52 +363,96 @@ public class MainActivity extends FragmentActivity implements Callback,
         }
     }
 
-    private void setLoading(Boolean state) {
-        isLoading = state;
-        needsUpdate = true;
-        updateFragments();
+    private void setViewState(int id, boolean state) {
+        FragmentManager fm = getSupportFragmentManager();
+
+        if (state) {
+            actionBarListener.setEnabled(false);
+            Fragment lFrag = new GenericFragment();
+            Bundle args = new Bundle();
+            args.putInt(GenericFragment.LAYOUT, id);
+            lFrag.setArguments(args);
+            fm.beginTransaction()
+                    .add(R.id.main_fragment, lFrag, helperFragNames.get(id))
+                    .commit();
+        } else {
+            fm.beginTransaction()
+                    .remove(fm.findFragmentByTag(helperFragNames.get(id)))
+                    .commit();
+            actionBarListener.setEnabled(true);
+        }
+
     }
 
-    private void setSearching(Boolean state) {
-        isSearching = state;
-        needsUpdate = true;
-        updateFragments();
+    /*
+    private void setLoading(Boolean isLoading) {
+        FragmentManager fm = getSupportFragmentManager();
+
+        if (isLoading) {
+            Fragment lFrag = new GenericFragment();
+            Bundle args = new Bundle();
+            args.putInt(GenericFragment.LAYOUT, R.layout.loading);
+            lFrag.setArguments(args);
+            fm.beginTransaction()
+                    .add(R.id.main_fragment, lFrag, helperFragNames[1])
+                    .commit();
+        } else {
+            fm.beginTransaction()
+                    .remove(fm.findFragmentByTag(helperFragNames[1]))
+                    .commit();
+        }
+
     }
 
+    private void setSearching(Boolean isSearching) {
+        FragmentManager fm = getSupportFragmentManager();
+
+        if (isSearching) {
+            Fragment lFrag = new GenericFragment();
+            Bundle args = new Bundle();
+            args.putInt(GenericFragment.LAYOUT, R.layout.searching);
+            lFrag.setArguments(args);
+            fm.beginTransaction()
+                    .add(R.id.main_fragment, lFrag, helperFragNames[0])
+                    .commit();
+        } else {
+            fm.beginTransaction()
+                    .remove(fm.findFragmentByTag(helperFragNames[0]))
+                    .commit();
+        }
+
+    }
+    */
+
+    /*
     private void updateFragments() {
-        if (isActive && needsUpdate) {
-            FragmentManager fm = getSupportFragmentManager();
-            Fragment toDetach, toAttach = null;
+        Log.e("thread id", Integer.toString(android.os.Process.getThreadPriority(android.os.Process.myTid())));
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment toDetach, toAttach;
 
-            toDetach = fm.findFragmentById(R.id.main_fragment);
-
-            if (isLoading) {
-                actionBarListener.setEnabled(false);
-                if (isSearching)
-                    toAttach = fm.findFragmentByTag(helperFragNames[0]);
-                else
-                    toAttach = fm.findFragmentByTag(helperFragNames[1]);
+        if (isLoading) {
+            actionBarListener.setEnabled(false);
+            if (!isSearching)
+                toAttach = fm.findFragmentByTag(helperFragNames[1]);
+        } else {
+            actionBarListener.setEnabled(true);
+            if (isSearching) {
+                toAttach = fm.findFragmentByTag(helperFragNames[0]);
             } else {
-                actionBarListener.setEnabled(true);
-                if (isSearching) {
-                    toAttach = fm.findFragmentByTag(helperFragNames[0]);
-                } else {
-                    if (lastForecastResponse != null) {
-                        toAttach = fm.findFragmentByTag(mainFragments[getActionBar().getSelectedNavigationIndex()]);
-                    }
-                }
+                toAttach = fm.findFragmentByTag(mainFragments[getActionBar().getSelectedNavigationIndex()]);
             }
+        }
 
-            if (!toDetach.equals(toAttach)) {
-                fm.beginTransaction()
-                        .detach(toDetach)
-                        .attach(toAttach)
-                        .commit();
-            }
-
-            needsUpdate = false;
+        if (!toDetach.equals(toAttach)) {
+            Log.e("updateFragments", String.format("toDetach: %s, toAttach %s", toDetach.getTag(), toAttach.getTag()));
+            fm.beginTransaction()
+                    .detach(toDetach)
+                    .attach(toAttach)
+                    .commit();
+            fm.executePendingTransactions();
         }
     }
+    */
 
     public boolean hasForecast() {
         return lastForecastResponse != null;
@@ -416,18 +460,6 @@ public class MainActivity extends FragmentActivity implements Callback,
 
     public Forecast.Response getForecast() {
         return lastForecastResponse;
-    }
-
-    private boolean playServicesAvailable() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-
-        if (ConnectionResult.SUCCESS == resultCode) {
-            return true;
-        } else {
-            GooglePlayServicesUtil.showErrorNotification(resultCode, this);
-            finish();
-            return false;
-        }
     }
 
     // location services
@@ -442,7 +474,7 @@ public class MainActivity extends FragmentActivity implements Callback,
         @Override
         protected void onPreExecute () {
             lastCurrentLocation = locationClient.getLastLocation();
-            setLoading(true);
+            setViewState(R.layout.loading, true);
         }
 
         @Override

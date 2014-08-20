@@ -3,6 +3,7 @@ package com.shawnaten.tools;
 import android.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 
 import com.shawnaten.simpleweather.R;
 
@@ -22,6 +23,7 @@ public class ActionBarListener implements ActionBar.OnNavigationListener {
             Fragment toDetach, toAttach;
             toDetach = fm.findFragmentById(R.id.main_fragment);
             toAttach = fm.findFragmentByTag(fragments[itemPosition]);
+            Log.e("onNavigation", String.format("toDetach: %s, toAttach %s", toDetach.getTag(), toAttach.getTag()));
             if (!toDetach.equals(toAttach)) {
                 fm.beginTransaction()
                         .detach(toDetach)

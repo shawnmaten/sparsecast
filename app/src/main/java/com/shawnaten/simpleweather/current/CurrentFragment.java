@@ -3,7 +3,6 @@ package com.shawnaten.simpleweather.current;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,27 +79,30 @@ public class CurrentFragment extends Fragment implements FragmentListener, View.
 
     private void switchFragments() {
         FragmentManager fm = getChildFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        int toDetach = 0, toAttach = 0;
+        Fragment toDetach, toAttach;
+        int toDetachId = 0, toAttachId = 0;
 
         switch (frag2Selected) {
             case R.id.summary:
-                toDetach = R.id.details;
-                toAttach = R.id.summary;
+                toDetachId = R.id.details;
+                toAttachId = R.id.summary;
                 break;
             case R.id.details:
-                toDetach = R.id.summary;
-                toAttach = R.id.details;
+                toDetachId = R.id.summary;
+                toAttachId = R.id.details;
                 break;
         }
 
-        ft.detach(fm.findFragmentByTag(childFragNames.get(toDetach)));
-        ft.attach(fm.findFragmentByTag(childFragNames.get(toAttach)));
-        //noinspection ConstantConditions
-        ((TextView) getView().findViewById(toAttach)).setTextColor(getResources().getColor(R.color.accent_87));
-        ((TextView) getView().findViewById(toDetach)).setTextColor(getResources().getColor(R.color.text_primary));
+        toDetach = fm.findFragmentByTag(childFragNames.get(toDetachId));
+        toAttach = fm.findFragmentByTag(childFragNames.get(toAttachId));
 
-        ft.commit();
+        if (toDetach != null & toAttach != null) {
+            fm.beginTransaction().detach(toDetach).attach(toAttach).commit();
+            //noinspection ConstantConditions
+            ((TextView) getView().findViewById(toAttachId)).setTextColor(getResources().getColor(R.color.accent_87));
+            ((TextView) getView().findViewById(toDetachId)).setTextColor(getResources().getColor(R.color.text_primary));
+        }
+
     }
 
     @Override

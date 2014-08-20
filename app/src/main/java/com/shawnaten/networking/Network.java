@@ -38,6 +38,7 @@ public class Network  {
 
     private Network(File networkCacheFile, Keys keys) {
         OkHttpClient okHttpClient = new OkHttpClient();
+        OkClient okClient;
         Cache networkCache = null;
         this.keys = keys;
 
@@ -47,6 +48,7 @@ public class Network  {
             e.printStackTrace();
         }
         okHttpClient.setCache(networkCache);
+        okClient = new OkClient(okHttpClient);
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(TimeZone.class, new Deserializers.TimeZoneDeserializer())
@@ -56,20 +58,20 @@ public class Network  {
 
         RestAdapter forecastAdapter = new RestAdapter.Builder()
                 .setEndpoint("https://api.forecast.io/forecast")
-                .setClient(new OkClient(okHttpClient))
+                .setClient(okClient)
                 .setConverter(new GsonConverter(gson))
                 .build();
         forecastService = forecastAdapter.create(Forecast.Service.class);
 
         RestAdapter placesAdapter = new RestAdapter.Builder()
                 .setEndpoint("https://maps.googleapis.com/maps/api/place/autocomplete")
-                .setClient(new OkClient(okHttpClient))
+                .setClient(okClient)
                 .build();
         placesService = placesAdapter.create(Places.Service.class);
 
         RestAdapter detailsAdapter = new RestAdapter.Builder()
                 .setEndpoint("https://maps.googleapis.com/maps/api/place/details")
-                .setClient(new OkClient(okHttpClient))
+                .setClient(okClient)
                 .build();
         detailsService = detailsAdapter.create(Places.Service.class);
 
