@@ -56,6 +56,13 @@ public class MapFragment extends SupportMapFragment implements FragmentListener 
     }
 
     @Override
+    public void onDestroyView () {
+
+        super.onDestroyView();
+
+    }
+
+    @Override
     public void onNewData() {
         updateView();
     }

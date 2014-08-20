@@ -287,52 +287,6 @@ public class ForecastTools {
             layout.addView(textView, paramsList.get(i - 1));
         }
 
-        /*
-        params = new RelativeLayout.LayoutParams(0, 0);
-        params.addRule(RelativeLayout.CENTER_IN_PARENT, 1);
-        Space space = (Space) inflater.inflate(R.layout.weather_bar_space, null);
-        space.setId(R.id.center);
-        layout.addView(space, params);
-
-        params = new RelativeLayout.LayoutParams((width / 2) + leftOffset, ViewGroup.LayoutParams.WRAP_CONTENT);
-        //params.addRule(RelativeLayout.BELOW, R.id.center);
-        params.addRule(parent_start, 1);
-        Space space = (Space) inflater.inflate(R.layout.weather_bar_space, null);
-        space.setId(R.id.left_offset);
-        layout.addView(space, params);
-        // end of set up
-
-
-
-        params = new RelativeLayout.LayoutParams(width + leftOffset, ViewGroup.LayoutParams.WRAP_CONTENT);
-        //params.addRule(RelativeLayout.BELOW, R.id.center);
-        params.addRule(parent_start, 1);
-        TextView textView = (TextView) inflater.inflate(R.layout.weather_bar_time, null);
-        //noinspection ResourceType
-        textView.setId(1);
-        layout.addView(textView, params);
-
-        params = new RelativeLayout.LayoutParams(width + leftOffset, ViewGroup.LayoutParams.WRAP_CONTENT);
-        //params.addRule(RelativeLayout.BELOW, R.id.center);
-        params.addRule(to_end_of, R.id.left_offset);
-        textView = (TextView) inflater.inflate(R.layout.weather_bar_time, null);
-        //noinspection ResourceType
-        textView.setId(2);
-        layout.addView(textView, params);
-
-        tickCount+=2;
-        for(int i = 3; i < tickCount; i++) {
-            params = new RelativeLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT);
-            //params.addRule(RelativeLayout.BELOW, R.id.center);
-            params.addRule(to_end_of, i-2);
-
-            textView = (TextView) inflater.inflate(R.layout.weather_bar_time, null);
-            //noinspection ResourceType
-            textView.setId(i);
-            layout.addView(textView, params);
-        }
-        */
-
     }
 
     public static void setWeatherBarText(WeatherBarShape weatherBar, Forecast.DataPoint[] data, TimeZone timeZone, RelativeLayout layout) {
