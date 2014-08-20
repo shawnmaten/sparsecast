@@ -1,30 +1,40 @@
 package com.shawnaten.tools;
 
 import android.app.ActionBar;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 
 import com.shawnaten.simpleweather.R;
 
 public class ActionBarListener implements ActionBar.OnNavigationListener {
-    private FragmentActivity activity;
+    private FragmentManager fm;
     private String[] fragments;
+    private boolean enabled = false;
 	
-	public ActionBarListener(FragmentActivity activity) {
-        fragments = activity.getResources().getStringArray(R.array.main_fragments);
-        this.activity = activity;
+	public ActionBarListener(FragmentManager fm, String[] fragments) {
+        this.fm = fm;
+        this.fragments = fragments;
 	}
 
     @Override
     public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-        FragmentManager fm = activity.getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft
-                .detach(fm.findFragmentById(R.id.main_fragment))
-                .attach(fm.findFragmentByTag(fragments[itemPosition]))
-                .commit();
-        return true;
+        if (enabled) {
+            Fragment toDetach, toAttach;
+            toDetach = fm.findFragmentById(R.id.main_fragment);
+            toAttach = fm.findFragmentByTag(fragments[itemPosition]);
+            if (!toDetach.equals(toAttach)) {
+                fm.beginTransaction()
+                        .detach(toDetach)
+                        .attach(toAttach)
+                        .commit();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     /*

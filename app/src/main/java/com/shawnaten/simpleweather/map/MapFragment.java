@@ -1,7 +1,6 @@
 package com.shawnaten.simpleweather.map;
 
 import android.os.Bundle;
-import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,49 +17,47 @@ import com.shawnaten.tools.FragmentListener;
  * Created by shawnaten on 7/12/14.
  */
 public class MapFragment extends SupportMapFragment implements FragmentListener {
-    private LatLng position;
-    private Marker marker;
+    private static final float DEFAULT_ZOOM = 9, DEFAULT_ZOOM_OUT = 7;
+    private static final String SUPPORT_MAP_BUNDLE = "MapOptions", CONFIGURATION_CHANGE = "configurationChange";
 
-    private static final float defaultZoom = 9;
-    private static final String SUPPORT_MAP_BUNDLE_KEY = "MapOptions", MAP_POSITION = "MapPosition";
+    private Marker marker;
+    private boolean configChanged = false;
 
     public MapFragment() {
         GoogleMapOptions options = new GoogleMapOptions();
         Bundle args = new Bundle();
         options.compassEnabled(false).rotateGesturesEnabled(false).tiltGesturesEnabled(false).zoomControlsEnabled(false)
-                .mapType(GoogleMap.MAP_TYPE_TERRAIN);
-        args.putParcelable(SUPPORT_MAP_BUNDLE_KEY, options);
+                /*.mapType(GoogleMap.MAP_TYPE_TERRAIN)*/;
+        args.putParcelable(SUPPORT_MAP_BUNDLE, options);
         setArguments(args);
     }
 
     @Override
-    public void onViewCreated (View view, Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            configChanged = savedInstanceState.getBoolean(CONFIGURATION_CHANGE);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
         updateView();
     }
 
-    /*
     @Override
-    public boolean onOptionsItemSelected (MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_marker:
-                GoogleMap map = getMap();
-                if (map != null) {
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, defaultZoom));
-                }
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-        return  true;
+        outState.putBoolean(CONFIGURATION_CHANGE, getActivity().isChangingConfigurations());
     }
-    */
 
     @Override
     public void onNewData() {
-        if (isVisible()) {
-            updateView();
-        }
+        updateView();
     }
 
     private void updateView() {
@@ -69,14 +66,18 @@ public class MapFragment extends SupportMapFragment implements FragmentListener 
         GoogleMap map = getMap();
         if (map != null && activity.hasForecast()) {
             Forecast.Response forecast = activity.getForecast();
-            position = new LatLng(forecast.getLatitude(), forecast.getLongitude());
+            LatLng position = new LatLng(forecast.getLatitude(), forecast.getLongitude());
             if (marker == null) {
                 marker = map.addMarker(new MarkerOptions().position(position));
             } else {
                 marker.setPosition(position);
             }
 
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, defaultZoom));
+            if (!configChanged) {
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, map.getMaxZoomLevel() - DEFAULT_ZOOM_OUT));
+            } else {
+                configChanged = false;
+            }
         }
     }
 

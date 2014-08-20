@@ -2,9 +2,13 @@ package com.shawnaten.networking;
 
 import android.content.Context;
 import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.shawnaten.simpleweather.MainActivity;
+import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
@@ -22,20 +26,19 @@ import retrofit.converter.GsonConverter;
 /**
  * Created by shawnaten on 7/17/14.
  */
-public class Network {
+public class Network  {
+    private static final String
+            PLACES_STATUS_OK = "OK", PLACES_STATUS_ZERO_RESULTS = "ZERO_RESULTS", PLACES_STATUS_DENIED = "REQUEST_DENIED";
+
     private static Network instance;
 
     private Forecast.Service forecastService;
     private Places.Service placesService, detailsService;
     private Keys keys;
-    private Context context;
 
-    private Network(Context context, Keys keys) {
+    private Network(File networkCacheFile, Keys keys) {
         OkHttpClient okHttpClient = new OkHttpClient();
-        File networkCacheFile = new File(context.getCacheDir(), "networkCache");
         Cache networkCache = null;
-
-        this.context = context;
         this.keys = keys;
 
         try {
@@ -72,24 +75,31 @@ public class Network {
 
     }
 
-    public static void setup(Context context, Keys keys) {
-        instance = new Network(context, keys);
-    }
-
-    public boolean isSetup() {
-        return keys != null;
-    }
-
-    public static synchronized Network getInstance() {
-        return instance;
+    public static void setup(File networkCacheFile, Keys keys) {
+        instance = new Network(networkCacheFile, keys);
     }
 
     public void setKeys(Keys keys) {
         this.keys = keys;
     }
 
+    public boolean isSetup() {
+        return keys.getGoogleAPIKey() != null && keys.getForecastAPIKey() != null;
+    }
+
+    public static synchronized Network getInstance() {
+        if (instance != null)
+            return instance;
+        else
+            return null;
+    }
+
     public void getForecast(double lat, double lng, String langCode, Callback<Forecast.Response> cb) {
         forecastService.getForecast(keys.getForecastAPIKey(), lat, lng, langCode, cb);
+    }
+
+    public Places.AutocompleteResponse getAutocomplete(String query, String langCode) {
+        return placesService.getAutocomplete(keys.getGoogleAPIKey(), query, langCode);
     }
 
     public void getAutocomplete(String query, String langCode, Callback<Places.AutocompleteResponse> cb) {
@@ -100,80 +110,34 @@ public class Network {
         detailsService.getDetails(keys.getGoogleAPIKey(), placeId, langCode, cb);
     }
 
-    /*
-    private class getForecastTask extends AsyncTask<Void, Void, Void> {
-        double lat, lng;
-        String langCode;
-        Callback<Forecast.Response> cb;
+    public boolean responseOkay(String status, Context context) {
 
-        public getForecastTask(double lat, double lng, String langCode, Callback<Forecast.Response> cb) {
-            this.lat = lat;
-            this.lng = lng;
-            this.langCode = langCode;
-            this.cb = cb;
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            if (keys == null) {
-                try {
-                    keysTask.get();
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
+        switch (status) {
+            case PLACES_STATUS_OK:
+                return true;
+            case PLACES_STATUS_ZERO_RESULTS:
+                if (context != null)
+                    showNetworkError(context, context.getString(R.string.no_search_results));
+                return false;
+            case PLACES_STATUS_DENIED:
+                if (context != null) {
+                    showNetworkError(context, context.getString(R.string.network_error));
+                    PreferenceManager.getDefaultSharedPreferences(context).edit()
+                        .putString(MainActivity.GOOGLE_API_KEY, null)
+                        .putString(MainActivity.FORECAST_API_KEY, null)
+                        .apply();
                 }
-            }
-            forecastService.getForecast(keys.getForecastAPIKey(), lat, lng, langCode, cb);
-            return null;
+            default:
+                if (context != null)
+                    showNetworkError(context, context.getString(R.string.network_error));
+                return false;
         }
+
     }
 
-    private class getAutocompleteTask extends AsyncTask<Void, Void, Void> {
-        String query, langCode;
-        Callback<Places.AutocompleteResponse> cb;
-
-        public getAutocompleteTask(String query, String langCode, Callback<Places.AutocompleteResponse> cb) {
-            this.query = query;
-            this.langCode = langCode;
-            this.cb = cb;
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            if (keys == null) {
-                try {
-                    keysTask.get();
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-            placesService.getAutocomplete(keys.getGoogleAPIKey(), query, langCode, cb);
-            return null;
-        }
+    private void showNetworkError(Context context, String message) {
+        Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        toast.show();
     }
-
-    private class getDetailsTask extends AsyncTask<Void, Void, Void> {
-        String placeId, langCode;
-        Callback<Places.DetailsResponse> cb;
-
-        public getDetailsTask(String placeId, String langCode, Callback<Places.DetailsResponse> cb) {
-            this.placeId = placeId;
-            this.langCode = langCode;
-            this.cb = cb;
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            if (keys == null) {
-                try {
-                    keysTask.get();
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-            detailsService.getDetails(keys.getGoogleAPIKey(), placeId, langCode, cb);
-            return null;
-        }
-    }
-    */
 
 }

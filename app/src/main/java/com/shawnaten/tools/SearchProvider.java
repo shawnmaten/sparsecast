@@ -8,24 +8,15 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.util.Log;
 
 import com.shawnaten.networking.Network;
 import com.shawnaten.networking.Places;
 
 import java.util.Locale;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
-public class SearchProvider extends ContentProvider implements Callback<Places.AutocompleteResponse> {
+public class SearchProvider extends ContentProvider {
 	private final String[] pColumns = {BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1, 
 			SearchManager.SUGGEST_COLUMN_INTENT_DATA};
-	
-	private Places.AutocompleteResponse autocomplete;
-
-    private final Object sync = new Object();
 	
 	private static final UriMatcher URIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	static {
@@ -41,39 +32,20 @@ public class SearchProvider extends ContentProvider implements Callback<Places.A
             if (!query.equals("search_suggest_query")) {
                 MatrixCursor cursor = new MatrixCursor(pColumns);
 
-                Network.getInstance().getAutocomplete(query, Locale.getDefault().getLanguage(), this);
+                Places.AutocompleteResponse autocomplete =
+                        Network.getInstance().getAutocomplete(query, Locale.getDefault().getLanguage());
 
-                waitForData();
-
-                if (autocomplete != null && autocomplete.getStatus().equals("OK")) {
+                if (autocomplete != null && Network.getInstance().responseOkay(autocomplete.getStatus(), null)) {
                     for (int i = 0; i < autocomplete.getPredictions().length; i++) {
                         cursor.addRow(new Object[]{i, autocomplete.getPredictions()[i].getDescription(),
                                 autocomplete.getPredictions()[i].getPlace_id()});
                     }
+                    return cursor;
                 }
-
-                return cursor;
             }
 		}		
 		return null;
 	}
-
-    @Override
-    public void success(Places.AutocompleteResponse autocompleteResponse, Response response) {
-        synchronized (sync) {
-            autocomplete = autocompleteResponse;
-            sync.notify();
-        }
-    }
-
-    @Override
-    public void failure(RetrofitError error) {
-        synchronized (sync) {
-            autocomplete = null;
-            sync.notify();
-        }
-        Log.e("Retrofit", error.getMessage());
-    }
 
     @Override
     public String getType(Uri uri) {
@@ -85,16 +57,6 @@ public class SearchProvider extends ContentProvider implements Callback<Places.A
                 return MIME;
         }
         return null;
-    }
-
-    private void waitForData() {
-        synchronized(sync) {
-            try {
-                sync.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     // unused methods

@@ -38,9 +38,7 @@ public class SummaryFragment extends Fragment implements FragmentListener {
 
     @Override
     public void onNewData() {
-        if (isVisible()) {
-            updateView();
-        }
+        updateView();
     }
 
     private void updateView() {

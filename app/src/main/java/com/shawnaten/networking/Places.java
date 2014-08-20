@@ -106,6 +106,9 @@ public class Places {
 
     public static interface Service {
         @GET("/json")
+        AutocompleteResponse getAutocomplete(@Query("key") String key, @Query("input") String query, @Query("language") String langCode);
+
+        @GET("/json")
         void getAutocomplete(@Query("key") String key, @Query("input") String query, @Query("language") String langCode, Callback<AutocompleteResponse> cb);
 
         @GET("/json")
