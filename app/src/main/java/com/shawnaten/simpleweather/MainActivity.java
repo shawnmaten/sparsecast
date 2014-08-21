@@ -56,8 +56,6 @@ import retrofit.client.Response;
 public class MainActivity extends FragmentActivity implements Callback,
         GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
 
-    private int test;
-
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 0, REQUEST_CODE_ACCOUNT_PICKER = 1;
     private static final SparseArray<String> helperFragNames = new SparseArray<>();
     static {
