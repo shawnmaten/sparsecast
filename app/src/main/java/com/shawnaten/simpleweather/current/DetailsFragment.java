@@ -53,7 +53,8 @@ public class DetailsFragment extends Fragment implements FragmentListener {
 
     @Override
     public void onNewData() {
-        updateView();
+        if (isVisible())
+            updateView();
     }
 
     private void updateView() {

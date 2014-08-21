@@ -40,6 +40,8 @@ public class CurrentFragment extends Fragment implements FragmentListener, View.
             .add(R.id.fragment_3, new GraphicsFragment(), childFragNames.valueAt(3))
 
             .commit();
+        } else  {
+            frag2Selected = savedInstanceState.getInt("frag2Selected");
         }
 
     }
@@ -53,15 +55,10 @@ public class CurrentFragment extends Fragment implements FragmentListener, View.
     }
 
     @Override
-    public void onActivityCreated (Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            frag2Selected = savedInstanceState.getInt("frag2Selected");
-        }
+    public void onResume() {
+        super.onResume();
 
         switchFragments();
-
     }
 
     @Override
@@ -96,12 +93,10 @@ public class CurrentFragment extends Fragment implements FragmentListener, View.
         toDetach = fm.findFragmentByTag(childFragNames.get(toDetachId));
         toAttach = fm.findFragmentByTag(childFragNames.get(toAttachId));
 
-        if (toDetach != null & toAttach != null) {
-            fm.beginTransaction().detach(toDetach).attach(toAttach).commit();
-            //noinspection ConstantConditions
-            ((TextView) getView().findViewById(toAttachId)).setTextColor(getResources().getColor(R.color.accent_87));
-            ((TextView) getView().findViewById(toDetachId)).setTextColor(getResources().getColor(R.color.text_primary));
-        }
+        fm.beginTransaction().detach(toDetach).attach(toAttach).commit();
+        //noinspection ConstantConditions
+        ((TextView) getView().findViewById(toAttachId)).setTextColor(getResources().getColor(R.color.accent_87));
+        ((TextView) getView().findViewById(toDetachId)).setTextColor(getResources().getColor(R.color.text_primary));
 
     }
 

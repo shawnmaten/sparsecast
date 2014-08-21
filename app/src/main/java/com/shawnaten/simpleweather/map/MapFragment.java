@@ -21,7 +21,6 @@ public class MapFragment extends SupportMapFragment implements FragmentListener 
     private static final String SUPPORT_MAP_BUNDLE = "MapOptions", CONFIGURATION_CHANGE = "configurationChange";
 
     private Marker marker;
-    private boolean configChanged = false;
 
     public MapFragment() {
         GoogleMapOptions options = new GoogleMapOptions();
@@ -33,15 +32,6 @@ public class MapFragment extends SupportMapFragment implements FragmentListener 
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            configChanged = savedInstanceState.getBoolean(CONFIGURATION_CHANGE);
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
 
@@ -49,22 +39,9 @@ public class MapFragment extends SupportMapFragment implements FragmentListener 
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putBoolean(CONFIGURATION_CHANGE, getActivity().isChangingConfigurations());
-    }
-
-    @Override
-    public void onDestroyView () {
-
-        super.onDestroyView();
-
-    }
-
-    @Override
     public void onNewData() {
-        updateView();
+        if (isVisible())
+            updateView();
     }
 
     private void updateView() {
@@ -80,11 +57,7 @@ public class MapFragment extends SupportMapFragment implements FragmentListener 
                 marker.setPosition(position);
             }
 
-            if (!configChanged) {
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, map.getMaxZoomLevel() - DEFAULT_ZOOM_OUT));
-            } else {
-                configChanged = false;
-            }
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, map.getMaxZoomLevel() - DEFAULT_ZOOM_OUT));
         }
     }
 
