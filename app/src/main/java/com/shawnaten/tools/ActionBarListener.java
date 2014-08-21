@@ -1,10 +1,8 @@
 package com.shawnaten.tools;
 
 import android.app.ActionBar;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 
 import com.shawnaten.simpleweather.R;
 
@@ -21,7 +19,6 @@ public class ActionBarListener implements ActionBar.OnNavigationListener {
     @Override
     public boolean onNavigationItemSelected(int itemPosition, long itemId) {
         if (enabled) {
-            Log.e("actionBarListener", Long.toString(SystemClock.currentThreadTimeMillis()));
             Fragment toDetach, toAttach;
             toDetach = fm.findFragmentById(R.id.main_fragment);
             toAttach = fm.findFragmentByTag(fragments[itemPosition]);

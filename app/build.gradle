@@ -3,13 +3,33 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 20
     buildToolsVersion '20.0.0'
+
+    def getVersionCode = { ->
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'rev-list', 'HEAD', '--count'
+            standardOutput = stdout
+        }
+        return stdout.toString().trim().toInteger()
+    }
+
+    def getVersionName = { ->
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'describe', '--tags'
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    }
+
     defaultConfig {
         applicationId 'com.shawnaten.simpleweather'
         minSdkVersion 14
         targetSdkVersion 20
-        versionCode 8
-        versionName '1.0'
+        versionCode getVersionCode()
+        versionName getVersionName()
     }
+
     buildTypes {
         /*
         debug {
@@ -28,6 +48,7 @@ android {
     }
     productFlavors {
         localhost {
+
         }
         internet {
         }

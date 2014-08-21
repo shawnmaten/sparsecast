@@ -12,7 +12,6 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -64,8 +63,9 @@ public class MainActivity extends FragmentActivity implements Callback,
         helperFragNames.put(R.layout.loading, "loading");
     }
     private static final String NAV_ITEM = "navIndex", FRESH_LAUNCH = "freshLaunch", FORECAST = "forecast",
-            PREF_ACCOUNT_NAME = "prefAccountName", ACCOUNT_SELECTION_DIALOG = "accountSelectionDialog",
-            IS_CURRENT_LOCATION_ENABLED ="isCurrentLocationEnabled", IS_SEARCHING = "isSearching", IS_LOADING = "isLoading";
+            PREF_ACCOUNT_NAME = "prefAccountName",
+            IS_CURRENT_LOCATION_ENABLED ="isCurrentLocationEnabled", IS_SEARCHING = "isSearching", IS_LOADING = "isLoading",
+            LAST_LOCATION_NAME = "lastLocationName", LAST_CURRENT_LOCATION = "lastCurrentLocation";
     public static final String PREFS = "prefs", GOOGLE_API_KEY = "googleAPIKey", FORECAST_API_KEY = "forecastAPIKey";
 
     private KeysEndpoint keysService;
@@ -74,10 +74,10 @@ public class MainActivity extends FragmentActivity implements Callback,
     private MenuItem searchWidget;
     private LocationClient locationClient;
     private ActionBarListener actionBarListener;
+    private boolean isActive;
 
     private boolean isFreshLaunch = true;
-    private Boolean isActive, isSearching, isLoading;
-
+    private Boolean isSearching, isLoading;
     private Forecast.Response lastForecastResponse;
     private String lastLocationName;
     private boolean isCurrentLocationEnabled = true;
@@ -89,6 +89,7 @@ public class MainActivity extends FragmentActivity implements Callback,
 
         if (PlayServices.playServicesAvailable(this)) {
             int navItem = 0;
+            FragmentManager fm = getSupportFragmentManager();
 
             setContentView(R.layout.main_activity);
             mainFragments = getResources().getStringArray(R.array.main_fragments);
@@ -109,13 +110,15 @@ public class MainActivity extends FragmentActivity implements Callback,
                     getKeys();
                 }
 
-                Network.setup(networkCacheFile, keys);
+                Network.setup(this, networkCacheFile, keys);
+            } else {
+                Network.getInstance().setActivityCallback(this);
             }
 
             if (savedInstanceState == null) {
-                FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
-                Fragment cFrag, wFrag, mFrag;
+                Fragment cFrag, wFrag, mFrag, sFrag, lFrag;
+                Bundle args;
 
                 cFrag = new CurrentFragment();
                 ft.add(R.id.main_fragment, cFrag, mainFragments[0]);
@@ -129,15 +132,37 @@ public class MainActivity extends FragmentActivity implements Callback,
                 ft.add(R.id.main_fragment, mFrag, mainFragments[2]);
                 ft.detach(mFrag);
 
+                sFrag = new GenericFragment();
+                args = new Bundle();
+                args.putInt(GenericFragment.LAYOUT, R.layout.searching);
+                sFrag.setArguments(args);
+                ft.add(R.id.main_fragment, sFrag, helperFragNames.get(R.layout.searching));
+                ft.detach(sFrag);
+
+                lFrag = new GenericFragment();
+                args = new Bundle();
+                args.putInt(GenericFragment.LAYOUT, R.layout.loading);
+                lFrag.setArguments(args);
+                ft.add(R.id.main_fragment, lFrag, helperFragNames.get(R.layout.loading));
+                ft.detach(lFrag);
+
                 ft.commit();
 
             } else {
-                isSearching = savedInstanceState.getBoolean(IS_SEARCHING);
-                isLoading = savedInstanceState.getBoolean(IS_LOADING);
+
+                isFreshLaunch = savedInstanceState.getBoolean(FRESH_LAUNCH);
+
+                if (savedInstanceState.containsKey(IS_SEARCHING))
+                    isSearching = savedInstanceState.getBoolean(IS_SEARCHING);
+                if (savedInstanceState.containsKey(IS_LOADING))
+                    isLoading = savedInstanceState.getBoolean(IS_LOADING);
+
                 navItem = savedInstanceState.getInt(NAV_ITEM, 0);
                 lastForecastResponse = savedInstanceState.getParcelable(FORECAST);
-                isFreshLaunch = savedInstanceState.getBoolean(FRESH_LAUNCH);
+                lastLocationName = savedInstanceState.getString(LAST_LOCATION_NAME);
                 isCurrentLocationEnabled = savedInstanceState.getBoolean(IS_CURRENT_LOCATION_ENABLED);
+                lastCurrentLocation = savedInstanceState.getParcelable(LAST_CURRENT_LOCATION);
+
             }
 
             actionBarListener = new ActionBarListener(getSupportFragmentManager(), mainFragments);
@@ -201,10 +226,11 @@ public class MainActivity extends FragmentActivity implements Callback,
         super.onStart();
 
         if (Network.getInstance().isSetup()) {
-            if (isFreshLaunch)
+            if (isFreshLaunch) {
                 locationClient.connect();
-            else
+            } else if (isSearching == null && isLoading == null) {
                 actionBarListener.setEnabled(true);
+            }
         }
 
     }
@@ -215,16 +241,12 @@ public class MainActivity extends FragmentActivity implements Callback,
 
         isActive = true;
 
-        Log.e("onResumeFragments", Long.toString(SystemClock.currentThreadTimeMillis()));
-
         if (isSearching != null) {
-            Log.d("onResumeFragments", "isSearching");
             setSearching(isSearching);
             isSearching = null;
         }
 
         if (isLoading != null) {
-            Log.d("onResumeFragments", "isLoading");
             setLoading(isLoading);
             isLoading = null;
         }
@@ -235,23 +257,26 @@ public class MainActivity extends FragmentActivity implements Callback,
     protected void onSaveInstanceState (Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        Log.e("onSaveInstanceState", Long.toString(SystemClock.currentThreadTimeMillis()));
-
         isActive = false;
+
+        isFreshLaunch = !isChangingConfigurations();
+        outState.putBoolean(FRESH_LAUNCH, isFreshLaunch);
+
 
         if (isSearching != null)
             outState.putBoolean(IS_SEARCHING, isSearching);
         if (isLoading != null)
             outState.putBoolean(IS_LOADING, isLoading);
+
         //noinspection ConstantConditions
         outState.putInt(NAV_ITEM, getActionBar().getSelectedNavigationIndex());
         outState.putParcelable(FORECAST, lastForecastResponse);
-        isFreshLaunch = !isChangingConfigurations();
-        outState.putBoolean(FRESH_LAUNCH, isFreshLaunch);
+        outState.putString(LAST_LOCATION_NAME, lastLocationName);
         if (isFreshLaunch)
             outState.putBoolean(IS_CURRENT_LOCATION_ENABLED, true);
         else
             outState.putBoolean(IS_CURRENT_LOCATION_ENABLED, isCurrentLocationEnabled);
+        outState.putParcelable(LAST_CURRENT_LOCATION, lastCurrentLocation);
 
     }
 
@@ -294,20 +319,18 @@ public class MainActivity extends FragmentActivity implements Callback,
     private void handleIntent(Intent intent) {
         String action = intent.getAction();
 
-        Log.e("handleIntent", Long.toString(SystemClock.currentThreadTimeMillis()));
-
         if (Intent.ACTION_SEARCH.equals(action)) {
             searchWidget.collapseActionView();
             setLoading(true);
             isCurrentLocationEnabled = false;
             String query = intent.getStringExtra(SearchManager.QUERY);
-            Network.getInstance().getAutocomplete(query, Locale.getDefault().getLanguage(), this);
+            Network.getInstance().getAutocomplete(query, Locale.getDefault().getLanguage(), null);
 
         } else if (Intent.ACTION_VIEW.equals(action)) {
             searchWidget.collapseActionView();
             setLoading(true);
             isCurrentLocationEnabled = false;
-            Network.getInstance().getDetails(intent.getDataString(), Locale.getDefault().getLanguage(), this);
+            Network.getInstance().getDetails(intent.getDataString(), Locale.getDefault().getLanguage(), null);
         }
 
     }
@@ -323,14 +346,13 @@ public class MainActivity extends FragmentActivity implements Callback,
         } else if (lastForecastResponse != null) {
             setLoading(true);
             Network.getInstance().getForecast(lastForecastResponse.getLatitude(), lastForecastResponse.getLongitude(),
-                    Locale.getDefault().getLanguage(), this);
+                    Locale.getDefault().getLanguage(), null);
         }
     }
 
     @Override
     public void success(Object response, Response response2) {
         if (Forecast.Response.class.isInstance(response)) {
-            Log.e("success", Long.toString(SystemClock.currentThreadTimeMillis()));
 
             FragmentManager fm = getSupportFragmentManager();
 
@@ -338,18 +360,8 @@ public class MainActivity extends FragmentActivity implements Callback,
             lastForecastResponse.setName(lastLocationName);
             setLoading(false);
 
-            for (String tag : mainFragments) {
-                FragmentListener listener = (FragmentListener) fm.findFragmentByTag(tag);
-                if (listener != null)
-                    listener.onNewData();
-                else
-                    Log.e(tag, "was null");
-            }
-
-            if (getActionBar().getSelectedNavigationIndex() == 0) {
-                Fragment cFrag = fm.findFragmentByTag(mainFragments[0]);
-                if (cFrag != null && cFrag.isDetached())
-                    fm.beginTransaction().attach(cFrag).commit();
+            for (Fragment fragment : fm.getFragments()) {
+                ((FragmentListener) fragment).onNewData();
             }
 
         } else if (Places.AutocompleteResponse.class.isInstance(response)) {
@@ -357,7 +369,7 @@ public class MainActivity extends FragmentActivity implements Callback,
 
             if (Network.getInstance().responseOkay(autocompleteResponse.getStatus(), this)) {
                 Network.getInstance().getDetails(autocompleteResponse.getPredictions()[0].getPlace_id(),
-                        Locale.getDefault().getLanguage(), this);
+                        Locale.getDefault().getLanguage(), null);
             } else {
                 setLoading(false);
             }
@@ -368,7 +380,7 @@ public class MainActivity extends FragmentActivity implements Callback,
             if (Network.getInstance().responseOkay(details.getStatus(), this)) {
                 lastLocationName = details.getResult().getName();
                 Places.Location location = details.getResult().getGeometry().getLocation();
-                Network.getInstance().getForecast(location.getLat(), location.getLng(), Locale.getDefault().getLanguage(), this);
+                Network.getInstance().getForecast(location.getLat(), location.getLng(), Locale.getDefault().getLanguage(), null);
             } else {
                 setLoading(false);
             }
@@ -390,12 +402,10 @@ public class MainActivity extends FragmentActivity implements Callback,
     }
 
     private void setSearching(boolean state) {
-        Log.e("searching view", Boolean.toString(state));
         setViewState(R.layout.searching, state);
     }
 
     public void setLoading(boolean state) {
-        Log.e("loading view", Boolean.toString(state));
         setViewState(R.layout.loading, state);
     }
 
@@ -403,24 +413,26 @@ public class MainActivity extends FragmentActivity implements Callback,
 
         if (isActive) {
             FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            Fragment toDetach, toAttach;
 
             if (state) {
                 actionBarListener.setEnabled(false);
-                Fragment lFrag = new GenericFragment();
-                Bundle args = new Bundle();
-                args.putInt(GenericFragment.LAYOUT, id);
-                lFrag.setArguments(args);
-                fm.beginTransaction()
-                        .add(R.id.main_fragment, lFrag, helperFragNames.get(id))
-                        .commit();
-            } else {
-                Fragment toDetach = fm.findFragmentByTag(helperFragNames.get(id));
-                if (toDetach != null) {
-                    fm.beginTransaction()
-                            .remove(toDetach)
-                            .commit();
-                    actionBarListener.setEnabled(true);
+                toAttach = fm.findFragmentByTag(helperFragNames.get(id));
+                if (toAttach.isDetached()) {
+                    ft.attach(toAttach).commit();
                 }
+            } else {
+                toAttach = fm.findFragmentByTag(mainFragments[getActionBar().getSelectedNavigationIndex()]);
+                toDetach = fm.findFragmentByTag(helperFragNames.get(id));
+                ft.detach(toDetach);
+
+                if (toAttach.isDetached()) {
+                    ft.attach(toAttach);
+                }
+
+                ft.commit();
+                actionBarListener.setEnabled(true);
             }
         } else {
             switch (id) {
@@ -483,7 +495,7 @@ public class MainActivity extends FragmentActivity implements Callback,
 
     private void getLocalWeather() {
         Network.getInstance().getForecast(lastCurrentLocation.getLatitude(), lastCurrentLocation.getLongitude(),
-                Locale.getDefault().getLanguage(), this);
+                Locale.getDefault().getLanguage(), null);
     }
 
     @Override
@@ -513,6 +525,7 @@ public class MainActivity extends FragmentActivity implements Callback,
     // location services
 
     public void getKeys() {
+        setLoading(true);
         SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         String accountName = defaultPrefs.getString(PREF_ACCOUNT_NAME, null);
         GoogleAccountCredential credential = GoogleAccountCredential.usingAudience(getApplicationContext(), "server:client_id:" + getString(R.string.WEB_ID));
@@ -544,7 +557,6 @@ public class MainActivity extends FragmentActivity implements Callback,
         protected Keys doInBackground(Void... unused) {
             Keys keys = new Keys();
             try {
-                Log.d("getKeysTask", "getting keys");
                 keys = keysService.getKeys().execute();
                 if (keys != null) {
                     Network.getInstance().setKeys(keys);
@@ -593,6 +605,13 @@ public class MainActivity extends FragmentActivity implements Callback,
                 }
             break;
         }
+    }
+
+    @Override
+    protected void onDestroy () {
+        super.onDestroy();
+
+        Network.getInstance().setActivityCallback(null);
     }
 
 }

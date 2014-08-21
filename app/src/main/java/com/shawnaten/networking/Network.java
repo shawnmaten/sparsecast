@@ -20,26 +20,34 @@ import java.util.TimeZone;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 import retrofit.client.OkClient;
+import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 
 /**
  * Created by shawnaten on 7/17/14.
  */
-public class Network  {
+public class Network implements Callback {
     private static final String
             PLACES_STATUS_OK = "OK", PLACES_STATUS_ZERO_RESULTS = "ZERO_RESULTS", PLACES_STATUS_DENIED = "REQUEST_DENIED";
 
     private static Network instance;
 
+    private Callback activityCallback;
+    private Object o;
+    private Response response;
+    private RetrofitError error;
+
     private Forecast.Service forecastService;
     private Places.Service placesService, detailsService;
     private Keys keys;
 
-    private Network(File networkCacheFile, Keys keys) {
+    private Network(Callback cb, File networkCacheFile, Keys keys) {
         OkHttpClient okHttpClient = new OkHttpClient();
         OkClient okClient;
         Cache networkCache = null;
+        this.activityCallback = cb;
         this.keys = keys;
 
         try {
@@ -77,16 +85,32 @@ public class Network  {
 
     }
 
-    public static void setup(File networkCacheFile, Keys keys) {
-        instance = new Network(networkCacheFile, keys);
-    }
-
-    public void setKeys(Keys keys) {
-        this.keys = keys;
+    public static void setup(Callback cb, File networkCacheFile, Keys keys) {
+        if (instance == null || keys.getGoogleAPIKey() == null || keys.getForecastAPIKey() == null)
+            instance = new Network(cb, networkCacheFile, keys);
     }
 
     public boolean isSetup() {
         return keys.getGoogleAPIKey() != null && keys.getForecastAPIKey() != null;
+    }
+
+    public void setActivityCallback(Callback cb) {
+        this.activityCallback = cb;
+        if (activityCallback != null) {
+            if (o != null || response != null) {
+                activityCallback.success(o, response);
+                o = null;
+                response = null;
+            }
+            if (error != null) {
+                activityCallback.failure(error);
+                error = null;
+            }
+        }
+    }
+
+    public void setKeys(Keys keys) {
+        this.keys = keys;
     }
 
     public static synchronized Network getInstance() {
@@ -97,6 +121,8 @@ public class Network  {
     }
 
     public void getForecast(double lat, double lng, String langCode, Callback<Forecast.Response> cb) {
+        if (cb == null)
+            cb = this;
         forecastService.getForecast(keys.getForecastAPIKey(), lat, lng, langCode, cb);
     }
 
@@ -105,10 +131,14 @@ public class Network  {
     }
 
     public void getAutocomplete(String query, String langCode, Callback<Places.AutocompleteResponse> cb) {
+        if (cb == null)
+            cb = this;
         placesService.getAutocomplete(keys.getGoogleAPIKey(), query, langCode, cb);
     }
 
     public void getDetails(String placeId, String langCode, Callback<Places.DetailsResponse> cb) {
+        if (cb == null)
+            cb = this;
         detailsService.getDetails(keys.getGoogleAPIKey(), placeId, langCode, cb);
     }
 
@@ -142,4 +172,23 @@ public class Network  {
         toast.show();
     }
 
+    @Override
+    public void success(Object o, Response response) {
+        if (activityCallback != null) {
+            activityCallback.success(o, response);
+        }
+        else {
+            this.o = o;
+            this.response = response;
+        }
+    }
+
+    @Override
+    public void failure(RetrofitError error) {
+        if (activityCallback != null) {
+            activityCallback.failure(error);
+        } else {
+            this.error = error;
+        }
+    }
 }
