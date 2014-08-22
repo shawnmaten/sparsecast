@@ -43,6 +43,7 @@ import com.shawnaten.simpleweather.map.MapFragment;
 import com.shawnaten.simpleweather.week.WeekFragment;
 import com.shawnaten.tools.ActionBarListener;
 import com.shawnaten.tools.FragmentListener;
+import com.shawnaten.tools.GeneralAlertDialog;
 import com.shawnaten.tools.PlayServices;
 
 import java.io.File;
@@ -53,7 +54,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MainActivity extends FragmentActivity implements Callback,
+public class MainActivity extends FragmentActivity implements Callback, GeneralAlertDialog.OnClickListener,
         GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
 
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 0, REQUEST_CODE_ACCOUNT_PICKER = 1;
@@ -63,9 +64,10 @@ public class MainActivity extends FragmentActivity implements Callback,
         helperFragNames.put(R.layout.loading, "loading");
     }
     private static final String NAV_ITEM = "navIndex", FRESH_LAUNCH = "freshLaunch", FORECAST = "forecast",
-            PREF_ACCOUNT_NAME = "prefAccountName",
-            IS_CURRENT_LOCATION_ENABLED ="isCurrentLocationEnabled", IS_SEARCHING = "isSearching", IS_LOADING = "isLoading",
-            LAST_LOCATION_NAME = "lastLocationName", LAST_CURRENT_LOCATION = "lastCurrentLocation";
+            PREF_ACCOUNT_NAME = "prefAccountName", IS_CURRENT_LOCATION_ENABLED ="isCurrentLocationEnabled",
+            IS_SEARCHING = "isSearching", IS_LOADING = "isLoading",
+            SEARCH_NEEDS_UPDATE = "searchNeedsUpdate", LOADING_NEEDS_UPDATE = "loadingNeedsUpdate",
+            LAST_CURRENT_LOCATION = "lastCurrentLocation";
     public static final String PREFS = "prefs", GOOGLE_API_KEY = "googleAPIKey", FORECAST_API_KEY = "forecastAPIKey";
 
     private KeysEndpoint keysService;
@@ -76,10 +78,11 @@ public class MainActivity extends FragmentActivity implements Callback,
     private ActionBarListener actionBarListener;
     private boolean isActive;
 
+    private int navItem;
     private boolean isFreshLaunch = true;
-    private Boolean isSearching, isLoading;
+    private boolean isSearching, isLoading;
+    private Boolean searchNeedsUpdate, loadingNeedsUpdate;
     private Forecast.Response lastForecastResponse;
-    private String lastLocationName;
     private boolean isCurrentLocationEnabled = true;
     private Location lastCurrentLocation;
 
@@ -88,7 +91,6 @@ public class MainActivity extends FragmentActivity implements Callback,
         super.onCreate(savedInstanceState);
 
         if (PlayServices.playServicesAvailable(this)) {
-            int navItem = 0;
             FragmentManager fm = getSupportFragmentManager();
 
             setContentView(R.layout.main_activity);
@@ -122,7 +124,6 @@ public class MainActivity extends FragmentActivity implements Callback,
 
                 cFrag = new CurrentFragment();
                 ft.add(R.id.main_fragment, cFrag, mainFragments[0]);
-                ft.detach(cFrag);
 
                 wFrag = new WeekFragment();
                 ft.add(R.id.main_fragment, wFrag, mainFragments[1]);
@@ -144,36 +145,39 @@ public class MainActivity extends FragmentActivity implements Callback,
                 args.putInt(GenericFragment.LAYOUT, R.layout.loading);
                 lFrag.setArguments(args);
                 ft.add(R.id.main_fragment, lFrag, helperFragNames.get(R.layout.loading));
-                ft.detach(lFrag);
 
                 ft.commit();
 
             } else {
 
                 isFreshLaunch = savedInstanceState.getBoolean(FRESH_LAUNCH);
+                isSearching = savedInstanceState.getBoolean(IS_SEARCHING);
+                isLoading = savedInstanceState.getBoolean(IS_LOADING);
 
-                if (savedInstanceState.containsKey(IS_SEARCHING))
-                    isSearching = savedInstanceState.getBoolean(IS_SEARCHING);
-                if (savedInstanceState.containsKey(IS_LOADING))
-                    isLoading = savedInstanceState.getBoolean(IS_LOADING);
+                if (savedInstanceState.containsKey(SEARCH_NEEDS_UPDATE))
+                    searchNeedsUpdate = savedInstanceState.getBoolean(SEARCH_NEEDS_UPDATE);
+                if (savedInstanceState.containsKey(LOADING_NEEDS_UPDATE))
+                    loadingNeedsUpdate = savedInstanceState.getBoolean(LOADING_NEEDS_UPDATE);
 
                 navItem = savedInstanceState.getInt(NAV_ITEM, 0);
                 lastForecastResponse = savedInstanceState.getParcelable(FORECAST);
-                lastLocationName = savedInstanceState.getString(LAST_LOCATION_NAME);
                 isCurrentLocationEnabled = savedInstanceState.getBoolean(IS_CURRENT_LOCATION_ENABLED);
                 lastCurrentLocation = savedInstanceState.getParcelable(LAST_CURRENT_LOCATION);
 
             }
 
-            actionBarListener = new ActionBarListener(getSupportFragmentManager(), mainFragments);
             ActionBar actionBar = getActionBar();
-            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            actionBar.setIcon(R.drawable.ic_logo);
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBarListener = new ActionBarListener(getSupportFragmentManager(), mainFragments);
             actionBar.setListNavigationCallbacks(
                     ArrayAdapter.createFromResource(this, R.array.main_fragments, android.R.layout.simple_spinner_dropdown_item),
                     actionBarListener);
-            actionBar.setDisplayShowTitleEnabled(false);
-            actionBar.setIcon(R.drawable.ic_logo);
-            actionBar.setSelectedNavigationItem(navItem);
+
+            if (!isFreshLaunch && !isSearching && !isLoading) {
+                actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+                actionBar.setSelectedNavigationItem(navItem);
+            }
 
         } else {
             finish();
@@ -228,8 +232,6 @@ public class MainActivity extends FragmentActivity implements Callback,
         if (Network.getInstance().isSetup()) {
             if (isFreshLaunch) {
                 locationClient.connect();
-            } else if (isSearching == null && isLoading == null) {
-                actionBarListener.setEnabled(true);
             }
         }
 
@@ -241,14 +243,14 @@ public class MainActivity extends FragmentActivity implements Callback,
 
         isActive = true;
 
-        if (isSearching != null) {
-            setSearching(isSearching);
-            isSearching = null;
+        if (searchNeedsUpdate != null) {
+            setSearching(searchNeedsUpdate);
+            searchNeedsUpdate = null;
         }
 
-        if (isLoading != null) {
-            setLoading(isLoading);
-            isLoading = null;
+        if (loadingNeedsUpdate != null) {
+            setLoading(loadingNeedsUpdate);
+            loadingNeedsUpdate = null;
         }
 
     }
@@ -261,17 +263,21 @@ public class MainActivity extends FragmentActivity implements Callback,
 
         isFreshLaunch = !isChangingConfigurations();
         outState.putBoolean(FRESH_LAUNCH, isFreshLaunch);
+        outState.putBoolean(IS_SEARCHING, isSearching);
+        outState.putBoolean(IS_LOADING, isLoading);
 
+        if (searchNeedsUpdate != null)
+            outState.putBoolean(SEARCH_NEEDS_UPDATE, searchNeedsUpdate);
+        if (loadingNeedsUpdate != null)
+            outState.putBoolean(LOADING_NEEDS_UPDATE, loadingNeedsUpdate);
 
-        if (isSearching != null)
-            outState.putBoolean(IS_SEARCHING, isSearching);
-        if (isLoading != null)
-            outState.putBoolean(IS_LOADING, isLoading);
+        ActionBar ab = getActionBar();
+        if (ab.getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST)
+            outState.putInt(NAV_ITEM, ab.getSelectedNavigationIndex());
+        else
+            outState.putInt(NAV_ITEM, navItem);
 
-        //noinspection ConstantConditions
-        outState.putInt(NAV_ITEM, getActionBar().getSelectedNavigationIndex());
         outState.putParcelable(FORECAST, lastForecastResponse);
-        outState.putString(LAST_LOCATION_NAME, lastLocationName);
         if (isFreshLaunch)
             outState.putBoolean(IS_CURRENT_LOCATION_ENABLED, true);
         else
@@ -357,11 +363,12 @@ public class MainActivity extends FragmentActivity implements Callback,
             FragmentManager fm = getSupportFragmentManager();
 
             lastForecastResponse = (Forecast.Response) response;
-            lastForecastResponse.setName(lastLocationName);
+            lastForecastResponse.setName(Network.getInstance().getLastLocationName());
             setLoading(false);
 
             for (Fragment fragment : fm.getFragments()) {
-                ((FragmentListener) fragment).onNewData();
+                if (fragment != null)
+                    ((FragmentListener) fragment).onNewData();
             }
 
         } else if (Places.AutocompleteResponse.class.isInstance(response)) {
@@ -378,7 +385,7 @@ public class MainActivity extends FragmentActivity implements Callback,
             Places.DetailsResponse details = (Places.DetailsResponse) response;
 
             if (Network.getInstance().responseOkay(details.getStatus(), this)) {
-                lastLocationName = details.getResult().getName();
+                Network.getInstance().setLastLocationName(details.getResult().getName());
                 Places.Location location = details.getResult().getGeometry().getLocation();
                 Network.getInstance().getForecast(location.getLat(), location.getLng(), Locale.getDefault().getLanguage(), null);
             } else {
@@ -389,16 +396,27 @@ public class MainActivity extends FragmentActivity implements Callback,
 
     @Override
     public void failure(RetrofitError error) {
+
         setLoading(false);
-        Toast toast = Toast.makeText(getApplicationContext(), getString(R.string.network_error), Toast.LENGTH_SHORT);
-        toast.show();
-        Log.e("Retrofit", error.getMessage());
+
         if (error.getResponse() != null && error.getResponse().getStatus() == 403) {
             PreferenceManager.getDefaultSharedPreferences(this).edit()
                     .putString(MainActivity.GOOGLE_API_KEY, null)
                     .putString(MainActivity.FORECAST_API_KEY, null)
                     .apply();
+            GeneralAlertDialog.newInstance(
+                    Network.NETWORK_ERROR_DIALOG,
+                    getString(R.string.network_error_title),
+                    getString(R.string.network_error_message),
+                    getString(R.string.network_error_negative),
+                    getString(R.string.network_error_positive)
+            ).show(getSupportFragmentManager(), Network.NETWORK_ERROR_DIALOG);
+        } else {
+            Toast toast = Toast.makeText(getApplicationContext(), getString(R.string.network_error), Toast.LENGTH_SHORT);
+            toast.show();
+            Log.e("Retrofit", error.getMessage());
         }
+
     }
 
     private void setSearching(boolean state) {
@@ -406,41 +424,42 @@ public class MainActivity extends FragmentActivity implements Callback,
     }
 
     public void setLoading(boolean state) {
+        isLoading = state;
         setViewState(R.layout.loading, state);
     }
 
     private void setViewState(int id, boolean state) {
 
         if (isActive) {
+            ActionBar ab = getActionBar();
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
             Fragment toDetach, toAttach;
 
             if (state) {
-                actionBarListener.setEnabled(false);
+                navItem = ab.getSelectedNavigationIndex();
+                ab.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
                 toAttach = fm.findFragmentByTag(helperFragNames.get(id));
                 if (toAttach.isDetached()) {
                     ft.attach(toAttach).commit();
                 }
             } else {
-                toAttach = fm.findFragmentByTag(mainFragments[getActionBar().getSelectedNavigationIndex()]);
                 toDetach = fm.findFragmentByTag(helperFragNames.get(id));
                 ft.detach(toDetach);
 
-                if (toAttach.isDetached()) {
-                    ft.attach(toAttach);
-                }
-
                 ft.commit();
-                actionBarListener.setEnabled(true);
+
+                ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+                ab.setSelectedNavigationItem(navItem);
+
             }
         } else {
             switch (id) {
                 case R.layout.searching:
-                    isSearching = state;
+                    searchNeedsUpdate = state;
                     break;
                 case R.layout.loading:
-                    isLoading = state;
+                    loadingNeedsUpdate = state;
                     break;
 
             }
@@ -481,13 +500,12 @@ public class MainActivity extends FragmentActivity implements Callback,
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             return address.getLocality() != null ? address.getLocality() : getString(R.string.action_current_location);
         }
 
         @Override
         protected void onPostExecute (String result) {
-            lastLocationName = result;
+            Network.getInstance().setLastLocationName(result);
             getLocalWeather();
         }
 
@@ -525,7 +543,6 @@ public class MainActivity extends FragmentActivity implements Callback,
     // location services
 
     public void getKeys() {
-        setLoading(true);
         SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         String accountName = defaultPrefs.getString(PREF_ACCOUNT_NAME, null);
         GoogleAccountCredential credential = GoogleAccountCredential.usingAudience(getApplicationContext(), "server:client_id:" + getString(R.string.WEB_ID));
@@ -612,6 +629,18 @@ public class MainActivity extends FragmentActivity implements Callback,
         super.onDestroy();
 
         Network.getInstance().setActivityCallback(null);
+    }
+
+    @Override
+    public void onDialogClick(String tag, Boolean positive) {
+        switch (tag) {
+            case Network.NETWORK_ERROR_DIALOG:
+                if (positive) {
+                    setLoading(true);
+                    getKeys();
+                }
+                break;
+        }
     }
 
 }

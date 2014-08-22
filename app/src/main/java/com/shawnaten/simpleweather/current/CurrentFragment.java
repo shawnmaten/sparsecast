@@ -3,6 +3,7 @@ package com.shawnaten.simpleweather.current;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.method.LinkMovementMethod;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +52,7 @@ public class CurrentFragment extends Fragment implements FragmentListener, View.
         View view = inflater.inflate(R.layout.tab_current_main, container, false);
         view.findViewById(R.id.summary).setOnClickListener(this);
         view.findViewById(R.id.details).setOnClickListener(this);
+        ((TextView) view.findViewById(R.id.powered_by_forecast)).setMovementMethod(LinkMovementMethod.getInstance());
         return view;
     }
 

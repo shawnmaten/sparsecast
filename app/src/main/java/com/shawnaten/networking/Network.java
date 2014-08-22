@@ -3,6 +3,7 @@ package com.shawnaten.networking;
 import android.content.Context;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -10,6 +11,7 @@ import com.google.gson.GsonBuilder;
 import com.shawnaten.simpleweather.MainActivity;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
+import com.shawnaten.tools.GeneralAlertDialog;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -29,6 +31,8 @@ import retrofit.converter.GsonConverter;
  * Created by shawnaten on 7/17/14.
  */
 public class Network implements Callback {
+    public static final String NETWORK_ERROR_DIALOG = "networkErrorDialog";
+
     private static final String
             PLACES_STATUS_OK = "OK", PLACES_STATUS_ZERO_RESULTS = "ZERO_RESULTS", PLACES_STATUS_DENIED = "REQUEST_DENIED";
 
@@ -38,6 +42,16 @@ public class Network implements Callback {
     private Object o;
     private Response response;
     private RetrofitError error;
+
+    public String getLastLocationName() {
+        return lastLocationName;
+    }
+
+    public void setLastLocationName(String lastLocationName) {
+        this.lastLocationName = lastLocationName;
+    }
+
+    private String lastLocationName;
 
     private Forecast.Service forecastService;
     private Places.Service placesService, detailsService;
@@ -142,26 +156,33 @@ public class Network implements Callback {
         detailsService.getDetails(keys.getGoogleAPIKey(), placeId, langCode, cb);
     }
 
-    public boolean responseOkay(String status, Context context) {
+    public boolean responseOkay(String status, FragmentActivity activity) {
 
         switch (status) {
             case PLACES_STATUS_OK:
                 return true;
             case PLACES_STATUS_ZERO_RESULTS:
-                if (context != null)
-                    showNetworkError(context, context.getString(R.string.no_search_results));
+                if (activity != null)
+                    showNetworkError(activity, activity.getString(R.string.no_search_results));
                 return false;
             case PLACES_STATUS_DENIED:
-                if (context != null) {
-                    showNetworkError(context, context.getString(R.string.network_error));
-                    PreferenceManager.getDefaultSharedPreferences(context).edit()
+                if (activity != null) {
+                    PreferenceManager.getDefaultSharedPreferences(activity).edit()
                         .putString(MainActivity.GOOGLE_API_KEY, null)
                         .putString(MainActivity.FORECAST_API_KEY, null)
                         .apply();
+                    GeneralAlertDialog.newInstance(
+                            NETWORK_ERROR_DIALOG,
+                            activity.getString(R.string.network_error_title),
+                            activity.getString(R.string.network_error_message),
+                            activity.getString(R.string.network_error_negative),
+                            activity.getString(R.string.network_error_positive)
+                    ).show(activity.getSupportFragmentManager(), NETWORK_ERROR_DIALOG);
                 }
+                return false;
             default:
-                if (context != null)
-                    showNetworkError(context, context.getString(R.string.network_error));
+                if (activity != null)
+                    showNetworkError(activity, activity.getString(R.string.network_error));
                 return false;
         }
 

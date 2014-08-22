@@ -46,8 +46,19 @@
         android:id="@+id/fragment_2"
         style="@style/tab_current_fragment"
         android:layout_below="@id/fragment_2_buttons"
-        android:layout_above="@+id/fragment_3"
+        android:layout_above="@+id/powered_by_forecast"
         android:layout_marginTop="0dp" />
+
+    <com.shawnaten.tools.MaterialTextView
+        android:id="@+id/powered_by_forecast"
+        style="@style/text.body_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/fragment_3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:text="@string/powered_by_forecast"
+        android:textColorLink="@color/text_primary" />
 
     <FrameLayout
         android:id="@id/fragment_3"

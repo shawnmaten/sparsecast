@@ -6,7 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
-public class GeneralAlertDialog extends DialogFragment {
+public class GeneralAlertDialog extends DialogFragment implements FragmentListener{
     private static final String TAG = "tag", TITLE = "title", MESSAGE = "message",
             NEGATIVE_BUTTON = "negative", POSITIVE_BUTTON = "positive";
 
@@ -54,6 +54,11 @@ public class GeneralAlertDialog extends DialogFragment {
         dialog =  builder.create();
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         return dialog;
+    }
+
+    @Override
+    public void onNewData() {
+
     }
 
     public interface OnClickListener {

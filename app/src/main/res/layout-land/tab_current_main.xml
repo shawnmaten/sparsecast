@@ -52,4 +52,17 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/standard_margin" />
 
+    <com.shawnaten.tools.MaterialTextView
+        android:id="@+id/powered_by_forecast"
+        style="@style/text.body_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/fragment_3"
+        android:layout_alignRight="@id/summary"
+        android:layout_alignEnd="@id/summary"
+        android:layout_marginLeft="@dimen/standard_margin"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:text="@string/powered_by_forecast"
+        android:textColorLink="@color/text_primary" />
+
 </RelativeLayout>

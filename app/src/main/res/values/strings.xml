@@ -19,7 +19,13 @@
         <item>graphics</item>
     </string-array>
 
+    <string name="network_error_title">Network Error</string>
+    <string name="network_error_message">Reconnect?</string>
+    <string name="network_error_negative">Cancel</string>
+    <string name="network_error_positive">Reconnect</string>
+
     <string name="app_name">Weather</string>
+    <string name="powered_by_forecast"><a href="http://forecast.io/">Powered by Forecast</a></string>
     <string name="action_refresh">Refresh</string>
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
