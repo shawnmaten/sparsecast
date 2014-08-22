@@ -99,6 +99,8 @@ public class Forecast {
             minutely = (DataBlock) in.readValue(DataBlock.class.getClassLoader());
             hourly = (DataBlock) in.readValue(DataBlock.class.getClassLoader());
             daily = (DataBlock) in.readValue(DataBlock.class.getClassLoader());
+            alerts = new Alert[in.readInt()];
+            in.readTypedArray(alerts, Alert.CREATOR);
             flags = (Flags) in.readValue(Flags.class.getClassLoader());
         }
 
@@ -118,7 +120,9 @@ public class Forecast {
             dest.writeValue(minutely);
             dest.writeValue(hourly);
             dest.writeValue(daily);
-            dest.writeValue(flags);
+            dest.writeInt(alerts.length);
+            dest.writeTypedArray(alerts, 0);
+            dest.writeValue(this.flags);
         }
 
         @SuppressWarnings("unused")
@@ -141,6 +145,7 @@ public class Forecast {
         private String icon;
         private DataPoint[] data;
 
+        @SuppressWarnings("unused")
         public DataBlock() {
 
         }
@@ -160,7 +165,8 @@ public class Forecast {
         protected DataBlock(Parcel in) {
             summary = in.readString();
             icon = in.readString();
-            data = (DataPoint[]) in.readParcelableArray(DataPoint.class.getClassLoader());
+            data = new DataPoint[in.readInt()];
+            in.readTypedArray(data, DataPoint.CREATOR);
         }
 
         @Override
@@ -172,7 +178,8 @@ public class Forecast {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(summary);
             dest.writeString(icon);
-            dest.writeParcelableArray(data, flags);
+            dest.writeInt(data.length);
+            dest.writeTypedArray(data, 0);
         }
 
         @SuppressWarnings("unused")
