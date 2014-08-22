@@ -120,7 +120,7 @@ public class Forecast {
             dest.writeValue(minutely);
             dest.writeValue(hourly);
             dest.writeValue(daily);
-            dest.writeInt(alerts.length);
+            dest.writeInt(alerts != null ? alerts.length : 0);
             dest.writeTypedArray(alerts, 0);
             dest.writeValue(this.flags);
         }
@@ -178,7 +178,7 @@ public class Forecast {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(summary);
             dest.writeString(icon);
-            dest.writeInt(data.length);
+            dest.writeInt(data != null ? data.length : 0);
             dest.writeTypedArray(data, 0);
         }
 
@@ -525,13 +525,13 @@ public class Forecast {
     }
 
     public static class Flags implements Parcelable {
-        @SerializedName("darksky-unavailable") private Boolean darkskyUnavailable;
+        @SerializedName("darksky-unavailable") private boolean darkskyUnavailable;
         @SerializedName("darksky-stations") private String[] darkskyStations;
         @SerializedName("datapoint-stations") private String[] datapointStations;
         @SerializedName("isd-stations") private String[] isdStations;
         @SerializedName("lamp-stations") private String[] lampStations;
         @SerializedName("metar-stations") private String[] metarStations;
-        @SerializedName("metno-license") private Boolean metnoLicense;
+        @SerializedName("metno-license") private boolean metnoLicense;
         private String[] sources;
         private String units;
 
@@ -581,18 +581,18 @@ public class Forecast {
 
         public void writeToParcel(Parcel out, int flags) {
             out.writeByte((byte) (darkskyUnavailable ? 1 : 0));
-            out.writeInt(darkskyStations.length);
+            out.writeInt(darkskyStations != null ? darkskyStations.length : 0);
             out.writeStringArray(darkskyStations);
-            out.writeInt(datapointStations.length);
+            out.writeInt(datapointStations != null ? datapointStations.length : 0);
             out.writeStringArray(datapointStations);
-            out.writeInt(isdStations.length);
+            out.writeInt(isdStations != null ? isdStations.length : 0);
             out.writeStringArray(isdStations);
-            out.writeInt(lampStations.length);
+            out.writeInt(lampStations != null ? lampStations.length : 0);
             out.writeStringArray(lampStations);
-            out.writeInt(metarStations.length);
+            out.writeInt(metarStations != null ? metarStations.length : 0);
             out.writeStringArray(metarStations);
             out.writeByte((byte) (metnoLicense ? 1 : 0));
-            out.writeInt(sources.length);
+            out.writeInt(sources != null ? sources.length : 0);
             out.writeStringArray(sources);
             out.writeString(units);
         }
@@ -618,6 +618,7 @@ public class Forecast {
             metnoLicense = in.readByte() != 0;
             sources = new String[in.readInt()]; in.readStringArray(sources);
             units = in.readString();
+
         }
 
     }
