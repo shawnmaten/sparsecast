@@ -12,9 +12,9 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -42,19 +42,23 @@ import com.shawnaten.simpleweather.current.CurrentFragment;
 import com.shawnaten.simpleweather.map.MapFragment;
 import com.shawnaten.simpleweather.week.WeekFragment;
 import com.shawnaten.tools.ActionBarListener;
+import com.shawnaten.tools.BaseActivity;
 import com.shawnaten.tools.FragmentListener;
 import com.shawnaten.tools.GeneralAlertDialog;
+import com.shawnaten.tools.GenericFragment;
 import com.shawnaten.tools.PlayServices;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
+import me.kiip.sdk.Kiip;
+import me.kiip.sdk.Poptart;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MainActivity extends FragmentActivity implements Callback, GeneralAlertDialog.OnClickListener,
+public class MainActivity extends BaseActivity implements Callback, GeneralAlertDialog.OnClickListener,
         GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
 
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 0, REQUEST_CODE_ACCOUNT_PICKER = 1;
@@ -71,6 +75,8 @@ public class MainActivity extends FragmentActivity implements Callback, GeneralA
     public static final String PREFS = "prefs", GOOGLE_API_KEY = "googleAPIKey", FORECAST_API_KEY = "forecastAPIKey";
 
     private KeysEndpoint keysService;
+
+    private Handler handler = new Handler();
 
     private String[] mainFragments;
     private MenuItem searchWidget;
@@ -300,7 +306,12 @@ public class MainActivity extends FragmentActivity implements Callback, GeneralA
         switch (item.getItemId()) {
             case R.id.action_current_location:
                 if (locationClient.isConnected()) {
-                    new getLocationNameTask(new Geocoder(this)).execute();
+                    if (Geocoder.isPresent())
+                        new getLocationNameTask(new Geocoder(this)).execute();
+                    else {
+                        Network.getInstance().setLastLocationName(getString(R.string.action_current_location));
+                        getLocalWeather();
+                    }
                 }
                 else
                     locationClient.connect();
@@ -344,7 +355,12 @@ public class MainActivity extends FragmentActivity implements Callback, GeneralA
     private void refreshForecast() {
         if (isCurrentLocationEnabled) {
             if (locationClient.isConnected()) {
-                new getLocationNameTask(new Geocoder(this)).execute();
+                if (Geocoder.isPresent())
+                    new getLocationNameTask(new Geocoder(this)).execute();
+                else {
+                    Network.getInstance().setLastLocationName(getString(R.string.action_current_location));
+                    getLocalWeather();
+                }
             }
             else {
                 locationClient.connect();
@@ -366,10 +382,34 @@ public class MainActivity extends FragmentActivity implements Callback, GeneralA
             lastForecastResponse.setName(Network.getInstance().getLastLocationName());
             setLoading(false);
 
-            for (Fragment fragment : fm.getFragments()) {
-                if (fragment != null)
-                    ((FragmentListener) fragment).onNewData();
+            for (String name : mainFragments) {
+                FragmentListener listener = (FragmentListener) fm.findFragmentByTag(name);
+                if (listener != null)
+                    listener.onNewData();
             }
+
+            Kiip.getInstance().saveMoment("weather_check", new Kiip.Callback() {
+                @Override
+                public void onFinished(Kiip kiip, final Poptart reward) {
+
+                    Log.e("onFinished", reward != null ? "not null" : "null");
+
+                    handler.postDelayed(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    onPoptart(reward);
+                                }
+                            }, 5000
+                    );
+
+                }
+
+                @Override
+                public void onFailed(Kiip kiip, Exception exception) {
+                    // handle failure
+                }
+            });
 
         } else if (Places.AutocompleteResponse.class.isInstance(response)) {
             Places.AutocompleteResponse autocompleteResponse = (Places.AutocompleteResponse) response;
@@ -518,7 +558,12 @@ public class MainActivity extends FragmentActivity implements Callback, GeneralA
 
     @Override
     public void onConnected(Bundle bundle) {
-        new getLocationNameTask(new Geocoder(this)).execute();
+        if (Geocoder.isPresent())
+            new getLocationNameTask(new Geocoder(this)).execute();
+        else {
+            Network.getInstance().setLastLocationName(getString(R.string.action_current_location));
+            getLocalWeather();
+        }
     }
 
     @Override
@@ -591,7 +636,12 @@ public class MainActivity extends FragmentActivity implements Callback, GeneralA
         @Override
         protected void onPostExecute (Keys result) {
             if (locationClient.isConnected())
-                new getLocationNameTask(new Geocoder(context)).execute();
+                if (Geocoder.isPresent())
+                    new getLocationNameTask(new Geocoder(context)).execute();
+                else {
+                    Network.getInstance().setLastLocationName(getString(R.string.action_current_location));
+                    getLocalWeather();
+                }
             else
                 locationClient.connect();
         }

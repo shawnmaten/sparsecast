@@ -26,7 +26,6 @@ android {
         applicationId 'com.shawnaten.simpleweather'
         minSdkVersion 14
         targetSdkVersion 20
-        versionCode getVersionCode()
         versionName getVersionName()
     }
 
@@ -48,7 +47,6 @@ android {
     }
     productFlavors {
         localhost {
-
         }
         internet {
         }

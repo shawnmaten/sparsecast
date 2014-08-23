@@ -19,7 +19,8 @@
         android:supportsRtl="true"
         android:icon="@drawable/ic_launcher"
         android:logo="@drawable/ic_logo"
-        android:theme="@style/AppBaseTheme.AppTheme" >
+        android:theme="@style/AppBaseTheme.AppTheme"
+        android:name="com.shawnaten.tools.App" >
 
         <meta-data
             android:name="android.app.default_searchable"

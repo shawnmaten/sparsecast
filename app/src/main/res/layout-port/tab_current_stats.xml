@@ -55,8 +55,8 @@
         android:id="@+id/high_temp_time"
         style="@style/text.caption"
         android:layout_below="@id/high_temp"
-        android:layout_alignLeft="@id/high_temp"
-        android:layout_alignStart="@id/high_temp" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <com.caverock.androidsvg.SVGImageView
         android:id="@+id/weather_icon"

@@ -1,4 +1,4 @@
-package com.shawnaten.simpleweather;
+package com.shawnaten.tools;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,12 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.shawnaten.tools.FragmentListener;
-
 /**
  * Created by Shawn Aten on 8/6/14.
  */
-public class GenericFragment extends Fragment implements FragmentListener {
+public class GenericFragment extends Fragment {
     public static final String LAYOUT = "layout";
 
     @Override
@@ -19,8 +17,4 @@ public class GenericFragment extends Fragment implements FragmentListener {
         return inflater.inflate(getArguments().getInt(LAYOUT), container, false);
     }
 
-    @Override
-    public void onNewData() {
-
-    }
 }
