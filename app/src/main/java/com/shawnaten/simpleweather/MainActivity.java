@@ -392,8 +392,6 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
                 @Override
                 public void onFinished(Kiip kiip, final Poptart reward) {
 
-                    Log.e("onFinished", reward != null ? "not null" : "null");
-
                     handler.postDelayed(
                             new Runnable() {
                                 @Override
