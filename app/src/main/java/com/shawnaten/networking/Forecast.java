@@ -99,8 +99,11 @@ public class Forecast {
             minutely = (DataBlock) in.readValue(DataBlock.class.getClassLoader());
             hourly = (DataBlock) in.readValue(DataBlock.class.getClassLoader());
             daily = (DataBlock) in.readValue(DataBlock.class.getClassLoader());
-            alerts = new Alert[in.readInt()];
-            in.readTypedArray(alerts, Alert.CREATOR);
+            int alertSize = in.readInt();
+            if (alertSize > 0) {
+                alerts = new Alert[alertSize];
+                in.readTypedArray(alerts, Alert.CREATOR);
+            }
             flags = (Flags) in.readValue(Flags.class.getClassLoader());
         }
 
@@ -120,8 +123,12 @@ public class Forecast {
             dest.writeValue(minutely);
             dest.writeValue(hourly);
             dest.writeValue(daily);
-            dest.writeInt(alerts != null ? alerts.length : 0);
-            dest.writeTypedArray(alerts, 0);
+            if (alerts != null) {
+                dest.writeInt(alerts.length);
+                dest.writeTypedArray(alerts, 0);
+            } else {
+                dest.writeInt(0);
+            }
             dest.writeValue(this.flags);
         }
 
@@ -165,8 +172,11 @@ public class Forecast {
         protected DataBlock(Parcel in) {
             summary = in.readString();
             icon = in.readString();
-            data = new DataPoint[in.readInt()];
-            in.readTypedArray(data, DataPoint.CREATOR);
+            int dataSize = in.readInt();
+            if (dataSize > 0) {
+                data = new DataPoint[dataSize];
+                in.readTypedArray(data, DataPoint.CREATOR);
+            }
         }
 
         @Override
@@ -178,8 +188,12 @@ public class Forecast {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(summary);
             dest.writeString(icon);
-            dest.writeInt(data != null ? data.length : 0);
-            dest.writeTypedArray(data, 0);
+            if (data != null) {
+                dest.writeInt(data.length);
+                dest.writeTypedArray(data, 0);
+            } else  {
+                dest.writeInt(0);
+            }
         }
 
         @SuppressWarnings("unused")
@@ -581,19 +595,51 @@ public class Forecast {
 
         public void writeToParcel(Parcel out, int flags) {
             out.writeByte((byte) (darkskyUnavailable ? 1 : 0));
-            out.writeInt(darkskyStations != null ? darkskyStations.length : 0);
-            out.writeStringArray(darkskyStations);
-            out.writeInt(datapointStations != null ? datapointStations.length : 0);
-            out.writeStringArray(datapointStations);
-            out.writeInt(isdStations != null ? isdStations.length : 0);
-            out.writeStringArray(isdStations);
-            out.writeInt(lampStations != null ? lampStations.length : 0);
-            out.writeStringArray(lampStations);
-            out.writeInt(metarStations != null ? metarStations.length : 0);
-            out.writeStringArray(metarStations);
+
+            if (darkskyStations != null) {
+                out.writeInt(darkskyStations.length);
+                out.writeStringArray(darkskyStations);
+            } else {
+                out.writeInt(0);
+            }
+
+            if (datapointStations != null) {
+                out.writeInt(datapointStations.length);
+                out.writeStringArray(datapointStations);
+            } else {
+                out.writeInt(0);
+            }
+
+            if (isdStations != null) {
+                out.writeInt(isdStations.length);
+                out.writeStringArray(isdStations);
+            } else {
+                out.writeInt(0);
+            }
+
+            if (lampStations != null) {
+                out.writeInt(lampStations.length);
+                out.writeStringArray(lampStations);
+            } else {
+                out.writeInt(0);
+            }
+
+            if (metarStations != null) {
+                out.writeInt(metarStations.length);
+                out.writeStringArray(metarStations);
+            } else {
+                out.writeInt(0);
+            }
+
             out.writeByte((byte) (metnoLicense ? 1 : 0));
-            out.writeInt(sources != null ? sources.length : 0);
-            out.writeStringArray(sources);
+
+            if (sources != null) {
+                out.writeInt(sources.length);
+                out.writeStringArray(sources);
+            } else {
+                out.writeInt(0);
+            }
+
             out.writeString(units);
         }
 
@@ -609,14 +655,48 @@ public class Forecast {
         };
 
         private Flags(Parcel in) {
+            int tmpSize;
+
             darkskyUnavailable = in.readByte() != 0;
-            darkskyStations = new String[in.readInt()]; in.readStringArray(darkskyStations);
-            datapointStations = new String[in.readInt()]; in.readStringArray(datapointStations);
-            isdStations = new String[in.readInt()]; in.readStringArray(isdStations);
-            lampStations = new String[in.readInt()]; in.readStringArray(lampStations);
-            metarStations = new String[in.readInt()]; in.readStringArray(metarStations);
+
+            tmpSize = in.readInt();
+            if (tmpSize > 0) {
+                darkskyStations = new String[tmpSize];
+                in.readStringArray(darkskyStations);
+            }
+
+            tmpSize = in.readInt();
+            if (tmpSize > 0) {
+                datapointStations = new String[tmpSize];
+                in.readStringArray(datapointStations);
+            }
+
+            tmpSize = in.readInt();
+            if (tmpSize > 0) {
+                isdStations = new String[tmpSize];
+                in.readStringArray(isdStations);
+            }
+
+            tmpSize = in.readInt();
+            if (tmpSize > 0) {
+                lampStations = new String[tmpSize];
+                in.readStringArray(lampStations);
+            }
+
+            tmpSize = in.readInt();
+            if (tmpSize > 0) {
+                metarStations = new String[tmpSize];
+                in.readStringArray(metarStations);
+            }
+
             metnoLicense = in.readByte() != 0;
-            sources = new String[in.readInt()]; in.readStringArray(sources);
+
+            tmpSize = in.readInt();
+            if (tmpSize > 0) {
+                sources = new String[tmpSize];
+                in.readStringArray(sources);
+            }
+
             units = in.readString();
 
         }
