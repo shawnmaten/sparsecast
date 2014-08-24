@@ -24,7 +24,7 @@
     <string name="network_error_negative">Cancel</string>
     <string name="network_error_positive">Reconnect</string>
 
-    <string name="app_name">Weather</string>
+    <string name="app_name">Sparsecast</string>
     <string name="powered_by_forecast"><a href="http://forecast.io/">Powered by Forecast</a></string>
     <string name="action_refresh">Refresh</string>
     <string name="action_settings">Settings</string>
