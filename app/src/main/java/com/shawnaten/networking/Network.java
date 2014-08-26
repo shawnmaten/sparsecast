@@ -141,7 +141,6 @@ public class Network implements Callback {
                 listener.onShowNetworkToast(R.string.no_search_results);
                 return false;
             case PLACES_STATUS_DENIED:
-                listener.onFailure();
                 listener.onShowNetworkDialog();
                 return false;
             default:
@@ -181,11 +180,10 @@ public class Network implements Callback {
     @Override
     public void failure(RetrofitError error) {
 
-        listener.onFailure();
-
         if (error.getResponse() != null && error.getResponse().getStatus() == 403) {
             listener.onShowNetworkDialog();
         } else {
+            listener.onFailure();
             listener.onShowNetworkToast(R.string.network_error);
             Log.e("Retrofit", error.getMessage());
         }

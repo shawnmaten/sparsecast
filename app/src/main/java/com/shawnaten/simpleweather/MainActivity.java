@@ -1,5 +1,6 @@
 package com.shawnaten.simpleweather;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.ActionBar;
 import android.app.SearchManager;
@@ -50,6 +51,7 @@ import com.shawnaten.tools.PlayServices;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import me.kiip.sdk.Kiip;
 import me.kiip.sdk.Poptart;
@@ -75,16 +77,15 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
     private KeysEndpoint keysService;
 
     private Handler handler = new Handler();
+    private Runnable adRunnable;
 
     private String[] mainFragments;
     private MenuItem searchWidget;
     private LocationClient locationClient;
 
     private int navItem;
-    private boolean isFreshLaunch = true;
-    private boolean isSearching, isLoading = true;
+    private boolean isActive, isFreshLaunch = true, isSearching, isLoading = true, isCurrentLocationEnabled = true;
     private Forecast.Response lastForecastResponse;
-    private boolean isCurrentLocationEnabled = true;
     private Location lastCurrentLocation;
 
     @Override
@@ -223,6 +224,8 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
     protected void onStart() {
         super.onStart();
 
+        isActive = true;
+
         if (Network.getInstance().isSetup()) {
             if (isFreshLaunch) {
                 locationClient.connect();
@@ -237,6 +240,8 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
     @Override
     protected void onSaveInstanceState (Bundle outState) {
         super.onSaveInstanceState(outState);
+
+        isActive = false;
 
         isFreshLaunch = !isChangingConfigurations();
         outState.putBoolean(FRESH_LAUNCH, isFreshLaunch);
@@ -329,8 +334,6 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
     }
 
     private void setSearching(boolean state) {
-        if (state)
-
         setViewState(R.layout.searching, state);
     }
 
@@ -353,18 +356,20 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
         FragmentTransaction ft = fm.beginTransaction();
         Fragment toDetach, toAttach;
 
-        if (state) {
-            toAttach = fm.findFragmentByTag(helperFragNames.get(id));
-            if (toAttach.isDetached()) {
-                ft.attach(toAttach).commit();
+        if (isActive) {
+            if (state) {
+                toAttach = fm.findFragmentByTag(helperFragNames.get(id));
+                if (toAttach.isDetached()) {
+                    ft.attach(toAttach).commit();
+                }
+
+            } else {
+                toDetach = fm.findFragmentByTag(helperFragNames.get(id));
+                ft.detach(toDetach);
+
+                ft.commit();
+
             }
-
-        } else {
-            toDetach = fm.findFragmentByTag(helperFragNames.get(id));
-            ft.detach(toDetach);
-
-            ft.commit();
-
         }
 
     }
@@ -423,9 +428,12 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
         SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         String accountName = defaultPrefs.getString(getString(R.string.account_key), null);
         GoogleAccountCredential credential = GoogleAccountCredential.usingAudience(getApplicationContext(), "server:client_id:" + getString(R.string.WEB_ID));
-        if (accountName == null) {
-            startActivityForResult(credential.newChooseAccountIntent(), REQUEST_CODE_ACCOUNT_PICKER);
-        } else {
+
+        ArrayList<String> allAccounts = new ArrayList<>();
+        for (Account account : credential.getAllAccounts())
+            allAccounts.add(account.name);
+
+        if (allAccounts.contains(accountName)) {
             credential.setSelectedAccountName(accountName);
 
             KeysEndpoint.Builder keysEndpointBuilder =
@@ -436,6 +444,9 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
 
             new getKeysTask(this, credential).execute();
         }
+        else
+            startActivityForResult(credential.newChooseAccountIntent(), REQUEST_CODE_ACCOUNT_PICKER);
+
     }
 
     private class getKeysTask extends AsyncTask<Void, Void, Keys> {
@@ -522,15 +533,17 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
         Kiip.getInstance().saveMoment("weather_check", new Kiip.Callback() {
             @Override
             public void onFinished(Kiip kiip, final Poptart reward) {
+                if (adRunnable != null)
+                    handler.removeCallbacks(adRunnable);
 
-                handler.postDelayed(
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                onPoptart(reward);
-                            }
-                        }, 5000
-                );
+                adRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        onPoptart(reward);
+                    }
+                };
+
+                handler.postDelayed(adRunnable, 5000);
 
             }
 
@@ -562,17 +575,22 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
 
     @Override
     public void onShowNetworkDialog() {
-        PreferenceManager.getDefaultSharedPreferences(this).edit()
-                .putString(MainActivity.GOOGLE_API_KEY, null)
-                .putString(MainActivity.FORECAST_API_KEY, null)
-                .apply();
-        GeneralAlertDialog.newInstance(
-                NETWORK_ERROR_DIALOG,
-                getString(R.string.network_error_title),
-                getString(R.string.network_error_message),
-                getString(R.string.network_error_negative),
-                getString(R.string.network_error_positive)
-        ).show(getSupportFragmentManager(), NETWORK_ERROR_DIALOG);
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment dialog = fm.findFragmentByTag(NETWORK_ERROR_DIALOG);
+
+        if (isActive && (dialog == null || dialog.isRemoving())) {
+            PreferenceManager.getDefaultSharedPreferences(this).edit()
+                    .putString(MainActivity.GOOGLE_API_KEY, null)
+                    .putString(MainActivity.FORECAST_API_KEY, null)
+                    .apply();
+            GeneralAlertDialog.newInstance(
+                    NETWORK_ERROR_DIALOG,
+                    getString(R.string.network_error_title),
+                    getString(R.string.network_error_message),
+                    getString(R.string.network_error_negative),
+                    getString(R.string.network_error_positive)
+            ).show(getSupportFragmentManager(), NETWORK_ERROR_DIALOG);
+        }
     }
 
     @Override

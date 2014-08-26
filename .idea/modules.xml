@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/androidSVG_12/androidSVG_12.iml" filepath="$PROJECT_DIR$/androidSVG_12/androidSVG_12.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/backend/backend.iml" filepath="$PROJECT_DIR$/backend/backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/locationProvider/locationProvider.iml" filepath="$PROJECT_DIR$/locationProvider/locationProvider.iml" />
       <module fileurl="file://$PROJECT_DIR$/simpleweather.iml" filepath="$PROJECT_DIR$/simpleweather.iml" />
     </modules>
   </component>

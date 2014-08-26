@@ -47,8 +47,7 @@ public class Tasks {
         @Override
         protected void onPostExecute (Address result) {
             String unitCode = result.getCountryCode() != null ? result.getCountryCode().toLowerCase() : "si";
-            ForecastTools.configUnits(unitCode);
-            preferences.edit().putString(key, unitCode).apply();
+            ForecastTools.configUnits(unitCode, preferences, key);
             Network.getInstance().setLastLocationName(result.getLocality() != null ? result.getLocality() : defaultName);
             Network.getInstance().getForecast(location.getLatitude(), location.getLongitude());
         }

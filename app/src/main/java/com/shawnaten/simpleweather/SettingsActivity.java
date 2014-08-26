@@ -9,6 +9,8 @@ import android.preference.PreferenceActivity;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.shawnaten.tools.ForecastTools;
 
+import java.util.ArrayList;
+
 /**
  * Created by Shawn Aten on 8/25/14.
  */
@@ -19,6 +21,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         super.onCreate(savedInstanceState);
 
         Account accounts[];
+        ArrayList<CharSequence> accountNamesList = new ArrayList<>();
         CharSequence accountNames[];
         ListPreference accountPref, unitsPref;
         GoogleAccountCredential credential;
@@ -29,13 +32,18 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         credential = GoogleAccountCredential.usingAudience(getApplicationContext(), "server:client_id:" + getString(R.string.WEB_ID));
         accounts = credential.getAllAccounts();
 
-        accountNames = new CharSequence[accounts.length];
         for (int i = 0; i < accounts.length; i++)
-            accountNames[i] = accounts[i].name;
+            accountNamesList.add(accounts[i].name);
 
-        accountPref.setSummary(accountPref.getValue());
+        accountNames = new CharSequence[accountNamesList.size()];
+        accountNamesList.toArray(accountNames);
+
         accountPref.setEntries(accountNames);
         accountPref.setEntryValues(accountNames);
+
+        if (!accountNamesList.contains(accountPref.getValue()))
+            accountPref.setValueIndex(0);
+        accountPref.setSummary(accountPref.getValue());
 
         unitsPref = (ListPreference) findPreference(getString(R.string.units_key));
         unitsPref.setSummary(unitsPref.getEntry());
@@ -63,7 +71,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                 break;
             case "prefUnits":
                 ListPreference unitsPref = (ListPreference) findPreference(key);
-                ForecastTools.configUnits(unitsPref.getValue());
+                ForecastTools.configUnits(unitsPref.getValue(), null, null);
                 unitsPref.setSummary(unitsPref.getEntry());
                 break;
         }

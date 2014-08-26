@@ -1,6 +1,7 @@
 package com.shawnaten.tools;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.SystemClock;
@@ -393,27 +394,32 @@ public class ForecastTools {
 
     public static int WIND_UNIT, VISIBILITY_UNIT;
 
-    public static void configUnits(String unitsPref) {
-        UNIT_CODE = unitsPref;
-
+    public static void configUnits(String unitsPref, SharedPreferences preferences, String key) {
         switch (unitsPref) {
             case "ca":
+                UNIT_CODE = "ca";
                 WIND_UNIT = R.string.kilometers_per_hour;
                 VISIBILITY_UNIT = R.string.kilometers;
                 break;
             case "uk":
             case "gb":
+                UNIT_CODE = "uk";
                 WIND_UNIT = R.string.miles_per_hour;
                 VISIBILITY_UNIT = R.string.kilometers;
                 break;
             case "us":
+                UNIT_CODE = "us";
                 WIND_UNIT = R.string.miles_per_hour;
                 VISIBILITY_UNIT = R.string.miles;
                 break;
             default:
+                UNIT_CODE = "si";
                 WIND_UNIT = R.string.meters_per_second;
                 VISIBILITY_UNIT = R.string.kilometers;
         }
+
+        if (preferences != null && key != null)
+            preferences.edit().putString(key, UNIT_CODE).apply();
     }
 
 }
