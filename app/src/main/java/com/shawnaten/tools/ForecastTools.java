@@ -402,6 +402,7 @@ public class ForecastTools {
                 VISIBILITY_UNIT = R.string.kilometers;
                 break;
             case "uk":
+            case "gb":
                 WIND_UNIT = R.string.miles_per_hour;
                 VISIBILITY_UNIT = R.string.kilometers;
                 break;
