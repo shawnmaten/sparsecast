@@ -30,7 +30,6 @@ public class DetailsFragment extends Fragment implements FragmentListener {
     static {
         permIcons.put(R.id.sunrise_icon, R.raw.sunrise);
         permIcons.put(R.id.sunset_icon, R.raw.sunset);
-        permIcons.put(R.id.wind_icon, R.raw.wind);
         permIcons.put(R.id.visibility_icon, R.raw.fog);
     }
 
@@ -82,8 +81,8 @@ public class DetailsFragment extends Fragment implements FragmentListener {
                             timeForm.format(today.getSunriseTime()), timeForm.format(today.getSunsetTime()),
                             String.format("%s %s", percForm.format(hour.getPrecipProbability()), getString(R.string.now)),
                             String.format("%s %s", percForm.format(today.getPrecipProbability()), getString(R.string.day)),
-                            String.format("%s %s ", intForm.format(currently.getWindSpeed()), getString(R.string.wind_unit)),
-                            String.format("%s %s", intForm.format(currently.getVisibility()), getString(R.string.visibility_unit))
+                            String.format("%s %s ", intForm.format(currently.getWindSpeed()), getString(ForecastTools.WIND_UNIT)),
+                            String.format("%s %s", intForm.format(currently.getVisibility()), getString(ForecastTools.VISIBILITY_UNIT))
 
                     ));
 

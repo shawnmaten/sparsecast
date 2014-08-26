@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="settings_label">Settings</string>
+
+    <string name="account_key">prefAccountName</string>
+    <string name="account_title">Account</string>
+
+    <string name="units_key">prefUnits</string>
+    <string name="units_title">Units</string>
+
+    <string-array name="units_entries" >
+        <item>CA - SI with wind in kph</item>
+        <item>SI - International System</item>
+        <item>UK - SI with wind in mph</item>
+        <item>US - Imperial System</item>
+    </string-array>
+
+    <string-array name="units_values" >
+        <item>ca</item>
+        <item>si</item>
+        <item>uk</item>
+        <item>us</item>
+    </string-array>
+
+</resources>

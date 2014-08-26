@@ -32,8 +32,8 @@ import java.util.regex.Pattern;
 public class ForecastTools {
 
     private final static double VERY_LIGHT = 0.002, LIGHT = 0.017, MODERATE = 0.1, HEAVY = 0.4,
-        SCATTERED = 0.4, BROKEN = 0.75, OVERCAST = 1.0,
-        FOG = 0.6214, MIST = 1.2427, HAZE = 3.1069;
+            SCATTERED = 0.4, BROKEN = 0.75, OVERCAST = 1.0,
+            FOG = 0.6214, MIST = 1.2427, HAZE = 3.1069;
 
     public static DateFormat getTimeForm(TimeZone timeZone) {
         DateFormat timeForm = DateFormat.getTimeInstance(DateFormat.SHORT);
@@ -52,7 +52,8 @@ public class ForecastTools {
     public static DecimalFormat getIntForm() {
         return new DecimalFormat("###");
     }
-    public static int getWindString (double bearing) {
+
+    public static int getWindString(double bearing) {
         int b = (int) (bearing / 22.5);
         if ((b % 2) != 0)
             b += 1;
@@ -82,6 +83,7 @@ public class ForecastTools {
     }
 
     private static HashMap<String, Integer> weatherIcons = new HashMap<>();
+
     static {
         weatherIcons.put("clear-day", R.raw.clear_day);
         weatherIcons.put("clear-night", R.raw.clear_night);
@@ -127,8 +129,8 @@ public class ForecastTools {
     }
 
     public static void setSpannableText(ViewGroup parent, List<Integer> childIDs, List<Integer> unitSizes, List<Integer> groupSizes,
-                                  List<String> spanEnds, List<String> seps, List<String> unitSeps, List<String> groupEnds,
-                                  List<List<String>> allStrings) {
+                                        List<String> spanEnds, List<String> seps, List<String> unitSeps, List<String> groupEnds,
+                                        List<List<String>> allStrings) {
         TextView textView;
         SpannableStringBuilder text;
         StyleSpan styleBold;
@@ -319,7 +321,7 @@ public class ForecastTools {
         blocks = new ArrayList<>();
 
         final int end = start + size;
-        for(int i = start; i < end; i++) {
+        for (int i = start; i < end; i++) {
             double precipProb, visibility, intensity;
             Forecast.DataPoint dataPoint;
 
@@ -346,13 +348,13 @@ public class ForecastTools {
                 if (intensityString == R.string.very_light)
                     intensityString = R.string.light;
 
-                newBlock = new WeatherBlock(context, WeatherBlock.PRECIPITATION, count, count+1, scattered, intensityString,
+                newBlock = new WeatherBlock(context, WeatherBlock.PRECIPITATION, count, count + 1, scattered, intensityString,
                         getPrecipitationID(context, dataPoint.getPrecipType()));
 
             } else if (visibility < HAZE) {
-                newBlock = new WeatherBlock(context, WeatherBlock.FOG, count, count+1, getFogLevel(visibility));
+                newBlock = new WeatherBlock(context, WeatherBlock.FOG, count, count + 1, getFogLevel(visibility));
             } else {
-                newBlock = new WeatherBlock(context, WeatherBlock.CLOUDS, count, count+1, getCloudCover(dataPoint.getCloudCover()));
+                newBlock = new WeatherBlock(context, WeatherBlock.CLOUDS, count, count + 1, getCloudCover(dataPoint.getCloudCover()));
             }
             if (newBlock.equals(prevBlock))
                 prevBlock.add(newBlock);
@@ -366,7 +368,7 @@ public class ForecastTools {
         return blocks.toArray(new WeatherBlock[blocks.size()]);
     }
 
-    public static SimpleDateFormat getShortTimeForm(TimeZone  timeZone, int unitCount) {
+    public static SimpleDateFormat getShortTimeForm(TimeZone timeZone, int unitCount) {
         SimpleDateFormat shortTimeForm = (SimpleDateFormat) DateFormat.getTimeInstance(DateFormat.SHORT);
 
         shortTimeForm.setTimeZone(timeZone);
@@ -385,6 +387,32 @@ public class ForecastTools {
 
         shortTimeForm.applyPattern(pattern);
         return shortTimeForm;
+    }
+
+    public static String UNIT_CODE;
+
+    public static int WIND_UNIT, VISIBILITY_UNIT;
+
+    public static void configUnits(String unitsPref) {
+        UNIT_CODE = unitsPref;
+
+        switch (unitsPref) {
+            case "ca":
+                WIND_UNIT = R.string.kilometers_per_hour;
+                VISIBILITY_UNIT = R.string.kilometers;
+                break;
+            case "uk":
+                WIND_UNIT = R.string.miles_per_hour;
+                VISIBILITY_UNIT = R.string.kilometers;
+                break;
+            case "us":
+                WIND_UNIT = R.string.miles_per_hour;
+                VISIBILITY_UNIT = R.string.miles;
+                break;
+            default:
+                WIND_UNIT = R.string.meters_per_second;
+                VISIBILITY_UNIT = R.string.kilometers;
+        }
     }
 
 }

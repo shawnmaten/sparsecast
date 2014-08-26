@@ -71,9 +71,9 @@ public class StatsFragment extends Fragment implements FragmentListener {
                             tempForm.format(currently.getTemperature()),
                             percForm.format(currently.getHumidity()),
                             tempForm.format(today.getTemperatureMax()),
-                            shortTimeForm.format(today.getTemperatureMaxTime()),
+                            String.format("%s %s", getString(R.string.high), shortTimeForm.format(today.getTemperatureMaxTime())),
                             tempForm.format(today.getTemperatureMin()),
-                            shortTimeForm.format(today.getTemperatureMinTime()),
+                            String.format("%s %s", getString(R.string.low), shortTimeForm.format(today.getTemperatureMinTime())),
                             timeForm.format(currently.getTime()),
                             String.format("%s - %s %s", currently.getSummary(), getString(R.string.feels_like), tempForm.format(currently.getApparentTemperature()))
                     )

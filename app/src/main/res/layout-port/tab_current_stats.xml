@@ -24,37 +24,39 @@
 
     <com.shawnaten.tools.MaterialTextView
         android:id="@+id/temp"
-        style="@style/text.display_1"
+        style="@style/stat_text"
         android:layout_below="@id/title_holder" />
 
     <com.shawnaten.tools.MaterialTextView
         android:id="@+id/humidity"
-        style="@style/text.display_1"
+        style="@style/stat_text"
         android:layout_below="@id/title_holder"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
     <com.shawnaten.tools.MaterialTextView
-        android:id="@+id/low_temp"
-        style="@style/text.display_1"
-        android:layout_below="@id/temp" />
-
-    <com.shawnaten.tools.MaterialTextView
         android:id="@+id/low_temp_time"
         style="@style/text.caption"
-        android:layout_below="@id/low_temp" />
+        android:layout_below="@id/temp"
+        android:layout_marginTop="@dimen/standard_margin" />
 
     <com.shawnaten.tools.MaterialTextView
-        android:id="@+id/high_temp"
-        style="@style/text.display_1"
-        android:layout_below="@id/humidity"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:id="@+id/low_temp"
+        style="@style/stat_text"
+        android:layout_below="@id/low_temp_time" />
 
     <com.shawnaten.tools.MaterialTextView
         android:id="@+id/high_temp_time"
         style="@style/text.caption"
-        android:layout_below="@id/high_temp"
+        android:layout_below="@id/humidity"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/standard_margin" />
+
+    <com.shawnaten.tools.MaterialTextView
+        android:id="@+id/high_temp"
+        style="@style/stat_text"
+        android:layout_below="@id/high_temp_time"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 

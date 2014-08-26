@@ -44,11 +44,6 @@
     <string name="details_button">details</string>
     <string name="summary_button">summary</string>
 
-    <string name="wind_unit">mph</string> <!-- miles per hour -->
-    <string name="pressure_unit">mb</string> <!-- millibars -->
-    <string name="visibility_unit">mi</string> <!-- miles -->
-    <string name="ozone_unit">du</string> <!-- Dobson units -->
-
     <string name="unknown">\?</string>
     <string name="dismiss">Dismiss</string>
     <string name="play_services">Google Play services</string>

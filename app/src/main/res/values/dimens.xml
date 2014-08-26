@@ -18,8 +18,6 @@
     <dimen name="details_icon">34sp</dimen>
     <dimen name="details_text_top_margin">6.25sp</dimen>
 
-    <integer name="summary_max_ems">18</integer>
-
     <dimen name="weather_bar_width">960dp</dimen>
     <dimen name="weather_bar_height">40dp</dimen>
 

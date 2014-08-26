@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <ListPreference
+        android:key="@string/account_key"
+        android:title="@string/account_title" />
+
+    <ListPreference
+        android:key="@string/units_key"
+        android:title="@string/units_title"
+        android:entries="@array/units_entries"
+        android:entryValues="@array/units_values" />
+
+</PreferenceScreen>

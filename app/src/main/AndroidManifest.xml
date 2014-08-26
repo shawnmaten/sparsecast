@@ -40,7 +40,7 @@
         </provider>
 
         <activity
-            android:name="com.shawnaten.simpleweather.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize" >
@@ -59,8 +59,14 @@
         </activity>
 
         <activity
-            android:name="com.google.android.gms.ads.AdActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" >
+            android:name=".SettingsActivity"
+            android:label="@string/settings_label"
+            android:parentActivityName=".MainActivity" >
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+
         </activity>
 
     </application>

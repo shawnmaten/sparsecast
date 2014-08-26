@@ -12,8 +12,6 @@ import android.provider.BaseColumns;
 import com.shawnaten.networking.Network;
 import com.shawnaten.networking.Places;
 
-import java.util.Locale;
-
 public class SearchProvider extends ContentProvider {
 	private final String[] pColumns = {BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1, 
 			SearchManager.SUGGEST_COLUMN_INTENT_DATA};
@@ -33,9 +31,9 @@ public class SearchProvider extends ContentProvider {
                 MatrixCursor cursor = new MatrixCursor(pColumns);
 
                 Places.AutocompleteResponse autocomplete =
-                        Network.getInstance().getAutocomplete(query, Locale.getDefault().getLanguage());
+                        Network.getInstance().getAutocompleteSync(query);
 
-                if (autocomplete != null && Network.getInstance().responseOkay(autocomplete.getStatus(), null)) {
+                if (autocomplete != null && autocomplete.getStatus().equals(Network.PLACES_STATUS_OK)) {
                     for (int i = 0; i < autocomplete.getPredictions().length; i++) {
                         cursor.addRow(new Object[]{i, autocomplete.getPredictions()[i].getDescription(),
                                 autocomplete.getPredictions()[i].getPlace_id()});

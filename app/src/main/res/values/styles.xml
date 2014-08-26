@@ -65,6 +65,11 @@
     </style>
 
     <style
+        name="stat_text" parent="text.display_1">
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style
         name="details_icon" >
         <item name="android:layout_width">@dimen/details_icon</item>
         <item name="android:layout_height">@dimen/details_icon</item>

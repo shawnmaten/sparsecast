@@ -20,54 +20,46 @@
 
         <!-- left side -->
 
-        <com.caverock.androidsvg.SVGImageView
-            android:id="@+id/sunrise_icon"
-            style="@style/details_icon"
-            android:layout_alignLeft="@+id/wind_icon"
-            android:layout_alignStart="@id/wind_icon"
-            android:layout_marginBottom="@dimen/half_margin" />
-        <com.shawnaten.tools.MaterialTextView
-            android:id="@+id/sunrise_text"
-            style="@style/text.subhead.details"
-            android:layout_toRightOf="@id/sunrise_icon"
-            android:layout_toEndOf="@id/sunrise_icon" />
-
-        <com.caverock.androidsvg.SVGImageView
-            android:id="@+id/precip_hour_icon"
-            style="@style/details_icon"
-            android:layout_below="@id/sunrise_icon"
-            android:layout_alignLeft="@id/wind_icon"
-            android:layout_alignStart="@id/wind_icon"
-            android:layout_marginBottom="@dimen/half_margin" />
-        <com.shawnaten.tools.MaterialTextView
-            android:id="@+id/precip_hour_text"
-            style="@style/text.subhead.details"
-            android:layout_below="@id/sunrise_icon"
-            android:layout_toRightOf="@id/precip_hour_icon"
-            android:layout_toEndOf="@id/precip_hour_icon" />
-
-        <com.caverock.androidsvg.SVGImageView
-            android:id="@id/wind_icon"
-            style="@style/details_icon"
-            android:layout_below="@id/precip_hour_icon"
-            android:layout_toLeftOf="@+id/wind_speed"
-            android:layout_toStartOf="@id/wind_speed" />
-        <com.shawnaten.tools.MaterialTextView
-            android:id="@id/wind_speed"
-            style="@style/text.subhead.details"
-            android:layout_below="@id/precip_hour_icon"
-            android:layout_toLeftOf="@+id/wind_bearing_icon"
-            android:layout_toStartOf="@id/wind_bearing_icon" />
-        <com.caverock.androidsvg.SVGImageView
-            android:id="@id/wind_bearing_icon"
-            style="@style/details_icon"
-            android:layout_width="16sp"
-            android:layout_alignTop="@id/wind_speed"
-            android:layout_alignBottom="@id/wind_speed"
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/center"
-            android:layout_toStartOf="@id/center"
-            android:layout_marginRight="0dp"
-            android:layout_marginEnd="0dp" />
+            android:layout_toStartOf="@id/center" >
+
+            <com.caverock.androidsvg.SVGImageView
+                android:id="@+id/sunrise_icon"
+                style="@style/details_icon"
+                android:layout_marginBottom="@dimen/half_margin" />
+            <com.shawnaten.tools.MaterialTextView
+                android:id="@+id/sunrise_text"
+                style="@style/text.subhead.details"
+                android:layout_toRightOf="@id/sunrise_icon"
+                android:layout_toEndOf="@id/sunrise_icon" />
+
+            <com.caverock.androidsvg.SVGImageView
+                android:id="@+id/precip_hour_icon"
+                style="@style/details_icon"
+                android:layout_below="@id/sunrise_icon"
+                android:layout_marginBottom="@dimen/half_margin" />
+            <com.shawnaten.tools.MaterialTextView
+                android:id="@+id/precip_hour_text"
+                style="@style/text.subhead.details"
+                android:layout_below="@id/sunrise_icon"
+                android:layout_toRightOf="@id/precip_hour_icon"
+                android:layout_toEndOf="@id/precip_hour_icon" />
+
+            <com.caverock.androidsvg.SVGImageView
+                android:id="@+id/wind_bearing_icon"
+                style="@style/details_icon"
+                android:layout_below="@id/precip_hour_icon" />
+            <com.shawnaten.tools.MaterialTextView
+                android:id="@+id/wind_speed"
+                style="@style/text.subhead.details"
+                android:layout_below="@id/precip_hour_icon"
+                android:layout_toRightOf="@id/wind_bearing_icon"
+                android:layout_toEndOf="@id/wind_bearing_icon" />
+
+        </RelativeLayout>
 
         <!-- right side -->
 

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -35,7 +34,7 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.shawnaten.networking.Forecast;
 import com.shawnaten.networking.Network;
-import com.shawnaten.networking.Places;
+import com.shawnaten.networking.Tasks;
 import com.shawnaten.simpleweather.backend.keysEndpoint.KeysEndpoint;
 import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
 import com.shawnaten.simpleweather.current.CurrentFragment;
@@ -43,6 +42,7 @@ import com.shawnaten.simpleweather.map.MapFragment;
 import com.shawnaten.simpleweather.week.WeekFragment;
 import com.shawnaten.tools.ActionBarListener;
 import com.shawnaten.tools.BaseActivity;
+import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
 import com.shawnaten.tools.GeneralAlertDialog;
 import com.shawnaten.tools.GenericFragment;
@@ -50,15 +50,11 @@ import com.shawnaten.tools.PlayServices;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Locale;
 
 import me.kiip.sdk.Kiip;
 import me.kiip.sdk.Poptart;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
-public class MainActivity extends BaseActivity implements Callback, GeneralAlertDialog.OnClickListener,
+public class MainActivity extends BaseActivity implements Network.NetworkListener, GeneralAlertDialog.OnClickListener,
         GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
 
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 0, REQUEST_CODE_ACCOUNT_PICKER = 1;
@@ -67,12 +63,14 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
         helperFragNames.put(R.layout.searching, "searching");
         helperFragNames.put(R.layout.loading, "loading");
     }
+
     private static final String NAV_ITEM = "navIndex", FRESH_LAUNCH = "freshLaunch", FORECAST = "forecast",
-            PREF_ACCOUNT_NAME = "prefAccountName", IS_CURRENT_LOCATION_ENABLED ="isCurrentLocationEnabled",
-            IS_SEARCHING = "isSearching", IS_LOADING = "isLoading",
-            SEARCH_NEEDS_UPDATE = "searchNeedsUpdate", LOADING_NEEDS_UPDATE = "loadingNeedsUpdate",
+            IS_CURRENT_LOCATION_ENABLED ="isCurrentLocationEnabled", IS_SEARCHING = "isSearching", IS_LOADING = "isLoading",
             LAST_CURRENT_LOCATION = "lastCurrentLocation";
+
     public static final String PREFS = "prefs", GOOGLE_API_KEY = "googleAPIKey", FORECAST_API_KEY = "forecastAPIKey";
+
+    public static final String NETWORK_ERROR_DIALOG = "networkErrorDialog";
 
     private KeysEndpoint keysService;
 
@@ -81,13 +79,10 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
     private String[] mainFragments;
     private MenuItem searchWidget;
     private LocationClient locationClient;
-    private ActionBarListener actionBarListener;
-    private boolean isActive;
 
     private int navItem;
     private boolean isFreshLaunch = true;
-    private boolean isSearching, isLoading;
-    private Boolean searchNeedsUpdate, loadingNeedsUpdate;
+    private boolean isSearching, isLoading = true;
     private Forecast.Response lastForecastResponse;
     private boolean isCurrentLocationEnabled = true;
     private Location lastCurrentLocation;
@@ -118,10 +113,9 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
                     getKeys();
                 }
 
-                Network.setup(this, networkCacheFile, keys);
-            } else {
-                Network.getInstance().setActivityCallback(this);
+                Network.setup(networkCacheFile, keys);
             }
+            Network.getInstance().setListener(this);
 
             if (savedInstanceState == null) {
                 FragmentTransaction ft = fm.beginTransaction();
@@ -160,11 +154,6 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
                 isSearching = savedInstanceState.getBoolean(IS_SEARCHING);
                 isLoading = savedInstanceState.getBoolean(IS_LOADING);
 
-                if (savedInstanceState.containsKey(SEARCH_NEEDS_UPDATE))
-                    searchNeedsUpdate = savedInstanceState.getBoolean(SEARCH_NEEDS_UPDATE);
-                if (savedInstanceState.containsKey(LOADING_NEEDS_UPDATE))
-                    loadingNeedsUpdate = savedInstanceState.getBoolean(LOADING_NEEDS_UPDATE);
-
                 navItem = savedInstanceState.getInt(NAV_ITEM, 0);
                 lastForecastResponse = savedInstanceState.getParcelable(FORECAST);
                 isCurrentLocationEnabled = savedInstanceState.getBoolean(IS_CURRENT_LOCATION_ENABLED);
@@ -175,10 +164,9 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
             ActionBar actionBar = getActionBar();
             actionBar.setIcon(R.drawable.ic_logo);
             actionBar.setDisplayShowTitleEnabled(false);
-            actionBarListener = new ActionBarListener(getSupportFragmentManager(), mainFragments);
             actionBar.setListNavigationCallbacks(
                     ArrayAdapter.createFromResource(this, R.array.main_fragments, android.R.layout.simple_spinner_dropdown_item),
-                    actionBarListener);
+                    new ActionBarListener(getSupportFragmentManager(), mainFragments));
 
             if (!isFreshLaunch && !isSearching && !isLoading) {
                 actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -238,25 +226,10 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
         if (Network.getInstance().isSetup()) {
             if (isFreshLaunch) {
                 locationClient.connect();
+            } else {
+                setSearching(isSearching);
+                setLoading(isLoading);
             }
-        }
-
-    }
-
-    @Override
-    protected void onResumeFragments () {
-        super.onResumeFragments();
-
-        isActive = true;
-
-        if (searchNeedsUpdate != null) {
-            setSearching(searchNeedsUpdate);
-            searchNeedsUpdate = null;
-        }
-
-        if (loadingNeedsUpdate != null) {
-            setLoading(loadingNeedsUpdate);
-            loadingNeedsUpdate = null;
         }
 
     }
@@ -265,17 +238,10 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
     protected void onSaveInstanceState (Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        isActive = false;
-
         isFreshLaunch = !isChangingConfigurations();
         outState.putBoolean(FRESH_LAUNCH, isFreshLaunch);
         outState.putBoolean(IS_SEARCHING, isSearching);
         outState.putBoolean(IS_LOADING, isLoading);
-
-        if (searchNeedsUpdate != null)
-            outState.putBoolean(SEARCH_NEEDS_UPDATE, searchNeedsUpdate);
-        if (loadingNeedsUpdate != null)
-            outState.putBoolean(LOADING_NEEDS_UPDATE, loadingNeedsUpdate);
 
         ActionBar ab = getActionBar();
         if (ab.getNavigationMode() == ActionBar.NAVIGATION_MODE_LIST)
@@ -306,12 +272,7 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
         switch (item.getItemId()) {
             case R.id.action_current_location:
                 if (locationClient.isConnected()) {
-                    if (Geocoder.isPresent())
-                        new getLocationNameTask(new Geocoder(this)).execute();
-                    else {
-                        Network.getInstance().setLastLocationName(getString(R.string.action_current_location));
-                        getLocalWeather();
-                    }
+                   onConnectedTasks();
                 }
                 else
                     locationClient.connect();
@@ -320,7 +281,8 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
                 refreshForecast();
                 return true;
             case R.id.action_settings:
-                //openSettings();
+                Intent openSettings = new Intent(this, SettingsActivity.class);
+                startActivity(openSettings);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -341,13 +303,13 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
             setLoading(true);
             isCurrentLocationEnabled = false;
             String query = intent.getStringExtra(SearchManager.QUERY);
-            Network.getInstance().getAutocomplete(query, Locale.getDefault().getLanguage(), null);
+            Network.getInstance().getAutocompleteAsync(query);
 
         } else if (Intent.ACTION_VIEW.equals(action)) {
             searchWidget.collapseActionView();
             setLoading(true);
             isCurrentLocationEnabled = false;
-            Network.getInstance().getDetails(intent.getDataString(), Locale.getDefault().getLanguage(), null);
+            Network.getInstance().getDetails(intent.getDataString());
         }
 
     }
@@ -355,152 +317,54 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
     private void refreshForecast() {
         if (isCurrentLocationEnabled) {
             if (locationClient.isConnected()) {
-                if (Geocoder.isPresent())
-                    new getLocationNameTask(new Geocoder(this)).execute();
-                else {
-                    Network.getInstance().setLastLocationName(getString(R.string.action_current_location));
-                    getLocalWeather();
-                }
+                onConnectedTasks();
             }
             else {
                 locationClient.connect();
             }
         } else if (lastForecastResponse != null) {
             setLoading(true);
-            Network.getInstance().getForecast(lastForecastResponse.getLatitude(), lastForecastResponse.getLongitude(),
-                    Locale.getDefault().getLanguage(), null);
+            Network.getInstance().getForecast(lastForecastResponse.getLatitude(), lastForecastResponse.getLongitude());
         }
-    }
-
-    @Override
-    public void success(Object response, Response response2) {
-        if (Forecast.Response.class.isInstance(response)) {
-
-            FragmentManager fm = getSupportFragmentManager();
-
-            lastForecastResponse = (Forecast.Response) response;
-            lastForecastResponse.setName(Network.getInstance().getLastLocationName());
-            setLoading(false);
-
-            for (String name : mainFragments) {
-                FragmentListener listener = (FragmentListener) fm.findFragmentByTag(name);
-                if (listener != null)
-                    listener.onNewData();
-            }
-
-            Kiip.getInstance().saveMoment("weather_check", new Kiip.Callback() {
-                @Override
-                public void onFinished(Kiip kiip, final Poptart reward) {
-
-                    handler.postDelayed(
-                            new Runnable() {
-                                @Override
-                                public void run() {
-                                    onPoptart(reward);
-                                }
-                            }, 5000
-                    );
-
-                }
-
-                @Override
-                public void onFailed(Kiip kiip, Exception exception) {
-                    // handle failure
-                }
-            });
-
-        } else if (Places.AutocompleteResponse.class.isInstance(response)) {
-            Places.AutocompleteResponse autocompleteResponse = (Places.AutocompleteResponse) response;
-
-            if (Network.getInstance().responseOkay(autocompleteResponse.getStatus(), this)) {
-                Network.getInstance().getDetails(autocompleteResponse.getPredictions()[0].getPlace_id(),
-                        Locale.getDefault().getLanguage(), null);
-            } else {
-                setLoading(false);
-            }
-
-        } else if (Places.DetailsResponse.class.isInstance(response)) {
-            Places.DetailsResponse details = (Places.DetailsResponse) response;
-
-            if (Network.getInstance().responseOkay(details.getStatus(), this)) {
-                Network.getInstance().setLastLocationName(details.getResult().getName());
-                Places.Location location = details.getResult().getGeometry().getLocation();
-                Network.getInstance().getForecast(location.getLat(), location.getLng(), Locale.getDefault().getLanguage(), null);
-            } else {
-                setLoading(false);
-            }
-        }
-    }
-
-    @Override
-    public void failure(RetrofitError error) {
-
-        setLoading(false);
-
-        if (error.getResponse() != null && error.getResponse().getStatus() == 403) {
-            PreferenceManager.getDefaultSharedPreferences(this).edit()
-                    .putString(MainActivity.GOOGLE_API_KEY, null)
-                    .putString(MainActivity.FORECAST_API_KEY, null)
-                    .apply();
-            GeneralAlertDialog.newInstance(
-                    Network.NETWORK_ERROR_DIALOG,
-                    getString(R.string.network_error_title),
-                    getString(R.string.network_error_message),
-                    getString(R.string.network_error_negative),
-                    getString(R.string.network_error_positive)
-            ).show(getSupportFragmentManager(), Network.NETWORK_ERROR_DIALOG);
-        } else {
-            Toast toast = Toast.makeText(getApplicationContext(), getString(R.string.network_error), Toast.LENGTH_SHORT);
-            toast.show();
-            Log.e("Retrofit", error.getMessage());
-        }
-
     }
 
     private void setSearching(boolean state) {
+        if (state)
+
         setViewState(R.layout.searching, state);
     }
 
     public void setLoading(boolean state) {
+        ActionBar ab = getActionBar();
+
         isLoading = state;
+        if (state) {
+            navItem = ab.getSelectedNavigationIndex();
+            ab.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        } else {
+            ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            ab.setSelectedNavigationItem(navItem);
+        }
         setViewState(R.layout.loading, state);
     }
 
     private void setViewState(int id, boolean state) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        Fragment toDetach, toAttach;
 
-        if (isActive) {
-            ActionBar ab = getActionBar();
-            FragmentManager fm = getSupportFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            Fragment toDetach, toAttach;
-
-            if (state) {
-                navItem = ab.getSelectedNavigationIndex();
-                ab.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-                toAttach = fm.findFragmentByTag(helperFragNames.get(id));
-                if (toAttach.isDetached()) {
-                    ft.attach(toAttach).commit();
-                }
-            } else {
-                toDetach = fm.findFragmentByTag(helperFragNames.get(id));
-                ft.detach(toDetach);
-
-                ft.commit();
-
-                ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-                ab.setSelectedNavigationItem(navItem);
-
+        if (state) {
+            toAttach = fm.findFragmentByTag(helperFragNames.get(id));
+            if (toAttach.isDetached()) {
+                ft.attach(toAttach).commit();
             }
+
         } else {
-            switch (id) {
-                case R.layout.searching:
-                    searchNeedsUpdate = state;
-                    break;
-                case R.layout.loading:
-                    loadingNeedsUpdate = state;
-                    break;
+            toDetach = fm.findFragmentByTag(helperFragNames.get(id));
+            ft.detach(toDetach);
 
-            }
+            ft.commit();
+
         }
 
     }
@@ -515,52 +379,22 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
 
     // location services
 
-    private class getLocationNameTask extends AsyncTask<Void, Void, String> {
-        private Geocoder geocoder;
-
-        public getLocationNameTask(Geocoder geocoder) {
-            this.geocoder = geocoder;
-        }
-
-        @Override
-        protected void onPreExecute () {
-            setLoading(true);
-            lastCurrentLocation = locationClient.getLastLocation();
-            isCurrentLocationEnabled = true;
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            Address address = new Address(Locale.getDefault());
-            try {
-                address = geocoder.getFromLocation(lastCurrentLocation.getLatitude(), lastCurrentLocation.getLongitude(), 1).get(0);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return address.getLocality() != null ? address.getLocality() : getString(R.string.action_current_location);
-        }
-
-        @Override
-        protected void onPostExecute (String result) {
-            Network.getInstance().setLastLocationName(result);
-            getLocalWeather();
-        }
-
-    }
-
-    private void getLocalWeather() {
-        Network.getInstance().getForecast(lastCurrentLocation.getLatitude(), lastCurrentLocation.getLongitude(),
-                Locale.getDefault().getLanguage(), null);
-    }
-
     @Override
     public void onConnected(Bundle bundle) {
-        if (Geocoder.isPresent())
-            new getLocationNameTask(new Geocoder(this)).execute();
-        else {
-            Network.getInstance().setLastLocationName(getString(R.string.action_current_location));
-            getLocalWeather();
+        onConnectedTasks();
+    }
+
+    private void onConnectedTasks() {
+        setLoading(true);
+        lastCurrentLocation = locationClient.getLastLocation();
+        isCurrentLocationEnabled = true;
+
+        if (ForecastTools.UNIT_CODE == null) {
+            new Tasks.getDefaultUnitsTask(PreferenceManager.getDefaultSharedPreferences(this), getString(R.string.units_key),
+                    new Geocoder(this), lastCurrentLocation, getString(R.string.action_current_location)).execute();
+        } else  {
+            new Tasks.getLocationNameTask(new Geocoder(this), lastCurrentLocation,
+                    getString(R.string.action_current_location)).execute();
         }
     }
 
@@ -583,11 +417,11 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
         }
     }
 
-    // location services
+    // end of location services
 
     public void getKeys() {
         SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String accountName = defaultPrefs.getString(PREF_ACCOUNT_NAME, null);
+        String accountName = defaultPrefs.getString(getString(R.string.account_key), null);
         GoogleAccountCredential credential = GoogleAccountCredential.usingAudience(getApplicationContext(), "server:client_id:" + getString(R.string.WEB_ID));
         if (accountName == null) {
             startActivityForResult(credential.newChooseAccountIntent(), REQUEST_CODE_ACCOUNT_PICKER);
@@ -634,12 +468,7 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
         @Override
         protected void onPostExecute (Keys result) {
             if (locationClient.isConnected())
-                if (Geocoder.isPresent())
-                    new getLocationNameTask(new Geocoder(context)).execute();
-                else {
-                    Network.getInstance().setLastLocationName(getString(R.string.action_current_location));
-                    getLocalWeather();
-                }
+                onConnectedTasks();
             else
                 locationClient.connect();
         }
@@ -662,7 +491,7 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
                     String accountName = data.getExtras().getString(AccountManager.KEY_ACCOUNT_NAME);
                     if (accountName != null) {
                         SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-                        defaultPrefs.edit().putString(PREF_ACCOUNT_NAME, accountName).apply();
+                        defaultPrefs.edit().putString(getString(R.string.account_key), accountName).apply();
                         getKeys();
                     }
                 } else {
@@ -673,22 +502,84 @@ public class MainActivity extends BaseActivity implements Callback, GeneralAlert
     }
 
     @Override
-    protected void onDestroy () {
-        super.onDestroy();
-
-        Network.getInstance().setActivityCallback(null);
-    }
-
-    @Override
     public void onDialogClick(String tag, Boolean positive) {
         switch (tag) {
-            case Network.NETWORK_ERROR_DIALOG:
+            case NETWORK_ERROR_DIALOG:
                 if (positive) {
                     setLoading(true);
                     getKeys();
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onNewData(Forecast.Response forecast) {
+        FragmentManager fm = getSupportFragmentManager();
+
+        lastForecastResponse = forecast;
+
+        Kiip.getInstance().saveMoment("weather_check", new Kiip.Callback() {
+            @Override
+            public void onFinished(Kiip kiip, final Poptart reward) {
+
+                handler.postDelayed(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                onPoptart(reward);
+                            }
+                        }, 5000
+                );
+
+            }
+
+            @Override
+            public void onFailed(Kiip kiip, Exception exception) {
+                // handle failure
+            }
+        });
+
+        for (String tag : mainFragments) {
+            FragmentListener listener = (FragmentListener) fm.findFragmentByTag(tag);
+            if (listener != null)
+                listener.onNewData();
+        }
+
+        setLoading(false);
+    }
+
+    @Override
+    public void onFailure() {
+        setLoading(false);
+    }
+
+    @Override
+    public void onShowNetworkToast(int resId) {
+        Toast toast = Toast.makeText(this, getString(resId), Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    @Override
+    public void onShowNetworkDialog() {
+        PreferenceManager.getDefaultSharedPreferences(this).edit()
+                .putString(MainActivity.GOOGLE_API_KEY, null)
+                .putString(MainActivity.FORECAST_API_KEY, null)
+                .apply();
+        GeneralAlertDialog.newInstance(
+                NETWORK_ERROR_DIALOG,
+                getString(R.string.network_error_title),
+                getString(R.string.network_error_message),
+                getString(R.string.network_error_negative),
+                getString(R.string.network_error_positive)
+        ).show(getSupportFragmentManager(), NETWORK_ERROR_DIALOG);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        Network.getInstance().setListener(null);
     }
 
 }
