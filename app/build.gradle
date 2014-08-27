@@ -61,6 +61,6 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.6.1'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
     compile 'com.squareup.okhttp:okhttp:2.0.0'
-    compile project(':androidSVG_12')
+    compile 'com.caverock:androidsvg:1.2.1'
     compile project(path: ':backend', configuration: 'android-endpoints')
 }
