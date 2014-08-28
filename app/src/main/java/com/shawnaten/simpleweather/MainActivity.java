@@ -59,6 +59,8 @@ import java.util.ArrayList;
 import me.kiip.sdk.Kiip;
 import me.kiip.sdk.Poptart;
 
+// comment
+
 public class MainActivity extends BaseActivity implements Network.NetworkListener, GeneralAlertDialog.OnClickListener,
         GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
 
