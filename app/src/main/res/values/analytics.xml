@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="network_category">Network</string>
+    <string name="receive_data_action">Receive Data</string>
+    <string name="success_label">Success</string>
+    <string name="failure_label">Failure</string>
+
+</resources>

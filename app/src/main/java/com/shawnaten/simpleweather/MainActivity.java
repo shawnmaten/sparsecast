@@ -26,6 +26,8 @@ import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -42,6 +44,7 @@ import com.shawnaten.simpleweather.current.CurrentFragment;
 import com.shawnaten.simpleweather.map.MapFragment;
 import com.shawnaten.simpleweather.week.WeekFragment;
 import com.shawnaten.tools.ActionBarListener;
+import com.shawnaten.tools.App;
 import com.shawnaten.tools.BaseActivity;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
@@ -528,6 +531,13 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
     public void onNewData(Forecast.Response forecast) {
         FragmentManager fm = getSupportFragmentManager();
 
+        Tracker t = ((App) getApplication()).getTracker(App.TrackerName.APP_TRACKER);
+        t.send(new HitBuilders.EventBuilder()
+                .setCategory(getString(R.string.network_category))
+                .setAction(getString(R.string.receive_data_action))
+                .setLabel(getString(R.string.success_label))
+                .build());
+
         lastForecastResponse = forecast;
 
         Kiip.getInstance().saveMoment("weather_check", new Kiip.Callback() {
@@ -564,6 +574,14 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
 
     @Override
     public void onFailure() {
+
+        Tracker t = ((App) getApplication()).getTracker(App.TrackerName.APP_TRACKER);
+        t.send(new HitBuilders.EventBuilder()
+                .setCategory(getString(R.string.network_category))
+                .setAction(getString(R.string.receive_data_action))
+                .setLabel(getString(R.string.failure_label))
+                .build());
+
         setLoading(false);
     }
 
