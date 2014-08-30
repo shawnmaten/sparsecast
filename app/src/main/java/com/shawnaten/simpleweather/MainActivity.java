@@ -12,7 +12,6 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -56,9 +55,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import me.kiip.sdk.Kiip;
-import me.kiip.sdk.Poptart;
-
 public class MainActivity extends BaseActivity implements Network.NetworkListener, GeneralAlertDialog.OnClickListener,
         GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
 
@@ -79,8 +75,10 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
 
     private KeysEndpoint keysService;
 
+    /*
     private Handler handler = new Handler();
     private Runnable adRunnable;
+    */
 
     private String[] mainFragments;
     private MenuItem searchWidget;
@@ -540,6 +538,7 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
 
         lastForecastResponse = forecast;
 
+        /*
         Kiip.getInstance().saveMoment("weather_check", new Kiip.Callback() {
             @Override
             public void onFinished(Kiip kiip, final Poptart reward) {
@@ -562,6 +561,7 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
                 // handle failure
             }
         });
+        */
 
         for (String tag : mainFragments) {
             FragmentListener listener = (FragmentListener) fm.findFragmentByTag(tag);
@@ -573,7 +573,7 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
     }
 
     @Override
-    public void onFailure() {
+    public void onFailure(boolean setLoading) {
 
         Tracker t = ((App) getApplication()).getTracker(App.TrackerName.APP_TRACKER);
         t.send(new HitBuilders.EventBuilder()
@@ -582,7 +582,7 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
                 .setLabel(getString(R.string.failure_label))
                 .build());
 
-        setLoading(false);
+        setLoading(setLoading);
     }
 
     @Override

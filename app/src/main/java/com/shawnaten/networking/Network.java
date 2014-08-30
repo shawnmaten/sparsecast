@@ -137,14 +137,15 @@ public class Network implements Callback {
             case PLACES_STATUS_OK:
                 return true;
             case PLACES_STATUS_ZERO_RESULTS:
-                listener.onFailure();
+                listener.onFailure(false);
                 listener.onShowNetworkToast(R.string.no_search_results);
                 return false;
             case PLACES_STATUS_DENIED:
+                listener.onFailure(true);
                 listener.onShowNetworkDialog();
                 return false;
             default:
-                listener.onFailure();
+                listener.onFailure(false);
                 listener.onShowNetworkToast(R.string.network_error);
                 return false;
         }
@@ -181,9 +182,10 @@ public class Network implements Callback {
     public void failure(RetrofitError error) {
 
         if (error.getResponse() != null && error.getResponse().getStatus() == 403) {
+            listener.onFailure(true);
             listener.onShowNetworkDialog();
         } else {
-            listener.onFailure();
+            listener.onFailure(false);
             listener.onShowNetworkToast(R.string.network_error);
             Log.e("Retrofit", error.getMessage());
         }
@@ -192,7 +194,7 @@ public class Network implements Callback {
 
     public interface NetworkListener {
         public void onNewData(Forecast.Response forecast);
-        public void onFailure();
+        public void onFailure(boolean setLoading);
         public void onShowNetworkToast(int resId);
         public void onShowNetworkDialog();
     }
