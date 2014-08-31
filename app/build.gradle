@@ -59,8 +59,10 @@ dependencies {
     compile 'com.android.support:support-v4:20.0.0'
     compile 'com.google.android.gms:play-services:5.0.77'
     compile 'com.squareup.retrofit:retrofit:1.6.1'
+    compile 'com.squareup.picasso:picasso:2.3.4'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
     compile 'com.squareup.okhttp:okhttp:2.0.0'
     compile project(path: ':backend', configuration: 'android-endpoints')
     compile project(':androidSVG_12')
+    compile 'org.jsoup:jsoup:1.7.3'
 }
