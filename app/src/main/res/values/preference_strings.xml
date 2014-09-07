@@ -23,4 +23,17 @@
         <item>us</item>
     </string-array>
 
+    <string name="moisture_key">prefMoistureMetric</string>
+    <string name="moisture_title">Moisture Metric</string>
+
+    <string-array name="moisture_entries" >
+        <item>Relative Humidity</item>
+        <item>Dew Point</item>
+    </string-array>
+
+    <string-array name="moisture_values" >
+        <item>humidity</item>
+        <item>dew</item>
+    </string-array>
+
 </resources>

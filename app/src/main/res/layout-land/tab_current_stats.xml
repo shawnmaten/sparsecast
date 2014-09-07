@@ -15,25 +15,39 @@
         android:layout_weight="1" >
 
         <com.shawnaten.tools.MaterialTextView
-            android:id="@+id/low_temp"
-            style="@style/text.display_1"
-            android:layout_centerHorizontal="true" />
-
-        <com.shawnaten.tools.MaterialTextView
             android:id="@+id/low_temp_time"
             style="@style/text.caption"
-            android:layout_below="@id/low_temp"
-            android:layout_alignLeft="@id/low_temp"
+            android:layout_alignLeft="@+id/low_temp"
             android:layout_alignStart="@id/low_temp" />
+
+        <com.shawnaten.tools.MaterialTextView
+            android:id="@id/low_temp"
+            style="@style/stat_text"
+            android:layout_below="@id/low_temp_time"
+            android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
 
-    <com.shawnaten.tools.MaterialTextView
-        android:id="@+id/temp"
-        style="@style/text.display_1"
+    <RelativeLayout
+        android:id="@+id/temp_holder"
         android:layout_width="0dp"
-        android:layout_weight="1"
-        android:gravity="center" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1" >
+
+        <com.shawnaten.tools.MaterialTextView
+            android:id="@+id/temp_label"
+            style="@style/text.caption"
+            android:layout_alignLeft="@+id/temp"
+            android:layout_alignStart="@id/temp" />
+
+        <com.shawnaten.tools.MaterialTextView
+            android:id="@id/temp"
+            style="@style/stat_text"
+            android:layout_below="@id/temp_label"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -92,12 +106,26 @@
 
     </RelativeLayout>
 
-    <com.shawnaten.tools.MaterialTextView
-        android:id="@+id/humidity"
-        style="@style/text.display_1"
+    <RelativeLayout
+        android:id="@+id/humidity_holder"
         android:layout_width="0dp"
-        android:layout_weight="1"
-        android:gravity="center" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1" >
+
+        <com.shawnaten.tools.MaterialTextView
+            android:id="@+id/moisture_label"
+            style="@style/text.caption"
+            android:layout_alignLeft="@+id/moisture"
+            android:layout_alignStart="@id/moisture" />
+
+        <com.shawnaten.tools.MaterialTextView
+            android:id="@id/moisture"
+            style="@style/stat_text"
+            android:layout_below="@id/moisture_label"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/high_temp_holder"
@@ -107,16 +135,16 @@
         android:layout_weight="1" >
 
         <com.shawnaten.tools.MaterialTextView
-            android:id="@+id/high_temp"
-            style="@style/text.display_1"
-            android:layout_centerHorizontal="true" />
-
-        <com.shawnaten.tools.MaterialTextView
             android:id="@+id/high_temp_time"
             style="@style/text.caption"
-            android:layout_below="@id/high_temp"
-            android:layout_alignLeft="@id/high_temp"
+            android:layout_alignLeft="@+id/high_temp"
             android:layout_alignStart="@id/high_temp" />
+
+        <com.shawnaten.tools.MaterialTextView
+            android:id="@id/high_temp"
+            style="@style/stat_text"
+            android:layout_below="@id/high_temp_time"
+            android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
 

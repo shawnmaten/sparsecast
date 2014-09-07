@@ -2,15 +2,20 @@ package com.shawnaten.networking;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.SystemClock;
+import android.util.Log;
 
 import com.squareup.picasso.Transformation;
 
 /**
  * Created by Shawn Aten on 8/31/14.
  */
-public class MapTransformation implements Transformation {
+public class RemoveBackground implements Transformation {
+
     @Override
     public Bitmap transform(Bitmap source) {
+
+        Log.e("transform", Long.toString(SystemClock.currentThreadTimeMillis()));
 
         Bitmap mBitmap = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
         int mPixels[] = new int[source.getWidth() * source.getHeight()];
@@ -29,6 +34,6 @@ public class MapTransformation implements Transformation {
 
     @Override
     public String key() {
-        return "Map";
+        return "RemoveBackground";
     }
 }

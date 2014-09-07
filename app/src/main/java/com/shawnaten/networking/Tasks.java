@@ -1,6 +1,5 @@
 package com.shawnaten.networking;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
@@ -8,7 +7,6 @@ import android.location.Location;
 import android.os.AsyncTask;
 
 import com.shawnaten.tools.ForecastTools;
-import com.squareup.picasso.Picasso;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -99,11 +97,9 @@ public class Tasks {
     }
 
     public static class getRadarFilesTask extends AsyncTask<Void, Void, LinkedHashMap<String, Date>> {
-        private Context context;
         private RadarImageListener listener;
 
-        public getRadarFilesTask(Context context, RadarImageListener listener) {
-            this.context = context;
+        public getRadarFilesTask(RadarImageListener listener) {
             this.listener = listener;
         }
 
@@ -112,7 +108,6 @@ public class Tasks {
 
             LinkedHashMap<String, Date> radarFilenames = new LinkedHashMap<>(7);
             Element fileName, fileTime;
-            MapTransformation transform = new MapTransformation();
             SimpleDateFormat parser = new SimpleDateFormat();
             Date date;
 
@@ -127,8 +122,6 @@ public class Tasks {
                     fileName = element.select("[href]").first();
                     fileTime = element.select("td[align]").first();
                     date = parser.parse(fileTime.text());
-                    Picasso.with(context).load("http://radar.weather.gov/ridge/Conus/RadarImg/" + fileName.text())
-                            .transform(transform).fetch();
 
                     radarFilenames.put("http://radar.weather.gov/ridge/Conus/RadarImg/" + fileName.text(), date);
                 }

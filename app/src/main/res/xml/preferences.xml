@@ -11,4 +11,11 @@
         android:entries="@array/units_entries"
         android:entryValues="@array/units_values" />
 
+    <ListPreference
+        android:key="@string/moisture_key"
+        android:title="@string/moisture_title"
+        android:entries="@array/moisture_entries"
+        android:entryValues="@array/moisture_values"
+        android:defaultValue="humidity" />
+
 </PreferenceScreen>

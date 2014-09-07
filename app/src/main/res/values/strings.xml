@@ -82,5 +82,8 @@
 
     <string name="high">High</string>
     <string name="low">Low</string>
+    <string name="temp">Temp</string>
+    <string name="dew_point">Dew Point</string>
+    <string name="humidity">Humidity</string>
 
 </resources>

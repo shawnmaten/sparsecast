@@ -225,17 +225,25 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
     protected void onStart() {
         super.onStart();
 
-        isActive = true;
-
         if (Network.getInstance().isSetup()) {
             if (isFreshLaunch) {
                 locationClient.connect();
-            } else {
-                setSearching(isSearching);
-                setLoading(isLoading);
+                isFreshLaunch = false;
             }
         }
 
+    }
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+
+        isActive = true;
+
+        if (Network.getInstance().isSetup()) {
+            setSearching(isSearching);
+            setLoading(isLoading);
+        }
     }
 
     @Override
@@ -335,6 +343,7 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
     }
 
     private void setSearching(boolean state) {
+        isSearching = state;
         setViewState(R.layout.searching, state);
     }
 
@@ -342,6 +351,7 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
         ActionBar ab = getActionBar();
 
         isLoading = state;
+
         if (state) {
             navItem = ab.getSelectedNavigationIndex();
             ab.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);

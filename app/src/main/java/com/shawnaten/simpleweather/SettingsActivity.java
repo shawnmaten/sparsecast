@@ -23,7 +23,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         Account accounts[];
         ArrayList<CharSequence> accountNamesList = new ArrayList<>();
         CharSequence accountNames[];
-        ListPreference accountPref, unitsPref;
+        ListPreference accountPref, unitsPref, moisturePref;
         GoogleAccountCredential credential;
 
         addPreferencesFromResource(R.xml.preferences);
@@ -47,6 +47,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
         unitsPref = (ListPreference) findPreference(getString(R.string.units_key));
         unitsPref.setSummary(unitsPref.getEntry());
+
+        moisturePref = (ListPreference) findPreference(getString(R.string.moisture_key));
+        moisturePref.setSummary(moisturePref.getEntry());
     }
 
     @Override
@@ -73,6 +76,10 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                 ListPreference unitsPref = (ListPreference) findPreference(key);
                 ForecastTools.configUnits(unitsPref.getValue(), null, null);
                 unitsPref.setSummary(unitsPref.getEntry());
+                break;
+            case "prefMoistureMetric":
+                ListPreference moisturePref = (ListPreference) findPreference(key);
+                moisturePref.setSummary(moisturePref.getEntry());
                 break;
         }
     }

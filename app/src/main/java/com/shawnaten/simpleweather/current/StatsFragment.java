@@ -1,6 +1,7 @@
 package com.shawnaten.simpleweather.current;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,8 +55,9 @@ public class StatsFragment extends Fragment implements FragmentListener {
         if (activity.hasForecast()) {
             ViewGroup parent = (ViewGroup) getView();
             Forecast.Response forecast = activity.getForecast();
-
             Forecast.DataPoint currently, hour, today;
+            String moisturePref, moistureLabel, moistureValue;
+
             currently = forecast.getCurrently();
             hour = forecast.getHourly().getData()[0];
             today = forecast.getDaily().getData()[0];
@@ -65,11 +67,24 @@ public class StatsFragment extends Fragment implements FragmentListener {
             DecimalFormat percForm = ForecastTools.getPercForm();
             DecimalFormat tempForm = ForecastTools.getTempForm();
 
-            ForecastTools.setText(parent, asList(R.id.title, R.id.temp, R.id.humidity, R.id.high_temp, R.id.high_temp_time, R.id.low_temp, R.id.low_temp_time, R.id.time, R.id.currently),
+            moisturePref = PreferenceManager.getDefaultSharedPreferences(getActivity())
+                    .getString(getString(R.string.moisture_key), "humidity");
+
+            switch (moisturePref) {
+                case "dew":
+                    moistureLabel = getString(R.string.dew_point);
+                    moistureValue = tempForm.format(currently.getDewPoint());
+                    break;
+                default:
+                    moistureLabel = getString(R.string.humidity);
+                    moistureValue = percForm.format(currently.getHumidity());
+            }
+
+            ForecastTools.setText(parent, asList(R.id.title, R.id.temp, R.id.moisture_label, R.id.moisture, R.id.high_temp, R.id.high_temp_time, R.id.low_temp, R.id.low_temp_time, R.id.time, R.id.currently),
                     asList(
                             forecast.getName(),
                             tempForm.format(currently.getTemperature()),
-                            percForm.format(currently.getHumidity()),
+                            moistureLabel, moistureValue,
                             tempForm.format(today.getTemperatureMax()),
                             String.format("%s %s", getString(R.string.high), shortTimeForm.format(today.getTemperatureMaxTime())),
                             tempForm.format(today.getTemperatureMin()),
@@ -81,7 +96,7 @@ public class StatsFragment extends Fragment implements FragmentListener {
 
 
             ((SVGImageView) parent.findViewById(R.id.weather_icon)).setSVG(SVGManager.getSVG(getActivity(),
-                    ForecastTools.getWeatherIcon(currently.getIcon())));
+                ForecastTools.getWeatherIcon(currently.getIcon())));
         }
 
     }
