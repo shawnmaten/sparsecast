@@ -406,8 +406,17 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
         isCurrentLocationEnabled = true;
 
         if (ForecastTools.UNIT_CODE == null) {
-            new Tasks.getDefaultUnitsTask(PreferenceManager.getDefaultSharedPreferences(this), getString(R.string.units_key),
-                    new Geocoder(this), lastCurrentLocation, getString(R.string.action_current_location)).execute();
+            String units = PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.units_key), null);
+            if (units == null)
+                new Tasks.getDefaultUnitsTask(PreferenceManager.getDefaultSharedPreferences(this), getString(R.string.units_key),
+                        new Geocoder(this), lastCurrentLocation, getString(R.string.action_current_location)).execute();
+            else {
+                ForecastTools.configUnits(units, null, null);
+                new Tasks.getLocationNameTask(new Geocoder(this), lastCurrentLocation,
+                        getString(R.string.action_current_location)).execute();
+            }
+
+
         } else  {
             new Tasks.getLocationNameTask(new Geocoder(this), lastCurrentLocation,
                     getString(R.string.action_current_location)).execute();
