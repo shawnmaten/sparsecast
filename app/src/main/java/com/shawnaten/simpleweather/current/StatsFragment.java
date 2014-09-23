@@ -1,6 +1,6 @@
 package com.shawnaten.simpleweather.current;
 
-// test comment
+// test comment 2
 
 import android.os.Bundle;
 import android.preference.PreferenceManager;
