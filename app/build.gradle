@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 20
+    compileSdkVersion 19
     buildToolsVersion '20.0.0'
 
     def getVersionCode = { ->
@@ -25,7 +25,7 @@ android {
     defaultConfig {
         applicationId 'com.shawnaten.simpleweather'
         minSdkVersion 14
-        targetSdkVersion 20
+        targetSdkVersion 19
         versionCode getVersionCode()
         versionName getVersionName()
     }
@@ -57,7 +57,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:support-v4:20.0.0'
-    compile 'com.google.android.gms:play-services:5.0.77'
+    compile 'com.google.android.gms:play-services:5.2.08'
     compile 'com.squareup.retrofit:retrofit:1.6.1'
     compile 'com.squareup.picasso:picasso:2.3.4'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
