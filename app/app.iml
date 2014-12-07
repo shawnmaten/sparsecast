@@ -10,7 +10,7 @@
       <configuration>
         <option name="SELECTED_BUILD_VARIANT" value="internetDebug" />
         <option name="ASSEMBLE_TASK_NAME" value="assembleInternetDebug" />
-        <option name="COMPILE_JAVA_TASK_NAME" value="compileInternetDebugJava" />
+        <option name="COMPILE_JAVA_TASK_NAME" value="compileInternetDebugSources" />
         <option name="ASSEMBLE_TEST_TASK_NAME" value="assembleInternetDebugTest" />
         <option name="SOURCE_GEN_TASK_NAME" value="generateInternetDebugSources" />
         <option name="TEST_SOURCE_GEN_TASK_NAME" value="generateInternetDebugTestSources" />
@@ -31,6 +31,7 @@
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/buildConfig/internet/debug" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/rs/internet/debug" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/res/rs/internet/debug" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/generated/internet/debug" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/internetDebug/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/internetDebug/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/internetDebug/assets" type="java-resource" />
@@ -43,6 +44,7 @@
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/buildConfig/test/internet/debug" isTestSource="true" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/rs/test/internet/debug" isTestSource="true" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/res/rs/test/internet/debug" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/generated/test/internet/debug" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/internet/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/internet/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/internet/assets" type="java-resource" />
@@ -98,27 +100,31 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/rs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
+      <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="okhttp-urlconnection-2.0.0" level="project" />
+    <orderEntry type="library" exported="" name="google-oauth-client-1.19.0" level="project" />
     <orderEntry type="library" exported="" name="jsr305-1.3.9" level="project" />
     <orderEntry type="library" exported="" name="picasso-2.3.4" level="project" />
     <orderEntry type="library" exported="" name="KiipSDK" level="project" />
     <orderEntry type="library" exported="" name="gson-2.2.4" level="project" />
-    <orderEntry type="library" exported="" name="google-http-client-android-1.18.0-rc" level="project" />
-    <orderEntry type="library" exported="" name="google-oauth-client-1.18.0-rc" level="project" />
+    <orderEntry type="library" exported="" name="google-api-client-1.19.0" level="project" />
+    <orderEntry type="library" exported="" name="jackson-core-2.1.3" level="project" />
     <orderEntry type="library" exported="" name="jsoup-1.7.3" level="project" />
     <orderEntry type="library" exported="" name="okio-1.0.0" level="project" />
-    <orderEntry type="library" exported="" name="google-http-client-1.18.0-rc" level="project" />
-    <orderEntry type="library" exported="" name="play-services-5.2.08" level="project" />
     <orderEntry type="library" exported="" name="support-v4-20.0.0" level="project" />
+    <orderEntry type="library" exported="" name="google-api-client-android-1.19.0" level="project" />
+    <orderEntry type="library" exported="" name="backend-android-endpoints" level="project" />
+    <orderEntry type="library" exported="" name="google-http-client-1.19.0" level="project" />
     <orderEntry type="library" exported="" name="retrofit-1.6.1" level="project" />
-    <orderEntry type="library" exported="" name="google-api-client-1.18.0-rc" level="project" />
-    <orderEntry type="library" exported="" name="backend-endpoints-android" level="project" />
-    <orderEntry type="library" exported="" name="google-api-client-android-1.18.0-rc" level="project" />
+    <orderEntry type="library" exported="" name="google-http-client-android-1.19.0" level="project" />
+    <orderEntry type="library" exported="" name="google-http-client-jackson2-1.19.0" level="project" />
+    <orderEntry type="library" exported="" name="guava-jdk5-13.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-20.0.0" level="project" />
     <orderEntry type="library" exported="" name="okhttp-2.0.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-6.1.71" level="project" />
     <orderEntry type="module" module-name="androidSVG_12" exported="" />
   </component>
 </module>
