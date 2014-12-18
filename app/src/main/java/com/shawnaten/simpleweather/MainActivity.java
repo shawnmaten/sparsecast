@@ -1,7 +1,5 @@
 package com.shawnaten.simpleweather;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.Context;
@@ -53,7 +51,6 @@ import com.shawnaten.tools.PlayServices;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity implements Network.NetworkListener, GeneralAlertDialog.OnClickListener,
         GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
@@ -92,6 +89,10 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // this is to remove old account preference
+        SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        defaultPrefs.edit().remove(getString(R.string.account_key)).apply();
 
         if (PlayServices.playServicesAvailable(this)) {
             FragmentManager fm = getSupportFragmentManager();
@@ -444,28 +445,36 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
 
     // end of location services
 
+    /**
+     * Gets API keys from GAE. Calls getKeysTask. Changing to no longer prompt user with account
+     * selection. It will choose the first account available and validate backend call using that.
+     */
     public void getKeys() {
-        SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String accountName = defaultPrefs.getString(getString(R.string.account_key), null);
-        GoogleAccountCredential credential = GoogleAccountCredential.usingAudience(getApplicationContext(), "server:client_id:" + getString(R.string.WEB_ID));
+        /*SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String accountName = defaultPrefs.getString(getString(R.string.account_key), null);*/
+        GoogleAccountCredential credential = GoogleAccountCredential.usingAudience(
+                getApplicationContext(), "server:client_id:" + getString(R.string.WEB_ID));
+        // only using for auth, no need for user selection
+        credential.setSelectedAccountName(credential.getAllAccounts()[0].name);
 
-        ArrayList<String> allAccounts = new ArrayList<>();
+        /*ArrayList<String> allAccounts = new ArrayList<>();
         for (Account account : credential.getAllAccounts())
-            allAccounts.add(account.name);
+            allAccounts.add(account.name);*/
 
-        if (allAccounts.contains(accountName)) {
-            credential.setSelectedAccountName(accountName);
+        /*if (allAccounts.contains(accountName)) {
+            credential.setSelectedAccountName(accountName);*/
 
-            KeysEndpoint.Builder keysEndpointBuilder =
-                    new KeysEndpoint.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), credential);
-            if (getResources().getBoolean(R.bool.localhost))
-                keysEndpointBuilder.setRootUrl(getString(R.string.root_url));
-            keysService = keysEndpointBuilder.build();
+        KeysEndpoint.Builder keysEndpointBuilder =
+                new KeysEndpoint.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), credential);
+        if (getResources().getBoolean(R.bool.localhost))
+            keysEndpointBuilder.setRootUrl(getString(R.string.root_url));
+        keysService = keysEndpointBuilder.build();
 
-            new getKeysTask(this, credential).execute();
-        }
+        new getKeysTask(this, credential).execute();
+
+        /*}
         else
-            startActivityForResult(credential.newChooseAccountIntent(), REQUEST_CODE_ACCOUNT_PICKER);
+            startActivityForResult(credential.newChooseAccountIntent(), REQUEST_CODE_ACCOUNT_PICKER);*/
 
     }
 
@@ -516,7 +525,7 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
+        /*switch (requestCode) {
             case REQUEST_CODE_ACCOUNT_PICKER:
                 if (data != null && data.getExtras() != null) {
                     String accountName = data.getExtras().getString(AccountManager.KEY_ACCOUNT_NAME);
@@ -529,7 +538,7 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
                     getKeys();
                 }
             break;
-        }
+        }*/
     }
 
     @Override
