@@ -1,13 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 19
+    compileSdkVersion 21
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        /*applicationId "com.caverock.androidsvg"*/
         minSdkVersion 8
-        targetSdkVersion 19
+        targetSdkVersion 21
     }
 
     buildTypes {

@@ -54,7 +54,10 @@
     @retrofit.http.* <methods>;
 }
 
--keep class sun.misc.Unsafe { *; }
+# changed this from a -keep to -dontwarn on 2014-12-17
+# https://github.com/ReactiveX/RxJava/issues/1415
+-dontwarn sun.misc.Unsafe
+
 #your package path where your gson models are stored
 -keep class com.shawnaten.networking.** { *; }
 

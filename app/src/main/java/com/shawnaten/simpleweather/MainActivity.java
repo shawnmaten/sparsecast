@@ -4,9 +4,7 @@ import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -26,15 +25,11 @@ import android.widget.Toast;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.auth.GoogleAuthException;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.location.LocationClient;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.shawnaten.networking.Forecast;
 import com.shawnaten.networking.Network;
-import com.shawnaten.networking.Tasks;
 import com.shawnaten.simpleweather.backend.keysEndpoint.KeysEndpoint;
 import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
 import com.shawnaten.simpleweather.current.CurrentFragment;
@@ -43,19 +38,20 @@ import com.shawnaten.simpleweather.week.WeekFragment;
 import com.shawnaten.tools.ActionBarListener;
 import com.shawnaten.tools.App;
 import com.shawnaten.tools.BaseActivity;
-import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
 import com.shawnaten.tools.GeneralAlertDialog;
 import com.shawnaten.tools.GenericFragment;
 import com.shawnaten.tools.PlayServices;
+import com.shawnaten.tools.SparseLocation;
+import com.shawnaten.tools.StatusAnimations;
 
 import java.io.File;
 import java.io.IOException;
 
-public class MainActivity extends BaseActivity implements Network.NetworkListener, GeneralAlertDialog.OnClickListener,
-        GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
+public class MainActivity extends BaseActivity implements Network.NetworkListener,
+        GeneralAlertDialog.OnClickListener {
 
-    private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 0, REQUEST_CODE_ACCOUNT_PICKER = 1;
+    public static final int CONNECTION_RESOLUTION_REQUEST = 0, REQUEST_CODE_ACCOUNT_PICKER = 1;
     private static final SparseArray<String> helperFragNames = new SparseArray<>();
     static {
         helperFragNames.put(R.layout.searching, "searching");
@@ -77,9 +73,11 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
     private Runnable adRunnable;
     */
 
+    private StatusAnimations statusAnimations;
+
     private String[] mainFragments;
     private MenuItem searchWidget;
-    private LocationClient locationClient;
+    private SparseLocation locationClient;
 
     private int navItem;
     private boolean isActive, isFreshLaunch = true, isSearching, isLoading = true, isCurrentLocationEnabled = true;
@@ -95,11 +93,11 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
         defaultPrefs.edit().remove(getString(R.string.account_key)).apply();
 
         if (PlayServices.playServicesAvailable(this)) {
+            ActionBar ab = getActionBar();
             FragmentManager fm = getSupportFragmentManager();
 
             setContentView(R.layout.main_activity);
             mainFragments = getResources().getStringArray(R.array.main_fragments);
-            locationClient = new LocationClient(this, this, this);
 
             if (Network.getInstance() == null) {
                 SharedPreferences settings = getSharedPreferences(MainActivity.PREFS, Context.MODE_PRIVATE);
@@ -121,6 +119,7 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
             Network.getInstance().setListener(this);
 
             if (savedInstanceState == null) {
+                statusAnimations = new StatusAnimations(ab, fm, null);
                 FragmentTransaction ft = fm.beginTransaction();
                 Fragment cFrag, wFrag, mFrag, sFrag, lFrag;
                 Bundle args;
@@ -157,12 +156,19 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
                 isSearching = savedInstanceState.getBoolean(IS_SEARCHING);
                 isLoading = savedInstanceState.getBoolean(IS_LOADING);
 
+                ArrayMap<Integer, Boolean> states = new ArrayMap<>();
+                states.put(StatusAnimations.SEARCH, isSearching);
+                states.put(StatusAnimations.LOAD, isLoading);
+                statusAnimations = new StatusAnimations(ab, fm, states);
+
                 navItem = savedInstanceState.getInt(NAV_ITEM, 0);
                 lastForecastResponse = savedInstanceState.getParcelable(FORECAST);
                 isCurrentLocationEnabled = savedInstanceState.getBoolean(IS_CURRENT_LOCATION_ENABLED);
                 lastCurrentLocation = savedInstanceState.getParcelable(LAST_CURRENT_LOCATION);
 
             }
+
+            locationClient = new SparseLocation(this, statusAnimations);
 
             ActionBar actionBar = getActionBar();
             actionBar.setIcon(R.drawable.ic_logo);
@@ -197,13 +203,13 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
         searchWidget.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                setSearching(true);
+                statusAnimations.changeState(StatusAnimations.SEARCH, true);
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                setSearching(false);
+                statusAnimations.changeState(StatusAnimations.SEARCH, false);
                 return true;
             }
         });
@@ -240,10 +246,11 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
         super.onResumeFragments();
 
         isActive = true;
+        statusAnimations.setChildFragState(isActive);
 
         if (Network.getInstance().isSetup()) {
-            setSearching(isSearching);
-            setLoading(isLoading);
+            statusAnimations.changeState(StatusAnimations.SEARCH, isSearching);
+            statusAnimations.changeState(StatusAnimations.LOAD, isLoading);
         }
     }
 
@@ -252,6 +259,7 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
         super.onSaveInstanceState(outState);
 
         isActive = false;
+        statusAnimations.setChildFragState(isActive);
 
         isFreshLaunch = !isChangingConfigurations();
         outState.putBoolean(FRESH_LAUNCH, isFreshLaunch);
@@ -286,11 +294,7 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_current_location:
-                if (locationClient.isConnected()) {
-                   onConnectedTasks();
-                }
-                else
-                    locationClient.connect();
+                locationClient.connect();
                 return true;
             case R.id.action_refresh:
                 refreshForecast();
@@ -315,14 +319,14 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
 
         if (Intent.ACTION_SEARCH.equals(action)) {
             searchWidget.collapseActionView();
-            setLoading(true);
+            statusAnimations.changeState(StatusAnimations.LOAD, true);
             isCurrentLocationEnabled = false;
             String query = intent.getStringExtra(SearchManager.QUERY);
             Network.getInstance().getAutocompleteAsync(query);
 
         } else if (Intent.ACTION_VIEW.equals(action)) {
             searchWidget.collapseActionView();
-            setLoading(true);
+            statusAnimations.changeState(StatusAnimations.LOAD, true);
             isCurrentLocationEnabled = false;
             Network.getInstance().getDetails(intent.getDataString());
         }
@@ -331,59 +335,11 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
 
     private void refreshForecast() {
         if (isCurrentLocationEnabled) {
-            if (locationClient.isConnected()) {
-                onConnectedTasks();
-            }
-            else {
-                locationClient.connect();
-            }
+            locationClient.connect();
         } else if (lastForecastResponse != null) {
-            setLoading(true);
+            statusAnimations.changeState(StatusAnimations.LOAD, true);
             Network.getInstance().getForecast(lastForecastResponse.getLatitude(), lastForecastResponse.getLongitude());
         }
-    }
-
-    private void setSearching(boolean state) {
-        isSearching = state;
-        setViewState(R.layout.searching, state);
-    }
-
-    public void setLoading(boolean state) {
-        ActionBar ab = getActionBar();
-
-        isLoading = state;
-
-        if (state) {
-            navItem = ab.getSelectedNavigationIndex();
-            ab.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        } else {
-            ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-            ab.setSelectedNavigationItem(navItem);
-        }
-        setViewState(R.layout.loading, state);
-    }
-
-    private void setViewState(int id, boolean state) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        Fragment toDetach, toAttach;
-
-        if (isActive) {
-            if (state) {
-                toAttach = fm.findFragmentByTag(helperFragNames.get(id));
-                if (toAttach.isDetached()) {
-                    ft.attach(toAttach).commit();
-                }
-
-            } else {
-                toDetach = fm.findFragmentByTag(helperFragNames.get(id));
-                ft.detach(toDetach);
-
-                ft.commit();
-
-            }
-        }
-
     }
 
     public boolean hasForecast() {
@@ -394,56 +350,6 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
         return lastForecastResponse;
     }
 
-    // location services
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        onConnectedTasks();
-    }
-
-    private void onConnectedTasks() {
-        setLoading(true);
-        lastCurrentLocation = locationClient.getLastLocation();
-        isCurrentLocationEnabled = true;
-
-        if (ForecastTools.UNIT_CODE == null) {
-            String units = PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.units_key), null);
-            if (units == null)
-                new Tasks.getDefaultUnitsTask(PreferenceManager.getDefaultSharedPreferences(this), getString(R.string.units_key),
-                        new Geocoder(this), lastCurrentLocation, getString(R.string.action_current_location)).execute();
-            else {
-                ForecastTools.configUnits(units, null, null);
-                new Tasks.getLocationNameTask(new Geocoder(this), lastCurrentLocation,
-                        getString(R.string.action_current_location)).execute();
-            }
-
-
-        } else  {
-            new Tasks.getLocationNameTask(new Geocoder(this), lastCurrentLocation,
-                    getString(R.string.action_current_location)).execute();
-        }
-    }
-
-    @Override
-    public void onDisconnected() {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        if (connectionResult.hasResolution()) {
-            try {
-                connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
-            } catch (IntentSender.SendIntentException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Toast toast = Toast.makeText(this, connectionResult.toString(), Toast.LENGTH_SHORT);
-            toast.show();
-        }
-    }
-
-    // end of location services
 
     /**
      * Gets API keys from GAE. Calls getKeysTask. Changing to no longer prompt user with account
@@ -507,10 +413,7 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
 
         @Override
         protected void onPostExecute (Keys result) {
-            if (locationClient.isConnected())
-                onConnectedTasks();
-            else
-                locationClient.connect();
+            locationClient.connect();
         }
 
     }
@@ -546,7 +449,7 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
         switch (tag) {
             case NETWORK_ERROR_DIALOG:
                 if (positive) {
-                    setLoading(true);
+                    statusAnimations.changeState(StatusAnimations.LOAD, true);
                     getKeys();
                 }
                 break;
@@ -597,7 +500,7 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
                 listener.onNewData();
         }
 
-        setLoading(false);
+        statusAnimations.changeState(StatusAnimations.LOAD, false);
     }
 
     @Override
@@ -610,7 +513,7 @@ public class MainActivity extends BaseActivity implements Network.NetworkListene
                 .setLabel(getString(R.string.failure_label))
                 .build());
 
-        setLoading(setLoading);
+        statusAnimations.changeState(StatusAnimations.LOAD, setLoading);
     }
 
     @Override
