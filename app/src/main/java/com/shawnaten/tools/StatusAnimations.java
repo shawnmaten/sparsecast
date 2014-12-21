@@ -1,6 +1,7 @@
 package com.shawnaten.tools;
 
 import android.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,33 +18,34 @@ import android.support.v4.util.ArrayMap;
  * currently this encompasses, loading, searching, and normal view.
  */
 public class StatusAnimations {
-    public static final int SEARCH = 0, LOAD = 1;
+    // TODO these shouldn't be hardcoded in
+    public static final String SEARCH = "searching", LOAD = "loading";
 
     private ActionBar ab;
     private FragmentManager fm;
-    private ArrayMap<Integer, Boolean> states;
+    private ArrayMap<String, Boolean> states;
     private boolean childFragState;
     private int actionBarIndex;
 
-    public StatusAnimations(ActionBar ab, FragmentManager fm, ArrayMap<Integer, Boolean> states) {
+    public StatusAnimations(ActionBar ab, FragmentManager fm, Bundle savedState) {
         this.ab = ab;
         this.fm = fm;
-        if (states != null)
-            this.states = states;
-        else
-            this.states = new ArrayMap<>();
+        states = new ArrayMap<>();
+        if (savedState != null) {
+            states.put(SEARCH, savedState.getBoolean(SEARCH));
+            states.put(LOAD, savedState.getBoolean(LOAD));
+        }
     }
 
     public void setChildFragState(boolean state) {
         this.childFragState = state;
     }
 
-    public void changeState(int name, boolean state) {
+    public void changeState(String name, boolean state) {
         switch (name) {
             case SEARCH:
                 states.put(SEARCH, state);
-                // TODO these shouldn't be hardcoded in
-                setState("searching", state);
+                setState(SEARCH, state);
                 break;
             case LOAD:
                 states.put(LOAD, state);
@@ -54,13 +56,12 @@ public class StatusAnimations {
                     ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
                     ab.setSelectedNavigationItem(actionBarIndex);
                 }
-                // TODO these shouldn't be hardcoded in
-                setState("loading", state);
+                setState(LOAD, state);
                 break;
         }
     }
 
-    public Boolean checkState(int name) {
+    public Boolean checkState(String name) {
         return  states.get(name);
     }
 
@@ -74,16 +75,20 @@ public class StatusAnimations {
                 if (toAttach.isDetached()) {
                     ft.attach(toAttach).commit();
                 }
-
             } else {
                 toDetach = fm.findFragmentByTag(tag);
                 ft.detach(toDetach);
 
                 ft.commit();
-
             }
         }
+    }
 
+    public Bundle saveState() {
+        Bundle outState = new Bundle();
+        outState.putBoolean(SEARCH, states.get(SEARCH) != null ? states.get(SEARCH) : false);
+        outState.putBoolean(LOAD, states.get(LOAD) != null ? states.get(LOAD) : false);
+        return outState;
     }
 
 }

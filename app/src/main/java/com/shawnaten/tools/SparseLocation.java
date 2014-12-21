@@ -30,42 +30,47 @@ public class SparseLocation {
                 .build();
     }
     
-    public void connect() {
-        googleApiClient.connect();
+    public void getLastLocation() {
+        if (googleApiClient.isConnected())
+            getLastLocationTask();
+        else
+            googleApiClient.connect();
     }
 
     public void disconnect() {
         googleApiClient.disconnect();
     }
 
+    private void getLastLocationTask() {
+        statusAnimations.changeState(StatusAnimations.LOAD, true);
+        Location lastLocation = LocationServices.FusedLocationApi
+                .getLastLocation(googleApiClient);
+
+        if (ForecastTools.UNIT_CODE == null) {
+            String units = PreferenceManager.getDefaultSharedPreferences(context).getString(
+                    context.getString(R.string.units_key), null);
+            if (units == null)
+                new Tasks.getDefaultUnitsTask(PreferenceManager
+                        .getDefaultSharedPreferences(context),
+                        context.getString(R.string.units_key),
+                        new Geocoder(context), lastLocation,
+                        context.getString(R.string.action_current_location)).execute();
+            else {
+                ForecastTools.configUnits(units, null, null);
+                new Tasks.getLocationNameTask(new Geocoder(context), lastLocation,
+                        context.getString(R.string.action_current_location)).execute();
+            }
+        } else  {
+            new Tasks.getLocationNameTask(new Geocoder(context), lastLocation,
+                    context.getString(R.string.action_current_location)).execute();
+        }
+    }
+
     private class ConnectionCallbacks implements GoogleApiClient.ConnectionCallbacks {
 
         @Override
         public void onConnected(Bundle bundle) {
-            statusAnimations.changeState(StatusAnimations.LOAD, true);
-            Location lastLocation = LocationServices.FusedLocationApi
-                    .getLastLocation(googleApiClient);
-
-            if (ForecastTools.UNIT_CODE == null) {
-                String units = PreferenceManager.getDefaultSharedPreferences(context).getString(
-                        context.getString(R.string.units_key), null);
-                if (units == null)
-                    new Tasks.getDefaultUnitsTask(PreferenceManager
-                            .getDefaultSharedPreferences(context),
-                            context.getString(R.string.units_key),
-                            new Geocoder(context), lastLocation,
-                            context.getString(R.string.action_current_location)).execute();
-                else {
-                    ForecastTools.configUnits(units, null, null);
-                    new Tasks.getLocationNameTask(new Geocoder(context), lastLocation,
-                            context.getString(R.string.action_current_location)).execute();
-                }
-
-
-            } else  {
-                new Tasks.getLocationNameTask(new Geocoder(context), lastLocation,
-                        context.getString(R.string.action_current_location)).execute();
-            }
+            getLastLocationTask();
         }
 
         @Override
