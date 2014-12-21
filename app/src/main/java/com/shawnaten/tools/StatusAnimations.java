@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.ArrayMap;
+import android.util.Log;
 
 /**
  * Sparsecast for Android.
@@ -31,7 +32,10 @@ public class StatusAnimations {
         this.ab = ab;
         this.fm = fm;
         states = new ArrayMap<>();
-        if (savedState != null) {
+        if (savedState == null) {
+            states.put(SEARCH, false);
+            states.put(LOAD, false);
+        } else {
             states.put(SEARCH, savedState.getBoolean(SEARCH));
             states.put(LOAD, savedState.getBoolean(LOAD));
         }
@@ -44,19 +48,23 @@ public class StatusAnimations {
     public void changeState(String name, boolean state) {
         switch (name) {
             case SEARCH:
-                states.put(SEARCH, state);
-                setState(SEARCH, state);
+                if (state != states.get(SEARCH)) {
+                    states.put(SEARCH, state);
+                    setState(SEARCH, state);
+                }
                 break;
             case LOAD:
-                states.put(LOAD, state);
-                if (state) {
-                    actionBarIndex = ab.getSelectedNavigationIndex();
-                    ab.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-                } else {
-                    ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-                    ab.setSelectedNavigationItem(actionBarIndex);
+                if (state != states.get(LOAD)) {
+                    states.put(LOAD, state);
+                    if (state) {
+                        actionBarIndex = ab.getSelectedNavigationIndex();
+                        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+                    } else {
+                        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+                        ab.setSelectedNavigationItem(actionBarIndex);
+                    }
+                    setState(LOAD, state);
                 }
-                setState(LOAD, state);
                 break;
         }
     }
@@ -68,6 +76,8 @@ public class StatusAnimations {
     private void setState(String tag, boolean state) {
         FragmentTransaction ft = fm.beginTransaction();
         Fragment toDetach, toAttach;
+
+        Log.d("temp", "setState");
 
         if (childFragState) {
             if (state) {
@@ -86,8 +96,8 @@ public class StatusAnimations {
 
     public Bundle saveState() {
         Bundle outState = new Bundle();
-        outState.putBoolean(SEARCH, states.get(SEARCH) != null ? states.get(SEARCH) : false);
-        outState.putBoolean(LOAD, states.get(LOAD) != null ? states.get(LOAD) : false);
+        outState.putBoolean(SEARCH, states.get(SEARCH));
+        outState.putBoolean(LOAD, states.get(LOAD));
         return outState;
     }
 
