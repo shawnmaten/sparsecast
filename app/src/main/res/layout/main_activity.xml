@@ -1,24 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_cards"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/main_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-        <!--
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/ad"/>
-
-    <com.google.android.gms.ads.AdView
-        android:id="@id/ad"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        ads:adSize="SMART_BANNER"
-        ads:adUnitId="@string/bottom_banner" />
-        -->
-
-</RelativeLayout>
+</android.support.v7.widget.RecyclerView>

@@ -1,7 +1,7 @@
 package com.shawnaten.tools;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 
 import me.kiip.sdk.KiipFragmentCompat;
 import me.kiip.sdk.Poptart;
@@ -9,7 +9,7 @@ import me.kiip.sdk.Poptart;
 /**
  * Created by Shawn Aten on 8/22/14.
  */
-public class BaseActivity extends FragmentActivity {
+public class BaseActivity extends ActionBarActivity {
     private final static String KIIP_TAG = "kiip_fragment_tag";
 
     private KiipFragmentCompat mKiipFragment;

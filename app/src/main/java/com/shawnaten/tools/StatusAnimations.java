@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.ArrayMap;
-import android.util.Log;
 
 /**
  * Sparsecast for Android.
@@ -46,6 +45,7 @@ public class StatusAnimations {
     }
 
     public void changeState(String name, boolean state) {
+        /*
         switch (name) {
             case SEARCH:
                 if (state != states.get(SEARCH)) {
@@ -67,6 +67,7 @@ public class StatusAnimations {
                 }
                 break;
         }
+        */
     }
 
     public Boolean checkState(String name) {
@@ -77,7 +78,7 @@ public class StatusAnimations {
         FragmentTransaction ft = fm.beginTransaction();
         Fragment toDetach, toAttach;
 
-        Log.d("temp", "setState");
+        //Log.d("temp", "setState");
 
         if (childFragState) {
             if (state) {
