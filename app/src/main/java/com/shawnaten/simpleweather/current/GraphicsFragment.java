@@ -1,21 +1,14 @@
 package com.shawnaten.simpleweather.current;
 
-import android.content.Context;
-import android.graphics.drawable.ShapeDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
-import com.shawnaten.networking.Forecast;
 import com.shawnaten.simpleweather.MainActivity;
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
-import com.shawnaten.tools.WeatherBarShape;
 
 /**
  * Created by shawnaten on 7/20/14.
@@ -47,6 +40,7 @@ public class GraphicsFragment extends Fragment implements FragmentListener {
     private void updateView() {
         MainActivity activity = (MainActivity) getActivity();
 
+        /*
         if (activity.hasForecast()) {
             View parent = getView();
             Forecast.Response forecast = activity.getForecast();
@@ -65,6 +59,7 @@ public class GraphicsFragment extends Fragment implements FragmentListener {
             ForecastTools.createWeatherBarTextViews((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE), weatherBarShape, weatherBarTexts);
             ForecastTools.setWeatherBarText(weatherBarShape, hourly, forecast.getTimezone(), weatherBarTexts);
         }
+        */
     }
 
 }

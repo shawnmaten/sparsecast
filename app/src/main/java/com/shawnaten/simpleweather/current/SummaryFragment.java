@@ -6,13 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.shawnaten.networking.Forecast;
 import com.shawnaten.simpleweather.MainActivity;
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
-
-import static java.util.Arrays.asList;
 
 /**
  * Created by shawnaten on 7/20/14.
@@ -45,6 +41,7 @@ public class SummaryFragment extends Fragment implements FragmentListener {
     private void updateView() {
         MainActivity activity = (MainActivity) getActivity();
 
+        /*
         if (activity.hasForecast()) {
             Forecast.Response forecast = activity.getForecast();
 
@@ -57,6 +54,7 @@ public class SummaryFragment extends Fragment implements FragmentListener {
             ForecastTools.setText((ViewGroup) getView(), asList(R.id.next_hour, R.id.next_24_hours),
                     asList(hourSummary, forecast.getHourly().getSummary()));
         }
+        */
     }
 
 }

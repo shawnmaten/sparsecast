@@ -1,25 +1,14 @@
 package com.shawnaten.simpleweather.current;
 
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.caverock.androidsvg.SVGImageView;
-import com.shawnaten.networking.Forecast;
 import com.shawnaten.simpleweather.MainActivity;
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
-import com.shawnaten.tools.SVGManager;
-
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-
-import static java.util.Arrays.asList;
 
 /**
  * Created by Shawn Aten on 7/20/14.
@@ -52,6 +41,7 @@ public class StatsFragment extends Fragment implements FragmentListener {
     private void updateView() {
         MainActivity activity = (MainActivity) getActivity();
 
+        /*
         if (activity.hasForecast()) {
             ViewGroup parent = (ViewGroup) getView();
             Forecast.Response forecast = activity.getForecast();
@@ -98,6 +88,7 @@ public class StatsFragment extends Fragment implements FragmentListener {
             ((SVGImageView) parent.findViewById(R.id.weather_icon)).setSVG(SVGManager.getSVG(getActivity(),
                 ForecastTools.getWeatherIcon(currently.getIcon())));
         }
+        */
 
     }
 

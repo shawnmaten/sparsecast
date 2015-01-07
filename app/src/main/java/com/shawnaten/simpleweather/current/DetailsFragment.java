@@ -7,19 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.caverock.androidsvg.SVGImageView;
-import com.shawnaten.networking.Forecast;
 import com.shawnaten.simpleweather.MainActivity;
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.FragmentListener;
-import com.shawnaten.tools.SVGManager;
-
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-
-import static java.util.Arrays.asList;
 
 /**
  * Created by shawnaten on 7/20/14.
@@ -60,6 +50,7 @@ public class DetailsFragment extends Fragment implements FragmentListener {
         ViewGroup parent = (ViewGroup) getView();
         MainActivity activity = (MainActivity) getActivity();
 
+        /*
         if (activity.hasForecast()) {
             ArrayList<Integer> iconIds = new ArrayList<>(), iconValues = new ArrayList<>();
             Forecast.Response forecast = activity.getForecast();
@@ -104,6 +95,7 @@ public class DetailsFragment extends Fragment implements FragmentListener {
                 ((SVGImageView) parent.findViewById(iconIds.get(i))).setSVG(SVGManager.getSVG(getActivity(), iconValues.get(i)));
             }
         }
+        */
 
     }
 

@@ -43,11 +43,13 @@ public class WeekFragment extends Fragment implements FragmentListener {
     private void updateView() {
         MainActivity activity = (MainActivity) getActivity();
 
+        /*
         if (activity.hasForecast()) {
             ExpandableListView view = (ExpandableListView) getView().findViewById(R.id.tab_week);
             WeekFragmentAdapter adapter = new WeekFragmentAdapter(getActivity(), activity.getForecast());
             view.setAdapter(adapter);
         }
+        */
     }
 
 }

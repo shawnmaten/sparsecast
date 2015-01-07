@@ -4,17 +4,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.GroundOverlay;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.shawnaten.networking.Forecast;
 import com.shawnaten.networking.RadarProvider;
 import com.shawnaten.networking.RemoveBackground;
 import com.shawnaten.networking.Tasks;
@@ -79,6 +75,7 @@ public class MapFragment extends SupportMapFragment implements FragmentListener,
         MainActivity activity = (MainActivity) getActivity();
 
         GoogleMap map = getMap();
+        /*
         if (map != null && activity.hasForecast()) {
             Forecast.Response forecast = activity.getForecast();
             LatLng position = new LatLng(forecast.getLatitude(), forecast.getLongitude());
@@ -90,6 +87,7 @@ public class MapFragment extends SupportMapFragment implements FragmentListener,
 
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, DEFAULT_ZOOM));
         }
+        */
     }
 
     @Override
