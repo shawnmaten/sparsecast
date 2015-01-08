@@ -1,4 +1,4 @@
-package com.shawnaten.networking;
+package com.shawnaten.network.models;
 
 import retrofit.Callback;
 import retrofit.http.GET;
@@ -104,15 +104,20 @@ public class Places {
         }
     }
 
-    public static interface Service {
+    public static interface AutoCompleteService {
         @GET("/json")
-        AutocompleteResponse getAutocomplete(@Query("key") String key, @Query("input") String query, @Query("language") String langCode);
+        AutocompleteResponse getAutocomplete(@Query("key") String key, @Query("input") String query,
+            @Query("language") String langCode);
 
         @GET("/json")
-        void getAutocomplete(@Query("key") String key, @Query("input") String query, @Query("language") String langCode, Callback<AutocompleteResponse> cb);
+        void getAutocomplete(@Query("key") String key, @Query("input") String query,
+            @Query("language") String langCode, Callback<AutocompleteResponse> cb);
+    }
 
+    public static interface DetailsService {
         @GET("/json")
-        void getDetails(@Query("key") String key, @Query("placeid") String placeid, @Query("language") String langCode, Callback<DetailsResponse> cb);
+        void getDetails(@Query("key") String key, @Query("placeid") String placeid,
+            @Query("language") String langCode, Callback<DetailsResponse> cb);
     }
 
 }

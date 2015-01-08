@@ -1,16 +1,17 @@
 package com.shawnaten.simpleweather;
 
-import android.app.Application;
+import com.shawnaten.network.modules.NetworkModule;
 
 import dagger.Module;
 import dagger.Provides;
 
 @Module(
     injects = {
-        App.class
+            App.class
     },
     includes = {
-        DomainModule.class
+            DomainModule.class,
+            NetworkModule.class
     }
 )
 public class AppModule {
@@ -21,7 +22,7 @@ public class AppModule {
         this.app = app;
     }
 
-    @Provides public Application provideApplication() {
+    @Provides public App provideApp() {
         return app;
     }
 }

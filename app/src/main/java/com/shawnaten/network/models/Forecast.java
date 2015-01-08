@@ -1,4 +1,4 @@
-package com.shawnaten.networking;
+package com.shawnaten.network.models;
 
 import android.net.Uri;
 import android.os.Parcel;

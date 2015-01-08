@@ -11,11 +11,11 @@ import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.shawnaten.networking.RadarProvider;
-import com.shawnaten.networking.RemoveBackground;
-import com.shawnaten.networking.Tasks;
 import com.shawnaten.simpleweather.MainActivity;
 import com.shawnaten.tools.FragmentListener;
+import com.shawnaten.tools.radar.RadarProvider;
+import com.shawnaten.tools.radar.RemoveBackground;
+import com.shawnaten.tools.radar.Tasks;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 

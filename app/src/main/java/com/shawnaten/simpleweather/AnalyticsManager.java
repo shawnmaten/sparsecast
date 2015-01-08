@@ -1,18 +1,12 @@
 package com.shawnaten.simpleweather;
 
-/**
- * Sparsecast for Android.
- * <p/>
- * File created by Shawn Aten on 2015/01/06.
- */
-import android.app.Application;
 import android.widget.Toast;
 
 public class AnalyticsManager {
 
-    private Application app;
+    private App app;
 
-    public AnalyticsManager(Application app) {
+    public AnalyticsManager(App app) {
         this.app = app;
     }
 

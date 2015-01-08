@@ -9,9 +9,6 @@ import android.database.MatrixCursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.shawnaten.networking.Network;
-import com.shawnaten.networking.Places;
-
 public class SearchProvider extends ContentProvider {
 	private final String[] pColumns = {BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1, 
 			SearchManager.SUGGEST_COLUMN_INTENT_DATA};
@@ -30,6 +27,7 @@ public class SearchProvider extends ContentProvider {
             if (!query.equals("search_suggest_query")) {
                 MatrixCursor cursor = new MatrixCursor(pColumns);
 
+                /*
                 Places.AutocompleteResponse autocomplete =
                         Network.getInstance().getAutocompleteSync(query);
 
@@ -40,6 +38,7 @@ public class SearchProvider extends ContentProvider {
                     }
                     return cursor;
                 }
+                */
             }
 		}		
 		return null;

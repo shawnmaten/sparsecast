@@ -1,4 +1,4 @@
-package com.shawnaten.networking;
+package com.shawnaten.tools.radar;
 
 import android.content.SharedPreferences;
 import android.location.Address;
@@ -59,8 +59,8 @@ public class Tasks {
         protected void onPostExecute (Address result) {
             String unitCode = result.getCountryCode() != null ? result.getCountryCode().toLowerCase() : "si";
             ForecastTools.configUnits(unitCode, preferences, key);
-            Network.getInstance().setLastLocationName(result.getLocality() != null ? result.getLocality() : defaultName);
-            Network.getInstance().getForecast(location.getLatitude(), location.getLongitude());
+            //Network.getInstance().setLastLocationName(result.getLocality() != null ? result.getLocality() : defaultName);
+            //Network.getInstance().getForecast(location.getLatitude(), location.getLongitude());
         }
 
     }
@@ -90,8 +90,8 @@ public class Tasks {
 
         @Override
         protected void onPostExecute (String result) {
-            Network.getInstance().setLastLocationName(result);
-            Network.getInstance().getForecast(location.getLatitude(), location.getLongitude());
+            //Network.getInstance().setLastLocationName(result);
+            //Network.getInstance().getForecast(location.getLatitude(), location.getLongitude());
         }
 
     }

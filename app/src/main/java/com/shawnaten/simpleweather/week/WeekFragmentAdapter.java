@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.caverock.androidsvg.SVGImageView;
-import com.shawnaten.networking.Forecast;
+import com.shawnaten.network.models.Forecast;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.SVGManager;

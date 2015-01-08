@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.shawnaten.networking.Forecast;
+import com.shawnaten.network.models.Forecast;
 import com.shawnaten.simpleweather.R;
 
 import java.text.DateFormat;
