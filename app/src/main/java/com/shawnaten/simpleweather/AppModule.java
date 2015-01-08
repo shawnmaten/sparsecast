@@ -1,10 +1,6 @@
 package com.shawnaten.simpleweather;
 
-import com.shawnaten.network.modules.ForecastModule;
-import com.shawnaten.network.modules.GsonConverterModule;
-import com.shawnaten.network.modules.OkClientModule;
-import com.shawnaten.network.modules.PlacesAutocompleteModule;
-import com.shawnaten.network.modules.PlacesDetailsModule;
+import com.shawnaten.network.modules.NetworkModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,11 +11,7 @@ import dagger.Provides;
     },
     includes = {
             DomainModule.class,
-            ForecastModule.class,
-            GsonConverterModule.class,
-            OkClientModule.class,
-            PlacesAutocompleteModule.class,
-            PlacesDetailsModule.class
+            NetworkModule.class
     }
 )
 public class AppModule {
