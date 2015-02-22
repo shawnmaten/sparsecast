@@ -9,7 +9,8 @@ import dagger.Module;
                 GsonConverterModule.class,
                 OkClientModule.class,
                 PlacesAutocompleteModule.class,
-                PlacesDetailsModule.class
+                PlacesDetailsModule.class//,
+                //KeysModule.class
         }
 )
 public class NetworkModule {

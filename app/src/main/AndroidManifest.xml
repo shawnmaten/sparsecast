@@ -19,7 +19,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:icon="@drawable/ic_launcher"
-        android:logo="@drawable/ic_logo"
         android:theme="@style/AppBaseTheme.AppTheme" >
 
         <meta-data

@@ -68,3 +68,7 @@
 -keepclassmembers class * {
   @com.google.api.client.util.Key <fields>;
 }
+
+# for retrolambda
+
+-dontwarn java.lang.invoke.*

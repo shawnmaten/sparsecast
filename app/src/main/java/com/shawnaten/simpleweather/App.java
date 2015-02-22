@@ -1,8 +1,5 @@
-package com.shawnaten.simpleweather; /**
- * Sparsecast for Android.
- * <p/>
- * File created by Shawn Aten on 2015/01/04.
- */
+package com.shawnaten.simpleweather;
+
 import android.app.Application;
 
 import java.util.Arrays;
@@ -15,14 +12,16 @@ import dagger.ObjectGraph;
 public class App extends Application {
 
     private ObjectGraph objectGraph;
-    @Inject
-    AnalyticsManager analyticsManager;
+    @Inject AnalyticsManager analyticsManager;
+    //@Inject @Named("KeysModule") Observable<Keys> keysModule;
 
     @Override public void onCreate() {
         super.onCreate();
         objectGraph = ObjectGraph.create(getModules().toArray());
         objectGraph.inject(this);
         analyticsManager.registerAppEnter();
+        //keysModule.subscribe(keys -> Log.d("KeysModule", keys.getForecastAPIKey()));
+
     }
 
     private List<Object> getModules() {

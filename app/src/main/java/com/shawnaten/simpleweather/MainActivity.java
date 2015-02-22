@@ -2,8 +2,6 @@ package com.shawnaten.simpleweather;
 
 import android.os.Bundle;
 
-import com.shawnaten.tools.BaseActivity;
-
 public class MainActivity extends BaseActivity {
 
     @Override

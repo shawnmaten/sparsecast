@@ -11,7 +11,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.tools.radar.Tasks;
 
 // TODO the calls that use the location info shouldn't be called within each other
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.os.SystemClock;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.SparseArray;
@@ -282,13 +281,14 @@ public class ForecastTools {
             paramsList.add(params);
         }
 
+        /*
         for (int i = 1; i <= tickCount; i++) {
             TextView textView = (TextView) inflater.inflate(R.layout.weather_bar_time, layout, false);
-            //noinspection ResourceType
             textView.setId(i);
             textView.setText(Long.toString(SystemClock.currentThreadTimeMillis()));
             layout.addView(textView, paramsList.get(i - 1));
         }
+        */
 
     }
 

@@ -1,12 +1,10 @@
-package com.shawnaten.tools.radar;
+package com.shawnaten.tools;
 
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
-
-import com.shawnaten.tools.ForecastTools;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

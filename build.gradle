@@ -3,10 +3,11 @@
 buildscript {
     repositories {
         jcenter()
+        mavenCentral() // for retrolambda
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.0.0'
-
+        classpath 'me.tatarka:gradle-retrolambda:2.5.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -15,5 +16,8 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        mavenCentral() // for retrolambda
     }
 }
+
+apply plugin: 'me.tatarka.retrolambda' // for retrolambda

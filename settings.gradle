@@ -1,2 +1,1 @@
 include ':app', ':backend'
-include ':androidSVG_12'
