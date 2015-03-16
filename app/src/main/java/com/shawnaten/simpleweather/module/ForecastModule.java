@@ -1,6 +1,6 @@
-package com.shawnaten.network.modules;
+package com.shawnaten.simpleweather.module;
 
-import com.shawnaten.network.models.Forecast;
+import com.shawnaten.simpleweather.model.Forecast;
 
 import javax.inject.Singleton;
 
@@ -10,17 +10,13 @@ import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
 
-@Module (
-        complete = false,
-        library = true
-)
+@Module
 public class ForecastModule {
-    private static final String
-            ENDPOINT = "https://api.forecast.io/forecast";
+    private static final String ENDPOINT = "https://api.forecast.io/forecast";
 
     @Provides
     @Singleton
-    public Forecast.Service providesForecastService(OkClient client, GsonConverter converter) {
+    public Forecast.Service provideForecastService(OkClient client, GsonConverter converter) {
         return new RestAdapter.Builder()
                 .setEndpoint(ENDPOINT)
                 .setClient(client)

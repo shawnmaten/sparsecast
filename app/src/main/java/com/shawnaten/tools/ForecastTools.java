@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.shawnaten.network.models.Forecast;
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.model.Forecast;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;

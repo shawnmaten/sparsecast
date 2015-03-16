@@ -1,6 +1,6 @@
-package com.shawnaten.network.modules;
+package com.shawnaten.simpleweather.module;
 
-import com.shawnaten.network.models.Places;
+import com.shawnaten.simpleweather.model.Places;
 
 import javax.inject.Singleton;
 
@@ -9,13 +9,9 @@ import dagger.Provides;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
-@Module (
-        complete = false,
-        library = true
-)
+@Module
 public class PlacesDetailsModule {
-    private static final String
-            ENDPOINT = "https://maps.googleapis.com/maps/api/place/details";
+    private static final String ENDPOINT = "https://maps.googleapis.com/maps/api/place/details";
 
     @Provides
     @Singleton

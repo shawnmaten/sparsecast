@@ -1,4 +1,4 @@
-package com.shawnaten.network.models;
+package com.shawnaten.simpleweather.model;
 
 
 import com.google.gson.JsonDeserializationContext;

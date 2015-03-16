@@ -2,33 +2,27 @@ package com.shawnaten.simpleweather;
 
 import android.app.Application;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.ObjectGraph;
+import com.shawnaten.simpleweather.component.Dagger_NetworkComponent;
+import com.shawnaten.simpleweather.component.NetworkComponent;
+import com.shawnaten.simpleweather.module.AppModule;
 
 public class App extends Application {
 
-    private ObjectGraph objectGraph;
-    @Inject AnalyticsManager analyticsManager;
-    //@Inject @Named("KeysModule") Observable<Keys> keysModule;
+    private NetworkComponent networkComponent;
 
-    @Override public void onCreate() {
+    @Override
+    public void onCreate() {
         super.onCreate();
-        objectGraph = ObjectGraph.create(getModules().toArray());
-        objectGraph.inject(this);
-        analyticsManager.registerAppEnter();
-        //keysModule.subscribe(keys -> Log.d("KeysModule", keys.getForecastAPIKey()));
+
+        networkComponent = Dagger_NetworkComponent.builder()
+                .appModule(new AppModule(this))
+                .build();
+        networkComponent.injectApp(this);
 
     }
 
-    private List<Object> getModules() {
-        return Arrays.<Object>asList(new AppModule(this));
+    public NetworkComponent getNetworkComponent() {
+        return networkComponent;
     }
 
-    public ObjectGraph createScopedGraph(Object... modules) {
-        return objectGraph.plus(modules);
-    }
 }

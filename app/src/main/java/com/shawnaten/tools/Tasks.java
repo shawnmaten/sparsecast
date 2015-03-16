@@ -6,19 +6,8 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  * Created by Shawn Aten on 8/25/14.
@@ -94,6 +83,7 @@ public class Tasks {
 
     }
 
+    /*
     public static class getRadarFilesTask extends AsyncTask<Void, Void, LinkedHashMap<String, Date>> {
         private RadarImageListener listener;
 
@@ -141,5 +131,6 @@ public class Tasks {
     public interface RadarImageListener {
         public void onReceiveImageInfo(LinkedHashMap<String, Date> info);
     }
+    */
 
 }

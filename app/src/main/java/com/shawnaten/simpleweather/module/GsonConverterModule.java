@@ -1,11 +1,11 @@
-package com.shawnaten.network.modules;
+package com.shawnaten.simpleweather.module;
 
 import android.net.Uri;
 
 import com.google.gson.GsonBuilder;
-import com.shawnaten.network.models.DateDeserializer;
-import com.shawnaten.network.models.TimeZoneDeserializer;
-import com.shawnaten.network.models.UriDeserializer;
+import com.shawnaten.simpleweather.model.DateDeserializer;
+import com.shawnaten.simpleweather.model.TimeZoneDeserializer;
+import com.shawnaten.simpleweather.model.UriDeserializer;
 
 import java.util.Date;
 import java.util.TimeZone;
@@ -16,16 +16,16 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit.converter.GsonConverter;
 
-@Module (
-        complete = false,
-        library = true
-)
+@Module
 public class GsonConverterModule {
 
     @Provides
     @Singleton
-    public GsonConverter providesGson(TimeZoneDeserializer timeZoneDeserializer,
-                             DateDeserializer dateDeserializer, UriDeserializer uriDeserializer) {
+    public GsonConverter providesGson(
+            TimeZoneDeserializer timeZoneDeserializer,
+            DateDeserializer dateDeserializer,
+            UriDeserializer uriDeserializer) {
+
         return new GsonConverter(
                 new GsonBuilder()
                         .registerTypeAdapter(TimeZone.class, timeZoneDeserializer)

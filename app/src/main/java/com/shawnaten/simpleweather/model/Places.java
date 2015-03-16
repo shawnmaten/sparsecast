@@ -1,8 +1,9 @@
-package com.shawnaten.network.models;
+package com.shawnaten.simpleweather.model;
 
 import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Query;
+import rx.Observable;
 
 /**
  * Created by shawnaten on 7/19/14.
@@ -110,13 +111,13 @@ public class Places {
             @Query("language") String langCode);
 
         @GET("/json")
-        void getAutocomplete(@Query("key") String key, @Query("input") String query,
+        Observable<AutocompleteResponse> getAutocomplete(@Query("key") String key, @Query("input") String query,
             @Query("language") String langCode, Callback<AutocompleteResponse> cb);
     }
 
     public static interface DetailsService {
         @GET("/json")
-        void getDetails(@Query("key") String key, @Query("placeid") String placeid,
+        Observable<DetailsResponse> getDetails(@Query("key") String key, @Query("placeid") String placeid,
             @Query("language") String langCode, Callback<DetailsResponse> cb);
     }
 

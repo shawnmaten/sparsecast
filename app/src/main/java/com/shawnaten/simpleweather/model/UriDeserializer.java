@@ -1,4 +1,4 @@
-package com.shawnaten.network.models;
+package com.shawnaten.simpleweather.model;
 
 
 import android.net.Uri;

@@ -1,4 +1,4 @@
-package com.shawnaten.network.models;
+package com.shawnaten.simpleweather.model;
 
 import android.net.Uri;
 import android.os.Parcel;
@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 import java.util.TimeZone;
 
-import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import rx.Observable;
 
 /**
  * Created by shawnaten on 7/17/14.
@@ -705,7 +705,12 @@ public class Forecast {
 
     public static interface Service {
         @GET("/{key}/{lat},{lng}?extend=hourly")
-        void getForecast(@Path("key") String key, @Path("lat") double lat, @Path("lng") double lng,
-                         @Query("lang") String lang, @Query("units") String units, Callback<Response> cb);
+        Observable<Response> getForecast(
+                @Path("key") String key,
+                @Path("lat") double lat,
+                @Path("lng") double lng,
+                @Query("lang") String lang,
+                @Query("units") String units
+        );
     }
 }

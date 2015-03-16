@@ -1,4 +1,4 @@
-package com.shawnaten.network.modules;
+package com.shawnaten.simpleweather.module;
 
 import com.shawnaten.simpleweather.App;
 import com.squareup.okhttp.Cache;
@@ -13,15 +13,10 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit.client.OkClient;
 
-@Module (
-        complete = false,
-        library = true
-)
+@Module
 public class OkClientModule {
-    private static final String
-            OKHTTP_CACHE_FILE = "okhttp_cache_file";
-    private static final long
-            CACHE_SIZE = 1 * 1024 * 1024;
+    private static final String OKHTTP_CACHE_FILE = "okhttp_cache_file";
+    private static final long CACHE_SIZE = 1 * 1024 * 1024;
 
     @Provides
     @Singleton

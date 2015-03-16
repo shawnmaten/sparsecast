@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.shapes.Shape;
 import android.util.DisplayMetrics;
 
-import com.shawnaten.network.models.Forecast;
+import com.shawnaten.simpleweather.model.Forecast;
 
 /**
  * Created by shawnaten on 7/14/14.
