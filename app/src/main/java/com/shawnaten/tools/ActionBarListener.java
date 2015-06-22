@@ -16,7 +16,7 @@ public class ActionBarListener implements ActionBar.OnNavigationListener {
     public boolean onNavigationItemSelected(int itemPosition, long itemId) {
         /*
         Fragment toDetach, toAttach;
-        toDetach = fm.findFragmentById(R.id.main_fragment);
+        toDetach = fm.findFragmentById(R.placeId.main_fragment);
         toAttach = fm.findFragmentByTag(fragments[itemPosition]);
         fm.beginTransaction()
                 .detach(toDetach)

@@ -4,13 +4,34 @@
         name="text" >
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:freezesText">true</item>
     </style>
 
     <style
         name="text.display_1" >
         <item name="android:textSize">34sp</item>
         <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <style
+        name="text.display_1.light" >
+        <item name="android:textColor">@color/text_secondary_light</item>
+    </style>
+
+    <style
+        name="text.display_2" >
+        <item name="android:textSize">45sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <style
+        name="text.display_2.light" >
+        <item name="android:textColor">@color/text_secondary_light</item>
+    </style>
+
+    <style
+        name="text.headline" >
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/text_primary</item>
     </style>
 
     <style
@@ -21,9 +42,19 @@
     </style>
 
     <style
+        name="text.title.light" >
+        <item name="android:textColor">@color/text_primary_light</item>
+    </style>
+
+    <style
         name="text.subhead" >
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style
+        name="text.subhead.light" >
+        <item name="android:textColor">@color/text_primary_light</item>
     </style>
 
     <style
@@ -40,9 +71,19 @@
     </style>
 
     <style
+        name="text.body_1.light" >
+        <item name="android:textColor">@color/text_primary_light</item>
+    </style>
+
+    <style
         name="text.caption" >
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <style
+        name="text.caption.light" >
+        <item name="android:textColor">@color/text_secondary_light</item>
     </style>
 
     <style
@@ -54,14 +95,25 @@
     </style>
 
     <style
+        name="text.tab" >
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style
+        name="text.tab.light" >
+        <item name="android:textColor">@color/text_secondary_light</item>
+    </style>
+
+    <style
         name="tab_current_fragment" >
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/standard_margin</item>
-        <item name="android:layout_marginLeft">@dimen/standard_margin</item>
-        <item name="android:layout_marginStart" tools:targetApi="17">@dimen/standard_margin</item>
         <item name="android:layout_marginRight">@dimen/standard_margin</item>
-        <item name="android:layout_marginEnd" tools:targetApi="17">@dimen/standard_margin</item>
+        <item name="android:layout_marginEnd">@dimen/standard_margin</item>
+        <item name="android:layout_marginTop">@dimen/standard_margin</item>
     </style>
 
     <style
@@ -81,12 +133,26 @@
         name="text.subhead.details" >
         <item name="android:layout_marginTop">@dimen/details_text_top_margin</item>
     </style>
+
+    <style
+        name="card" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardCornerRadius">2dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+    </style>
     
     <!--
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -97,24 +163,24 @@
     <!-- Application theme. -->
     <style name="AppBaseTheme.AppTheme" >
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="android:name">@string/app_name</item>
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
         <!--
         <item name="android:actionBarStyle">@style/ActionBar</item>
         <item name="android:actionBarWidgetTheme">@style/ActionBarWidget</item>
         <item name="android:actionBarTabStyle">@style/ActionBarTab</item>
         -->
-
     </style>
 
     <!--
     <style name="ActionBar" parent="android:Widget.Holo.Light.ActionBar.Solid.Inverse" >
-        <item name="android:background">@color/green_500</item>
-        <item name="android:backgroundStacked">@color/green_500</item>
-        <item name="android:backgroundSplit">@color/green_500</item>
+        <item name="android:background">@color_holder/green_500</item>
+        <item name="android:backgroundStacked">@color_holder/green_500</item>
+        <item name="android:backgroundSplit">@color_holder/green_500</item>
     </style>
 
     <style name="ActionBarWidget" parent="android:Theme.Holo" >
-        <item name="android:textColorHint">@color/secondary_text_dark</item>
+        <item name="android:textColorHint">@color_holder/secondary_text_dark</item>
     </style>
 
     <style name="ActionBarTab" parent="android:Widget.Holo.Light.ActionBar.TabView.Inverse" >

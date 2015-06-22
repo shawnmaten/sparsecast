@@ -182,7 +182,7 @@ public class WeatherBlock implements Parcelable {
 
     @Override
     public String toString() {
-        return String.format("type: %d %s start: %d end: %d color: %d", type, description, start, end, color);
+        return String.format("type: %d %s start: %d end: %d color_holder: %d", type, description, start, end, color);
     }
 
     @Override

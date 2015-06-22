@@ -8,10 +8,12 @@ public class Keys {
 
     private String googleAPIKey;
     private String forecastAPIKey;
+    private String instagramAPIKey;
 
-    public Keys(String googleAPIKey, String forecastAPIKey) {
+    public Keys(String googleAPIKey, String forecastAPIKey, String instagramAPIKey) {
         this.googleAPIKey = googleAPIKey;
         this.forecastAPIKey = forecastAPIKey;
+        this.instagramAPIKey = instagramAPIKey;
     }
 
     public String getGoogleAPIKey() {
@@ -22,4 +24,7 @@ public class Keys {
         return forecastAPIKey;
     }
 
+    public String getInstagramAPIKey() {
+        return instagramAPIKey;
+    }
 }

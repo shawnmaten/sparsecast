@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.shawnaten.simpleweather.ui.widget.ObservableScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:overScrollMode="never">
+
+    <LinearLayout
+        android:id="@+id/content_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Space
+            android:id="@+id/top_space"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <include layout="@layout/summary_card"/>
+        <include layout="@layout/chart_card" android:id="@+id/precipitation_card"/>
+        <include layout="@layout/chart_card" android:id="@+id/temperature_card"/>
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/day_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <include layout="@layout/attributions_card"/>
+
+        </LinearLayout>
+
+        <Space
+            android:id="@+id/bottom_space"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</com.shawnaten.simpleweather.ui.widget.ObservableScrollView>

@@ -7,6 +7,52 @@
         <item>Map</item>
     </string-array>
 
+    <string name="empty"></string>
+
+    <string name="now">Now</string>
+    <string name="today">Today</string>
+    <string name="week">Week</string>
+    <string name="radar">Radar</string>
+
+    <string name="summary">Summary</string>
+    <string name="for_next_hour">For the next hour</string>
+    <string name="precipitation">Precipitation</string>
+    <string name="probability_and_intensity">Probability and intensity</string>
+    <string name="probability">Probability</string>
+    <string name="intensity">Intensity</string>
+    <string name="temperature">Temperature</string>
+    <string name="actual_and_apparent">Actual and apparent</string>
+    <string name="actual">Actual</string>
+    <string name="apparent">Apparent</string>
+    <string name="stats">Stats</string>
+    <string name="for_right_now">For right now</string>
+    <string name="nearest_storm">Nearest Storm</string>
+    <string name="dew_point">Dew Point</string>
+    <string name="wind">Wind</string>
+    <string name="cloud_cover">Cloud Cover</string>
+    <string name="humidity">Humidity</string>
+    <string name="pressure">Pressure</string>
+    <string name="visibility">Visibility</string>
+    <string name="ozone">Ozone</string>
+    <string name="fahrenheit">fahrenheit</string>
+    <string name="celsius">celsius</string>
+    <string name="millibars">mbar</string>
+    <string name="hectopascals">hpa</string>
+    <string name="dobson_units">du</string>
+    <string name="for_next_24_hours">For the next 24 hours</string>
+    <string name="for_today">For today</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+    <string name="moon">Moon</string>
+    <string name="snow_buildup">Snow Buildup</string>
+    <string name="for_next_7_days">For the next 7 days</string>
+    <string name="min">Min</string>
+    <string name="max">Max</string>
+    <string name="action_change_location">Change Location</string>
+    <string name="saved">Saved</string>
+    <string name="search">Search</string>
+    <string name="locations">Locations</string>
+
     <string-array name="helper_fragments">
         <item>searching</item>
         <item>loading</item>
@@ -26,6 +72,7 @@
 
     <string name="app_name">Sparsecast</string>
     <string name="powered_by_forecast"><a href="http://forecast.io/">Powered by Forecast</a></string>
+    <string name="action_favorite">Favorite</string>
     <string name="action_refresh">Refresh</string>
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
@@ -36,7 +83,8 @@
     <string name="tab_week">Week</string>
     <string name="tab_map">Map</string>
 
-    <string name="now">now</string>
+    <string name="currently">Currently</string>
+    <string name="next_week">Next Week</string>
     <string name="day">day</string>
     <string name="next_hour">Next Hour</string>
     <string name="next_24_hours">Next 24 Hours</string>
@@ -70,7 +118,6 @@
     <string name="cloudy">Cloudy</string>
     <string name="overcast">Overcast</string>
 
-    <string name="precipitation">Precip</string>
     <string name="rain">Rain</string>
     <string name="snow">Snow</string>
     <string name="sleet">Sleet</string>
@@ -83,8 +130,6 @@
     <string name="high">High</string>
     <string name="low">Low</string>
     <string name="temp">Temp</string>
-    <string name="dew_point">Dew Point</string>
-    <string name="humidity">Humidity</string>
     <string name="title_activity_main">MainActivity</string>
 
 
@@ -93,5 +138,6 @@
     <string name="title_section3">Section 3</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_search">SearchActivity</string>
 
 </resources>

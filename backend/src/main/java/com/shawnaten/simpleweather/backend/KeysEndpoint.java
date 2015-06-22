@@ -20,7 +20,10 @@ import java.util.logging.Logger;
 )
 
 public class KeysEndpoint {
-    private static final Keys keys = new Keys(Constants.PUBLIC_GOOGLE_API_KEY, Constants.PUBLIC_FORECAST_API_KEY);
+    private static final Keys keys = new Keys(
+            Constants.PUBLIC_GOOGLE_API_KEY,
+            Constants.PUBLIC_FORECAST_API_KEY,
+            Constants.PUBLIC_INSTAGRAM_API_KEY);
     private static final Logger LOG = Logger.getLogger(KeysEndpoint.class.getName());
 
     @ApiMethod(name = "getKeys")

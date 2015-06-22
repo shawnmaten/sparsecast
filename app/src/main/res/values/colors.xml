@@ -3,9 +3,18 @@
 
     <color name="transparent">#00000000</color>
 
-    <color name="accent_87">#de2196F3</color>
+
+    <color name="primary">#00BCD4</color>
+    <color name="primary_dark">#0097A7</color>
+
+    <color name="chart">#DE00BCD4</color>
+    <color name="chart_min">@color/chart</color>
+    <color name="chart_max">#DEFF9800</color>
+
     <color name="text_primary">#de000000</color>
     <color name="text_secondary">#8a000000</color>
+    <color name="text_primary_light">#FFFFFFFF</color>
+    <color name="text_secondary_light">#B2FFFFFF</color>
 
     <color name="green_500">#259b24</color>
     <color name="pink_a100">#ff80ab</color>

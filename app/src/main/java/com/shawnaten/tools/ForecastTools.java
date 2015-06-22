@@ -1,9 +1,9 @@
 package com.shawnaten.tools;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.SystemClock;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.SparseArray;
@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.simpleweather.model.Forecast;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -62,21 +61,21 @@ public class ForecastTools {
 
         switch (b) {
             case 0:
-                return R.raw.south;
+                return R.string.south;
             case 2:
-                return R.raw.southwest;
+                return R.string.southwest;
             case 4:
-                return R.raw.west;
+                return R.string.west;
             case 6:
-                return R.raw.northwest;
+                return R.string.northwest;
             case 8:
-                return R.raw.north;
+                return R.string.north;
             case 10:
-                return R.raw.northeast;
+                return R.string.northeast;
             case 12:
-                return R.raw.east;
+                return R.string.east;
             case 14:
-                return R.raw.southeast;
+                return R.string.southeast;
             default:
                 return 0;
         }
@@ -281,14 +280,12 @@ public class ForecastTools {
             paramsList.add(params);
         }
 
-        /*
         for (int i = 1; i <= tickCount; i++) {
             TextView textView = (TextView) inflater.inflate(R.layout.weather_bar_time, layout, false);
             textView.setId(i);
             textView.setText(Long.toString(SystemClock.currentThreadTimeMillis()));
             layout.addView(textView, paramsList.get(i - 1));
         }
-        */
 
     }
 
@@ -390,36 +387,48 @@ public class ForecastTools {
         return shortTimeForm;
     }
 
-    public static String UNIT_CODE;
+    public static double minTemp(Forecast.DataPoint data[]) {
+        double min;
 
-    public static int WIND_UNIT, VISIBILITY_UNIT;
+        min = data[0].getTemperature();
+        for (Forecast.DataPoint point : data)
+            if (point.getTemperature() < min)
+                min = point.getTemperature();
 
-    public static void configUnits(String unitsPref, SharedPreferences preferences, String key) {
-        switch (unitsPref) {
-            case "ca":
-                UNIT_CODE = "ca";
-                WIND_UNIT = R.string.kilometers_per_hour;
-                VISIBILITY_UNIT = R.string.kilometers;
-                break;
-            case "uk":
-            case "gb":
-                UNIT_CODE = "uk";
-                WIND_UNIT = R.string.miles_per_hour;
-                VISIBILITY_UNIT = R.string.kilometers;
-                break;
-            case "us":
-                UNIT_CODE = "us";
-                WIND_UNIT = R.string.miles_per_hour;
-                VISIBILITY_UNIT = R.string.miles;
-                break;
-            default:
-                UNIT_CODE = "si";
-                WIND_UNIT = R.string.meters_per_second;
-                VISIBILITY_UNIT = R.string.kilometers;
-        }
+        return min;
+    }
 
-        if (preferences != null && key != null)
-            preferences.edit().putString(key, UNIT_CODE).apply();
+    public static double maxTemp(Forecast.DataPoint data[]) {
+        double max;
+
+        max = data[0].getTemperature();
+        for (Forecast.DataPoint point : data)
+            if (point.getTemperature() > max)
+                max = point.getTemperature();
+
+        return max;
+    }
+
+    public static double dailyMinTemp(Forecast.DataPoint data[]) {
+        double min;
+
+        min = data[0].getTemperatureMin();
+        for (Forecast.DataPoint point : data)
+            if (point.getTemperatureMin() < min)
+                min = point.getTemperatureMin();
+
+        return min;
+    }
+
+    public static double dailyMaxTemp(Forecast.DataPoint data[]) {
+        double max;
+
+        max = data[0].getTemperatureMax();
+        for (Forecast.DataPoint point : data)
+            if (point.getTemperatureMax() > max)
+                max = point.getTemperatureMax();
+
+        return max;
     }
 
 }

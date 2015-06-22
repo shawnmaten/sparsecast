@@ -2,6 +2,9 @@
 
     <!-- Default screen margins, per the Android Design guidelines. -->
 
+    <dimen name="card_by_card_margin">4dp</dimen>
+    <dimen name="card_margin">8dp</dimen>
+
     <dimen name="half_margin">8dp</dimen>
     <dimen name="standard_margin">16dp</dimen>
     <dimen name="double_margin">32dp</dimen>
@@ -13,7 +16,7 @@
     <dimen name="button_min_width">88dp</dimen>
     <dimen name="button_height">36dp</dimen>
 
-    <dimen name="tab_current_stats_icon">45sp</dimen>
+    <dimen name="tab_current_stats_icon">64sp</dimen>
 
     <dimen name="details_icon">34sp</dimen>
     <dimen name="details_text_top_margin">6.25sp</dimen>

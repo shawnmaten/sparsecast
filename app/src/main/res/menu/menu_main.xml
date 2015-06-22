@@ -1,7 +1,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.shawnaten.simpleweather.model.MainActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    tools:context="com.shawnaten.simpleweather.ui.MainActivity">
+    <item
+        android:id="@+id/action_favorite"
+        android:title="@string/action_favorite"
+        android:icon="@drawable/ic_favorite_border_white_24dp"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_current_location"
+        android:title="@string/action_current_location"
+        android:icon="@drawable/ic_my_location_white_24dp"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_change_location"
+        android:title="@string/action_change_location"
+        android:icon="@drawable/ic_map_white_24dp"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        app:showAsAction="never"/>
 </menu>

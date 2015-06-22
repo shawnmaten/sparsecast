@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.shawnaten.simpleweather.ui.widget.ObservableScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:overScrollMode="never">
+
+    <LinearLayout
+        android:id="@+id/content_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Space
+            android:id="@+id/top_space"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/summary_card"
+                style="@style/card"
+                android:layout_marginTop="8dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingEnd="16dp">
+
+                    <TextView
+                        android:id="@+id/title"
+                        style="@style/text.headline"
+                        android:layout_toLeftOf="@+id/icon"
+                        android:layout_toStartOf="@id/icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="24dp"
+                        android:text="@string/summary">
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/subhead"
+                        style="@style/text.body_1"
+                        android:textColor="@color/text_secondary"
+                        android:layout_toLeftOf="@id/icon"
+                        android:layout_toStartOf="@id/icon"
+                        android:layout_below="@id/title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="16dp"
+                        android:text="@string/for_next_24_hours">
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/supporting"
+                        style="@style/text.body_1"
+                        android:layout_toLeftOf="@id/icon"
+                        android:layout_toStartOf="@id/icon"
+                        android:layout_below="@id/subhead"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="24dp">
+                    </TextView>
+
+                    <ImageView
+                        android:id="@id/icon"
+                        android:layout_width="112dp"
+                        android:layout_height="112dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"/>
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/precipitation_card"
+                style="@style/card">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="16dp">
+
+                    <TextView
+                        android:id="@id/title"
+                        style="@style/text.headline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="24dp"
+                        android:text="@string/precipitation">
+                    </TextView>
+
+                    <TextView
+                        android:id="@id/subhead"
+                        style="@style/text.body_1"
+                        android:textColor="@color/text_secondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="16dp"
+                        android:text="@string/probability_and_intensity">
+                    </TextView>
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/precipitation_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="256dp">
+
+                    </com.github.mikephil.charting.charts.LineChart>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/temperature_card"
+                style="@style/card">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="16dp">
+
+                    <TextView
+                        android:id="@id/title"
+                        style="@style/text.headline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="24dp"
+                        android:text="@string/temperature">
+                    </TextView>
+
+                    <TextView
+                        android:id="@id/subhead"
+                        style="@style/text.body_1"
+                        android:textColor="@color/text_secondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="16dp"
+                        android:text="@string/for_next_24_hours">
+                    </TextView>
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/temperature_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="256dp">
+
+                    </com.github.mikephil.charting.charts.LineChart>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:id="@+id/stats_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/column_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/column_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1">
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <include layout="@layout/attributions_card"/>
+
+            <!--
+            <android.support.v7.widget.CardView
+                android:placeId="@+placeId/stats_card"
+                style="@style/card"
+                android:layout_height="match_parent"
+                android:layout_marginTop="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:placeId="@placeId/title"
+                        style="@style/text.headline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="16dp"
+                        android:paddingStart="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="24dp"
+                        android:text="@string/stats">
+                    </TextView>
+
+                    <TextView
+                        android:placeId="@placeId/subhead"
+                        style="@style/text.body_1"
+                        android:textColor="@color/text_secondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="16dp"
+                        android:paddingStart="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="14dp"
+                        android:text="@string/for_today">
+                    </TextView>
+
+                    <LinearLayout
+                        android:placeId="@+placeId/stat_grid"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingLeft="2dp"
+                        android:paddingStart="2dp"
+                        android:paddingRight="2dp"
+                        android:paddingEnd="2dp"
+                        android:paddingBottom="14dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <include layout="@layout/stat"/>
+
+                            <include layout="@layout/stat"/>
+
+                            <Space
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"/>
+
+                        </LinearLayout>
+                        -->
+
+                        <!--
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <include layout="@layout/stat"/>
+
+                            <include layout="@layout/stat"/>
+
+                            <include layout="@layout/stat"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <include layout="@layout/stat"/>
+
+                            <Space
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"/>
+
+                            <Space
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_margin="2dp"/>
+
+                        </LinearLayout>
+                        -->
+
+            <!--
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+            -->
+
+        </LinearLayout>
+
+        <Space
+            android:id="@+id/bottom_space"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</com.shawnaten.simpleweather.ui.widget.ObservableScrollView>

@@ -78,7 +78,7 @@ public class StatusAnimations {
         FragmentTransaction ft = fm.beginTransaction();
         Fragment toDetach, toAttach;
 
-        //Log.d("temp", "setState");
+        //Log.d("dew", "setState");
 
         if (childFragState) {
             if (state) {

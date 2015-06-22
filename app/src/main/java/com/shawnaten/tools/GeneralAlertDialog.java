@@ -1,10 +1,12 @@
 package com.shawnaten.tools;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
+
+import com.shawnaten.simpleweather.R;
 
 public class GeneralAlertDialog extends DialogFragment {
     private static final String TAG = "tag", TITLE = "title", MESSAGE = "message",
@@ -14,16 +16,18 @@ public class GeneralAlertDialog extends DialogFragment {
 
     }
 
-    public static GeneralAlertDialog newInstance(String tag, String title, String message, String negativeButton, String positiveButton) {
+    public static GeneralAlertDialog newInstance(String tag, String title, String message,
+        String negativeString, String positiveString) {
+
         GeneralAlertDialog dialog = new GeneralAlertDialog();
         Bundle args = new Bundle();
         args.putString(TAG, tag);
         args.putString(TITLE, title);
         args.putString(MESSAGE, message);
-        if (negativeButton != null)
-            args.putString(NEGATIVE_BUTTON, negativeButton);
-        if (positiveButton != null)
-            args.putString(POSITIVE_BUTTON, positiveButton);
+        if (negativeString != null)
+            args.putString(NEGATIVE_BUTTON, negativeString);
+        if (positiveString != null)
+            args.putString(POSITIVE_BUTTON, positiveString);
         dialog.setArguments(args);
         return dialog;
     }
@@ -31,7 +35,7 @@ public class GeneralAlertDialog extends DialogFragment {
 	@Override
     public Dialog onCreateDialog(final Bundle savedInstanceState) {
         Dialog dialog;
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Holo_Dialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.Theme_AppCompat_Light_Dialog_Alert);
         Bundle args = getArguments();
         builder.setTitle(args.getString(TITLE));
         builder.setMessage(args.getString(MESSAGE));
@@ -39,7 +43,7 @@ public class GeneralAlertDialog extends DialogFragment {
             builder.setNegativeButton(args.getString(NEGATIVE_BUTTON), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ((OnClickListener) getActivity()).onDialogClick(getArguments().getString(TAG), false);
+
                 }
             });
         }
@@ -47,12 +51,12 @@ public class GeneralAlertDialog extends DialogFragment {
             builder.setPositiveButton(args.getString(POSITIVE_BUTTON), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    ((OnClickListener) getActivity()).onDialogClick(getArguments().getString(TAG), true);
+
                 }
             });
         }
         dialog =  builder.create();
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        //dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         return dialog;
     }
 

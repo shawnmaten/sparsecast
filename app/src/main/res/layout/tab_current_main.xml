@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.shawnaten.simpleweather.ui.widget.ObservableScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--
+    <LinearLayout
+        android:placeId="@+placeId/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <fragment
+            android:placeId="@+placeId/fragment_1"
+            style="@style/tab_current_fragment"
+            android:name="com.shawnaten.simpleweather.fragments.current.SummaryFragment"/>
+
+        <fragment
+            android:placeId="@+placeId/fragment_2"
+            style="@style/tab_current_fragment"
+            android:name="com.shawnaten.simpleweather.fragments.current.DetailsFragment"/>
+
+        <fragment
+            android:placeId="@+placeId/fragment_3"
+            style="@style/tab_current_fragment"
+            android:name="com.shawnaten.simpleweather.fragments.current.GraphicsFragment"/>
+
+        <TextView
+            android:placeId="@+placeId/powered_by_forecast"
+            style="@style/text.caption"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/powered_by_forecast"
+            android:textColorLink="@color/text_secondary"
+            android:layout_marginRight="@dimen/standard_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:layout_marginBottom="@dimen/standard_margin"/>
+
+    </LinearLayout>
+    -->
+
+</com.shawnaten.simpleweather.ui.widget.ObservableScrollView>
+

@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="meters_per_second">m/s</string> <!-- meters per second -->
-    <string name="kilometers">km</string> <!-- kilometers -->
-    <string name="kilometers_per_hour">kph</string> <!-- kilometers per hour -->
-    <string name="miles_per_hour">mph</string> <!-- miles per hour -->
-    <string name="miles">mi</string> <!-- miles -->
+    <string name="meters_per_second">m/s</string>
+    <string name="kilometers">km</string>
+    <string name="kilometers_per_hour">kph</string>
+    <string name="miles_per_hour">mph</string>
+    <string name="miles">mi</string>
+    <string name="inches_per_hour">in/h</string>
+    <string name="millimeters_per_hour">mm/h</string>
+
+    <string name="north">north</string>
+    <string name="south">south</string>
+    <string name="east">east</string>
+    <string name="west">west</string>
+    <string name="northeast">northeast</string>
+    <string name="southeast">southeast</string>
+    <string name="northwest">northwest</string>
+    <string name="southwest">southwest</string>
 
 </resources>

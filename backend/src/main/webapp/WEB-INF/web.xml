@@ -5,9 +5,9 @@
         <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
         <init-param>
             <param-name>services</param-name>
-            <param-value>
-                com.shawnaten.simpleweather.backend.KeysEndpoint
-            </param-value>
+            <param-value>com.shawnaten.simpleweather.backend.KeysEndpoint,
+                com.shawnaten.simpleweather.backend.ImagesEndpoint,
+                com.shawnaten.simpleweather.backend.SavedPlaceEndpoint</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

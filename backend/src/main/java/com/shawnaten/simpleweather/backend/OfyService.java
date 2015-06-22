@@ -12,7 +12,9 @@ import com.googlecode.objectify.ObjectifyService;
 public class OfyService {
 
     static {
-        ObjectifyService.register(Keys.class);
+        ObjectifyService.register(Image.class);
+        ObjectifyService.register(SavedPlace.class);
+        ObjectifyService.register(UserIdFix.class);
     }
 
     public static Objectify ofy() {
