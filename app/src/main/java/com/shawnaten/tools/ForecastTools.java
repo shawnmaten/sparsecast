@@ -378,7 +378,7 @@ public class ForecastTools {
                     pattern = pattern.replaceAll("\\s*a", "");
                     break;
                 case 24:
-                    pattern = pattern.replaceAll(":mm\\s*", "");
+                    pattern = pattern.replaceAll(":mm\\s*", " ");
                     break;
             }
         }
