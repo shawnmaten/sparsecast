@@ -1,10 +1,8 @@
 package com.shawnaten.simpleweather.ui;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -13,8 +11,6 @@ import com.shawnaten.tools.Charts;
 import com.shawnaten.tools.Forecast;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.LocalizationSettings;
-
-import java.util.ArrayList;
 
 public class NowTab extends Tab {
     public static NowTab newInstance(String title, int layout) {
@@ -82,54 +78,6 @@ public class NowTab extends Tab {
                 nearestStorm.setVisibility(View.GONE);
 
             next24HourSummary.setText(hourly.getSummary());
-
-            ArrayList<String> labels = new ArrayList<>();
-            ArrayList<String> values = new ArrayList<>();
-            ArrayList<String> units = new ArrayList<>();
-
-            labels.add(getString(R.string.dew_point));
-            values.add(ForecastTools.getTempForm().format(currently.getDewPoint()));
-            units.add(null);
-
-            labels.add(getString(R.string.wind));
-            values.add(ForecastTools.getIntForm().format(currently.getWindSpeed()));
-            units.add(getString(LocalizationSettings.getSpeedUnit()) + " " +
-                    getString(ForecastTools.getWindString(currently.getWindBearing())));
-
-            labels.add(getString(R.string.humidity));
-            values.add(ForecastTools.getPercForm().format(currently.getHumidity()));
-            units.add(null);
-
-            labels.add(getString(R.string.pressure));
-            values.add(ForecastTools.getIntForm().format(currently.getPressure()));
-            units.add(getString(LocalizationSettings.getPressureUnit()));
-
-            labels.add(getString(R.string.visibility));
-            values.add(ForecastTools.getIntForm().format(currently.getVisibility()));
-            units.add(getString(LocalizationSettings.getDistanceUnit()));
-
-            labels.add(getString(R.string.ozone));
-            values.add(ForecastTools.getIntForm().format(currently.getOzone()));
-            units.add(getString(R.string.dobson_units));
-
-            //LinearLayout statsGrid = (LinearLayout) root.findViewById(R.id.stats_grid);
-
-            //StatsGrid.configureGrid(getActivity(), labels, values, units, statsGrid);
-
-            LinearLayout statsList = (LinearLayout) root.findViewById(R.id.stats_list);
-            LayoutInflater inflater = LayoutInflater.from(statsList.getContext());
-
-            statsList.removeAllViews();
-            for (int i = 0; i < labels.size(); i++) {
-                View statItem = inflater.inflate(R.layout.stat_item, statsList, false);
-                TextView labelView = (TextView) statItem.findViewById(R.id.label);
-                TextView dataView = (TextView) statItem.findViewById(R.id.data);
-                labelView.setText(labels.get(i));
-                dataView.setText(values.get(i));
-                if (units.get(i) != null)
-                    dataView.append(" " + units.get(i));
-                statsList.addView(statItem);
-            }
         }
     }
 }
