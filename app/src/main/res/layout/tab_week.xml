@@ -7,7 +7,7 @@
     android:overScrollMode="never">
 
     <LinearLayout
-        android:id="@+id/content_holder"
+        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -22,20 +22,10 @@
         <include layout="@layout/chart_card" android:id="@+id/temperature_card"/>
 
         <LinearLayout
-            android:id="@+id/content"
+            android:id="@+id/day_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/day_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
-            <include layout="@layout/attributions_card"/>
 
         </LinearLayout>
 
@@ -43,6 +33,8 @@
             android:id="@+id/bottom_space"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <include layout="@layout/attributions_card"/>
 
     </LinearLayout>
 

@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@id/summary_card"
     style="@style/card"
     android:layout_width="match_parent">
+    -->
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
 
         <TextView
             android:id="@+id/title"
-            style="@style/text.body_1">
+            style="@style/text.body_1"
+            android:layout_centerHorizontal="true">
         </TextView>
 
         <TextView
@@ -20,6 +26,7 @@
             style="@style/TextAppearance.AppCompat.Display2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_below="@id/title">
         </TextView>
 
@@ -28,8 +35,11 @@
             style="@style/text.body_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_below="@id/value"/>
 
     </RelativeLayout>
 
+<!--
 </android.support.v7.widget.CardView>
+-->

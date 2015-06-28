@@ -11,8 +11,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.location.places.Place;
@@ -124,7 +124,7 @@ public class MainActivity extends BaseActivity {
         header = findViewById(R.id.header);
 
         findViewById(R.id.photo_container).setLayoutParams(
-                new FrameLayout.LayoutParams(screenWidth, screenWidth));
+                new RelativeLayout.LayoutParams(screenWidth, screenWidth));
     }
 
     @Override

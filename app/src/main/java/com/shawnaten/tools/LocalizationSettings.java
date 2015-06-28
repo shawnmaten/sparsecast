@@ -12,7 +12,10 @@ public class LocalizationSettings {
     private static int speedUnit;
     private static int distanceUnit;
     private static int precipitationUnit;
-    private static float precipitationMax;
+    private static int precipitationUnitTime;
+    private static float precipitationLight;
+    private static float precipitationMed;
+    private static float precipitationHeavy;
     private static int tempUnit;
     private static int pressureUnit;
 
@@ -45,13 +48,19 @@ public class LocalizationSettings {
         }
 
         if (unitCode.equals("us")) {
-            precipitationUnit = R.string.inches_per_hour;
-            precipitationMax = 0.4f;
+            precipitationUnit = R.string.inches;
+            precipitationUnitTime = R.string.inches_per_hour;
+            precipitationLight = 0;
+            precipitationMed = 0.2f;
+            precipitationHeavy = 0.4f;
             tempUnit = R.string.fahrenheit;
             pressureUnit = R.string.millibars;
         } else {
-            precipitationUnit = R.string.millimeters_per_hour;
-            precipitationMax = 10.2f;
+            precipitationUnit = R.string.millimeters;
+            precipitationUnitTime = R.string.millimeters_per_hour;
+            precipitationLight = 0;
+            precipitationMed = 5;
+            precipitationHeavy = 10;
             tempUnit = R.string.celsius;
             pressureUnit = R.string.hectopascals;
         }
@@ -79,8 +88,20 @@ public class LocalizationSettings {
         return precipitationUnit;
     }
 
-    public static float getPrecipitationMax() {
-        return precipitationMax;
+    public static int getPrecipitationUnitTime() {
+        return precipitationUnitTime;
+    }
+
+    public static float getPrecipitationLight() {
+        return precipitationLight;
+    }
+
+    public static float getPrecipitationMed() {
+        return precipitationMed;
+    }
+
+    public static float getPrecipitationHeavy() {
+        return precipitationHeavy;
     }
 
     public static int getTempUnit() {

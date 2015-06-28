@@ -43,7 +43,7 @@ public class WeekTab extends Tab {
             View summaryCard = root.findViewById(R.id.summary_card);
             ((TextView) summaryCard.findViewById(R.id.subhead))
                     .setText(getString(R.string.for_next_7_days));
-            ((TextView) summaryCard.findViewById(R.id.supporting)).setText(daily.getSummary());
+            ((TextView) summaryCard.findViewById(R.id.next_hour_summary)).setText(daily.getSummary());
             ((ImageView) summaryCard.findViewById(R.id.icon)).setImageResource(ForecastIconSelector
                     .getImageId(daily.getIcon()));
 
@@ -51,7 +51,7 @@ public class WeekTab extends Tab {
             for (int i = 1; i < daily.getData().length; i++) {
                 View dayCard = layoutInflater.inflate(R.layout.day_card, dayList, false);
                 TextView dayText = (TextView) dayCard.findViewById(R.id.title);
-                TextView summaryText = (TextView) dayCard.findViewById(R.id.supporting);
+                TextView summaryText = (TextView) dayCard.findViewById(R.id.next_hour_summary);
                 ImageView icon = (ImageView) dayCard.findViewById(R.id.icon);
 
                 dayText.setText(dayFormat.format(daily.getData()[i].getTime()));
@@ -82,12 +82,11 @@ public class WeekTab extends Tab {
             ((TextView) precipitationCard.findViewById(R.id.subhead))
                     .setText(getString(R.string.probability_and_intensity));
 
-            if (!Charts.setPrecipitationGraph(
+            Charts.setPrecipitationGraph(
                     getActivity(),
                     (LineChart) precipitationCard.findViewById(R.id.chart),
                     dailyData,
-                    forecast.getTimezone()))
-                precipitationCard.setVisibility(View.GONE);
+                    forecast.getTimezone());
 
             ((TextView) temperatureCard.findViewById(R.id.title))
                     .setText(getString(R.string.temperature));

@@ -3,81 +3,81 @@ package com.shawnaten.tools;
 import android.content.Context;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.utils.ValueFormatter;
 import com.shawnaten.simpleweather.R;
 
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.TimeZone;
 
 public class Charts {
-    public static boolean setPrecipitationGraph(Context context, LineChart chart,
+    public static void setPrecipitationGraph(Context context, LineChart chart,
         Forecast.DataPoint data[], TimeZone timeZone) {
 
-        DecimalFormat percentFormat = new DecimalFormat("###%");
-        ArrayList<Entry> probabilities = new ArrayList<>();
         ArrayList<Entry> intensities = new ArrayList<>();
+        XAxis xAxis = chart.getXAxis();
         YAxis leftAxis = chart.getAxisLeft();
-        YAxis rightAxis = chart.getAxisRight();
+        float textSize = context.getResources().getDimension(R.dimen.body_1)
+                / context.getResources().getDisplayMetrics().density;
 
         for (int i = 0; i < data.length; i++) {
             Forecast.DataPoint dataPoint = data[i];
-            Entry probability = new Entry((float) dataPoint.getPrecipProbability(), i);
+
             Entry intensity = new Entry((float) dataPoint.getPrecipIntensity(), i);
-            if (probability.getVal() > 0)
-                probabilities.add(probability);
             intensities.add(intensity);
         }
 
-        if (probabilities.size() != 0) {
-            LineDataSet probabilitiesSet = new LineDataSet(probabilities,
-                    context.getString(R.string.probability));
-            LineDataSet intensitiesSet = new LineDataSet(intensities,
-                    context.getString(R.string.intensity));
+        LineDataSet intensitiesSet = new LineDataSet(intensities, null);
 
-            probabilitiesSet.setDrawCircles(false);
-            probabilitiesSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-            probabilitiesSet.setColor(context.getResources().getColor(R.color.text_primary)
-                    + 0xFF000000);
+        intensitiesSet.setDrawCircles(false);
+        intensitiesSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        intensitiesSet.setDrawFilled(true);
+        intensitiesSet.setColor(context.getResources().getColor(R.color.transparent));
+        intensitiesSet.setFillColor(context.getResources().getColor(R.color.chart));
 
-            intensitiesSet.setDrawCircles(false);
-            intensitiesSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
-            intensitiesSet.setDrawFilled(true);
-            intensitiesSet.setColor(context.getResources().getColor(R.color.chart));
-            intensitiesSet.setFillColor(context.getResources().getColor(R.color.chart));
+        ArrayList<LineDataSet> dataSets = new ArrayList<>();
+        dataSets.add(intensitiesSet);
 
-            ArrayList<LineDataSet> dataSets = new ArrayList<>();
-            dataSets.add(probabilitiesSet);
-            dataSets.add(intensitiesSet);
-
-            LineData lineData = new LineData(genXValues(data, timeZone), dataSets);
+        LineData lineData = new LineData(genXValues(data, timeZone, context), dataSets);
             lineData.setDrawValues(false);
 
-            chart.getXAxis().setDrawGridLines(false);
-            chart.getXAxis().setDrawAxisLine(false);
+        xAxis.setDrawGridLines(false);
+        xAxis.setAvoidFirstLastClipping(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextSize(textSize);
 
-            leftAxis.setDrawGridLines(false);
-            leftAxis.setDrawAxisLine(false);
-            leftAxis.setAxisMaxValue(1.1f);
-            leftAxis.setValueFormatter(percentFormat::format);
+        leftAxis.setDrawAxisLine(false);
+        leftAxis.setAxisMinValue(0);
+        leftAxis.setAxisMaxValue(LocalizationSettings.getPrecipitationHeavy());
+        leftAxis.setLabelCount(2);
+        leftAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                if (value == LocalizationSettings.getPrecipitationLight())
+                    return context.getString(R.string.light);
+                else if (value == LocalizationSettings.getPrecipitationMed())
+                    return context.getString(R.string.moderate);
+                if (value == LocalizationSettings.getPrecipitationHeavy())
+                    return context.getString(R.string.heavy);
+                else
+                    return Float.toString(value);
+            }
+        });
+        leftAxis.setTextSize(textSize);
 
-            rightAxis.setDrawGridLines(false);
-            rightAxis.setDrawAxisLine(false);
-            rightAxis.setAxisMaxValue(LocalizationSettings.getPrecipitationMax());
+        chart.getAxisRight().setEnabled(false);
 
-            chart.setDescription(null);
-            chart.setData(lineData);
-            chart.invalidate();
-            chart.setTouchEnabled(false);
-            return true;
-        }
-
-        return false;
+        chart.setDescription(null);
+        chart.setData(lineData);
+        chart.invalidate();
+        chart.setTouchEnabled(false);
+        chart.setDrawGridBackground(false);
     }
 
     public static void setTemperatureGraph(Context context, LineChart chart,
@@ -117,7 +117,7 @@ public class Charts {
         dataSets.add(apparentSet);
         dataSets.add(actualSet);
 
-        LineData lineData = new LineData(genXValues(data, timeZone), dataSets);
+        LineData lineData = new LineData(genXValues(data, timeZone, context), dataSets);
         lineData.setDrawValues(false);
 
         chart.getXAxis().setDrawGridLines(false);
@@ -132,7 +132,7 @@ public class Charts {
         rightAxis.setEnabled(false);
         //rightAxis.setDrawGridLines(false);
         //rightAxis.setDrawAxisLine(false);
-        //rightAxis.setAxisMaxValue(LocalizationSettings.getPrecipitationMax());
+        //rightAxis.setAxisMaxValue(LocalizationSettings.getPrecipitationHeavy());
 
         chart.setDescription(null);
         chart.setData(lineData);
@@ -170,7 +170,7 @@ public class Charts {
         dataSets.add(minSet);
         dataSets.add(maxSet);
 
-        LineData lineData = new LineData(genXValues(data, timeZone), dataSets);
+        LineData lineData = new LineData(genXValues(data, timeZone, context), dataSets);
 
         chart.getXAxis().setDrawGridLines(false);
         chart.getXAxis().setDrawAxisLine(false);
@@ -187,7 +187,8 @@ public class Charts {
         chart.setTouchEnabled(false);
     }
 
-    private static ArrayList<String> genXValues(Forecast.DataPoint[] data, TimeZone timeZone) {
+    private static ArrayList<String> genXValues(Forecast.DataPoint[] data, TimeZone timeZone,
+                                                Context context) {
         ArrayList<String> xValues = new ArrayList<>();
 
         if (data.length <= 7) {
@@ -200,9 +201,9 @@ public class Charts {
             for (Forecast.DataPoint dataPoint : data)
                 xValues.add(String.format("%s", shortTimeForm.format(dataPoint.getTime())));
         } else if (data.length >= 60) {
-            DateFormat shortTimeForm = ForecastTools.getTimeForm(timeZone);
-            for (Forecast.DataPoint dataPoint : data)
-                xValues.add(String.format("%s", shortTimeForm.format(dataPoint.getTime())));
+            String minText = context.getString(R.string.minute);
+            for (int i = 0; i < data.length; i++)
+                xValues.add(String.format("%d %s", i, minText));
         }
 
         return xValues;

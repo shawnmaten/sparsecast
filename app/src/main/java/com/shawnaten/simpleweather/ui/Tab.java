@@ -1,5 +1,7 @@
 package com.shawnaten.simpleweather.ui;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -29,6 +31,8 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
 
     private int screenWidth, screenHeight;
 
+    private int maxScroll;
+
     public static Tab newInstance(String title, int layout) {
         Bundle args = new Bundle();
         Tab tab = new Tab();
@@ -57,13 +61,14 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(getArguments().getInt(TAB_LAYOUT), container, false);
         View content;
-        TextView poweredByForecast;
+        View attributions;
 
         toolbar = getBaseActivity().findViewById(R.id.toolbar);
         photoContainer = getBaseActivity().findViewById(R.id.photo_container);
         photo = getBaseActivity().findViewById(R.id.photo);
         header = getBaseActivity().findViewById(R.id.header);
         scroll = root.findViewById(R.id.scroll);
+        attributions = getBaseActivity().findViewById(R.id.attributions);
 
         if (scroll != null) {
             ((ScrollCallbacks) scroll).addCallbacks(this);
@@ -73,17 +78,18 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
 
         if ((content = root.findViewById(R.id.content)) != null) {
             content.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) -> {
-                LinearLayout contentHolder = (LinearLayout) root.findViewById(R.id.content_holder);
-                Space space = (Space) contentHolder.findViewById(R.id.top_space);
+                Space space = (Space) content.findViewById(R.id.top_space);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         screenWidth
                 );
                 space.setLayoutParams(layoutParams);
-                space = (Space) contentHolder.findViewById(R.id.bottom_space);
+
+                space = (Space) content.findViewById(R.id.bottom_space);
                 layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        screenHeight - screenWidth / 2 - content.getHeight()
+                        ((screenHeight - attributions.getHeight()) - screenWidth / 2)
+                                - (content.getHeight() - screenWidth - space.getHeight())
                 );
                 space.setLayoutParams(layoutParams);
             });
@@ -92,8 +98,16 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
         if ((thirdParty = (TextView) root.findViewById(R.id.third_party)) != null)
             thirdParty.setMovementMethod(LinkMovementMethod.getInstance());
 
-        if ((poweredByForecast = (TextView) root.findViewById(R.id.powered_by_forecast)) != null)
-            poweredByForecast.setMovementMethod(LinkMovementMethod.getInstance());
+        if (attributions != null)
+            attributions.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent browserIntent = new Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(getString(R.string.forecast_link)));
+                    startActivity(browserIntent);
+                }
+            });
 
         return root;
     }

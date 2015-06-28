@@ -37,7 +37,7 @@
     </TextView>
 
     <TextView
-        android:id="@+id/supporting"
+        android:id="@+id/next_hour_summary"
         style="@style/text.body_1"
         android:layout_toLeftOf="@id/icon"
         android:layout_toStartOf="@id/icon"

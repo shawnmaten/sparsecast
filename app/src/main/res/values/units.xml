@@ -7,7 +7,9 @@
     <string name="miles_per_hour">mph</string>
     <string name="miles">mi</string>
     <string name="inches_per_hour">in/h</string>
+    <string name="inches">i</string>
     <string name="millimeters_per_hour">mm/h</string>
+    <string name="millimeters">mm</string>
 
     <string name="north">north</string>
     <string name="south">south</string>

@@ -52,6 +52,20 @@
     <string name="saved">Saved</string>
     <string name="search">Search</string>
     <string name="locations">Locations</string>
+    <string name="light">Light</string>
+    <string name="moderate">Moderate</string>
+    <string name="heavy">Heavy</string>
+    <string name="minute">min</string>
+    <string name="time">Time</string>
+    <string name="precipitation_intensity">Precipitation Intensity</string>
+    <string name="precipitation_probability">Precipitation Probability</string>
+    <string name="precipitation_type">Precipitation Type</string>
+    <string name="forecast_link">http://forecast.io/</string>
+    <string name="and_short">&amp;</string>
+    <string name="moon_phase">Moon Phase</string>
+    <string name="snow_accumulation">Snow Accumulation</string>
+    <string name="average">Average</string>
+    <string name="to_the">to the</string>
 
     <string-array name="helper_fragments">
         <item>searching</item>
@@ -71,7 +85,7 @@
     <string name="network_error_positive">Reconnect</string>
 
     <string name="app_name">Sparsecast</string>
-    <string name="powered_by_forecast"><a href="http://forecast.io/">Powered by Forecast</a></string>
+    <string name="powered_by_forecast">Powered by Forecast</string>
     <string name="action_favorite">Favorite</string>
     <string name="action_refresh">Refresh</string>
     <string name="action_settings">Settings</string>
@@ -106,11 +120,8 @@
 
     <string name="feels_like">Feels like</string>
 
-    <string name="none">None</string>
+    <string name="none">none</string>
     <string name="very_light">Very Light</string>
-    <string name="light">Light</string>
-    <string name="moderate">Moderate</string>
-    <string name="heavy">Heavy</string>
 
     <string name="clear">Clear</string>
     <string name="scattered">Scattered</string>
@@ -127,8 +138,6 @@
     <string name="mist">Mist</string>
     <string name="haze">Haze</string>
 
-    <string name="high">High</string>
-    <string name="low">Low</string>
     <string name="temp">Temp</string>
     <string name="title_activity_main">MainActivity</string>
 
