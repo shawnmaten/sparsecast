@@ -6,18 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/attributions"
-        layout="@layout/attributions_card"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"/>
-
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/attributions"/>
+        android:layout_height="match_parent"/>
 
     <FrameLayout
         android:id="@+id/photo_container"

@@ -2,22 +2,25 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_weight="1">
+    android:layout_height="wrap_content">
 
-    <View
-        android:id="@+id/block"
-        android:layout_width="32sp"
-        android:layout_height="32sp"
-        android:layout_centerHorizontal="true"/>
+    <LinearLayout
+        android:id="@+id/blocks"
+        android:layout_width="@dimen/vertical_weather_bar_segment"
+        android:layout_height="@dimen/vertical_weather_bar_segment"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/data"
         style="@style/text.body_1"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_toLeftOf="@id/block"
-        android:layout_toStartOf="@id/block"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/blocks"
+        android:layout_toStartOf="@id/blocks"
+        android:layout_centerVertical="true"
         android:paddingRight="16dp"
         android:paddingEnd="16dp"/>
 
@@ -25,9 +28,10 @@
         android:id="@+id/time"
         style="@style/text.body_1"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/data"
         android:layout_toStartOf="@id/data"
+        android:layout_centerVertical="true"
         android:paddingRight="16dp"
         android:paddingEnd="16dp"/>
 
@@ -35,9 +39,10 @@
         android:id="@+id/summary"
         style="@style/text.body_1"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_toRightOf="@id/block"
-        android:layout_toEndOf="@id/block"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/blocks"
+        android:layout_toEndOf="@id/blocks"
+        android:layout_alignBottom="@id/blocks"
         android:paddingLeft="16dp"
         android:paddingStart="16dp"/>
 

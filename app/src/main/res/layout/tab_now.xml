@@ -22,39 +22,51 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/nearest_storm"
-                style="@style/text.body_1"
+            <Space
+                android:id="@+id/space_3"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:paddingLeft="16dp"
-                android:paddingStart="16dp"
-                android:paddingRight="16dp"
-                android:paddingEnd="16dp"
-                android:visibility="gone"
-                android:layout_alignParentBottom="true">
-            </TextView>
+                android:layout_height="16dp"
+                android:layout_alignParentBottom="true"/>
 
-            <TextView
-                android:id="@+id/next_hour_summary"
-                style="@style/text.title"
+            <LinearLayout
+                android:id="@+id/summary_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:paddingLeft="16dp"
-                android:paddingStart="16dp"
-                android:paddingRight="16dp"
-                android:paddingEnd="16dp"
-                android:layout_above="@id/nearest_storm"
-                android:layout_alignWithParentIfMissing="true">
-            </TextView>
+                android:orientation="vertical"
+                android:layout_above="@id/space_3">
+
+                <TextView
+                    android:id="@+id/next_hour_summary"
+                    style="@style/text.title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:paddingLeft="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingEnd="16dp">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/nearest_storm"
+                    style="@style/text.body_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:paddingLeft="16dp"
+                    android:paddingStart="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingEnd="16dp"
+                    android:visibility="gone">
+                </TextView>
+
+            </LinearLayout>
 
             <Space
                 android:id="@+id/space_2"
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
-                android:layout_above="@id/next_hour_summary"/>
+                android:layout_above="@id/summary_section"/>
 
             <Space
                 android:id="@+id/space_1"
@@ -75,15 +87,16 @@
 
         </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/next_24_hours_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <Space
+                android:id="@id/space_1"
                 android:layout_width="match_parent"
-                android:layout_height="16dp"/>
+                android:layout_height="@dimen/standard_margin"/>
 
             <TextView
                 android:id="@+id/next_24_hours_summary"
@@ -94,14 +107,39 @@
                 android:paddingLeft="16dp"
                 android:paddingStart="16dp"
                 android:paddingRight="16dp"
-                android:paddingEnd="8dp">
+                android:paddingEnd="8dp"
+                android:layout_below="@id/space_1">
             </TextView>
 
             <Space
+                android:id="@id/space_2"
                 android:layout_width="match_parent"
-                android:layout_height="16dp"/>
+                android:layout_height="@dimen/standard_margin"
+                android:layout_below="@id/next_24_hours_summary"/>
 
-        </LinearLayout>
+            <FrameLayout
+                android:id="@+id/vertical_weather_bar_holder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/space_2"
+                android:layout_above="@id/space_3">
+
+                <LinearLayout
+                    android:id="@+id/vertical_weather_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical"/>
+
+            </FrameLayout>
+
+            <Space
+                android:id="@id/space_3"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/standard_margin"
+                android:layout_alignParentBottom="true"/>
+
+        </RelativeLayout>
 
         <Space
             android:id="@+id/bottom_space"

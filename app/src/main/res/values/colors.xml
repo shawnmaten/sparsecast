@@ -22,7 +22,7 @@
     <color name="pink_a200">#ff4081</color>
     <color name="secondary_text_dark">#89ffffff</color>
 
-    <color name="scattered_rain">#b3e5fc</color>
+    <color name="drizzle">#b3e5fc</color>
     <color name="light_rain">#81d4fa</color>
     <color name="moderate_rain">#4fc3f7</color>
     <color name="heavy_rain">#29b6f6</color>

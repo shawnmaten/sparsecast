@@ -13,9 +13,9 @@ public class LocalizationSettings {
     private static int distanceUnit;
     private static int precipitationUnit;
     private static int precipitationUnitTime;
-    private static float precipitationLight;
-    private static float precipitationMed;
-    private static float precipitationHeavy;
+    private static double precipitationLight;
+    private static double precipitationMed;
+    private static double precipitationHeavy;
     private static int tempUnit;
     private static int pressureUnit;
 
@@ -50,17 +50,17 @@ public class LocalizationSettings {
         if (unitCode.equals("us")) {
             precipitationUnit = R.string.inches;
             precipitationUnitTime = R.string.inches_per_hour;
-            precipitationLight = 0;
-            precipitationMed = 0.2f;
-            precipitationHeavy = 0.4f;
+            precipitationLight = 0.017;
+            precipitationMed = 0.1;
+            precipitationHeavy = 0.4;
             tempUnit = R.string.fahrenheit;
             pressureUnit = R.string.millibars;
         } else {
             precipitationUnit = R.string.millimeters;
             precipitationUnitTime = R.string.millimeters_per_hour;
-            precipitationLight = 0;
-            precipitationMed = 5;
-            precipitationHeavy = 10;
+            precipitationLight = 0.432;
+            precipitationMed = 2.54;
+            precipitationHeavy = 10.2;
             tempUnit = R.string.celsius;
             pressureUnit = R.string.hectopascals;
         }
@@ -92,15 +92,15 @@ public class LocalizationSettings {
         return precipitationUnitTime;
     }
 
-    public static float getPrecipitationLight() {
+    public static double getPrecipitationLight() {
         return precipitationLight;
     }
 
-    public static float getPrecipitationMed() {
+    public static double getPrecipitationMed() {
         return precipitationMed;
     }
 
-    public static float getPrecipitationHeavy() {
+    public static double getPrecipitationHeavy() {
         return precipitationHeavy;
     }
 

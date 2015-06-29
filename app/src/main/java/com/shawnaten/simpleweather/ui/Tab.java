@@ -1,7 +1,5 @@
 package com.shawnaten.simpleweather.ui;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -68,7 +66,7 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
         photo = getBaseActivity().findViewById(R.id.photo);
         header = getBaseActivity().findViewById(R.id.header);
         scroll = root.findViewById(R.id.scroll);
-        attributions = getBaseActivity().findViewById(R.id.attributions);
+        //attributions = getBaseActivity().findViewById(R.id.attributions);
 
         if (scroll != null) {
             ((ScrollCallbacks) scroll).addCallbacks(this);
@@ -88,8 +86,8 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
                 space = (Space) content.findViewById(R.id.bottom_space);
                 layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
-                        ((screenHeight - attributions.getHeight()) - screenWidth / 2)
-                                - (content.getHeight() - screenWidth - space.getHeight())
+                        ((screenHeight - screenWidth / 2)
+                                - (content.getHeight() - screenWidth - space.getHeight()))
                 );
                 space.setLayoutParams(layoutParams);
             });
@@ -98,6 +96,7 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
         if ((thirdParty = (TextView) root.findViewById(R.id.third_party)) != null)
             thirdParty.setMovementMethod(LinkMovementMethod.getInstance());
 
+        /*
         if (attributions != null)
             attributions.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -108,6 +107,7 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
                     startActivity(browserIntent);
                 }
             });
+        */
 
         return root;
     }

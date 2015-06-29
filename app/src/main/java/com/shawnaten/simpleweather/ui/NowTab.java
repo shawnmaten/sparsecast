@@ -5,11 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.Charts;
+import com.shawnaten.tools.Colors;
 import com.shawnaten.tools.Forecast;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.LocalizationSettings;
@@ -18,6 +20,9 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 public class NowTab extends Tab {
+    private int segmentCount;
+    private int pointsPerSegment;
+
     public static NowTab newInstance(String title, int layout) {
         Bundle args = new Bundle();
         NowTab tab = new NowTab();
@@ -33,22 +38,24 @@ public class NowTab extends Tab {
 
         View nextHourSection = view.findViewById(R.id.next_hour_section);
         View next24HoursSection = view.findViewById(R.id.next_24_hours_section);
-        View attributions = getBaseActivity().findViewById(R.id.attributions);
+        View weatherBarHolder = next24HoursSection.findViewById(R.id.vertical_weather_bar_holder);
+        View next24HoursSummary = next24HoursSection.findViewById(R.id.next_24_hours_summary);
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
         int screenHeight = getResources().getDisplayMetrics().heightPixels;
 
-        attributions.addOnLayoutChangeListener((view1, i, i1, i2, i3, i4, i5, i6, i7) -> {
-            ViewGroup.LayoutParams layoutParams = nextHourSection.getLayoutParams();
-            layoutParams.height = screenHeight - attributions.getHeight() - screenWidth;
-            nextHourSection.setLayoutParams(layoutParams);
+        ViewGroup.LayoutParams layoutParams = nextHourSection.getLayoutParams();
+        layoutParams.height = screenHeight - screenWidth;
+        nextHourSection.setLayoutParams(layoutParams);
 
-            /*
-            layoutParams = next24HoursSection.getLayoutParams();
-            layoutParams.height = screenHeight - attributions.getHeight() - screenWidth / 2;
-            next24HoursSection.setLayoutParams(layoutParams);
-            */
+        layoutParams = next24HoursSection.getLayoutParams();
+        layoutParams.height = screenHeight - screenWidth / 2;
+        next24HoursSection.setLayoutParams(layoutParams);
+
+        int segment = getResources().getDimensionPixelSize(R.dimen.vertical_weather_bar_segment);
+        next24HoursSummary.addOnLayoutChangeListener((view1, i, i1, i2, i3, i4, i5, i6, i7) -> {
+            segmentCount = (int) Math.floor(weatherBarHolder.getHeight() / (double) segment);
+            pointsPerSegment = (int) Math.round(24 / (double) segmentCount);
         });
-
     }
 
     @Override
@@ -66,17 +73,21 @@ public class NowTab extends Tab {
             TextView nextHourSummary = (TextView) root.findViewById(R.id.next_hour_summary);
             TextView nearestStorm = (TextView) root.findViewById(R.id.nearest_storm);
             TextView next24HourSummary = (TextView) root.findViewById(R.id.next_24_hours_summary);
-            LinearLayout next24HoursSection = (LinearLayout)
-                    root.findViewById(R.id.next_24_hours_section);
+            LinearLayout verticalWeatherBar = (LinearLayout)
+                    root.findViewById(R.id.vertical_weather_bar);
 
             if (forecast.getMinutely() != null) {
                 nextHourSummary.setText(forecast.getMinutely().getSummary());
-                chart.setDescription(null);
+                root.findViewById(R.id.space_1).setVisibility(View.VISIBLE);
+                chart.setVisibility(View.VISIBLE);
                 Charts.setPrecipitationGraph(getActivity(), chart,
                         forecast.getMinutely().getData(), forecast.getTimezone());
             }
-            else
+            else {
                 nextHourSummary.setText(forecast.getHourly().getData()[0].getSummary());
+                root.findViewById(R.id.space_1).setVisibility(View.GONE);
+                chart.setVisibility(View.GONE);
+            }
 
             if ((int) currently.getNearestStormDistance() > 0) {
                 nearestStorm.setVisibility(View.VISIBLE);
@@ -94,26 +105,66 @@ public class NowTab extends Tab {
             next24HourSummary.setText(hourly.getSummary());
 
             SimpleDateFormat timeForm = ForecastTools.getShortTimeForm(forecast.getTimezone(), 24);
-            LayoutInflater inflater = LayoutInflater.from(next24HoursSection.getContext());
+            LayoutInflater inflater = LayoutInflater.from(verticalWeatherBar.getContext());
             DecimalFormat tempForm = ForecastTools.getTempForm();
 
-            if (next24HoursSection.getChildCount() == 3) {
-                for (int i = 0; i < 24; i++) {
-                    next24HoursSection.addView(inflater.inflate(R.layout.vertical_bar_item,
-                            next24HoursSection, false));
+            if (verticalWeatherBar.getChildCount() != segmentCount) {
+                for (int i = 0; i < segmentCount; i++) {
+                    RelativeLayout item = (RelativeLayout) inflater.inflate(
+                            R.layout.vertical_bar_item, verticalWeatherBar, false);
+                    verticalWeatherBar.addView(item);
+
+                    LinearLayout blocksView = (LinearLayout) item.findViewById(R.id.blocks);
+                    for (int j = 0; j < pointsPerSegment; j++) {
+                        blocksView.addView(inflater.inflate(R.layout.color_segment, blocksView,
+                                false));
+                    }
                 }
+
             }
-            for (int i = 0; i < 24; i++) {
-                Forecast.DataPoint dataPoint = hourly.getData()[i];
-                View item = next24HoursSection.getChildAt(3 + i);
+
+            String lastSummary = null;
+            for (int i = 0; i < segmentCount; i++) {
+                Forecast.DataPoint dataPoint = hourly.getData()[i * pointsPerSegment];
+
+                View item = verticalWeatherBar.getChildAt(i);
                 TextView timeView = (TextView) item.findViewById(R.id.time);
                 TextView dataView = (TextView) item.findViewById(R.id.data);
+                LinearLayout blocksView = (LinearLayout) item.findViewById(R.id.blocks);
                 TextView summaryView = (TextView) item.findViewById(R.id.summary);
 
                 timeView.setText(timeForm.format(dataPoint.getTime()));
                 dataView.setText(tempForm.format(dataPoint.getTemperature()));
-                summaryView.setText(dataPoint.getSummary());
+                //ArrayMap<String, Integer> summaries = new ArrayMap<>();
+                String summary = null;
+                for (int j = 0; j < pointsPerSegment; j++) {
+                    Forecast.DataPoint colorDataPoint = hourly.getData()[i + j];
+                    summary = colorDataPoint.getSummary();
+                    /*
+                    if (summaries.containsKey(summary)) {
+                        int count = summaries.get(summary);
+                        summaries.put(summary, count + 1);
+                    } else {
+                        summaries.put(summary, 1);
+                    }
+                    */
+                    View colorSegment = blocksView.getChildAt(j);
+                    colorSegment.setBackgroundColor(getResources()
+                            .getColor(Colors.getColor(colorDataPoint)));
+                }
+                //List values = new ArrayList<>(summaries.values());
+                //Collections.sort(values);
+                //String summary = summaries.keyAt(values.size() - 1);
+
+                if (lastSummary == null || !lastSummary.equals(summary)) {
+                    lastSummary = summary;
+                    summaryView.setText(summary);
+                } else
+                    summaryView.setText(null);
+
             }
+            ((TextView) verticalWeatherBar.getChildAt(3).findViewById(R.id.time))
+                    .setText(R.string.now);
         }
     }
 }

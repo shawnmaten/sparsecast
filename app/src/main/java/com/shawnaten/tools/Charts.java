@@ -8,7 +8,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.ValueFormatter;
 import com.shawnaten.simpleweather.R;
 
 import java.text.DecimalFormat;
@@ -54,18 +53,18 @@ public class Charts {
 
         leftAxis.setDrawAxisLine(false);
         leftAxis.setAxisMinValue(0);
-        leftAxis.setAxisMaxValue(LocalizationSettings.getPrecipitationHeavy());
+        leftAxis.setAxisMaxValue((float) LocalizationSettings.getPrecipitationHeavy());
         leftAxis.setLabelCount(2);
-        leftAxis.setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                if (value == LocalizationSettings.getPrecipitationLight())
+        leftAxis.setValueFormatter(value -> {
+            switch (PrecipitationIntensity.getIntensityCode(value)) {
+                case PrecipitationIntensity.VERY_LIGHT:
+                case PrecipitationIntensity.LIGHT:
                     return context.getString(R.string.light);
-                else if (value == LocalizationSettings.getPrecipitationMed())
+                case PrecipitationIntensity.MODERATE:
                     return context.getString(R.string.moderate);
-                if (value == LocalizationSettings.getPrecipitationHeavy())
+                case PrecipitationIntensity.HEAVY:
                     return context.getString(R.string.heavy);
-                else
+                default:
                     return Float.toString(value);
             }
         });
