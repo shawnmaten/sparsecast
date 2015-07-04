@@ -9,6 +9,8 @@
 
     <dimen name="body_1">14sp</dimen>
 
+    <dimen name="header_space">16sp</dimen>
+
     <dimen name="half_margin">8dp</dimen>
     <dimen name="standard_margin">16dp</dimen>
     <dimen name="double_margin">32dp</dimen>

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/photo_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,83 +22,86 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-    </FrameLayout>
-
-    <RelativeLayout
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/scrim_bottom">
-
-        <com.shawnaten.simpleweather.ui.SlidingTabLayout
-            android:id="@+id/sliding_tabs"
+        <LinearLayout
+            android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:paddingLeft="4dp"
-            android:paddingStart="4dp"
-            android:paddingRight="4dp"
-            android:paddingEnd="4dp"/>
-
-        <LinearLayout
-            android:id="@+id/temp_holder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/standard_margin"
-            android:paddingStart="@dimen/standard_margin"
-            android:paddingRight="@dimen/standard_margin"
-            android:paddingEnd="@dimen/standard_margin"
-            android:layout_above="@id/sliding_tabs"
+            android:background="@drawable/scrim_bottom"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/temp"
-                style="@style/text.display_2.light"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/feels_like"
-                style="@style/text.caption.light"
-                android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/temp_holder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingEnd="@dimen/standard_margin"
+                    android:paddingLeft="@dimen/standard_margin"
+                    android:paddingRight="@dimen/standard_margin"
+                    android:paddingStart="@dimen/standard_margin">
+
+                    <TextView
+                        android:id="@+id/temp"
+                        style="@style/text.display_2.light"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/feels_like"
+                        style="@style/text.caption.light"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/location_status_holder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/temp_holder"
+                    android:layout_toRightOf="@id/temp_holder"
+                    android:orientation="vertical"
+                    android:paddingEnd="@dimen/standard_margin"
+                    android:paddingRight="@dimen/standard_margin">
+
+                    <TextView
+                        android:id="@+id/main_location"
+                        style="@style/text.title.light"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true" />
+
+                    <TextView
+                        android:id="@+id/secondary_location"
+                        style="@style/text.caption.light"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true" />
+
+                    <TextView
+                        android:id="@+id/current_condition"
+                        style="@style/text.subhead.light"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <com.shawnaten.simpleweather.ui.SlidingTabLayout
+                android:id="@+id/sliding_tabs"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/location_status_holder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/temp_holder"
-            android:layout_toEndOf="@id/temp_holder"
-            android:paddingRight="@dimen/standard_margin"
-            android:paddingEnd="@dimen/standard_margin"
-            android:layout_alignBaseline="@id/temp_holder"
-            android:orientation="vertical"
-            android:layout_above="@id/sliding_tabs">
-
-            <TextView
-                android:id="@+id/main_location"
-                style="@style/text.title.light"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"/>
-
-            <TextView
-                android:id="@+id/secondary_location"
-                style="@style/text.caption.light"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"/>
-
-            <TextView
-                android:id="@+id/current_condition"
-                style="@style/text.subhead.light"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"/>
+                android:paddingEnd="4dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:paddingStart="4dp" />
 
         </LinearLayout>
 

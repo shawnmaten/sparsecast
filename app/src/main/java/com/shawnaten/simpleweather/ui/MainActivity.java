@@ -47,21 +47,17 @@ import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
     public static final int PLACE_SEARCH_CODE = RESULT_FIRST_USER + 1;
-    public static final int PLACE_ADD_CODE = PLACE_SEARCH_CODE + 1;
+    public static final int PLACE_SELECTED_CODE = RESULT_FIRST_USER + 2;
 
     private static final String SCROLL_POSITION = "scrollPosition";
-    private int scrollPosition;
-
     private static final String FORECAST_DATA = "forecastData";
-
     @Inject Observable<Forecast.Response> forecast;
     @Inject PlaceLikelihoodService placeLikelihoodService;
     @Inject GeocodingService geocodingService;
     @Inject Observable<Location> locationObservable;
     @Inject ImagesApi imagesApi;
-
+    private int scrollPosition;
     private ImageView photo;
-    private View header;
     private View instagramAttribution;
 
     private SavedPlaceApi savedPlaceApi;
@@ -81,26 +77,31 @@ public class MainActivity extends BaseActivity {
         SlidingTabLayout slidingTabLayout;
         TabAdapter tabAdapter;
         Toolbar toolbar;
-        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        View header;
+        View photoContainer;
+        int screenWidth;
 
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            scrollPosition = savedInstanceState.getInt(SCROLL_POSITION);
-        }
-
         setContentView(R.layout.activity_main);
         getApp().getNetworkComponent().injectMainActivity(this);
-
         savedPlaceApi = getApp().getNetworkComponent().savedPlaceApi();
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        header = findViewById(R.id.header);
+        photoContainer = findViewById(R.id.photo_container);
+        photo = (ImageView) findViewById(R.id.photo);
+
+        if (savedInstanceState != null) {
+            scrollPosition = savedInstanceState.getInt(SCROLL_POSITION);
+        }
 
         instagramAttribution = getLayoutInflater()
                 .inflate(R.layout.instagram_attribution, toolbar, false);
         toolbar.addView(instagramAttribution);
+        screenWidth = getResources().getDisplayMetrics().widthPixels;
+        photoContainer.setLayoutParams(new RelativeLayout.LayoutParams(screenWidth, screenWidth));
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
@@ -119,12 +120,6 @@ public class MainActivity extends BaseActivity {
                 getResources().getColor(R.color.text_primary_light)
         ));
         slidingTabLayout.setViewPager(viewPager);
-
-        photo = (ImageView) findViewById(R.id.photo);
-        header = findViewById(R.id.header);
-
-        findViewById(R.id.photo_container).setLayoutParams(
-                new RelativeLayout.LayoutParams(screenWidth, screenWidth));
     }
 
     @Override
@@ -134,10 +129,6 @@ public class MainActivity extends BaseActivity {
         super.onResume();
 
         invalidateOptionsMenu();
-
-        header.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) ->
-                view.setY(getResources().getDisplayMetrics().widthPixels - header.getHeight()
-                - scrollPosition));
 
         decorView = getWindow().getDecorView();
         getWindow().setStatusBarColor(0x66000000);
@@ -301,7 +292,7 @@ public class MainActivity extends BaseActivity {
                 onResume();
                 return true;
             case R.id.action_change_location:
-                startActivity(new Intent(this, SearchActivity.class));
+                startActivityForResult(new Intent(this, SearchActivity.class), PLACE_SEARCH_CODE);
                 return true;
             default:
                 return false;
@@ -319,18 +310,14 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    public void setScrollPosition(int scrollPosition) {
-        this.scrollPosition = scrollPosition;
-        for (ScrollListener scrollListener : scrollListeners)
-            scrollListener.onOtherScrollChanged(scrollPosition);
-    }
-
     public int getScrollPosition() {
         return scrollPosition;
     }
 
-    public interface ScrollListener {
-        void onOtherScrollChanged(int otherScrollAmount);
+    public void setScrollPosition(int scrollPosition) {
+        this.scrollPosition = scrollPosition;
+        for (ScrollListener scrollListener : scrollListeners)
+            scrollListener.onOtherScrollChanged(scrollPosition);
     }
 
     @Override
@@ -396,5 +383,9 @@ public class MainActivity extends BaseActivity {
                 });
             });
         }
+    }
+
+    public interface ScrollListener {
+        void onOtherScrollChanged(int otherScrollAmount);
     }
 }

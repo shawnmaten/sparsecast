@@ -1,5 +1,6 @@
 package com.shawnaten.simpleweather.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -8,12 +9,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
 
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.ui.widget.ObservableScrollView;
 import com.shawnaten.simpleweather.ui.widget.ScrollCallbacks;
+import com.shawnaten.tools.Forecast;
 import com.shawnaten.tools.LocationSettings;
 
 public class Tab extends BaseFragment implements ScrollCallbacks,
@@ -24,12 +28,11 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
     private View photoContainer;
     private View photo;
     private View header;
-    private View scroll;
+    private ObservableScrollView scroll;
     private TextView thirdParty;
+    private View content;
 
     private int screenWidth, screenHeight;
-
-    private int maxScroll;
 
     public static Tab newInstance(String title, int layout) {
         Bundle args = new Bundle();
@@ -58,37 +61,34 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(getArguments().getInt(TAB_LAYOUT), container, false);
-        View content;
         View attributions;
 
         toolbar = getBaseActivity().findViewById(R.id.toolbar);
         photoContainer = getBaseActivity().findViewById(R.id.photo_container);
         photo = getBaseActivity().findViewById(R.id.photo);
         header = getBaseActivity().findViewById(R.id.header);
-        scroll = root.findViewById(R.id.scroll);
+        scroll = (ObservableScrollView) root.findViewById(R.id.scroll);
         //attributions = getBaseActivity().findViewById(R.id.attributions);
 
         if (scroll != null) {
-            ((ScrollCallbacks) scroll).addCallbacks(this);
+            scroll.addCallbacks(this);
             scroll.getViewTreeObserver().addOnGlobalLayoutListener(() ->
                     onOtherScrollChanged(((MainActivity) getBaseActivity()).getScrollPosition()));
         }
 
         if ((content = root.findViewById(R.id.content)) != null) {
             content.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) -> {
-                Space space = (Space) content.findViewById(R.id.top_space);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        screenWidth
-                );
+                View space = content.findViewById(R.id.top_space);
+                ViewGroup.LayoutParams layoutParams = space.getLayoutParams();
+                layoutParams.height = screenWidth;
                 space.setLayoutParams(layoutParams);
 
-                space = (Space) content.findViewById(R.id.bottom_space);
-                layoutParams = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ((screenHeight - screenWidth / 2)
-                                - (content.getHeight() - screenWidth - space.getHeight()))
-                );
+                space = content.findViewById(R.id.bottom_space);
+                layoutParams = space.getLayoutParams();
+                int minContentHeight = screenWidth / 2 + getResources()
+                        .getDimensionPixelSize(R.dimen.header_space);
+                int bottomSpaceHeight = Math.max(0, minContentHeight - content.getHeight());
+                layoutParams.height = bottomSpaceHeight;
                 space.setLayoutParams(layoutParams);
             });
         }
@@ -127,16 +127,20 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
 
     @Override
     public void onScrollChanged(int deltaX, int deltaY) {
+        onScrollChangedHelper(0);
+    }
+
+    private void onScrollChangedHelper(int headerHeightDelta) {
+        int minPhotoHeight = getResources().getDisplayMetrics().widthPixels / 2
+                + getResources().getDimensionPixelSize(R.dimen.header_space);
         float density = getResources().getDisplayMetrics().density;
-        int scrollAmount = Math.min(screenWidth / 2, scroll.getScrollY());
-        float scrollPercent = scrollAmount / (screenWidth / 2f);
+        int scrollAmount = Math.min(screenWidth - minPhotoHeight, scroll.getScrollY());
+        float scrollPercent = scrollAmount / (float) (screenWidth - minPhotoHeight);
         float elevation = scrollPercent * 4 * density;
 
         photoContainer.setY(-scrollAmount);
-        header.setY(screenWidth - header.getHeight() - scrollAmount);
         toolbar.setElevation(elevation);
         photoContainer.setElevation(elevation);
-        header.setElevation(elevation);
         photo.setTranslationY(scrollAmount * 0.5f);
 
         ((MainActivity) getBaseActivity()).setScrollPosition(scrollAmount);
@@ -149,15 +153,30 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
 
     @Override
     public void onOtherScrollChanged(int otherScrollAmount) {
-        if (scroll != null) {
-            int thisScrollAmount = Math.min(screenWidth / 2, scroll.getScrollY());
-            if (otherScrollAmount != thisScrollAmount)
-                scroll.setScrollY(otherScrollAmount);
+        if (!getUserVisibleHint()) {
+            int minPhotoHeight = getResources().getDisplayMetrics().widthPixels / 2
+                    + getResources().getDimensionPixelSize(R.dimen.header_space);
+            if (scroll != null) {
+                int thisScrollAmount = Math.min(screenWidth - minPhotoHeight, scroll.getScrollY());
+                if (otherScrollAmount != thisScrollAmount)
+                    scroll.setScrollY(otherScrollAmount);
+            }
         }
     }
 
     @Override
     public void onNewData(Object data) {
 
+        if (scroll != null && getUserVisibleHint() && Forecast.Response.class.isInstance(data)) {
+            scroll.getViewTreeObserver().addOnGlobalLayoutListener(
+                    new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            scroll.smoothScrollTo(0, 0);
+                            scroll.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        }
+                    });
+        }
     }
+
 }

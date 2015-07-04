@@ -141,6 +141,23 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (predictions != null)
+            predictions.release();
+    }
+
+    @Override
+    public void onNewData(Object data) {
+        super.onNewData(data);
+
+        if (List.class.isInstance(data) && SavedPlace.class.isInstance(((List) data).get(0))) {
+            savedPlaces = (List<SavedPlace>) data;
+        }
+    }
+
     private class NormalViewHolder extends RecyclerView.ViewHolder {
         public TextView nameView;
         public View actionFavorite;
@@ -169,8 +186,8 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
                             LocationSettings.setPlace(place, savedPlace,
                                     placeBuffer.getAttributions());
                     }
-
                     placeBuffer.release();
+                    getActivity().setResult(MainActivity.PLACE_SELECTED_CODE);
                     getActivity().finish();
                 });
             });
@@ -229,23 +246,6 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
             }
             else
                 return NORMAL_TYPE;
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        if (predictions != null)
-            predictions.release();
-    }
-
-    @Override
-    public void onNewData(Object data) {
-        super.onNewData(data);
-
-        if (List.class.isInstance(data) && SavedPlace.class.isInstance(((List) data).get(0))) {
-            savedPlaces = (List<SavedPlace>) data;
         }
     }
 }

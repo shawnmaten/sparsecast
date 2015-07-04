@@ -32,19 +32,19 @@
                 android:id="@+id/summary_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_above="@id/space_3">
+                android:layout_above="@id/space_3"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/next_hour_summary"
-                    style="@style/text.title"
+                    style="@style/text.subhead"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center"
+                    android:paddingEnd="16dp"
                     android:paddingLeft="16dp"
-                    android:paddingStart="16dp"
                     android:paddingRight="16dp"
-                    android:paddingEnd="16dp">
+                    android:paddingStart="16dp"
+                    android:textAlignment="center">
                 </TextView>
 
                 <TextView
@@ -52,11 +52,11 @@
                     style="@style/text.body_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:paddingLeft="16dp"
-                    android:paddingStart="16dp"
-                    android:paddingRight="16dp"
                     android:paddingEnd="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingStart="16dp"
+                    android:textAlignment="center"
                     android:visibility="gone">
                 </TextView>
 
@@ -78,68 +78,46 @@
                 android:id="@+id/precipitation_chart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_above="@id/space_2"
                 android:layout_below="@id/space_1"
-                android:layout_above="@id/space_2"/>
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp" />
 
         </RelativeLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/next_24_hours_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#00FF00"
             android:orientation="vertical">
-
-            <Space
-                android:id="@id/space_1"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/standard_margin"/>
 
             <TextView
                 android:id="@+id/next_24_hours_summary"
-                style="@style/text.title"
+                style="@style/text.subhead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:paddingLeft="16dp"
-                android:paddingStart="16dp"
-                android:paddingRight="16dp"
-                android:paddingEnd="8dp"
-                android:layout_below="@id/space_1">
+                android:layout_marginTop="@dimen/standard_margin"
+                android:paddingEnd="@dimen/standard_margin"
+                android:paddingLeft="@dimen/standard_margin"
+                android:paddingRight="@dimen/standard_margin"
+                android:paddingStart="@dimen/standard_margin"
+                android:textAlignment="center">
             </TextView>
 
-            <Space
-                android:id="@id/space_2"
+            <LinearLayout
+                android:id="@+id/vertical_weather_bar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/standard_margin"
-                android:layout_below="@id/next_24_hours_summary"/>
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="@dimen/standard_margin"
+                android:layout_marginTop="@dimen/standard_margin"
+                android:background="#FF00FF"
+                android:orientation="vertical" />
 
-            <FrameLayout
-                android:id="@+id/vertical_weather_bar_holder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/space_2"
-                android:layout_above="@id/space_3">
-
-                <LinearLayout
-                    android:id="@+id/vertical_weather_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_gravity="center_vertical"/>
-
-            </FrameLayout>
-
-            <Space
-                android:id="@id/space_3"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/standard_margin"
-                android:layout_alignParentBottom="true"/>
-
-        </RelativeLayout>
+        </LinearLayout>
 
         <Space
             android:id="@+id/bottom_space"

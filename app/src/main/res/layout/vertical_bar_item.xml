@@ -2,7 +2,11 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingEnd="@dimen/standard_margin"
+    android:paddingLeft="@dimen/standard_margin"
+    android:paddingRight="@dimen/standard_margin"
+    android:paddingStart="@dimen/standard_margin">
 
     <LinearLayout
         android:id="@+id/blocks"
@@ -20,9 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/blocks"
         android:layout_toStartOf="@id/blocks"
-        android:layout_centerVertical="true"
-        android:paddingRight="16dp"
-        android:paddingEnd="16dp"/>
+        android:paddingEnd="16dp"
+        android:paddingRight="16dp" />
 
     <TextView
         android:id="@+id/time"
@@ -31,19 +34,19 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/data"
         android:layout_toStartOf="@id/data"
-        android:layout_centerVertical="true"
-        android:paddingRight="16dp"
-        android:paddingEnd="16dp"/>
+        android:paddingEnd="16dp"
+        android:paddingRight="16dp" />
 
     <TextView
         android:id="@+id/summary"
         style="@style/text.body_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/blocks"
         android:layout_toEndOf="@id/blocks"
-        android:layout_alignBottom="@id/blocks"
+        android:layout_toRightOf="@id/blocks"
+        android:ellipsize="middle"
         android:paddingLeft="16dp"
-        android:paddingStart="16dp"/>
+        android:paddingStart="16dp"
+        android:singleLine="true" />
 
 </RelativeLayout>

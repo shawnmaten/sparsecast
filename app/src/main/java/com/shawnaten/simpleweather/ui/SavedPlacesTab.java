@@ -66,6 +66,17 @@ public class SavedPlacesTab extends Tab {
         }
     }
 
+    @Override
+    public void onNewData(Object data) {
+        super.onNewData(data);
+
+        if (List.class.isInstance(data) && SavedPlace.class.isInstance(((List) data).get(0))) {
+            savedPlaces = (List<SavedPlace>) data;
+            if (savedPlaces != null)
+                adapter.notifyItemRangeInserted(0, savedPlaces.size());
+        }
+    }
+
     private class NormalViewHolder extends RecyclerView.ViewHolder {
         public TextView nameView;
         public int id;
@@ -83,6 +94,7 @@ public class SavedPlacesTab extends Tab {
                     Place place = placeBuffer.get(0);
                     LocationSettings.setPlace(place, savedPlaces.get(id), placeBuffer.getAttributions());
                     placeBuffer.release();
+                    getActivity().setResult(MainActivity.PLACE_SELECTED_CODE);
                     getActivity().finish();
                 });
             });
@@ -166,17 +178,6 @@ public class SavedPlacesTab extends Tab {
             }
             else
                 return NORMAL_TYPE;
-        }
-    }
-
-    @Override
-    public void onNewData(Object data) {
-        super.onNewData(data);
-
-        if (List.class.isInstance(data) && SavedPlace.class.isInstance(((List) data).get(0))) {
-            savedPlaces = (List<SavedPlace>) data;
-            if (savedPlaces != null)
-                adapter.notifyItemRangeInserted(0, savedPlaces.size());
         }
     }
 }
