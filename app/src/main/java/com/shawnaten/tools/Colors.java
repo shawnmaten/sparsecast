@@ -1,114 +1,74 @@
 package com.shawnaten.tools;
 
-import android.util.Log;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.support.v4.graphics.ColorUtils;
 
 import com.shawnaten.simpleweather.R;
 
-/*
-precipType: A string representing the type of precipitation occurring at the given time. If defined, this property will have one of the following values: rain, snow, sleet (which applies to each of freezing rain, ice pellets, and “wintery mix”), or hail. (If precipIntensity is zero, then this property will not be defined.)
- */
-
 public class Colors {
-    public static int getColor(Forecast.DataPoint dataPoint) {
+    public static int getColor(Resources res, Forecast.DataPoint dataPoint) {
         String summary = dataPoint.getSummary().toLowerCase();
+        int color;
 
-        if (summary.contains("clear"))
-            return R.color.clear;
-        else if (summary.contains("drizzle"))
-            return R.color.drizzle;
-        else if (summary.contains("light rain"))
-            return R.color.light_rain;
-        else if (summary.contains("rain"))
-            return R.color.moderate_rain;
-        else if (summary.contains("heavy rain"))
-            return R.color.heavy_rain;
-        else if (summary.contains("light sleet"))
-            return R.color.light_sleet;
-        else if (summary.contains("sleet"))
-            return R.color.moderate_sleet;
-        else if (summary.contains("heavy sleet"))
-            return R.color.heavy_sleet;
-        else if (summary.contains("flurries"))
-            return R.color.flurries;
-        else if (summary.contains("light snow"))
-            return R.color.light_snow;
-        else if (summary.contains("snow"))
-            return R.color.moderate_snow;
-        else if (summary.contains("heavy snow"))
-            return R.color.heavy_snow;
-        else if (summary.contains("foggy"))
-            return R.color.fog;
-        else if (summary.contains("partly cloudy"))
-            return R.color.partly_cloudy;
-        else if (summary.contains("mostly cloudy"))
-            return R.color.mostly_cloudy;
-        else if (summary.contains("overcast"))
-            return R.color.overcast;
-        else {
-            Log.e("Colors", "No Match");
-            return R.color.clear;
+        if (summary.contains("drizzle"))
+            color = res.getColor(R.color.drizzle);
+        else if (summary.contains("rain")) {
+            if (summary.contains("light"))
+                color = res.getColor(R.color.light_rain);
+            else if (summary.contains(("heavy")))
+                color = res.getColor(R.color.heavy_rain);
+            else
+                color = res.getColor(R.color.moderate_rain);
+        } else if (summary.contains("sleet")) {
+            if (summary.contains("light"))
+                color = res.getColor(R.color.light_sleet);
+            else if (summary.contains(("heavy")))
+                color = res.getColor(R.color.heavy_sleet);
+            else
+                color = res.getColor(R.color.moderate_sleet);
+        } else if (summary.contains("flurries"))
+            color = res.getColor(R.color.flurries);
+        else if (summary.contains("snow")) {
+            if (summary.contains("light"))
+                color = res.getColor(R.color.light_snow);
+            else if (summary.contains(("heavy")))
+                color = res.getColor(R.color.heavy_snow);
+            else
+                color = res.getColor(R.color.moderate_snow);
+        } else if (summary.contains("cloudy")) {
+            if (summary.contains("partly"))
+                color = res.getColor(R.color.partly_cloudy);
+            else
+                color = res.getColor(R.color.mostly_cloudy);
+        } else if (summary.contains("overcast"))
+            color = res.getColor(R.color.overcast);
+        else
+            color = res.getColor(R.color.clear);
+
+        // the following conditions can coexist and are blended in
+        if (summary.contains("foggy")) {
+            color = blendColors(color, res.getColor(R.color.fog), .7f);
         }
 
-        /*
-        if (dataPoint.getPrecipProbability() >= .2) {
-            switch (dataPoint.getIcon()) {
-                case "rain":
-                    switch (PrecipitationIntensity.getIntensityCode(dataPoint.getPrecipIntensity())) {
-                        case PrecipitationIntensity.HEAVY:
-                            return R.color.heavy_rain;
-                        case PrecipitationIntensity.MODERATE:
-                            return R.color.moderate_rain;
-                        case PrecipitationIntensity.LIGHT:
-                            return R.color.light_rain;
-                        case PrecipitationIntensity.VERY_LIGHT:
-                            return R.color.drizzle;
-                    }
-                case "snow":
-                    switch (PrecipitationIntensity.getIntensityCode(dataPoint.getPrecipIntensity())) {
-                        case PrecipitationIntensity.HEAVY:
-                            return R.color.heavy_snow;
-                        case PrecipitationIntensity.MODERATE:
-                            return R.color.moderate_snow;
-                        case PrecipitationIntensity.LIGHT:
-                        case PrecipitationIntensity.VERY_LIGHT:
-                            return R.color.light_snow;
-                    }
-                case "sleet":
-                    switch (PrecipitationIntensity.getIntensityCode(dataPoint.getPrecipIntensity())) {
-                        case PrecipitationIntensity.HEAVY:
-                            return R.color.heavy_sleet;
-                        case PrecipitationIntensity.MODERATE:
-                            return R.color.moderate_sleet;
-                        case PrecipitationIntensity.LIGHT:
-                        case PrecipitationIntensity.VERY_LIGHT:
-                            return R.color.light_sleet;
-                    }
-                case "hail":
-                    switch (PrecipitationIntensity.getIntensityCode(dataPoint.getPrecipIntensity())) {
-                        case PrecipitationIntensity.HEAVY:
-                            return R.color.hail;
-                        case PrecipitationIntensity.MODERATE:
-                            return R.color.hail;
-                        case PrecipitationIntensity.LIGHT:
-                        case PrecipitationIntensity.VERY_LIGHT:
-                            return R.color.hail;
-                    }
-                default:
-                    return R.color.clear;
-            }
-        } else {
-            switch (CloudCover.getCloudCode(dataPoint.getCloudCover())) {
-                case CloudCover.OVERCAST:
-                    return R.color.overcast;
-                case CloudCover.BROKEN:
-                    return R.color.mostly_cloudy;
-                case CloudCover.SCATTERED:
-                    return R.color.partly_cloudy;
-                default:
-                    return R.color.clear;
-            }
+        if (summary.contains("breezy")) {
+            color = blendColors(color, res.getColor(R.color.light_wind), .7f);
+        } else if (summary.contains("windy")) {
+            if (summary.contains("dangerously"))
+                color = blendColors(color, res.getColor(R.color.heavy_wind), .7f);
+            else
+                color = blendColors(color, res.getColor(R.color.moderate_wind), .7f);
         }
-        */
+
+        return color;
+    }
+
+    private static int blendColors(int color1, int color2, float ratio) {
+        final float inverseRation = 1f - ratio;
+        float r = (Color.red(color1) * ratio) + (Color.red(color2) * inverseRation);
+        float g = (Color.green(color1) * ratio) + (Color.green(color2) * inverseRation);
+        float b = (Color.blue(color1) * ratio) + (Color.blue(color2) * inverseRation);
+        return Color.rgb((int) r, (int) g, (int) b);
     }
 }
 

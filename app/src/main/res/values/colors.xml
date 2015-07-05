@@ -37,15 +37,20 @@
     <color name="moderate_sleet">#f06292</color>
     <color name="heavy_sleet">#ec407a</color>
 
-    <color name="hail">#e84e40</color>
-
     <color name="clear">#cfd8dc</color>
     <color name="partly_cloudy">#b0bec5</color>
     <color name="mostly_cloudy">#90a4ae</color>
     <color name="overcast">#78909c</color>
 
+    <color name="fog">#000000</color>
+
+    <color name="light_wind">#FFF59D</color>
+    <color name="moderate_wind">#FFF176</color>
+    <color name="heavy_wind">#FFEE58</color>
+
+    <!-- deprecated -->
     <color name="haze">#e0e0e0</color>
     <color name="mist">#bdbdbd</color>
-    <color name="fog">#9e9e9e</color>
+    <color name="hail">#e84e40</color>
 
 </resources>
