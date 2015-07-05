@@ -1,31 +1,20 @@
 package com.shawnaten.simpleweather.ui;
 
-import android.content.res.Resources;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.Charts;
-import com.shawnaten.tools.Colors;
 import com.shawnaten.tools.Forecast;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.LocalizationSettings;
 
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-
 public class NowTab extends Tab {
     private View nextHourSection;
-    private LinearLayout weatherBar;
+    private VerticalWeatherBar verticalWeatherBar;
 
     private int segmentCount;
     private int pointsPerSegment;
@@ -45,7 +34,8 @@ public class NowTab extends Tab {
 
         nextHourSection = view.findViewById(R.id.next_hour_section);
         View next24HoursSection = view.findViewById(R.id.next_24_hours_section);
-        weatherBar = (LinearLayout) next24HoursSection.findViewById(R.id.vertical_weather_bar);
+        verticalWeatherBar = (VerticalWeatherBar) next24HoursSection
+                .findViewById(R.id.vertical_weather_bar);
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
         int screenHeight = getResources().getDisplayMetrics().heightPixels;
 
@@ -98,27 +88,29 @@ public class NowTab extends Tab {
 
             next24HourSummary.setText(hourly.getSummary());
 
+            verticalWeatherBar.setData(forecast);
+
             /*
-            weatherBar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            verticalWeatherBar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
                     int segmentHeight = getResources()
                             .getDimensionPixelSize(R.dimen.vertical_weather_bar_segment);
                     Resources res = getResources();
 
-                    LayoutInflater inflater = LayoutInflater.from(weatherBar.getContext());
+                    LayoutInflater inflater = LayoutInflater.from(verticalWeatherBar.getContext());
 
-                    segmentCount = (int) Math.floor(weatherBar.getHeight() / (double) segmentHeight);
+                    segmentCount = (int) Math.floor(verticalWeatherBar.getHeight() / (double) segmentHeight);
                     pointsPerSegment = (int) Math.ceil(24 / (double) segmentCount);
 
                     segmentCount = (int) Math.ceil(24 / (double) pointsPerSegment);
 
-                    if (weatherBar.getChildCount() != segmentCount) {
-                        weatherBar.removeAllViews();
+                    if (verticalWeatherBar.getChildCount() != segmentCount) {
+                        verticalWeatherBar.removeAllViews();
                         for (int i = 0; i < segmentCount; i++) {
                             RelativeLayout item = (RelativeLayout) inflater.inflate(
-                                    R.layout.vertical_bar_item, weatherBar, false);
-                            weatherBar.addView(item);
+                                    R.layout.vertical_bar_item, verticalWeatherBar, false);
+                            verticalWeatherBar.addView(item);
 
                             LinearLayout blocksView = (LinearLayout) item.findViewById(R.id.blocks);
                             for (int j = 0; j < pointsPerSegment; j++) {
@@ -136,7 +128,7 @@ public class NowTab extends Tab {
                     for (int i = 0; i < segmentCount; i++) {
                         Forecast.DataPoint dataPoint = hourly.getData()[i * pointsPerSegment];
 
-                        View item = weatherBar.getChildAt(i);
+                        View item = verticalWeatherBar.getChildAt(i);
                         TextView timeView = (TextView) item.findViewById(R.id.time);
                         TextView dataView = (TextView) item.findViewById(R.id.data);
                         LinearLayout blocksView = (LinearLayout) item.findViewById(R.id.blocks);
@@ -161,9 +153,9 @@ public class NowTab extends Tab {
                             summaryView.setText(null);
 
                     }
-                    ((TextView) weatherBar.getChildAt(0).findViewById(R.id.time))
+                    ((TextView) verticalWeatherBar.getChildAt(0).findViewById(R.id.time))
                             .setText(R.string.now);
-                    weatherBar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    verticalWeatherBar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
             });
             */

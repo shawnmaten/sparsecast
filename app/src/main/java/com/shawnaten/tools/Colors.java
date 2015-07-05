@@ -1,5 +1,7 @@
 package com.shawnaten.tools;
 
+import android.util.Log;
+
 import com.shawnaten.simpleweather.R;
 
 /*
@@ -8,6 +10,46 @@ precipType: A string representing the type of precipitation occurring at the giv
 
 public class Colors {
     public static int getColor(Forecast.DataPoint dataPoint) {
+        String summary = dataPoint.getSummary().toLowerCase();
+
+        if (summary.contains("clear"))
+            return R.color.clear;
+        else if (summary.contains("drizzle"))
+            return R.color.drizzle;
+        else if (summary.contains("light rain"))
+            return R.color.light_rain;
+        else if (summary.contains("rain"))
+            return R.color.moderate_rain;
+        else if (summary.contains("heavy rain"))
+            return R.color.heavy_rain;
+        else if (summary.contains("light sleet"))
+            return R.color.light_sleet;
+        else if (summary.contains("sleet"))
+            return R.color.moderate_sleet;
+        else if (summary.contains("heavy sleet"))
+            return R.color.heavy_sleet;
+        else if (summary.contains("flurries"))
+            return R.color.flurries;
+        else if (summary.contains("light snow"))
+            return R.color.light_snow;
+        else if (summary.contains("snow"))
+            return R.color.moderate_snow;
+        else if (summary.contains("heavy snow"))
+            return R.color.heavy_snow;
+        else if (summary.contains("foggy"))
+            return R.color.fog;
+        else if (summary.contains("partly cloudy"))
+            return R.color.partly_cloudy;
+        else if (summary.contains("mostly cloudy"))
+            return R.color.mostly_cloudy;
+        else if (summary.contains("overcast"))
+            return R.color.overcast;
+        else {
+            Log.e("Colors", "No Match");
+            return R.color.clear;
+        }
+
+        /*
         if (dataPoint.getPrecipProbability() >= .2) {
             switch (dataPoint.getIcon()) {
                 case "rain":
@@ -66,6 +108,7 @@ public class Colors {
                     return R.color.clear;
             }
         }
+        */
     }
 }
 

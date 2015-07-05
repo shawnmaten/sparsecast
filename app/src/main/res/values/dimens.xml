@@ -2,7 +2,7 @@
 
     <!-- Default screen margin, per the Android Design guidelines. -->
 
-    <dimen name="vertical_weather_bar_segment">32sp</dimen>
+    <dimen name="vertical_weather_bar_width">32dp</dimen>
 
     <dimen name="card_by_card_margin">4dp</dimen>
     <dimen name="card_margin">8dp</dimen>

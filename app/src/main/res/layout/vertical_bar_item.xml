@@ -10,8 +10,8 @@
 
     <LinearLayout
         android:id="@+id/blocks"
-        android:layout_width="@dimen/vertical_weather_bar_segment"
-        android:layout_height="@dimen/vertical_weather_bar_segment"
+        android:layout_width="@dimen/vertical_weather_bar_width"
+        android:layout_height="@dimen/vertical_weather_bar_width"
         android:layout_centerHorizontal="true"
         android:orientation="vertical">
 

@@ -14,7 +14,16 @@ import java.util.Arrays;
  */
 public class WeatherBlock implements Parcelable {
     public static final int PRECIPITATION = 0, FOG = 1, CLOUDS = 2;
+    public static final Parcelable.Creator<WeatherBlock> CREATOR
+            = new Parcelable.Creator<WeatherBlock>() {
+        public WeatherBlock createFromParcel(Parcel in) {
+            return new WeatherBlock(in);
+        }
 
+        public WeatherBlock[] newArray(int size) {
+            return new WeatherBlock[size];
+        }
+    };
     private String description;
     private int type, start, end, color;
     private int[] data;
@@ -26,6 +35,19 @@ public class WeatherBlock implements Parcelable {
         this.data = data;
         genColor(context);
         genDescription(context);
+    }
+
+    private WeatherBlock(Parcel in) {
+        description = in.readString();
+        int[] temp = new int[in.readInt()];
+        in.readIntArray(temp);
+        int i = 0;
+        type = temp[i++];
+        start = temp[i++];
+        end = temp[i++];
+        color = temp[i];
+        data = new int[in.readInt()];
+        in.readIntArray(data);
     }
 
     private void genColor(Context context) {
@@ -52,7 +74,7 @@ public class WeatherBlock implements Parcelable {
                         break;
                     case R.string.snow:
                         if (data[0] == 1)
-                            color = resources.getColor(R.color.scattered_snow);
+                            color = resources.getColor(R.color.flurries);
                         else
                             switch(data[1]) {
                                 case R.string.light:
@@ -190,17 +212,6 @@ public class WeatherBlock implements Parcelable {
         return 0;
     }
 
-    public static final Parcelable.Creator<WeatherBlock> CREATOR
-            = new Parcelable.Creator<WeatherBlock>() {
-        public WeatherBlock createFromParcel(Parcel in) {
-            return new WeatherBlock(in);
-        }
-
-        public WeatherBlock[] newArray(int size) {
-            return new WeatherBlock[size];
-        }
-    };
-
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(description);
@@ -208,15 +219,5 @@ public class WeatherBlock implements Parcelable {
         dest.writeIntArray(new int[] {type, start, end, color});
         dest.writeInt(data.length);
         dest.writeIntArray(data);
-    }
-
-    private WeatherBlock(Parcel in) {
-        description = in.readString();
-        int[] temp = new int[in.readInt()];
-        in.readIntArray(temp);
-        int i = 0;
-        type = temp[i++]; start = temp[i++]; end = temp[i++]; color = temp[i];
-        data = new int[in.readInt()];
-        in.readIntArray(data);
     }
 }

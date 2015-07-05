@@ -37,7 +37,7 @@
 
                 <TextView
                     android:id="@+id/next_hour_summary"
-                    style="@style/text.subhead"
+                    style="@style/text.title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingEnd="16dp"
@@ -91,12 +91,11 @@
             android:id="@+id/next_24_hours_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#00FF00"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/next_24_hours_summary"
-                style="@style/text.subhead"
+                style="@style/text.title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/standard_margin"
@@ -107,14 +106,13 @@
                 android:textAlignment="center">
             </TextView>
 
-            <LinearLayout
+            <com.shawnaten.simpleweather.ui.VerticalWeatherBar
                 android:id="@+id/vertical_weather_bar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="@dimen/standard_margin"
                 android:layout_marginTop="@dimen/standard_margin"
-                android:background="#FF00FF"
                 android:orientation="vertical" />
 
         </LinearLayout>

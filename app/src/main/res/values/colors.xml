@@ -27,7 +27,7 @@
     <color name="moderate_rain">#4fc3f7</color>
     <color name="heavy_rain">#29b6f6</color>
 
-    <color name="scattered_snow">#e1bee7</color>
+    <color name="flurries">#e1bee7</color>
     <color name="light_snow">#ce93d8</color>
     <color name="moderate_snow">#ba68c8</color>
     <color name="heavy_snow">#ab47bc</color>
