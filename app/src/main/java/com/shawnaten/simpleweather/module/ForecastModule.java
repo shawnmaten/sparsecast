@@ -30,7 +30,6 @@ public class ForecastModule {
                 .setEndpoint(ENDPOINT)
                 .setClient(client)
                 .setConverter(converter)
-                .setLogLevel(RestAdapter.LogLevel.BASIC)
                 .build().create(Forecast.Service.class);
     }
 
@@ -45,17 +44,12 @@ public class ForecastModule {
             public void call(Subscriber<? super Forecast.Response> subscriber) {
                 if (LocationSettings.getMode() == LocationSettings.Mode.SAVED) {
                     keysObservable.subscribe(keys -> {
-                        subscriber.onNext(forecastService.getForecast(
-                                keys.getForecastAPIKey(),
-                                LocationSettings.getLatLng().latitude,
-                                LocationSettings.getLatLng().longitude,
-                                LocalizationSettings.getLangCode(),
-                                LocalizationSettings.getUnitCode()
-                        ));
-                                subscriber.onNext(forecastService.getEnglishForecast(
+                                subscriber.onNext(forecastService.getForecast(
                                         keys.getForecastAPIKey(),
                                         LocationSettings.getLatLng().latitude,
-                                        LocationSettings.getLatLng().longitude
+                                        LocationSettings.getLatLng().longitude,
+                                        LocalizationSettings.getLangCode(),
+                                        LocalizationSettings.getUnitCode()
                                 ));
                             }
                     );
@@ -66,10 +60,6 @@ public class ForecastModule {
                                 location.getLatitude(), location.getLongitude(),
                                 LocalizationSettings.getLangCode(),
                                 LocalizationSettings.getUnitCode()
-                        ));
-                        subscriber.onNext(forecastService.getEnglishForecast(
-                                keys.getForecastAPIKey(),
-                                location.getLatitude(), location.getLongitude()
                         ));
                         return null;
                     }).subscribe();

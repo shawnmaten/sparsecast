@@ -56,13 +56,13 @@ public class Charts {
         leftAxis.setAxisMaxValue((float) LocalizationSettings.getPrecipitationHeavy());
         leftAxis.setLabelCount(2);
         leftAxis.setValueFormatter(value -> {
-            switch (PrecipitationIntensity.getIntensityCode(value)) {
-                case PrecipitationIntensity.VERY_LIGHT:
-                case PrecipitationIntensity.LIGHT:
+            switch (Precipitation.getIntensityCode(value)) {
+                case Precipitation.VERY_LIGHT:
+                case Precipitation.LIGHT:
                     return context.getString(R.string.light);
-                case PrecipitationIntensity.MODERATE:
+                case Precipitation.MODERATE:
                     return context.getString(R.string.moderate);
-                case PrecipitationIntensity.HEAVY:
+                case Precipitation.HEAVY:
                     return context.getString(R.string.heavy);
                 default:
                     return Float.toString(value);

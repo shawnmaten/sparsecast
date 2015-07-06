@@ -49,12 +49,10 @@ class SlidingTabStrip extends LinearLayout {
 
     private final Paint mDividerPaint;
     private final float mDividerHeight;
-
+    private final SimpleTabColorizer mDefaultTabColorizer;
     private int mSelectedPosition;
     private float mSelectionOffset;
-
     private SlidingTabLayout.TabColorizer mCustomTabColorizer;
-    private final SimpleTabColorizer mDefaultTabColorizer;
 
     SlidingTabStrip(Context context) {
         this(context, null);
@@ -90,6 +88,27 @@ class SlidingTabStrip extends LinearLayout {
         mDividerPaint.setStrokeWidth((int) (DEFAULT_DIVIDER_THICKNESS_DIPS * density));
     }
 
+    /**
+     * Set the alpha value of the {@code color} to be the given {@code alpha} value.
+     */
+    private static int setColorAlpha(int color, byte alpha) {
+        return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color));
+    }
+
+    /**
+     * Blend {@code color1} and {@code color2} using the given ratio.
+     *
+     * @param ratio of which to blend. 1.0 will return {@code color1}, 0.5 will give an even blend,
+     *              0.0 will return {@code color2}.
+     */
+    private static int blendColors(int color1, int color2, float ratio) {
+        final float inverseRation = 1f - ratio;
+        float r = (Color.red(color1) * ratio) + (Color.red(color2) * inverseRation);
+        float g = (Color.green(color1) * ratio) + (Color.green(color2) * inverseRation);
+        float b = (Color.blue(color1) * ratio) + (Color.blue(color2) * inverseRation);
+        return Color.rgb((int) r, (int) g, (int) b);
+    }
+
     void setCustomTabColorizer(SlidingTabLayout.TabColorizer customTabColorizer) {
         mCustomTabColorizer = customTabColorizer;
         invalidate();
@@ -112,7 +131,7 @@ class SlidingTabStrip extends LinearLayout {
     void onViewPagerPageChanged(int position, float positionOffset) {
         // 70% 0xB2 to 100% 0x FF, diff of 0x4D
         /*
-        int accent = getResources().getColor(R.color.accent);
+        int accent = getResources().evaluate(R.color.accent);
         int r = Color.red(accent), g = Color.green(accent), b = Color.blue(accent);
         float selectedTrans = 0xB2, nextTrans = 0xB2;
         TextView selected = (TextView) getChildAt(position);
@@ -131,7 +150,7 @@ class SlidingTabStrip extends LinearLayout {
         if (positionOffset != 0)
             next.setTextColor(Color.argb((int) nextTrans, r, g, b));
         else
-            next.setTextColor(getResources().getColor(R.color.text_secondary_light));*/
+            next.setTextColor(getResources().evaluate(R.color.text_secondary_light));*/
 
         final SlidingTabLayout.TabColorizer tabColorizer = mCustomTabColorizer != null
                 ? mCustomTabColorizer
@@ -199,27 +218,6 @@ class SlidingTabStrip extends LinearLayout {
                     separatorTop + dividerHeightPx, mDividerPaint);
         }
         */
-    }
-
-    /**
-     * Set the alpha value of the {@code color} to be the given {@code alpha} value.
-     */
-    private static int setColorAlpha(int color, byte alpha) {
-        return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color));
-    }
-
-    /**
-     * Blend {@code color1} and {@code color2} using the given ratio.
-     *
-     * @param ratio of which to blend. 1.0 will return {@code color1}, 0.5 will give an even blend,
-     *              0.0 will return {@code color2}.
-     */
-    private static int blendColors(int color1, int color2, float ratio) {
-        final float inverseRation = 1f - ratio;
-        float r = (Color.red(color1) * ratio) + (Color.red(color2) * inverseRation);
-        float g = (Color.green(color1) * ratio) + (Color.green(color2) * inverseRation);
-        float b = (Color.blue(color1) * ratio) + (Color.blue(color2) * inverseRation);
-        return Color.rgb((int) r, (int) g, (int) b);
     }
 
     private static class SimpleTabColorizer implements SlidingTabLayout.TabColorizer {

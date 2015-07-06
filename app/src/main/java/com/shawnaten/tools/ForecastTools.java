@@ -33,6 +33,23 @@ public class ForecastTools {
     private final static double VERY_LIGHT = 0.002, LIGHT = 0.017, MODERATE = 0.1, HEAVY = 0.4,
             SCATTERED = 0.4, BROKEN = 0.75, OVERCAST = 1.0,
             FOG = 0.6214, MIST = 1.2427, HAZE = 3.1069;
+    private static HashMap<String, Integer> weatherIcons = new HashMap<>();
+
+    static {
+        weatherIcons.put("clear-day", R.raw.clear_day);
+        weatherIcons.put("clear-night", R.raw.clear_night);
+        weatherIcons.put("rain", R.raw.rain);
+        weatherIcons.put("snow", R.raw.snow);
+        weatherIcons.put("sleet", R.raw.sleet);
+        weatherIcons.put("wind", R.raw.wind);
+        weatherIcons.put("fog", R.raw.fog);
+        weatherIcons.put("cloudy", R.raw.cloudy);
+        weatherIcons.put("partly-cloudy-day", R.raw.partly_cloudy_day);
+        weatherIcons.put("partly-cloudy-night", R.raw.partly_cloudy_night);
+        weatherIcons.put("hail", R.raw.hail);
+        weatherIcons.put("thunderstorm", R.raw.thunderstorm);
+        weatherIcons.put("tornado", R.raw.tornado);
+    }
 
     public static DateFormat getTimeForm(TimeZone timeZone) {
         DateFormat timeForm = DateFormat.getTimeInstance(DateFormat.SHORT);
@@ -79,24 +96,6 @@ public class ForecastTools {
             default:
                 return 0;
         }
-    }
-
-    private static HashMap<String, Integer> weatherIcons = new HashMap<>();
-
-    static {
-        weatherIcons.put("clear-day", R.raw.clear_day);
-        weatherIcons.put("clear-night", R.raw.clear_night);
-        weatherIcons.put("rain", R.raw.rain);
-        weatherIcons.put("snow", R.raw.snow);
-        weatherIcons.put("sleet", R.raw.sleet);
-        weatherIcons.put("wind", R.raw.wind);
-        weatherIcons.put("fog", R.raw.fog);
-        weatherIcons.put("cloudy", R.raw.cloudy);
-        weatherIcons.put("partly-cloudy-day", R.raw.partly_cloudy_day);
-        weatherIcons.put("partly-cloudy-night", R.raw.partly_cloudy_night);
-        weatherIcons.put("hail", R.raw.hail);
-        weatherIcons.put("thunderstorm", R.raw.thunderstorm);
-        weatherIcons.put("tornado", R.raw.tornado);
     }
 
     public static int getWeatherIcon(String icon) {
@@ -228,9 +227,9 @@ public class ForecastTools {
     public static int getPrecipitationID(Context context, String name) {
         if (name != null) {
             SparseArray<String> types = new SparseArray<>();
-            types.put(R.string.rain, context.getString(R.string.rain));
-            types.put(R.string.snow, context.getString(R.string.snow));
-            types.put(R.string.sleet, context.getString(R.string.sleet));
+            types.put(R.string.moderate_rain, context.getString(R.string.moderate_rain));
+            types.put(R.string.moderate_snow, context.getString(R.string.moderate_snow));
+            types.put(R.string.moderate_sleet, context.getString(R.string.moderate_sleet));
             types.put(R.string.hail, context.getString(R.string.hail));
 
             final int count = types.size();

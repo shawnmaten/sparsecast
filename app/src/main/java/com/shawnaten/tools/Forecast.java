@@ -27,13 +27,6 @@ public class Forecast {
                 @Query("lang") String lang,
                 @Query("units") String units
         );
-
-        @GET("/{key}/{lat},{lng}?extend=hourly&exclude=currently,minutely,daily,alerts,flags&lang=en")
-        Response getEnglishForecast(
-                @Path("key") String key,
-                @Path("lat") double lat,
-                @Path("lng") double lng
-        );
     }
 
     public static class Response implements Parcelable {

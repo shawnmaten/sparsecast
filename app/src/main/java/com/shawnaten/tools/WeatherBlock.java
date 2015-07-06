@@ -56,7 +56,7 @@ public class WeatherBlock implements Parcelable {
         switch (type) {
             case PRECIPITATION:
                 switch (data[2]) {
-                    case R.string.rain:
+                    case R.string.moderate_rain:
                         if (data[0] == 1)
                             color = resources.getColor(R.color.drizzle);
                         else
@@ -72,7 +72,7 @@ public class WeatherBlock implements Parcelable {
                                     break;
                             }
                         break;
-                    case R.string.snow:
+                    case R.string.moderate_snow:
                         if (data[0] == 1)
                             color = resources.getColor(R.color.flurries);
                         else
@@ -88,7 +88,7 @@ public class WeatherBlock implements Parcelable {
                                     break;
                             }
                         break;
-                    case R.string.sleet:
+                    case R.string.moderate_sleet:
                         if (data[0] == 1)
                             color = resources.getColor(R.color.scattered_sleet);
                         else

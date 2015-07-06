@@ -123,17 +123,6 @@
     <string name="none">none</string>
     <string name="very_light">Very Light</string>
 
-    <string name="clear">Clear</string>
-    <string name="scattered">Scattered</string>
-    <string name="partly_cloudy">Partly Cloudy</string>
-    <string name="cloudy">Cloudy</string>
-    <string name="overcast">Overcast</string>
-
-    <string name="rain">Rain</string>
-    <string name="snow">Snow</string>
-    <string name="sleet">Sleet</string>
-    <string name="hail">Hail</string>
-
     <string name="fog">Fog</string>
     <string name="mist">Mist</string>
     <string name="haze">Haze</string>
@@ -141,6 +130,7 @@
     <string name="temp">Temp</string>
     <string name="title_activity_main">MainActivity</string>
 
+    <string name="scattered">Scattered</string>
 
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
@@ -148,5 +138,28 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_search">SearchActivity</string>
+
+    <string name="drizzle">Drizzle</string>
+    <string name="light_rain">Light Rain</string>
+    <string name="moderate_rain">Rain</string>
+    <string name="heavy_rain">Heavy Rain</string>
+
+    <string name="flurries">Flurries</string>
+    <string name="light_snow">Light Snow</string>
+    <string name="moderate_snow">Snow</string>
+    <string name="heavy_snow">Heavy Snow</string>
+
+    <string name="light_sleet">Light Sleet</string>
+    <string name="moderate_sleet">Sleet</string>
+    <string name="heavy_sleet">Heavy Sleet</string>
+
+    <string name="clear">Clear</string>
+
+    <string name="partly_cloudy">Partly Cloudy</string>
+    <string name="cloudy">Cloudy</string>
+    <string name="mostly_cloudy">Mostly Cloudy</string>
+    <string name="overcast">Overcast</string>
+
+    <string name="hail">Hail</string>
 
 </resources>
