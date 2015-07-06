@@ -16,9 +16,6 @@ public class NowTab extends Tab {
     private View nextHourSection;
     private VerticalWeatherBar verticalWeatherBar;
 
-    private int segmentCount;
-    private int pointsPerSegment;
-
     public static NowTab newInstance(String title, int layout) {
         Bundle args = new Bundle();
         NowTab tab = new NowTab();
@@ -53,112 +50,58 @@ public class NowTab extends Tab {
     public void onNewData(Object data) {
         super.onNewData(data);
 
-        if (getUserVisibleHint() && Forecast.Response.class.isInstance(data)) {
-            Forecast.Response forecast = (Forecast.Response) data;
-            Forecast.DataPoint currently = forecast.getCurrently();
-            Forecast.DataBlock hourly = forecast.getHourly();
+        if (getUserVisibleHint()) {
+            if (Forecast.Response.class.isInstance(data)) {
+                Forecast.Response forecast = (Forecast.Response) data;
 
-            View root = getView();
+                if (forecast.getCurrently() != null) {
+                    verticalWeatherBar.setData(forecast);
 
-            LineChart chart = (LineChart) root.findViewById(R.id.precipitation_chart);
-            TextView nextHourSummary = (TextView) root.findViewById(R.id.next_hour_summary);
-            TextView nearestStorm = (TextView) root.findViewById(R.id.nearest_storm);
-            TextView next24HourSummary = (TextView) root.findViewById(R.id.next_24_hours_summary);
+                    Forecast.DataPoint currently = forecast.getCurrently();
+                    Forecast.DataBlock hourly = forecast.getHourly();
 
-            if (forecast.getMinutely() != null) {
-                nextHourSection.setVisibility(View.VISIBLE);
-                nextHourSummary.setText(forecast.getMinutely().getSummary());
-                Charts.setPrecipitationGraph(getActivity(), chart,
-                        forecast.getMinutely().getData(), forecast.getTimezone());
-            } else
-                nextHourSection.setVisibility(View.GONE);
+                    View root = getView();
 
-            if ((int) currently.getNearestStormDistance() > 0) {
-                nearestStorm.setVisibility(View.VISIBLE);
-                nearestStorm.setText(String.format(
-                        "(%s: %d %s %s %s)",
-                        getString(R.string.nearest_storm),
-                        (int) currently.getNearestStormDistance(),
-                        getString(LocalizationSettings.getDistanceUnit()),
-                        getString(R.string.to_the),
-                        getString(ForecastTools.getWindString(currently.getNearestStormBearing()))
-                ));
-            } else
-                nearestStorm.setVisibility(View.GONE);
+                    LineChart chart = (LineChart) root.findViewById(R.id.precipitation_chart);
+                    TextView nextHourSummary = (TextView) root.findViewById(R.id.next_hour_summary);
+                    TextView nearestStorm = (TextView) root.findViewById(R.id.nearest_storm);
+                    TextView next24HourSummary = (TextView)
+                            root.findViewById(R.id.next_24_hours_summary);
 
-            next24HourSummary.setText(hourly.getSummary());
+                    if (forecast.getMinutely() != null) {
+                        nextHourSection.setVisibility(View.VISIBLE);
+                        nextHourSummary.setText(forecast.getMinutely().getSummary());
+                        Charts.setPrecipitationGraph(getActivity(), chart,
+                                forecast.getMinutely().getData(), forecast.getTimezone());
+                    } else
+                        nextHourSection.setVisibility(View.GONE);
 
-            verticalWeatherBar.setData(forecast);
+                    if ((int) currently.getNearestStormDistance() > 0) {
+                        nearestStorm.setVisibility(View.VISIBLE);
+                        nearestStorm.setText(String.format(
+                                "(%s: %d %s %s %s)",
+                                getString(R.string.nearest_storm),
+                                (int) currently.getNearestStormDistance(),
+                                getString(LocalizationSettings.getDistanceUnit()),
+                                getString(R.string.to_the),
+                                getString(ForecastTools.getWindString(currently
+                                        .getNearestStormBearing()))
+                        ));
+                    } else
+                        nearestStorm.setVisibility(View.GONE);
 
-            /*
-            verticalWeatherBar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    int segmentHeight = getResources()
-                            .getDimensionPixelSize(R.dimen.vertical_weather_bar_segment);
-                    Resources res = getResources();
-
-                    LayoutInflater inflater = LayoutInflater.from(verticalWeatherBar.getContext());
-
-                    segmentCount = (int) Math.floor(verticalWeatherBar.getHeight() / (double) segmentHeight);
-                    pointsPerSegment = (int) Math.ceil(24 / (double) segmentCount);
-
-                    segmentCount = (int) Math.ceil(24 / (double) pointsPerSegment);
-
-                    if (verticalWeatherBar.getChildCount() != segmentCount) {
-                        verticalWeatherBar.removeAllViews();
-                        for (int i = 0; i < segmentCount; i++) {
-                            RelativeLayout item = (RelativeLayout) inflater.inflate(
-                                    R.layout.vertical_bar_item, verticalWeatherBar, false);
-                            verticalWeatherBar.addView(item);
-
-                            LinearLayout blocksView = (LinearLayout) item.findViewById(R.id.blocks);
-                            for (int j = 0; j < pointsPerSegment; j++) {
-                                blocksView.addView(inflater.inflate(R.layout.color_segment,
-                                        blocksView, false));
-                            }
-                        }
-                    }
-
-                    SimpleDateFormat timeForm = ForecastTools
-                            .getShortTimeForm(forecast.getTimezone(), 24);
-                    DecimalFormat tempForm = ForecastTools.getTempForm();
-
-                    String lastSummary = null;
-                    for (int i = 0; i < segmentCount; i++) {
-                        Forecast.DataPoint dataPoint = hourly.getData()[i * pointsPerSegment];
-
-                        View item = verticalWeatherBar.getChildAt(i);
-                        TextView timeView = (TextView) item.findViewById(R.id.time);
-                        TextView dataView = (TextView) item.findViewById(R.id.data);
-                        LinearLayout blocksView = (LinearLayout) item.findViewById(R.id.blocks);
-                        TextView summaryView = (TextView) item.findViewById(R.id.summary);
-
-                        timeView.setText(timeForm.format(dataPoint.getTime()));
-                        dataView.setText(tempForm.format(dataPoint.getTemperature()));
-                        String summary = null;
-
-                        for (int j = 0; j < pointsPerSegment; j++) {
-                            Forecast.DataPoint colorDataPoint = hourly.getData()[i + j];
-                            summary = colorDataPoint.getSummary();
-                            View colorSegment = blocksView.getChildAt(j);
-                            colorSegment.setBackgroundColor(getResources()
-                                    .getColor(Colors.getColor(colorDataPoint)));
-                        }
-
-                        if (lastSummary == null || !lastSummary.equals(summary)) {
-                            lastSummary = summary;
-                            summaryView.setText(summary);
-                        } else
-                            summaryView.setText(null);
-
-                    }
-                    ((TextView) verticalWeatherBar.getChildAt(0).findViewById(R.id.time))
-                            .setText(R.string.now);
-                    verticalWeatherBar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    next24HourSummary.setText(hourly.getSummary());
+                } else {
+                    verticalWeatherBar.setData(forecast);
                 }
-            });
-            */
+            }
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        verticalWeatherBar.clearData();
     }
 }

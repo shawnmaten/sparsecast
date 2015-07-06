@@ -30,6 +30,7 @@ public class WeekTab extends Tab {
     public void onNewData(Object data) {
         super.onNewData(data);
 
+        /*
         if (isVisible() && Forecast.Response.class.isInstance(data)) {
             Forecast.Response forecast = (Forecast.Response) data;
             Forecast.DataBlock daily = forecast.getDaily();
@@ -73,6 +74,7 @@ public class WeekTab extends Tab {
                     cardMargin);
                     */
 
+        /*
             View precipitationCard = root.findViewById(R.id.precipitation_card);
             View temperatureCard = root.findViewById(R.id.temperature_card);
 
@@ -98,6 +100,6 @@ public class WeekTab extends Tab {
                     (LineChart) root.findViewById(R.id.temperature_card).findViewById(R.id.chart),
                     dailyData,
                     forecast.getTimezone());
-        }
+        }*/
     }
 }

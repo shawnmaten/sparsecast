@@ -4,15 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.text.Layout;
-import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.util.ArrayMap;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.shawnaten.simpleweather.R;
@@ -20,18 +15,16 @@ import com.shawnaten.tools.Colors;
 import com.shawnaten.tools.Forecast;
 import com.shawnaten.tools.ForecastTools;
 
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.TimeZone;
 
 public class VerticalWeatherBar extends View {
     private Paint paint;
     private float segWidth;
-    private Forecast.DataBlock hourly;
+    private Forecast.DataBlock localForecast;
+    private Forecast.DataBlock englishForecast;
     private float margin;
     private TextPaint textPaint;
     private ArrayList<String> summaries;
@@ -54,14 +47,21 @@ public class VerticalWeatherBar extends View {
     }
 
     public void setData(Forecast.Response forecast) {
-        hourly = forecast.getHourly();
-        timeZone = forecast.getTimezone();
+        if (forecast.getCurrently() != null) {
+            localForecast = forecast.getHourly();
+            timeZone = forecast.getTimezone();
+        } else
+            englishForecast = forecast.getHourly();
         invalidate();
+    }
+
+    public void clearData() {
+        localForecast = englishForecast = null;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (hourly == null)
+        if (localForecast == null || englishForecast == null)
             return;
 
         float height = getHeight();
@@ -93,16 +93,17 @@ public class VerticalWeatherBar extends View {
 
         summaries.clear();
         summaryStarts.clear();
-        summaries.add(hourly.getData()[0].getSummary());
+        summaries.add(localForecast.getData()[0].getSummary());
         summaryStarts.add(0);
 
         for (int i = 0; i < 24; i++) {
-            Forecast.DataPoint dataPoint = hourly.getData()[i];
-            if (!summaries.get(summaries.size() - 1).equals(dataPoint.getSummary())) {
-                summaries.add(dataPoint.getSummary());
+            Forecast.DataPoint localData = localForecast.getData()[i];
+            Forecast.DataPoint englishData = englishForecast.getData()[i];
+            if (!summaries.get(summaries.size() - 1).equals(localData.getSummary())) {
+                summaries.add(localData.getSummary());
                 summaryStarts.add(i);
             }
-            paint.setColor(Colors.getColor(getResources(), dataPoint));
+            paint.setColor(Colors.getColor(getResources(), englishData));
             canvas.drawRect(colorLeft, colorTop, colorRight, colorBottom, paint);
             colorTop += colorHeight;
             colorBottom += colorHeight;
@@ -110,7 +111,7 @@ public class VerticalWeatherBar extends View {
 
         textPaint.setTextAlign(Paint.Align.RIGHT);
         for (int i = 0; i < 24; i += skip) {
-            Forecast.DataPoint dataPoint = hourly.getData()[i];
+            Forecast.DataPoint dataPoint = localForecast.getData()[i];
 
             float textTop = barTop + i * colorHeight;
 

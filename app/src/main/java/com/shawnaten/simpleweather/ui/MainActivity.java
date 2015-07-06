@@ -108,7 +108,6 @@ public class MainActivity extends BaseActivity {
 
         tabAdapter = new TabAdapter(getSupportFragmentManager(),
                 NowTab.newInstance(getString(R.string.now), R.layout.tab_now),
-                TodayTab.newInstance(getString(R.string.today), R.layout.tab_today),
                 WeekTab.newInstance(getString(R.string.week), R.layout.tab_week));
         viewPager.setAdapter(tabAdapter);
         slidingTabLayout.setCustomTabView(R.layout.tab_title_light, R.id.title);
@@ -327,61 +326,63 @@ public class MainActivity extends BaseActivity {
         if (Forecast.Response.class.isInstance(data)) {
             Forecast.Response forecast = (Forecast.Response) data;
 
-            DecimalFormat tf = ForecastTools.getTempForm();
-            Forecast.DataPoint currently = forecast.getCurrently();
-            TextView temp = (TextView) findViewById(R.id.temp);
-            TextView status = (TextView) findViewById(R.id.current_condition);
-            TextView feelsLikes = (TextView) findViewById(R.id.feels_like);
+            if (forecast.getCurrently() != null) {
+                DecimalFormat tf = ForecastTools.getTempForm();
+                Forecast.DataPoint currently = forecast.getCurrently();
+                TextView temp = (TextView) findViewById(R.id.temp);
+                TextView status = (TextView) findViewById(R.id.current_condition);
+                TextView feelsLikes = (TextView) findViewById(R.id.feels_like);
 
-            temp.setText(tf.format(forecast.getCurrently().getTemperature()));
-            status.setText(forecast.getCurrently().getSummary());
+                temp.setText(tf.format(forecast.getCurrently().getTemperature()));
+                status.setText(forecast.getCurrently().getSummary());
 
-            if (Math.round(currently.getTemperature()) != Math.round(currently.getApparentTemperature())) {
-                feelsLikes.setVisibility(View.VISIBLE);
-                //((LinearLayout) findViewById(R.placeId.temp_holder)).setBaselineAlignedChildIndex(1);
-                feelsLikes.setText(String.format("%s %s", getString(R.string.feels_like),
-                        tf.format(forecast.getCurrently().getApparentTemperature())));
-            } else {
-                feelsLikes.setVisibility(View.GONE);
-                //((LinearLayout) findViewById(R.placeId.temp_holder)).setBaselineAlignedChildIndex(0);
-            }
-
-            Observable<Image> imageObservable =  Observable.create(new Observable.OnSubscribe<Image>() {
-                @Override
-                public void call(Subscriber<? super Image> subscriber) {
-                    try {
-                        subscriber.onNext(imagesApi.getImage(forecast.getCurrently().getIcon()).execute());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                if (Math.round(currently.getTemperature()) != Math.round(currently.getApparentTemperature())) {
+                    feelsLikes.setVisibility(View.VISIBLE);
+                    //((LinearLayout) findViewById(R.placeId.temp_holder)).setBaselineAlignedChildIndex(1);
+                    feelsLikes.setText(String.format("%s %s", getString(R.string.feels_like),
+                            tf.format(forecast.getCurrently().getApparentTemperature())));
+                } else {
+                    feelsLikes.setVisibility(View.GONE);
+                    //((LinearLayout) findViewById(R.placeId.temp_holder)).setBaselineAlignedChildIndex(0);
                 }
-            });
 
-            Observable<Keys> keysObservable = getApp().getNetworkComponent().keys();
-            Instagram.Service instagramService = getApp().getNetworkComponent().instagramService();
-            Observable.zip(keysObservable, imageObservable, (keys, imageData) ->
-                    instagramService.getMedia(keys.getInstagramAPIKey(), imageData.getShortcode()))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(instagramData -> {
-                TextView instagramUserView = (TextView)
-                        instagramAttribution.findViewById(R.id.user);
-                String url = instagramData.getData()
-                        .getImages().getStandardResolution().getUrl();
-                String username = instagramData.getData()
-                        .getUser().getUsername();
-                Picasso.with(photo.getContext()).load(url).into(photo);
-                instagramUserView.setText(username);
-                instagramAttribution.setOnClickListener(new View.OnClickListener() {
+                Observable<Image> imageObservable = Observable.create(new Observable.OnSubscribe<Image>() {
                     @Override
-                    public void onClick(View view) {
-                        Intent browserIntent = new Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse(instagramData.getData().getLink()));
-                        startActivity(browserIntent);
+                    public void call(Subscriber<? super Image> subscriber) {
+                        try {
+                            subscriber.onNext(imagesApi.getImage(forecast.getCurrently().getIcon()).execute());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
-            });
+
+                Observable<Keys> keysObservable = getApp().getNetworkComponent().keys();
+                Instagram.Service instagramService = getApp().getNetworkComponent().instagramService();
+                Observable.zip(keysObservable, imageObservable, (keys, imageData) ->
+                        instagramService.getMedia(keys.getInstagramAPIKey(), imageData.getShortcode()))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(instagramData -> {
+                            TextView instagramUserView = (TextView)
+                                    instagramAttribution.findViewById(R.id.user);
+                            String url = instagramData.getData()
+                                    .getImages().getStandardResolution().getUrl();
+                            String username = instagramData.getData()
+                                    .getUser().getUsername();
+                            Picasso.with(photo.getContext()).load(url).into(photo);
+                            instagramUserView.setText(username);
+                            instagramAttribution.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent browserIntent = new Intent(
+                                            Intent.ACTION_VIEW,
+                                            Uri.parse(instagramData.getData().getLink()));
+                                    startActivity(browserIntent);
+                                }
+                            });
+                        });
+            }
         }
     }
 

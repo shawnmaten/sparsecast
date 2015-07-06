@@ -18,34 +18,77 @@ import retrofit.http.Query;
  */
 public class Forecast {
 
-    public static class Response implements Parcelable {
-        private String name;
+    public interface Service {
+        @GET("/{key}/{lat},{lng}?extend=hourly")
+        Response getForecast(
+                @Path("key") String key,
+                @Path("lat") double lat,
+                @Path("lng") double lng,
+                @Query("lang") String lang,
+                @Query("units") String units
+        );
 
+        @GET("/{key}/{lat},{lng}?extend=hourly&exclude=currently,minutely,daily,alerts,flags&lang=en")
+        Response getEnglishForecast(
+                @Path("key") String key,
+                @Path("lat") double lat,
+                @Path("lng") double lng
+        );
+    }
+
+    public static class Response implements Parcelable {
+        @SuppressWarnings("unused")
+        public static final Parcelable.Creator<Response> CREATOR = new Parcelable.Creator<Response>() {
+            @Override
+            public Response createFromParcel(Parcel in) {
+                return new Response(in);
+            }
+
+            @Override
+            public Response[] newArray(int size) {
+                return new Response[size];
+            }
+        };
+        private String name;
         private double latitude;
         private double longitude;
         private TimeZone timezone;
         private double offset;
-
         private DataPoint currently;
-
         private DataBlock minutely;
         private DataBlock hourly;
         private DataBlock daily;
-
         private Alert[] alerts;
-
         private Flags flags;
 
         public Response() {
 
         }
 
-        public void setName(String name) {
-            this.name = name;
+        protected Response(Parcel in) {
+            name = in.readString();
+            latitude = in.readDouble();
+            longitude = in.readDouble();
+            timezone = (TimeZone) in.readValue(TimeZone.class.getClassLoader());
+            offset = in.readDouble();
+            currently = (DataPoint) in.readValue(DataPoint.class.getClassLoader());
+            minutely = (DataBlock) in.readValue(DataBlock.class.getClassLoader());
+            hourly = (DataBlock) in.readValue(DataBlock.class.getClassLoader());
+            daily = (DataBlock) in.readValue(DataBlock.class.getClassLoader());
+            int alertSize = in.readInt();
+            if (alertSize > 0) {
+                alerts = new Alert[alertSize];
+                in.readTypedArray(alerts, Alert.CREATOR);
+            }
+            flags = (Flags) in.readValue(Flags.class.getClassLoader());
         }
 
         public String getName() {
             return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
 
         public double getLatitude() {
@@ -88,24 +131,6 @@ public class Forecast {
             return flags;
         }
 
-        protected Response(Parcel in) {
-            name = in.readString();
-            latitude = in.readDouble();
-            longitude = in.readDouble();
-            timezone = (TimeZone) in.readValue(TimeZone.class.getClassLoader());
-            offset = in.readDouble();
-            currently = (DataPoint) in.readValue(DataPoint.class.getClassLoader());
-            minutely = (DataBlock) in.readValue(DataBlock.class.getClassLoader());
-            hourly = (DataBlock) in.readValue(DataBlock.class.getClassLoader());
-            daily = (DataBlock) in.readValue(DataBlock.class.getClassLoader());
-            int alertSize = in.readInt();
-            if (alertSize > 0) {
-                alerts = new Alert[alertSize];
-                in.readTypedArray(alerts, Alert.CREATOR);
-            }
-            flags = (Flags) in.readValue(Flags.class.getClassLoader());
-        }
-
         @Override
         public int describeContents() {
             return 0;
@@ -131,22 +156,21 @@ public class Forecast {
             dest.writeValue(this.flags);
         }
 
-        @SuppressWarnings("unused")
-        public static final Parcelable.Creator<Response> CREATOR = new Parcelable.Creator<Response>() {
-            @Override
-            public Response createFromParcel(Parcel in) {
-                return new Response(in);
-            }
-
-            @Override
-            public Response[] newArray(int size) {
-                return new Response[size];
-            }
-        };
-
     }
 
     public static class DataBlock implements Parcelable {
+        @SuppressWarnings("unused")
+        public static final Parcelable.Creator<DataBlock> CREATOR = new Parcelable.Creator<DataBlock>() {
+            @Override
+            public DataBlock createFromParcel(Parcel in) {
+                return new DataBlock(in);
+            }
+
+            @Override
+            public DataBlock[] newArray(int size) {
+                return new DataBlock[size];
+            }
+        };
         private String summary;
         private String icon;
         private DataPoint[] data;
@@ -154,6 +178,16 @@ public class Forecast {
         @SuppressWarnings("unused")
         public DataBlock() {
 
+        }
+
+        protected DataBlock(Parcel in) {
+            summary = in.readString();
+            icon = in.readString();
+            int dataSize = in.readInt();
+            if (dataSize > 0) {
+                data = new DataPoint[dataSize];
+                in.readTypedArray(data, DataPoint.CREATOR);
+            }
         }
 
         public String getSummary() {
@@ -166,16 +200,6 @@ public class Forecast {
 
         public DataPoint[] getData() {
             return data;
-        }
-
-        protected DataBlock(Parcel in) {
-            summary = in.readString();
-            icon = in.readString();
-            int dataSize = in.readInt();
-            if (dataSize > 0) {
-                data = new DataPoint[dataSize];
-                in.readTypedArray(data, DataPoint.CREATOR);
-            }
         }
 
         @Override
@@ -195,22 +219,21 @@ public class Forecast {
             }
         }
 
-        @SuppressWarnings("unused")
-        public static final Parcelable.Creator<DataBlock> CREATOR = new Parcelable.Creator<DataBlock>() {
-            @Override
-            public DataBlock createFromParcel(Parcel in) {
-                return new DataBlock(in);
-            }
-
-            @Override
-            public DataBlock[] newArray(int size) {
-                return new DataBlock[size];
-            }
-        };
-
     }
 
     public static class DataPoint implements Parcelable {
+        @SuppressWarnings("unused")
+        public static final Parcelable.Creator<DataPoint> CREATOR = new Parcelable.Creator<DataPoint>() {
+            @Override
+            public DataPoint createFromParcel(Parcel in) {
+                return new DataPoint(in);
+            }
+
+            @Override
+            public DataPoint[] newArray(int size) {
+                return new DataPoint[size];
+            }
+        };
         private Date time;
         private String summary;
         private String icon;
@@ -246,6 +269,49 @@ public class Forecast {
 
         public DataPoint() {
 
+        }
+
+        protected DataPoint(Parcel in) {
+            long tmpTime = in.readLong();
+            time = tmpTime != -1 ? new Date(tmpTime) : null;
+            summary = in.readString();
+            icon = in.readString();
+            long tmpSunriseTime = in.readLong();
+            sunriseTime = tmpSunriseTime != -1 ? new Date(tmpSunriseTime) : null;
+            long tmpSunsetTime = in.readLong();
+            sunsetTime = tmpSunsetTime != -1 ? new Date(tmpSunsetTime) : null;
+            moonPhase = in.readDouble();
+            nearestStormDistance = in.readDouble();
+            nearestStormBearing = in.readDouble();
+            precipIntensity = in.readDouble();
+            precipIntensityMax = in.readDouble();
+            long tmpPrecipIntensityMaxTime = in.readLong();
+            precipIntensityMaxTime = tmpPrecipIntensityMaxTime != -1 ? new Date(tmpPrecipIntensityMaxTime) : null;
+            precipProbability = in.readDouble();
+            precipType = in.readString();
+            precipAccumulation = in.readDouble();
+            temperature = in.readDouble();
+            temperatureMin = in.readDouble();
+            temperatureMax = in.readDouble();
+            long tmpTemperatureMinTime = in.readLong();
+            temperatureMinTime = tmpTemperatureMinTime != -1 ? new Date(tmpTemperatureMinTime) : null;
+            long tmpTemperatureMaxTime = in.readLong();
+            temperatureMaxTime = tmpTemperatureMaxTime != -1 ? new Date(tmpTemperatureMaxTime) : null;
+            apparentTemperature = in.readDouble();
+            apparentTemperatureMin = in.readDouble();
+            apparentTemperatureMax = in.readDouble();
+            long tmpApparentTemperatureMinTime = in.readLong();
+            apparentTemperatureMinTime = tmpApparentTemperatureMinTime != -1 ? new Date(tmpApparentTemperatureMinTime) : null;
+            long tmpApparentTemperatureMaxTime = in.readLong();
+            apparentTemperatureMaxTime = tmpApparentTemperatureMaxTime != -1 ? new Date(tmpApparentTemperatureMaxTime) : null;
+            dewPoint = in.readDouble();
+            windSpeed = in.readDouble();
+            windBearing = in.readDouble();
+            cloudCover = in.readDouble();
+            humidity = in.readDouble();
+            pressure = in.readDouble();
+            visibility = in.readDouble();
+            ozone = in.readDouble();
         }
 
         public Date getTime() {
@@ -376,49 +442,6 @@ public class Forecast {
             return ozone;
         }
 
-        protected DataPoint(Parcel in) {
-            long tmpTime = in.readLong();
-            time = tmpTime != -1 ? new Date(tmpTime) : null;
-            summary = in.readString();
-            icon = in.readString();
-            long tmpSunriseTime = in.readLong();
-            sunriseTime = tmpSunriseTime != -1 ? new Date(tmpSunriseTime) : null;
-            long tmpSunsetTime = in.readLong();
-            sunsetTime = tmpSunsetTime != -1 ? new Date(tmpSunsetTime) : null;
-            moonPhase = in.readDouble();
-            nearestStormDistance = in.readDouble();
-            nearestStormBearing = in.readDouble();
-            precipIntensity = in.readDouble();
-            precipIntensityMax = in.readDouble();
-            long tmpPrecipIntensityMaxTime = in.readLong();
-            precipIntensityMaxTime = tmpPrecipIntensityMaxTime != -1 ? new Date(tmpPrecipIntensityMaxTime) : null;
-            precipProbability = in.readDouble();
-            precipType = in.readString();
-            precipAccumulation = in.readDouble();
-            temperature = in.readDouble();
-            temperatureMin = in.readDouble();
-            temperatureMax = in.readDouble();
-            long tmpTemperatureMinTime = in.readLong();
-            temperatureMinTime = tmpTemperatureMinTime != -1 ? new Date(tmpTemperatureMinTime) : null;
-            long tmpTemperatureMaxTime = in.readLong();
-            temperatureMaxTime = tmpTemperatureMaxTime != -1 ? new Date(tmpTemperatureMaxTime) : null;
-            apparentTemperature = in.readDouble();
-            apparentTemperatureMin = in.readDouble();
-            apparentTemperatureMax = in.readDouble();
-            long tmpApparentTemperatureMinTime = in.readLong();
-            apparentTemperatureMinTime = tmpApparentTemperatureMinTime != -1 ? new Date(tmpApparentTemperatureMinTime) : null;
-            long tmpApparentTemperatureMaxTime = in.readLong();
-            apparentTemperatureMaxTime = tmpApparentTemperatureMaxTime != -1 ? new Date(tmpApparentTemperatureMaxTime) : null;
-            dewPoint = in.readDouble();
-            windSpeed = in.readDouble();
-            windBearing = in.readDouble();
-            cloudCover = in.readDouble();
-            humidity = in.readDouble();
-            pressure = in.readDouble();
-            visibility = in.readDouble();
-            ozone = in.readDouble();
-        }
-
         @Override
         public int describeContents() {
             return 0;
@@ -460,22 +483,21 @@ public class Forecast {
             dest.writeDouble(ozone);
         }
 
-        @SuppressWarnings("unused")
-        public static final Parcelable.Creator<DataPoint> CREATOR = new Parcelable.Creator<DataPoint>() {
-            @Override
-            public DataPoint createFromParcel(Parcel in) {
-                return new DataPoint(in);
-            }
-
-            @Override
-            public DataPoint[] newArray(int size) {
-                return new DataPoint[size];
-            }
-        };
-
     }
 
     public static class Alert implements Parcelable {
+        @SuppressWarnings("unused")
+        public static final Parcelable.Creator<Alert> CREATOR = new Parcelable.Creator<Alert>() {
+            @Override
+            public Alert createFromParcel(Parcel in) {
+                return new Alert(in);
+            }
+
+            @Override
+            public Alert[] newArray(int size) {
+                return new Alert[size];
+            }
+        };
         private String title;
         private Date expires;
         private String description;
@@ -483,6 +505,14 @@ public class Forecast {
 
         public Alert() {
 
+        }
+
+        protected Alert(Parcel in) {
+            title = in.readString();
+            long tmpExpires = in.readLong();
+            expires = tmpExpires != -1 ? new Date(tmpExpires) : null;
+            description = in.readString();
+            uri = (Uri) in.readValue(Uri.class.getClassLoader());
         }
 
         public String getTitle() {
@@ -501,14 +531,6 @@ public class Forecast {
             return uri;
         }
 
-        protected Alert(Parcel in) {
-            title = in.readString();
-            long tmpExpires = in.readLong();
-            expires = tmpExpires != -1 ? new Date(tmpExpires) : null;
-            description = in.readString();
-            uri = (Uri) in.readValue(Uri.class.getClassLoader());
-        }
-
         @Override
         public int describeContents() {
             return 0;
@@ -522,22 +544,19 @@ public class Forecast {
             dest.writeValue(uri);
         }
 
-        @SuppressWarnings("unused")
-        public static final Parcelable.Creator<Alert> CREATOR = new Parcelable.Creator<Alert>() {
-            @Override
-            public Alert createFromParcel(Parcel in) {
-                return new Alert(in);
-            }
-
-            @Override
-            public Alert[] newArray(int size) {
-                return new Alert[size];
-            }
-        };
-
     }
 
     public static class Flags implements Parcelable {
+        public static final Parcelable.Creator<Flags> CREATOR
+                = new Parcelable.Creator<Flags>() {
+            public Flags createFromParcel(Parcel in) {
+                return new Flags(in);
+            }
+
+            public Flags[] newArray(int size) {
+                return new Flags[size];
+            }
+        };
         @SerializedName("darksky-unavailable") private boolean darkskyUnavailable;
         @SerializedName("darksky-stations") private String[] darkskyStations;
         @SerializedName("datapoint-stations") private String[] datapointStations;
@@ -549,6 +568,53 @@ public class Forecast {
         private String units;
 
         public Flags() {
+
+        }
+
+        private Flags(Parcel in) {
+            int tmpSize;
+
+            darkskyUnavailable = in.readByte() != 0;
+
+            tmpSize = in.readInt();
+            if (tmpSize > 0) {
+                darkskyStations = new String[tmpSize];
+                in.readStringArray(darkskyStations);
+            }
+
+            tmpSize = in.readInt();
+            if (tmpSize > 0) {
+                datapointStations = new String[tmpSize];
+                in.readStringArray(datapointStations);
+            }
+
+            tmpSize = in.readInt();
+            if (tmpSize > 0) {
+                isdStations = new String[tmpSize];
+                in.readStringArray(isdStations);
+            }
+
+            tmpSize = in.readInt();
+            if (tmpSize > 0) {
+                lampStations = new String[tmpSize];
+                in.readStringArray(lampStations);
+            }
+
+            tmpSize = in.readInt();
+            if (tmpSize > 0) {
+                metarStations = new String[tmpSize];
+                in.readStringArray(metarStations);
+            }
+
+            metnoLicense = in.readByte() != 0;
+
+            tmpSize = in.readInt();
+            if (tmpSize > 0) {
+                sources = new String[tmpSize];
+                in.readStringArray(sources);
+            }
+
+            units = in.readString();
 
         }
 
@@ -642,74 +708,5 @@ public class Forecast {
             out.writeString(units);
         }
 
-        public static final Parcelable.Creator<Flags> CREATOR
-                = new Parcelable.Creator<Flags>() {
-            public Flags createFromParcel(Parcel in) {
-                return new Flags(in);
-            }
-
-            public Flags[] newArray(int size) {
-                return new Flags[size];
-            }
-        };
-
-        private Flags(Parcel in) {
-            int tmpSize;
-
-            darkskyUnavailable = in.readByte() != 0;
-
-            tmpSize = in.readInt();
-            if (tmpSize > 0) {
-                darkskyStations = new String[tmpSize];
-                in.readStringArray(darkskyStations);
-            }
-
-            tmpSize = in.readInt();
-            if (tmpSize > 0) {
-                datapointStations = new String[tmpSize];
-                in.readStringArray(datapointStations);
-            }
-
-            tmpSize = in.readInt();
-            if (tmpSize > 0) {
-                isdStations = new String[tmpSize];
-                in.readStringArray(isdStations);
-            }
-
-            tmpSize = in.readInt();
-            if (tmpSize > 0) {
-                lampStations = new String[tmpSize];
-                in.readStringArray(lampStations);
-            }
-
-            tmpSize = in.readInt();
-            if (tmpSize > 0) {
-                metarStations = new String[tmpSize];
-                in.readStringArray(metarStations);
-            }
-
-            metnoLicense = in.readByte() != 0;
-
-            tmpSize = in.readInt();
-            if (tmpSize > 0) {
-                sources = new String[tmpSize];
-                in.readStringArray(sources);
-            }
-
-            units = in.readString();
-
-        }
-
-    }
-
-    public static interface Service {
-        @GET("/{key}/{lat},{lng}?extend=hourly")
-        Response getForecast(
-                @Path("key") String key,
-                @Path("lat") double lat,
-                @Path("lng") double lng,
-                @Query("lang") String lang,
-                @Query("units") String units
-        );
     }
 }

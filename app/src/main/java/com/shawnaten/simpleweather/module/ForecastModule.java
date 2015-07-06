@@ -30,6 +30,7 @@ public class ForecastModule {
                 .setEndpoint(ENDPOINT)
                 .setClient(client)
                 .setConverter(converter)
+                .setLogLevel(RestAdapter.LogLevel.BASIC)
                 .build().create(Forecast.Service.class);
     }
 
@@ -43,24 +44,34 @@ public class ForecastModule {
             @Override
             public void call(Subscriber<? super Forecast.Response> subscriber) {
                 if (LocationSettings.getMode() == LocationSettings.Mode.SAVED) {
-                    keysObservable.subscribe(keys ->
+                    keysObservable.subscribe(keys -> {
                         subscriber.onNext(forecastService.getForecast(
-                            keys.getForecastAPIKey(),
-                            LocationSettings.getLatLng().latitude,
-                            LocationSettings.getLatLng().longitude,
-                            LocalizationSettings.getLangCode(),
-                            LocalizationSettings.getUnitCode()
-                        ))
+                                keys.getForecastAPIKey(),
+                                LocationSettings.getLatLng().latitude,
+                                LocationSettings.getLatLng().longitude,
+                                LocalizationSettings.getLangCode(),
+                                LocalizationSettings.getUnitCode()
+                        ));
+                                subscriber.onNext(forecastService.getEnglishForecast(
+                                        keys.getForecastAPIKey(),
+                                        LocationSettings.getLatLng().latitude,
+                                        LocationSettings.getLatLng().longitude
+                                ));
+                            }
                     );
                 } else {
                     Observable.zip(keysObservable, locationObservable, (keys, location) -> {
-                        Forecast.Response forecast = forecastService.getForecast(
-                            keys.getForecastAPIKey(),
-                            location.getLatitude(), location.getLongitude(),
-                            LocalizationSettings.getLangCode(),
-                            LocalizationSettings.getUnitCode());
-                            subscriber.onNext(forecast);
-                            return forecast;
+                        subscriber.onNext(forecastService.getForecast(
+                                keys.getForecastAPIKey(),
+                                location.getLatitude(), location.getLongitude(),
+                                LocalizationSettings.getLangCode(),
+                                LocalizationSettings.getUnitCode()
+                        ));
+                        subscriber.onNext(forecastService.getEnglishForecast(
+                                keys.getForecastAPIKey(),
+                                location.getLatitude(), location.getLongitude()
+                        ));
+                        return null;
                     }).subscribe();
                 }
             }
