@@ -18,8 +18,14 @@
             android:layout_height="wrap_content" />
 
         <include layout="@layout/summary_card"/>
-        <include layout="@layout/chart_card" android:id="@+id/precipitation_card"/>
-        <include layout="@layout/chart_card" android:id="@+id/temperature_card"/>
+
+        <include
+            android:id="@+id/precipitation_card"
+            layout="@layout/chart_card" />
+
+        <include
+            android:id="@+id/temperature_card"
+            layout="@layout/chart_card" />
 
         <LinearLayout
             android:id="@+id/day_list"

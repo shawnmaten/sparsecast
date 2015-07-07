@@ -27,12 +27,10 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
     private View toolbar;
     private View photoContainer;
     private View photo;
-    private View header;
     private ObservableScrollView scroll;
-    private TextView thirdParty;
     private View content;
 
-    private int screenWidth, screenHeight;
+    private int screenWidth;
 
     public static Tab newInstance(String title, int layout) {
         Bundle args = new Bundle();
@@ -50,7 +48,6 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
         setHasOptionsMenu(true);
 
         screenWidth = getResources().getDisplayMetrics().widthPixels;
-        screenHeight = getResources().getDisplayMetrics().heightPixels;
     }
 
     @Override
@@ -61,14 +58,11 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(getArguments().getInt(TAB_LAYOUT), container, false);
-        View attributions;
 
         toolbar = getBaseActivity().findViewById(R.id.toolbar);
         photoContainer = getBaseActivity().findViewById(R.id.photo_container);
         photo = getBaseActivity().findViewById(R.id.photo);
-        header = getBaseActivity().findViewById(R.id.header);
         scroll = (ObservableScrollView) root.findViewById(R.id.scroll);
-        //attributions = getBaseActivity().findViewById(R.id.attributions);
 
         if (scroll != null) {
             scroll.addCallbacks(this);
@@ -93,22 +87,6 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
             });
         }
 
-        if ((thirdParty = (TextView) root.findViewById(R.id.third_party)) != null)
-            thirdParty.setMovementMethod(LinkMovementMethod.getInstance());
-
-        /*
-        if (attributions != null)
-            attributions.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent browserIntent = new Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse(getString(R.string.forecast_link)));
-                    startActivity(browserIntent);
-                }
-            });
-        */
-
         return root;
     }
 
@@ -117,12 +95,6 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
         super.onResume();
 
         getBaseActivity().checkForData(this);
-
-        if (LocationSettings.getMode() == LocationSettings.Mode.SAVED
-                && LocationSettings.getSavedPlace() != null
-                && LocationSettings.getAttributions() != null) {
-            thirdParty.setText(Html.fromHtml(LocationSettings.getAttributions().toString()));
-        }
     }
 
     @Override

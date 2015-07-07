@@ -1,25 +1,11 @@
 package com.shawnaten.simpleweather.ui;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.shawnaten.simpleweather.R;
-import com.shawnaten.tools.Charts;
-import com.shawnaten.tools.Forecast;
-import com.shawnaten.tools.ForecastIconSelector;
-
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-
-public class WeekTab extends Tab {
-    public static WeekTab newInstance(String title, int layout) {
+public class Next7DaysTab extends Tab {
+    public static Next7DaysTab newInstance(String title, int layout) {
         Bundle args = new Bundle();
-        WeekTab tab = new WeekTab();
+        Next7DaysTab tab = new Next7DaysTab();
         args.putString(TabAdapter.TAB_TITLE, title);
         args.putInt(TAB_LAYOUT, layout);
         tab.setArguments(args);

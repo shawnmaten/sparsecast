@@ -12,13 +12,13 @@ import com.shawnaten.tools.Forecast;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.LocalizationSettings;
 
-public class NowTab extends Tab {
+public class Next24HoursTab extends Tab {
     private View nextHourSection;
     private VerticalWeatherBar verticalWeatherBar;
 
-    public static NowTab newInstance(String title, int layout) {
+    public static Next24HoursTab newInstance(String title, int layout) {
         Bundle args = new Bundle();
-        NowTab tab = new NowTab();
+        Next24HoursTab tab = new Next24HoursTab();
         args.putString(TabAdapter.TAB_TITLE, title);
         args.putInt(TAB_LAYOUT, layout);
         tab.setArguments(args);

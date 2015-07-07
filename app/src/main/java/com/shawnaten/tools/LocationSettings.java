@@ -5,20 +5,41 @@ import com.google.android.gms.maps.model.LatLng;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
 
 public class LocationSettings {
-    public enum Mode {SAVED, CURRENT};
-
     private static Mode mode = Mode.CURRENT;
-
     private static boolean locationServicesAvailable = true;
-
     private static String name;
+    private static String address;
     private static LatLng latLng;
     private static String placeId;
     private static CharSequence attributions;
-    private static SavedPlace savedPlace;
+    private static boolean isFavorite;
 
     public static void configure() {
         // check if place services is available and change settings
+    }
+
+    public static void setPlace(Place place, boolean isFavorite, CharSequence attributions) {
+        mode = Mode.SAVED;
+        name = place.getName().toString();
+        address = place.getAddress().toString();
+        if (address.regionMatches(0, name, 0, name.length())) {
+            address = address.replace(name, "");
+            if (address.charAt(0) == ',')
+                address = address.substring(1);
+            address = address.trim();
+        }
+        latLng = place.getLatLng();
+        placeId = place.getId();
+        LocationSettings.isFavorite = isFavorite;
+        LocationSettings.attributions = attributions;
+    }
+
+    public static void setIsFavorite(boolean isFavorite) {
+        LocationSettings.isFavorite = isFavorite;
+    }
+
+    public static Mode getMode() {
+        return mode;
     }
 
     public static void setMode(Mode newMode) {
@@ -27,24 +48,12 @@ public class LocationSettings {
         mode = newMode;
     }
 
-    public static Mode getMode() {
-        return mode;
-    }
-
-    public static void setPlace(Place place, SavedPlace savedPlace, CharSequence attributions) {
-        mode = Mode.SAVED;
-        if (place.getPlaceTypes().contains(Place.TYPE_POLITICAL))
-            name = place.getAddress().toString();
-        else
-            name = place.getName().toString();
-        latLng = place.getLatLng();
-        placeId = place.getId();
-        LocationSettings.savedPlace = savedPlace;
-        LocationSettings.attributions = attributions;
-    }
-
     public static String getName() {
         return name;
+    }
+
+    public static String getAddress() {
+        return address;
     }
 
     public static LatLng getLatLng() {
@@ -59,11 +68,9 @@ public class LocationSettings {
         return attributions;
     }
 
-    public static SavedPlace getSavedPlace() {
-        return savedPlace;
+    public static boolean isFavorite() {
+        return isFavorite;
     }
 
-    public static void setSavedPlace(SavedPlace savedPlace) {
-        LocationSettings.savedPlace = savedPlace;
-    }
+    public enum Mode {SAVED, CURRENT}
 }

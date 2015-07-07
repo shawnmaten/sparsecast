@@ -92,7 +92,7 @@ public class SavedPlacesTab extends Tab {
                 result.setResultCallback(result1 -> {
                     PlaceBuffer placeBuffer = (PlaceBuffer) result1;
                     Place place = placeBuffer.get(0);
-                    LocationSettings.setPlace(place, savedPlaces.get(id), placeBuffer.getAttributions());
+                    LocationSettings.setPlace(place, true, placeBuffer.getAttributions());
                     placeBuffer.release();
                     getActivity().setResult(MainActivity.PLACE_SELECTED_CODE);
                     getActivity().finish();

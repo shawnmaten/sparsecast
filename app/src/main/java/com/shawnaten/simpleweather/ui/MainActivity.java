@@ -89,7 +89,6 @@ public class MainActivity extends BaseActivity {
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        header = findViewById(R.id.header);
         photoContainer = findViewById(R.id.photo_container);
         photo = (ImageView) findViewById(R.id.photo);
 
@@ -107,8 +106,8 @@ public class MainActivity extends BaseActivity {
         getSupportActionBar().setTitle(null);
 
         tabAdapter = new TabAdapter(getSupportFragmentManager(),
-                NowTab.newInstance(getString(R.string.now), R.layout.tab_now),
-                WeekTab.newInstance(getString(R.string.week), R.layout.tab_week));
+                Next24HoursTab.newInstance(getString(R.string.next_24_hours), R.layout.tab_next_24_hours),
+                Next7DaysTab.newInstance(getString(R.string.next_7_days), R.layout.tab_next_7_days));
         viewPager.setAdapter(tabAdapter);
         slidingTabLayout.setCustomTabView(R.layout.tab_title_light, R.id.title);
         slidingTabLayout.setSelectedIndicatorColors(0xFFFFFFFF);
@@ -166,18 +165,6 @@ public class MainActivity extends BaseActivity {
                         double placeDistance = SphericalUtil.computeDistanceBetween(
                                 actualLocation, place.getLatLng());
 
-                        /*
-                        for (PlaceLikelihood likelihood : likelihoods) {
-                            Place newPlace = likelihood.getPlace();
-                            double newDistance = SphericalUtil.computeDistanceBetween(
-                                    actualLocation, newPlace.getLatLng());
-                            if (newDistance < placeDistance) {
-                                place = newPlace;
-                                placeDistance = newDistance;
-                            }
-                        }
-                        */
-
                         String returns[] = new String[2];
 
                         String streetNumber = null;
@@ -219,7 +206,8 @@ public class MainActivity extends BaseActivity {
                 sendDataToFragments(FORECAST_DATA, forecast);
                 ((TextView) findViewById(R.id.main_location))
                         .setText(LocationSettings.getName());
-                findViewById(R.id.secondary_location).setVisibility(View.GONE);
+                ((TextView) findViewById(R.id.secondary_location))
+                        .setText(LocationSettings.getAddress());
             });
         }
     }
@@ -241,7 +229,7 @@ public class MainActivity extends BaseActivity {
         if (LocationSettings.getMode() == LocationSettings.Mode.SAVED) {
             actionFavorite.setVisible(true);
             actionCurrentLocation.setVisible(true);
-            if (LocationSettings.getSavedPlace() != null)
+            if (LocationSettings.isFavorite())
                 actionFavorite.setIcon(R.drawable.ic_favorite_white_24dp);
         } else {
             actionFavorite.setVisible(false);
@@ -255,15 +243,17 @@ public class MainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_favorite:
-                if (LocationSettings.getSavedPlace() != null) {
+                if (LocationSettings.isFavorite()) {
+                    SavedPlace savedPlace = new SavedPlace();
+                    savedPlace.setPlaceId(LocationSettings.getPlaceId());
                     item.setIcon(R.drawable.ic_favorite_border_white_24dp);
-                    LocationSettings.setSavedPlace(null);
+                    LocationSettings.setIsFavorite(false);
                     subs.add(Observable.create(new Observable.OnSubscribe<Void>() {
                         @Override
                         public void call(Subscriber<? super Void> subscriber) {
                             try {
                                 subscriber.onNext(savedPlaceApi
-                                        .delete(LocationSettings.getSavedPlace()).execute());
+                                        .delete(savedPlace).execute());
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -335,15 +325,8 @@ public class MainActivity extends BaseActivity {
             temp.setText(tf.format(forecast.getCurrently().getTemperature()));
             status.setText(forecast.getCurrently().getSummary());
 
-            if (Math.round(currently.getTemperature()) != Math.round(currently.getApparentTemperature())) {
-                feelsLikes.setVisibility(View.VISIBLE);
-                //((LinearLayout) findViewById(R.placeId.temp_holder)).setBaselineAlignedChildIndex(1);
-                feelsLikes.setText(String.format("%s %s", getString(R.string.feels_like),
-                        tf.format(forecast.getCurrently().getApparentTemperature())));
-            } else {
-                feelsLikes.setVisibility(View.GONE);
-                //((LinearLayout) findViewById(R.placeId.temp_holder)).setBaselineAlignedChildIndex(0);
-            }
+            feelsLikes.setText(String.format("%s %s", getString(R.string.feels_like),
+                    tf.format(forecast.getCurrently().getApparentTemperature())));
 
             Observable<Image> imageObservable = Observable.create(new Observable.OnSubscribe<Image>() {
                 @Override
