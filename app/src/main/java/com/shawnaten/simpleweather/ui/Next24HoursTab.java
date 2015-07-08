@@ -14,6 +14,7 @@ import com.shawnaten.tools.LocalizationSettings;
 
 public class Next24HoursTab extends Tab {
     private View nextHourSection;
+    private View next24HoursSection;
     private VerticalWeatherBar verticalWeatherBar;
 
     public static Next24HoursTab newInstance(String title, int layout) {
@@ -30,7 +31,7 @@ public class Next24HoursTab extends Tab {
         super.onViewCreated(view, savedInstanceState);
 
         nextHourSection = view.findViewById(R.id.next_hour_section);
-        View next24HoursSection = view.findViewById(R.id.next_24_hours_section);
+        next24HoursSection = view.findViewById(R.id.next_24_hours_section);
         verticalWeatherBar = (VerticalWeatherBar) next24HoursSection
                 .findViewById(R.id.vertical_weather_bar);
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
@@ -40,10 +41,14 @@ public class Next24HoursTab extends Tab {
         layoutParams.height = screenHeight - screenWidth;
         nextHourSection.setLayoutParams(layoutParams);
 
-        layoutParams = next24HoursSection.getLayoutParams();
-        layoutParams.height = screenHeight -
-                (screenWidth / 2 + getResources().getDimensionPixelSize(R.dimen.header_space));
-        next24HoursSection.setLayoutParams(layoutParams);
+        next24HoursSection.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+                ViewGroup.LayoutParams layoutParams1 = next24HoursSection.getLayoutParams();
+                layoutParams1.height = screenHeight - getMinPhotoHeight();
+                next24HoursSection.setLayoutParams(layoutParams1);
+            }
+        });
     }
 
     @Override

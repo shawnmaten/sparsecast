@@ -23,7 +23,7 @@ public class LocationSettings {
         name = place.getName().toString();
         address = place.getAddress().toString();
         if (address.regionMatches(0, name, 0, name.length())) {
-            address = address.replace(name, "");
+            address = address.replaceFirst(name, "");
             if (address.charAt(0) == ',')
                 address = address.substring(1);
             address = address.trim();

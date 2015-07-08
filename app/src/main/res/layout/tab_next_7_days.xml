@@ -17,30 +17,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <include layout="@layout/summary_card"/>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/standard_margin" />
 
-        <include
-            android:id="@+id/precipitation_card"
-            layout="@layout/chart_card" />
-
-        <include
-            android:id="@+id/temperature_card"
-            layout="@layout/chart_card" />
-
-        <LinearLayout
-            android:id="@+id/day_list"
+        <TextView
+            android:id="@+id/summary"
+            style="@style/text.title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:paddingEnd="@dimen/standard_margin"
+            android:paddingLeft="@dimen/standard_margin"
+            android:paddingRight="@dimen/standard_margin"
+            android:paddingStart="@dimen/standard_margin"
+            android:textAlignment="center" />
 
-        </LinearLayout>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/half_margin" />
+
+        <LinearLayout
+            android:id="@+id/days_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/half_margin" />
 
         <Space
             android:id="@+id/bottom_space"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <include layout="@layout/attributions_card"/>
 
     </LinearLayout>
 

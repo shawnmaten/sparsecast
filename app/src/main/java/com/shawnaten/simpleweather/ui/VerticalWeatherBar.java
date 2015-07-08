@@ -106,12 +106,11 @@ public class VerticalWeatherBar extends View {
         for (int i = 0; i < 24; i += skip) {
             Forecast.DataPoint dataPoint = hourly.getData()[i];
 
-            float textTop = barTop + i * colorHeight;
+            float textTop = barTop + (i + 1) * colorHeight + textHeight / 2;
 
-            canvas.drawText(tempFormat.format(dataPoint.getTemperature()), tempRight,
-                    textTop + textHeight, textPaint);
-            canvas.drawText(timeFormat.format(dataPoint.getTime()), timeRight,
-                    textTop + textHeight, textPaint);
+            canvas.drawText(tempFormat.format(dataPoint.getTemperature()), tempRight, textTop,
+                    textPaint);
+            canvas.drawText(timeFormat.format(dataPoint.getTime()), timeRight, textTop, textPaint);
         }
 
         textPaint.setTextAlign(Paint.Align.LEFT);

@@ -22,12 +22,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
+        <View
+            android:id="@+id/overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <GridLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/scrim_bottom">
+            android:layout_alignParentBottom="true">
 
             <Space
                 android:layout_width="@dimen/standard_margin"
@@ -118,50 +122,6 @@
                 android:paddingStart="4dp" />
 
         </GridLayout>
-
-        <!--
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/scrim_bottom"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:id="@+id/temp_holder"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingEnd="@dimen/standard_margin"
-                    android:paddingLeft="@dimen/standard_margin"
-                    android:paddingRight="@dimen/standard_margin"
-                    android:paddingStart="@dimen/standard_margin">
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/location_status_holder"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/temp_holder"
-                    android:layout_toRightOf="@id/temp_holder"
-                    android:orientation="vertical"
-                    android:paddingEnd="@dimen/standard_margin"
-                    android:paddingRight="@dimen/standard_margin">
-
-
-
-                </LinearLayout>
-
-            </RelativeLayout>
-
-
-
-        </LinearLayout>
-        -->
 
     </RelativeLayout>
 

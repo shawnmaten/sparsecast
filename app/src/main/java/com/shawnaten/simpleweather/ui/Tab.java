@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,14 +24,14 @@ import com.shawnaten.tools.LocationSettings;
 public class Tab extends BaseFragment implements ScrollCallbacks,
         MainActivity.ScrollListener, MainActivity.FragmentDataListener {
     public static final String TAB_LAYOUT = "tabLayout";
-
+    protected int screenWidth;
+    protected int screenHeight;
     private View toolbar;
     private View photoContainer;
     private View photo;
     private ObservableScrollView scroll;
     private View content;
-
-    private int screenWidth;
+    private View header;
 
     public static Tab newInstance(String title, int layout) {
         Bundle args = new Bundle();
@@ -48,6 +49,7 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
         setHasOptionsMenu(true);
 
         screenWidth = getResources().getDisplayMetrics().widthPixels;
+        screenHeight = getResources().getDisplayMetrics().heightPixels;
     }
 
     @Override
@@ -63,6 +65,7 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
         photoContainer = getBaseActivity().findViewById(R.id.photo_container);
         photo = getBaseActivity().findViewById(R.id.photo);
         scroll = (ObservableScrollView) root.findViewById(R.id.scroll);
+        header = getBaseActivity().findViewById(R.id.header);
 
         if (scroll != null) {
             scroll.addCallbacks(this);
@@ -71,19 +74,20 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
         }
 
         if ((content = root.findViewById(R.id.content)) != null) {
-            content.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) -> {
-                View space = content.findViewById(R.id.top_space);
-                ViewGroup.LayoutParams layoutParams = space.getLayoutParams();
-                layoutParams.height = screenWidth;
-                space.setLayoutParams(layoutParams);
+            View topSpace = content.findViewById(R.id.top_space);
+            ViewGroup.LayoutParams topParams = topSpace.getLayoutParams();
+            topParams.height = screenWidth;
+            topSpace.setLayoutParams(topParams);
 
-                space = content.findViewById(R.id.bottom_space);
-                layoutParams = space.getLayoutParams();
-                int minContentHeight = screenWidth / 2 + getResources()
-                        .getDimensionPixelSize(R.dimen.header_space);
-                int bottomSpaceHeight = Math.max(0, minContentHeight - content.getHeight());
-                layoutParams.height = bottomSpaceHeight;
-                space.setLayoutParams(layoutParams);
+            content.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) -> {
+                View bottomSpace = content.findViewById(R.id.bottom_space);
+                ViewGroup.LayoutParams bottomParams = bottomSpace.getLayoutParams();
+                int newBottomHeight = Math.max(0, screenHeight - getMinPhotoHeight()
+                        - (content.getHeight() - topParams.height - bottomParams.height));
+                if (bottomParams.height != newBottomHeight) {
+                    bottomParams.height = newBottomHeight;
+                    bottomSpace.setLayoutParams(bottomParams);
+                }
             });
         }
 
@@ -99,15 +103,9 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
 
     @Override
     public void onScrollChanged(int deltaX, int deltaY) {
-        onScrollChangedHelper(0);
-    }
-
-    private void onScrollChangedHelper(int headerHeightDelta) {
-        int minPhotoHeight = getResources().getDisplayMetrics().widthPixels / 2
-                + getResources().getDimensionPixelSize(R.dimen.header_space);
         float density = getResources().getDisplayMetrics().density;
-        int scrollAmount = Math.min(screenWidth - minPhotoHeight, scroll.getScrollY());
-        float scrollPercent = scrollAmount / (float) (screenWidth - minPhotoHeight);
+        int scrollAmount = Math.min(screenWidth - getMinPhotoHeight(), scroll.getScrollY());
+        float scrollPercent = scrollAmount / (float) (screenWidth - getMinPhotoHeight());
         float elevation = scrollPercent * 4 * density;
 
         photoContainer.setY(-scrollAmount);
@@ -126,10 +124,8 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
     @Override
     public void onOtherScrollChanged(int otherScrollAmount) {
         if (!getUserVisibleHint()) {
-            int minPhotoHeight = getResources().getDisplayMetrics().widthPixels / 2
-                    + getResources().getDimensionPixelSize(R.dimen.header_space);
             if (scroll != null) {
-                int thisScrollAmount = Math.min(screenWidth - minPhotoHeight, scroll.getScrollY());
+                int thisScrollAmount = Math.min(screenWidth - getMinPhotoHeight(), scroll.getScrollY());
                 if (otherScrollAmount != thisScrollAmount)
                     scroll.setScrollY(otherScrollAmount);
             }
@@ -149,6 +145,11 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
                         }
                     });
         }
+    }
+
+    protected int getMinPhotoHeight() {
+        return toolbar.getHeight() + header.getHeight() + getResources().getDimensionPixelSize(
+                getResources().getIdentifier("status_bar_height", "dimen", "android"));
     }
 
 }

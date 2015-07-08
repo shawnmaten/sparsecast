@@ -1,11 +1,15 @@
 package com.shawnaten.simpleweather.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +36,7 @@ import com.shawnaten.tools.Instagram;
 import com.shawnaten.tools.LocationSettings;
 import com.shawnaten.tools.PlaceLikelihoodService;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -45,7 +50,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements Target {
     public static final int PLACE_SEARCH_CODE = RESULT_FIRST_USER + 1;
     public static final int PLACE_SELECTED_CODE = RESULT_FIRST_USER + 2;
 
@@ -58,6 +63,7 @@ public class MainActivity extends BaseActivity {
     @Inject ImagesApi imagesApi;
     private int scrollPosition;
     private ImageView photo;
+    private View overlay;
     private View instagramAttribution;
 
     private SavedPlaceApi savedPlaceApi;
@@ -77,7 +83,6 @@ public class MainActivity extends BaseActivity {
         SlidingTabLayout slidingTabLayout;
         TabAdapter tabAdapter;
         Toolbar toolbar;
-        View header;
         View photoContainer;
         int screenWidth;
 
@@ -91,6 +96,7 @@ public class MainActivity extends BaseActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         photoContainer = findViewById(R.id.photo_container);
         photo = (ImageView) findViewById(R.id.photo);
+        overlay = findViewById(R.id.overlay);
 
         if (savedInstanceState != null) {
             scrollPosition = savedInstanceState.getInt(SCROLL_POSITION);
@@ -129,7 +135,7 @@ public class MainActivity extends BaseActivity {
         invalidateOptionsMenu();
 
         decorView = getWindow().getDecorView();
-        getWindow().setStatusBarColor(0x66000000);
+        getWindow().setStatusBarColor(0x00000000);
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
@@ -352,7 +358,7 @@ public class MainActivity extends BaseActivity {
                                 .getImages().getStandardResolution().getUrl();
                         String username = instagramData.getData()
                                 .getUser().getUsername();
-                        Picasso.with(photo.getContext()).load(url).into(photo);
+                        Picasso.with(photo.getContext()).load(url).into(this);
                         instagramUserView.setText(username);
                         instagramAttribution.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -366,6 +372,26 @@ public class MainActivity extends BaseActivity {
                     });
 
         }
+    }
+
+    @Override
+    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+        photo.setImageBitmap(bitmap);
+        Palette palette = Palette.from(bitmap).generate();
+        int color = palette.getMutedColor(0x000000);
+        color = Color.argb(102, Color.red(color), Color.green(color),
+                Color.blue(color));
+        overlay.setBackgroundColor(color);
+    }
+
+    @Override
+    public void onBitmapFailed(Drawable errorDrawable) {
+
+    }
+
+    @Override
+    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
     }
 
     public interface ScrollListener {

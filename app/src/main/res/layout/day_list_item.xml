@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:selectableItemBackground"
+    android:orientation="vertical"
+    android:paddingEnd="@dimen/standard_margin"
+    android:paddingLeft="@dimen/standard_margin"
+    android:paddingRight="@dimen/standard_margin"
+    android:paddingStart="@dimen/standard_margin">
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/half_margin" />
+
+    <TextView
+        android:id="@+id/day_of_week"
+        style="@style/text.title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/summary"
+        style="@style/text.body_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/half_margin" />
+
+</LinearLayout>
