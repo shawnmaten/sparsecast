@@ -87,10 +87,10 @@
 
         </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/next_24_hours_section"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:orientation="vertical">
 
             <TextView
@@ -106,16 +106,31 @@
                 android:textAlignment="center">
             </TextView>
 
-            <com.shawnaten.simpleweather.ui.VerticalWeatherBar
+            <TextView
+                android:id="@+id/sunset"
+                style="@style/text.title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/standard_margin"
+                android:paddingEnd="@dimen/standard_margin"
+                android:paddingLeft="@dimen/standard_margin"
+                android:paddingRight="@dimen/standard_margin"
+                android:paddingStart="@dimen/standard_margin"
+                android:textAlignment="center"></TextView>
+
+            <com.shawnaten.simpleweather.ui.widget.VerticalWeatherBar
                 android:id="@+id/vertical_weather_bar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/sunset"
+                android:layout_below="@id/next_24_hours_summary"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="@dimen/standard_margin"
                 android:layout_marginTop="@dimen/standard_margin"
                 android:orientation="vertical" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <Space
             android:id="@+id/bottom_space"

@@ -7,10 +7,14 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.ui.widget.VerticalWeatherBar;
 import com.shawnaten.tools.Charts;
 import com.shawnaten.tools.Forecast;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.LocalizationSettings;
+
+import java.text.DateFormat;
+import java.util.Date;
 
 public class Next24HoursTab extends Tab {
     private View nextHourSection;
@@ -55,7 +59,7 @@ public class Next24HoursTab extends Tab {
     public void onNewData(Object data) {
         super.onNewData(data);
 
-        if (getUserVisibleHint() && Forecast.Response.class.isInstance(data)) {
+        if (isVisible() && Forecast.Response.class.isInstance(data)) {
             Forecast.Response forecast = (Forecast.Response) data;
 
             verticalWeatherBar.setData(forecast);
@@ -70,6 +74,7 @@ public class Next24HoursTab extends Tab {
             TextView nearestStorm = (TextView) root.findViewById(R.id.nearest_storm);
             TextView next24HourSummary = (TextView)
                     root.findViewById(R.id.next_24_hours_summary);
+            TextView sunset = (TextView) root.findViewById(R.id.sunset);
 
             if (forecast.getMinutely() != null) {
                 nextHourSection.setVisibility(View.VISIBLE);
@@ -96,6 +101,66 @@ public class Next24HoursTab extends Tab {
             next24HourSummary.setText(hourly.getSummary());
 
             verticalWeatherBar.setData(forecast);
+
+            Date nowTime, sunTime;
+            Forecast.DataPoint today, tomorrow;
+
+            today = forecast.getDaily().getData()[0];
+            tomorrow = forecast.getDaily().getData()[1];
+
+            nowTime = forecast.getCurrently().getTime();
+
+            int sunString;
+
+            if (nowTime.before(today.getSunriseTime())) {
+                sunTime = today.getSunriseTime();
+                sunString = R.string.sunrise;
+            } else if (nowTime.before(today.getSunsetTime())) {
+                sunTime = today.getSunsetTime();
+                sunString = R.string.sunset;
+            } else {
+                sunTime = tomorrow.getSunriseTime();
+                sunString = R.string.sunrise;
+            }
+
+
+            long difference = sunTime.getTime() - nowTime.getTime();
+            long hours = difference / 3600000;
+            difference -= hours * 3600000;
+            long minutes = difference / 60000;
+
+            if (hours == 0 && minutes == 0) {
+                if (sunString == R.string.sunrise) {
+                    sunTime = today.getSunsetTime();
+                    sunString = R.string.sunset;
+                } else {
+                    sunTime = tomorrow.getSunriseTime();
+                    sunString = R.string.sunrise;
+                }
+            }
+
+            difference = sunTime.getTime() - nowTime.getTime();
+            hours = difference / 3600000;
+            difference -= hours * 3600000;
+            minutes = difference / 60000;
+
+            String text = String.format("%s %s", getString(sunString), getString(R.string.in));
+
+            if (hours > 0) {
+                text += String.format(" %d %s", hours, hours > 1 ? getString(R.string.hours_short)
+                        : getString(R.string.hour_short));
+            }
+
+            if (minutes > 0) {
+                text += String.format(" %d %s", minutes, minutes > 1 ? getString(R.string.minutes_short)
+                        : getString(R.string.minute_short));
+            }
+
+            DateFormat dateFormat = ForecastTools.getTimeForm(forecast.getTimezone());
+
+            text += String.format(" (%s)", dateFormat.format(sunTime.getTime()));
+
+            sunset.setText(text);
         }
     }
 }

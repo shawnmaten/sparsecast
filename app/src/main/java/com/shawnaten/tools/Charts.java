@@ -200,7 +200,7 @@ public class Charts {
             for (Forecast.DataPoint dataPoint : data)
                 xValues.add(String.format("%s", shortTimeForm.format(dataPoint.getTime())));
         } else if (data.length >= 60) {
-            String minText = context.getString(R.string.minute);
+            String minText = context.getString(R.string.minute_short);
             for (int i = 0; i < data.length; i++)
                 xValues.add(String.format("%d %s", i, minText));
         }

@@ -6,6 +6,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -259,11 +260,9 @@ public class Forecast {
         private double pressure;
         private double visibility;
         private double ozone;
-
         public DataPoint() {
 
         }
-
         protected DataPoint(Parcel in) {
             long tmpTime = in.readLong();
             time = tmpTime != -1 ? new Date(tmpTime) : null;
@@ -474,6 +473,32 @@ public class Forecast {
             dest.writeDouble(pressure);
             dest.writeDouble(visibility);
             dest.writeDouble(ozone);
+        }
+
+        public static class DailyMinComparator implements Comparator<DataPoint> {
+
+            @Override
+            public int compare(DataPoint dataPoint, DataPoint t1) {
+                if (dataPoint.getTemperatureMin() < t1.getTemperatureMin())
+                    return -1;
+                else if (dataPoint.getTemperatureMin() == t1.getTemperatureMin())
+                    return 0;
+                else
+                    return 1;
+            }
+        }
+
+        public static class DailyMaxComparator implements Comparator<DataPoint> {
+
+            @Override
+            public int compare(DataPoint dataPoint, DataPoint t1) {
+                if (dataPoint.getTemperatureMax() < t1.getTemperatureMax())
+                    return -1;
+                else if (dataPoint.getTemperatureMax() == t1.getTemperatureMax())
+                    return 0;
+                else
+                    return 1;
+            }
         }
 
     }

@@ -4,16 +4,21 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.ui.widget.HorizontalWeatherBar;
+import com.shawnaten.simpleweather.ui.widget.TemperatureBar;
 import com.shawnaten.tools.Forecast;
-import com.shawnaten.tools.ForecastTools;
+import com.shawnaten.tools.ForecastIconSelector;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
 
-public class Next7DaysTab extends Tab {
+public class Next7DaysTab extends Tab implements View.OnClickListener {
     private LinearLayout daysList;
     private TextView summary;
 
@@ -33,8 +38,11 @@ public class Next7DaysTab extends Tab {
         summary = (TextView) root.findViewById(R.id.summary);
         daysList = (LinearLayout) root.findViewById(R.id.days_list);
 
-        for (int i = 0; i < 8; i++)
-            daysList.addView(inflater.inflate(R.layout.day_list_item, daysList, false));
+        for (int i = 0; i < 7; i++) {
+            View item = inflater.inflate(R.layout.day_list_item, daysList, false);
+            item.setOnClickListener(this);
+            daysList.addView(item);
+        }
 
         return root;
     }
@@ -45,90 +53,59 @@ public class Next7DaysTab extends Tab {
 
         if (isVisible() && Forecast.Response.class.isInstance(data)) {
             Forecast.Response forecast = (Forecast.Response) data;
-            Forecast.DataBlock daily = forecast.getDaily();
-            SimpleDateFormat dayFormat = new SimpleDateFormat("cccc");
+            Forecast.DataPoint daily[] = forecast.getDaily().getData();
+            Forecast.DataPoint hourly[] = forecast.getHourly().getData();
+            SimpleDateFormat dayFormat = new SimpleDateFormat("ccc");
             dayFormat.setTimeZone(forecast.getTimezone());
 
-            summary.setText(daily.getSummary());
+            Forecast.DataPoint dailyMin[] = Arrays.copyOf(daily, daily.length);
+            Arrays.sort(dailyMin, new Forecast.DataPoint.DailyMinComparator());
+            Forecast.DataPoint dailyMax[] = Arrays.copyOf(daily, daily.length);
+            Arrays.sort(dailyMax, new Forecast.DataPoint.DailyMaxComparator());
 
-            for (int i = 0; i < 8; i++) {
-                Forecast.DataPoint dataPoint = daily.getData()[i];
+            int totalMin = (int) dailyMin[0].getTemperatureMin();
+            int totalMax = (int) dailyMax[dailyMax.length - 1].getTemperatureMax();
+
+            summary.setText(forecast.getDaily().getSummary());
+
+            int hoursLeftInDay = 24 - Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+            int hourlyOffsets[] = new int[8];
+            hourlyOffsets[0] = 0;
+            for (int i = 1; i < 8; i++) {
+                hourlyOffsets[i] = hoursLeftInDay + (i - 1) * 24;
+            }
+
+            for (int i = 0; i < 7; i++) {
+                Forecast.DataPoint dataPoint = daily[i];
                 View item = daysList.getChildAt(i);
+                ImageView icon = (ImageView) item.findViewById(R.id.icon);
                 TextView dayOfWeek = (TextView) item.findViewById(R.id.day_of_week);
                 TextView summary = (TextView) item.findViewById(R.id.summary);
+                TemperatureBar tempBar = (TemperatureBar) item.findViewById(R.id.temperature_bar);
+                HorizontalWeatherBar weatherBar = (HorizontalWeatherBar)
+                        item.findViewById(R.id.weather_bar);
 
+                icon.setImageResource(ForecastIconSelector.getImageId(dataPoint.getIcon()));
                 dayOfWeek.setText(dayFormat.format(dataPoint.getTime()));
                 summary.setText(dataPoint.getSummary());
+                tempBar.setData((int) dataPoint.getTemperatureMin(), (int) dataPoint.getTemperatureMax(),
+                        totalMin, totalMax);
+                weatherBar.setData(hourly, hourlyOffsets[i], forecast.getTimezone());
             }
         }
-            /*
-            Forecast.Response forecast = (Forecast.Response) data;
-            Forecast.DataBlock daily = forecast.getDaily();
-            Forecast.DataPoint dailyData[] = Arrays.copyOfRange(daily.getData(), 1, daily.getData().length);
-            View root = getView();
-            LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-            LinearLayout daysList = (LinearLayout) root.findViewById(R.id.day_list);
+    }
 
+    @Override
+    public void onClick(View view) {
+        View info = view.findViewById(R.id.info);
+        View weatherBar = view.findViewById(R.id.weather_bar);
 
-            View summaryCard = root.findViewById(R.id.summary_card);
-            ((TextView) summaryCard.findViewById(R.id.subhead))
-                    .setText(getString(R.string.for_next_7_days));
-            ((TextView) summaryCard.findViewById(R.id.next_hour_summary)).setText(daily.getSummary());
-            ((ImageView) summaryCard.findViewById(R.id.icon)).setImageResource(ForecastIconSelector
-                    .getImageId(daily.getIcon()));
-
-            daysList.removeAllViews();
-            for (int i = 1; i < daily.getData().length; i++) {
-                View dayCard = layoutInflater.inflate(R.layout.day_card, daysList, false);
-                TextView dayText = (TextView) dayCard.findViewById(R.id.title);
-                TextView summaryText = (TextView) dayCard.findViewById(R.id.next_hour_summary);
-                ImageView icon = (ImageView) dayCard.findViewById(R.id.icon);
-
-                dayText.setText(dayFormat.format(daily.getData()[i].getTime()));
-                summaryText.setText(daily.getData()[i].getSummary());
-                icon.setImageResource(ForecastIconSelector.getImageId(daily.getData()[i]
-                        .getIcon()));
-
-                daysList.addView(dayCard);
-            }
-
-            /*
-            int cardByCardMargin = getActivity().getResources()
-                    .getDimensionPixelSize(R.dimen.card_by_card_margin);
-            int cardMargin = getActivity().getResources()
-                    .getDimensionPixelSize(R.dimen.card_margin);
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams)
-                    daysList.getChildAt(0).getLayoutParams();
-            layoutParams.setMargins(cardByCardMargin, cardByCardMargin, cardByCardMargin,
-                    cardMargin);
-                    */
-
-        /*
-            View precipitationCard = root.findViewById(R.id.precipitation_card);
-            View temperatureCard = root.findViewById(R.id.temperature_card);
-
-
-            ((TextView) precipitationCard.findViewById(R.id.title))
-                    .setText(getString(R.string.precipitation));
-            ((TextView) precipitationCard.findViewById(R.id.subhead))
-                    .setText(getString(R.string.probability_and_intensity));
-
-            Charts.setPrecipitationGraph(
-                    getActivity(),
-                    (LineChart) precipitationCard.findViewById(R.id.chart),
-                    dailyData,
-                    forecast.getTimezone());
-
-            ((TextView) temperatureCard.findViewById(R.id.title))
-                    .setText(getString(R.string.temperature));
-            ((TextView) temperatureCard.findViewById(R.id.subhead))
-                    .setText(getString(R.string.actual_and_apparent));
-
-            Charts.setDailyTemperatureGraph(
-                    getActivity(),
-                    (LineChart) root.findViewById(R.id.temperature_card).findViewById(R.id.chart),
-                    dailyData,
-                    forecast.getTimezone());
-                    */
+        if (info.getVisibility() == View.INVISIBLE) {
+            weatherBar.setVisibility(View.INVISIBLE);
+            info.setVisibility(View.VISIBLE);
+        } else {
+            weatherBar.setVisibility(View.VISIBLE);
+            info.setVisibility(View.INVISIBLE);
+        }
     }
 }
