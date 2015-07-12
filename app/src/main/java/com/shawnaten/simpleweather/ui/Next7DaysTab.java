@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.ui.widget.HorizontalWeatherBar;
 import com.shawnaten.simpleweather.ui.widget.TemperatureBar;
@@ -106,6 +107,19 @@ public class Next7DaysTab extends Tab implements View.OnClickListener {
         } else {
             weatherBar.setVisibility(View.VISIBLE);
             info.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    protected void fabSetup() {
+        super.fabSetup();
+
+        if (getUserVisibleHint() && isVisible()) {
+            FloatingActionMenu fam = getMainActivity().getFam();
+
+            if (!fam.isMenuButtonHidden()) {
+                fam.hideMenuButton(true);
+            }
         }
     }
 }

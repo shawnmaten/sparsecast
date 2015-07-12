@@ -6,8 +6,7 @@
 
     <dimen name="half_fab">28dp</dimen>
 
-    <dimen name="fab_offset">104dp</dimen>
-    <dimen name="fab_offset_short">88dp</dimen>
+    <dimen name="fab_offset">88dp</dimen>
 
     <dimen name="rounded_rectangle_corner_radius">8dp</dimen>
 

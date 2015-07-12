@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.github.mikephil.charting.charts.LineChart;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.ui.widget.VerticalWeatherBar;
@@ -33,6 +35,44 @@ public class Next24HoursTab extends Tab {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        FloatingActionMenu fam;
+        FloatingActionButton item1, item2;
+
+        fam = getMainActivity().getFam();
+
+        item1 = new FloatingActionButton(fam.getContext());
+        item1.setColorNormalResId(R.color.white);
+        item1.setColorPressedResId(R.color.button_pressed_light);
+        item1.setImageResource(R.drawable.ic_trending_up_black_24dp);
+        item1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                nextHourSection.setVisibility(View.VISIBLE);
+                statsSection.setVisibility(View.INVISIBLE);
+            }
+        });
+        fabs.add(item1);
+        getMainActivity().addFab(item1);
+
+        item2 = new FloatingActionButton(fam.getContext());
+        item2.setColorNormalResId(R.color.white);
+        item2.setColorPressedResId(R.color.button_pressed_light);
+        item2.setImageResource(R.drawable.ic_list_black_24dp);
+        item2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                statsSection.setVisibility(View.VISIBLE);
+                nextHourSection.setVisibility(View.INVISIBLE);
+            }
+        });
+        fabs.add(item2);
+        getMainActivity().addFab(item2);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -47,19 +87,6 @@ public class Next24HoursTab extends Tab {
         layoutParams.height = screenHeight - screenWidth;
         nextHourAndStatsSection.setLayoutParams(layoutParams);
 
-        nextHourAndStatsSection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (statsSection.getVisibility() == View.INVISIBLE) {
-                    statsSection.setVisibility(View.VISIBLE);
-                    nextHourSection.setVisibility(View.INVISIBLE);
-                } else {
-                    statsSection.setVisibility(View.INVISIBLE);
-                    nextHourSection.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
         next24HoursSection.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
@@ -71,18 +98,32 @@ public class Next24HoursTab extends Tab {
     }
 
     @Override
+    protected void fabSetup() {
+        super.fabSetup();
+
+        if (getUserVisibleHint() && isVisible()) {
+            FloatingActionMenu fam = getMainActivity().getFam();
+
+            if (nextHourSection.getVisibility() != View.GONE) {
+                if (scroll.getScrollY() > screenHeight - screenWidth) {
+                    if (!fam.isMenuButtonHidden())
+                        fam.hideMenuButton(true);
+                } else {
+                    if (fam.isMenuButtonHidden())
+                        fam.showMenuButton(true);
+                }
+            } else {
+                if (!fam.isMenuButtonHidden())
+                    fam.hideMenuButton(true);
+            }
+        }
+    }
+
+    @Override
     public void onScrollChanged(int deltaX, int deltaY) {
         super.onScrollChanged(deltaX, deltaY);
 
-        int scrollAmount = scroll.getScrollY();
-
-        if (scrollAmount > screenHeight - screenWidth) {
-            if (!fab.isMenuButtonHidden())
-                fab.hideMenuButton(true);
-        } else {
-            if (fab.isMenuButtonHidden())
-                fab.showMenuButton(true);
-        }
+        fabSetup();
     }
 
     @Override
@@ -109,14 +150,14 @@ public class Next24HoursTab extends Tab {
             if (forecast.getMinutely() != null) {
                 statsSection.setVisibility(View.INVISIBLE);
                 nextHourSection.setVisibility(View.VISIBLE);
-                nextHourAndStatsSection.setClickable(true);
+                fabSetup();
                 nextHourSummary.setText(forecast.getMinutely().getSummary());
                 Charts.setPrecipitationGraph(getActivity(), chart,
                         forecast.getMinutely().getData(), forecast.getTimezone());
             } else {
                 statsSection.setVisibility(View.VISIBLE);
-                nextHourSection.setVisibility(View.INVISIBLE);
-                nextHourAndStatsSection.setClickable(false);
+                nextHourSection.setVisibility(View.GONE);
+                fabSetup();
             }
 
             if ((int) currently.getNearestStormDistance() > 0) {

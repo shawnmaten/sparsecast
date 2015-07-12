@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
@@ -66,7 +67,9 @@ public class MainActivity extends BaseActivity implements Target {
     private ImageView photo;
     private View overlay;
     private View instagramAttribution;
-    private FloatingActionMenu fab;
+
+    private FloatingActionMenu fam;
+    private ArrayList<FloatingActionButton> fabs;
 
     private SavedPlaceApi savedPlaceApi;
 
@@ -100,7 +103,9 @@ public class MainActivity extends BaseActivity implements Target {
         photoContainer = findViewById(R.id.photo_container);
         photo = (ImageView) findViewById(R.id.photo);
         overlay = findViewById(R.id.overlay);
-        fab = (FloatingActionMenu) findViewById(R.id.fab);
+        fam = (FloatingActionMenu) findViewById(R.id.fab);
+        fam.hideMenuButton(false);
+        fabs = new ArrayList<>();
 
         if (savedInstanceState != null) {
             scrollPosition = savedInstanceState.getInt(SCROLL_POSITION);
@@ -112,7 +117,7 @@ public class MainActivity extends BaseActivity implements Target {
         screenWidth = getResources().getDisplayMetrics().widthPixels;
         density = getResources().getDisplayMetrics().density;
         photoContainer.setLayoutParams(new RelativeLayout.LayoutParams(screenWidth, screenWidth));
-        //fab.setY(screenWidth - 28 * density);
+        //fam.setY(screenWidth - 28 * density);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
@@ -398,6 +403,29 @@ public class MainActivity extends BaseActivity implements Target {
     @Override
     public void onPrepareLoad(Drawable placeHolderDrawable) {
 
+    }
+
+    public void removeFab(FloatingActionButton fab) {
+        fam.removeMenuButton(fab);
+    }
+
+    public void removeAllFabs() {
+        for (FloatingActionButton fab : fabs) {
+            fam.removeMenuButton(fab);
+        }
+    }
+
+    public ArrayList<FloatingActionButton> getFabs() {
+        return fabs;
+    }
+
+    public void addFab(FloatingActionButton fab) {
+        fabs.add(fab);
+        fam.addMenuButton(fab);
+    }
+
+    public FloatingActionMenu getFam() {
+        return fam;
     }
 
     public interface ScrollListener {

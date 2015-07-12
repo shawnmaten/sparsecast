@@ -8,11 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
-import com.github.clans.fab.FloatingActionMenu;
+import com.github.clans.fab.FloatingActionButton;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.ui.widget.ObservableScrollView;
 import com.shawnaten.simpleweather.ui.widget.ScrollCallbacks;
 import com.shawnaten.tools.Forecast;
+
+import java.util.ArrayList;
 
 public class Tab extends BaseFragment implements ScrollCallbacks,
         MainActivity.ScrollListener, MainActivity.FragmentDataListener {
@@ -20,7 +22,7 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
     protected int screenWidth;
     protected int screenHeight;
     protected ObservableScrollView scroll;
-    protected FloatingActionMenu fab;
+    protected ArrayList<FloatingActionButton> fabs;
     private View toolbar;
     private View photoContainer;
     private View photo;
@@ -44,6 +46,8 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
 
         screenWidth = getResources().getDisplayMetrics().widthPixels;
         screenHeight = getResources().getDisplayMetrics().heightPixels;
+
+        fabs = new ArrayList<>();
     }
 
     @Override
@@ -60,7 +64,6 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
         photo = getBaseActivity().findViewById(R.id.photo);
         scroll = (ObservableScrollView) root.findViewById(R.id.scroll);
         header = getBaseActivity().findViewById(R.id.header);
-        fab = (FloatingActionMenu) getBaseActivity().findViewById(R.id.fab);
 
         if (scroll != null) {
             scroll.addCallbacks(this);
@@ -102,11 +105,8 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
         int scrollAmount = Math.min(screenWidth - getMinPhotoHeight(), scroll.getScrollY());
         float scrollPercent = scrollAmount / (float) (screenWidth - getMinPhotoHeight());
         float elevation = scrollPercent * 4 * density;
-        float halfFab = getResources().getDimension(R.dimen.half_fab);
 
         photoContainer.setY(-scrollAmount);
-        //fab.setTranslationY(-scrollAmount + halfFab);
-        //fab.setElevation(elevation);
         toolbar.setElevation(elevation);
         photoContainer.setElevation(elevation);
         photo.setTranslationY(scrollAmount * 0.5f);
@@ -150,4 +150,23 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
                 getResources().getIdentifier("status_bar_height", "dimen", "android"));
     }
 
+    protected void fabSetup() {
+
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        fabSetup();
+    }
+
+    protected MainActivity getMainActivity() {
+        BaseActivity baseActivity = getBaseActivity();
+        if (MainActivity.class.isInstance(baseActivity)) {
+            return (MainActivity) baseActivity;
+        } else {
+            return null;
+        }
+    }
 }

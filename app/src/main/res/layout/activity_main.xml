@@ -133,7 +133,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/standard_margin"
+        android:layout_margin="@dimen/half_margin"
         fab:menu_colorNormal="@color/primary"
         fab:menu_colorPressed="@color/primary_dark" />
 
