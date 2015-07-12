@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -15,7 +15,8 @@
         android:id="@+id/photo_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#FFFFFFFF">
+        android:background="#FFFFFFFF"
+        android:clipChildren="false">
 
         <ImageView
             android:id="@+id/photo"
@@ -124,6 +125,17 @@
         </GridLayout>
 
     </RelativeLayout>
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/standard_margin"
+        fab:menu_colorNormal="@color/primary"
+        fab:menu_colorPressed="@color/primary_dark" />
 
     <include layout="@layout/toolbar"/>
 

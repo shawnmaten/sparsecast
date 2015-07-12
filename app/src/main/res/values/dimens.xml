@@ -4,6 +4,11 @@
 
     <dimen name="vertical_weather_bar_width">32dp</dimen>
 
+    <dimen name="half_fab">28dp</dimen>
+
+    <dimen name="fab_offset">104dp</dimen>
+    <dimen name="fab_offset_short">88dp</dimen>
+
     <dimen name="rounded_rectangle_corner_radius">8dp</dimen>
 
     <dimen name="card_by_card_margin">4dp</dimen>

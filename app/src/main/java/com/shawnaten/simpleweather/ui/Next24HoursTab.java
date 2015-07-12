@@ -17,7 +17,9 @@ import java.text.DateFormat;
 import java.util.Date;
 
 public class Next24HoursTab extends Tab {
+    private View nextHourAndStatsSection;
     private View nextHourSection;
+    private View statsSection;
     private View next24HoursSection;
     private VerticalWeatherBar verticalWeatherBar;
 
@@ -34,16 +36,29 @@ public class Next24HoursTab extends Tab {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        nextHourSection = view.findViewById(R.id.next_hour_section);
+        nextHourAndStatsSection = view.findViewById(R.id.next_hour_and_stats_section);
+        nextHourSection = nextHourAndStatsSection.findViewById(R.id.next_hour_section);
+        statsSection = nextHourAndStatsSection.findViewById(R.id.stats_section);
         next24HoursSection = view.findViewById(R.id.next_24_hours_section);
         verticalWeatherBar = (VerticalWeatherBar) next24HoursSection
                 .findViewById(R.id.vertical_weather_bar);
-        int screenWidth = getResources().getDisplayMetrics().widthPixels;
-        int screenHeight = getResources().getDisplayMetrics().heightPixels;
 
-        ViewGroup.LayoutParams layoutParams = nextHourSection.getLayoutParams();
+        ViewGroup.LayoutParams layoutParams = nextHourAndStatsSection.getLayoutParams();
         layoutParams.height = screenHeight - screenWidth;
-        nextHourSection.setLayoutParams(layoutParams);
+        nextHourAndStatsSection.setLayoutParams(layoutParams);
+
+        nextHourAndStatsSection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (statsSection.getVisibility() == View.INVISIBLE) {
+                    statsSection.setVisibility(View.VISIBLE);
+                    nextHourSection.setVisibility(View.INVISIBLE);
+                } else {
+                    statsSection.setVisibility(View.INVISIBLE);
+                    nextHourSection.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         next24HoursSection.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
@@ -53,6 +68,21 @@ public class Next24HoursTab extends Tab {
                 next24HoursSection.setLayoutParams(layoutParams1);
             }
         });
+    }
+
+    @Override
+    public void onScrollChanged(int deltaX, int deltaY) {
+        super.onScrollChanged(deltaX, deltaY);
+
+        int scrollAmount = scroll.getScrollY();
+
+        if (scrollAmount > screenHeight - screenWidth) {
+            if (!fab.isMenuButtonHidden())
+                fab.hideMenuButton(true);
+        } else {
+            if (fab.isMenuButtonHidden())
+                fab.showMenuButton(true);
+        }
     }
 
     @Override
@@ -77,21 +107,25 @@ public class Next24HoursTab extends Tab {
             TextView sunset = (TextView) root.findViewById(R.id.sunset);
 
             if (forecast.getMinutely() != null) {
+                statsSection.setVisibility(View.INVISIBLE);
                 nextHourSection.setVisibility(View.VISIBLE);
+                nextHourAndStatsSection.setClickable(true);
                 nextHourSummary.setText(forecast.getMinutely().getSummary());
                 Charts.setPrecipitationGraph(getActivity(), chart,
                         forecast.getMinutely().getData(), forecast.getTimezone());
-            } else
-                nextHourSection.setVisibility(View.GONE);
+            } else {
+                statsSection.setVisibility(View.VISIBLE);
+                nextHourSection.setVisibility(View.INVISIBLE);
+                nextHourAndStatsSection.setClickable(false);
+            }
 
             if ((int) currently.getNearestStormDistance() > 0) {
                 nearestStorm.setVisibility(View.VISIBLE);
                 nearestStorm.setText(String.format(
-                        "(%s: %d %s %s %s)",
+                        "(%s: %d %s %s)",
                         getString(R.string.nearest_storm),
                         (int) currently.getNearestStormDistance(),
                         getString(LocalizationSettings.getDistanceUnit()),
-                        getString(R.string.to_the),
                         getString(ForecastTools.getWindString(currently
                                 .getNearestStormBearing()))
                 ));
@@ -122,7 +156,6 @@ public class Next24HoursTab extends Tab {
                 sunTime = tomorrow.getSunriseTime();
                 sunString = R.string.sunrise;
             }
-
 
             long difference = sunTime.getTime() - nowTime.getTime();
             long hours = difference / 3600000;

@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
@@ -65,6 +66,7 @@ public class MainActivity extends BaseActivity implements Target {
     private ImageView photo;
     private View overlay;
     private View instagramAttribution;
+    private FloatingActionMenu fab;
 
     private SavedPlaceApi savedPlaceApi;
 
@@ -85,6 +87,7 @@ public class MainActivity extends BaseActivity implements Target {
         Toolbar toolbar;
         View photoContainer;
         int screenWidth;
+        float density;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -97,6 +100,7 @@ public class MainActivity extends BaseActivity implements Target {
         photoContainer = findViewById(R.id.photo_container);
         photo = (ImageView) findViewById(R.id.photo);
         overlay = findViewById(R.id.overlay);
+        fab = (FloatingActionMenu) findViewById(R.id.fab);
 
         if (savedInstanceState != null) {
             scrollPosition = savedInstanceState.getInt(SCROLL_POSITION);
@@ -106,7 +110,9 @@ public class MainActivity extends BaseActivity implements Target {
                 .inflate(R.layout.instagram_attribution, toolbar, false);
         toolbar.addView(instagramAttribution);
         screenWidth = getResources().getDisplayMetrics().widthPixels;
+        density = getResources().getDisplayMetrics().density;
         photoContainer.setLayoutParams(new RelativeLayout.LayoutParams(screenWidth, screenWidth));
+        //fab.setY(screenWidth - 28 * density);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);

@@ -1,35 +1,29 @@
 package com.shawnaten.simpleweather.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.LinearLayout;
-import android.widget.Space;
-import android.widget.TextView;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.ui.widget.ObservableScrollView;
 import com.shawnaten.simpleweather.ui.widget.ScrollCallbacks;
 import com.shawnaten.tools.Forecast;
-import com.shawnaten.tools.LocationSettings;
 
 public class Tab extends BaseFragment implements ScrollCallbacks,
         MainActivity.ScrollListener, MainActivity.FragmentDataListener {
     public static final String TAB_LAYOUT = "tabLayout";
     protected int screenWidth;
     protected int screenHeight;
+    protected ObservableScrollView scroll;
+    protected FloatingActionMenu fab;
     private View toolbar;
     private View photoContainer;
     private View photo;
-    private ObservableScrollView scroll;
     private View content;
     private View header;
 
@@ -66,6 +60,7 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
         photo = getBaseActivity().findViewById(R.id.photo);
         scroll = (ObservableScrollView) root.findViewById(R.id.scroll);
         header = getBaseActivity().findViewById(R.id.header);
+        fab = (FloatingActionMenu) getBaseActivity().findViewById(R.id.fab);
 
         if (scroll != null) {
             scroll.addCallbacks(this);
@@ -107,8 +102,11 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
         int scrollAmount = Math.min(screenWidth - getMinPhotoHeight(), scroll.getScrollY());
         float scrollPercent = scrollAmount / (float) (screenWidth - getMinPhotoHeight());
         float elevation = scrollPercent * 4 * density;
+        float halfFab = getResources().getDimension(R.dimen.half_fab);
 
         photoContainer.setY(-scrollAmount);
+        //fab.setTranslationY(-scrollAmount + halfFab);
+        //fab.setElevation(elevation);
         toolbar.setElevation(elevation);
         photoContainer.setElevation(elevation);
         photo.setTranslationY(scrollAmount * 0.5f);
