@@ -12,6 +12,8 @@ import retrofit.client.OkClient;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 @Singleton
@@ -35,12 +37,21 @@ public class GeocodingService {
             return Observable.create(new Observable.OnSubscribe<Geocoding.Response>() {
                 @Override
                 public void call(Subscriber<? super Geocoding.Response> subscriber) {
-                    Observable.zip(keysObservable, locationObservable, (keys, location) ->
-                            geocodingService.getAddresses(
+                    Observable.zip(keysObservable, locationObservable, new Func2<Keys, Location, Geocoding.Response>() {
+                        @Override
+                        public Geocoding.Response call(Keys keys, Location location) {
+                            return geocodingService.getAddresses(
                                     keys.getGoogleAPIKey(),
                                     String.format("%f,%f", location.getLatitude(),
-                                        location.getLongitude())
-                    )).subscribe(subscriber::onNext);
+                                            location.getLongitude())
+                            );
+                        }
+                    }).subscribe(new Action1<Geocoding.Response>() {
+                        @Override
+                        public void call(Geocoding.Response response) {
+
+                        }
+                    });
                 }
             }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }

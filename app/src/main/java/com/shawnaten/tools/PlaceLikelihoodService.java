@@ -2,6 +2,7 @@ package com.shawnaten.tools;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 
@@ -25,11 +26,16 @@ public class PlaceLikelihoodService {
     public Observable<PlaceLikelihoodBuffer> getPlaceLikelihood() {
         return Observable.create(new Observable.OnSubscribe<PlaceLikelihoodBuffer>() {
             @Override
-            public void call(Subscriber<? super PlaceLikelihoodBuffer> subscriber) {
+            public void call(final Subscriber<? super PlaceLikelihoodBuffer> subscriber) {
                 googleApiClient.blockingConnect();
                 PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
                         .getCurrentPlace(googleApiClient, null);
-                result.setResultCallback(subscriber::onNext);
+                result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
+                    @Override
+                    public void onResult(PlaceLikelihoodBuffer placeLikelihoods) {
+                        subscriber.onNext(placeLikelihoods);
+                    }
+                });
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }

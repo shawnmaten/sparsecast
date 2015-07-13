@@ -17,6 +17,7 @@ import com.shawnaten.tools.WeatherBarShape;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * Created by shawnaten on 7/20/14.
@@ -31,26 +32,29 @@ public class GraphicsFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Observable<Forecast.Response> forecast = getApp().getNetworkComponent().forecast();
-        View root = inflater.inflate(R.layout.tab_current_graphics, container, false);
+        final View root = inflater.inflate(R.layout.tab_current_graphics, container, false);
 
-        subs.add(forecast.subscribe(response -> {
-            WeatherBarShape weatherBarShape;
+        subs.add(forecast.subscribe(new Action1<Forecast.Response>() {
+            @Override
+            public void call(Forecast.Response response) {
+                WeatherBarShape weatherBarShape;
 
-            Forecast.DataPoint[] hourly = response.getHourly().getData();
-            RelativeLayout weatherBarTexts = (RelativeLayout)
-                    root.findViewById(R.id.weather_bar_texts);
-            ImageView weatherBarImage = (ImageView) root.findViewById(R.id.weather_bar_image);
-            ShapeDrawable drawable;
+                Forecast.DataPoint[] hourly = response.getHourly().getData();
+                RelativeLayout weatherBarTexts = (RelativeLayout)
+                        root.findViewById(R.id.weather_bar_texts);
+                ImageView weatherBarImage = (ImageView) root.findViewById(R.id.weather_bar_image);
+                ShapeDrawable drawable;
 
-            weatherBarShape = new WeatherBarShape(getActivity().getApplicationContext(), hourly, 0,
-                    24, getResources().getDimensionPixelSize(R.dimen.weather_bar_width),
-                    getResources().getDimensionPixelSize(R.dimen.weather_bar_height));
-            drawable = new ShapeDrawable(weatherBarShape);
-            weatherBarImage.setBackgroundDrawable(drawable);
-            ForecastTools.createWeatherBarTextViews(getActivity().getLayoutInflater(),
-                    weatherBarShape, weatherBarTexts);
-            ForecastTools.setWeatherBarText(weatherBarShape, hourly, response.getTimezone(),
-                    weatherBarTexts);
+                weatherBarShape = new WeatherBarShape(GraphicsFragment.this.getActivity().getApplicationContext(), hourly, 0,
+                        24, GraphicsFragment.this.getResources().getDimensionPixelSize(R.dimen.weather_bar_width),
+                        GraphicsFragment.this.getResources().getDimensionPixelSize(R.dimen.weather_bar_height));
+                drawable = new ShapeDrawable(weatherBarShape);
+                weatherBarImage.setBackgroundDrawable(drawable);
+                ForecastTools.createWeatherBarTextViews(GraphicsFragment.this.getActivity().getLayoutInflater(),
+                        weatherBarShape, weatherBarTexts);
+                ForecastTools.setWeatherBarText(weatherBarShape, hourly, response.getTimezone(),
+                        weatherBarTexts);
+            }
         }));
 
         return root;

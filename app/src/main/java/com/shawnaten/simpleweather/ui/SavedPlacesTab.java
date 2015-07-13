@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
@@ -84,19 +86,25 @@ public class SavedPlacesTab extends Tab {
         public NormalViewHolder(View listItemView) {
             super(listItemView);
             this.nameView = (TextView) listItemView.findViewById(R.id.name);
-            listItemView.setOnClickListener(view -> {
-                PendingResult result = Places.GeoDataApi.getPlaceById(
-                        getApp().getNetworkComponent().googleApiClient(),
-                        savedPlaces.get(id).getPlaceId());
+            listItemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PendingResult result = Places.GeoDataApi.getPlaceById(
+                            getApp().getNetworkComponent().googleApiClient(),
+                            savedPlaces.get(id).getPlaceId());
 
-                result.setResultCallback(result1 -> {
-                    PlaceBuffer placeBuffer = (PlaceBuffer) result1;
-                    Place place = placeBuffer.get(0);
-                    LocationSettings.setPlace(place, true, placeBuffer.getAttributions());
-                    placeBuffer.release();
-                    getActivity().setResult(MainActivity.PLACE_SELECTED_CODE);
-                    getActivity().finish();
-                });
+                    result.setResultCallback(new ResultCallback() {
+                        @Override
+                        public void onResult(Result result1) {
+                            PlaceBuffer placeBuffer = (PlaceBuffer) result1;
+                            Place place = placeBuffer.get(0);
+                            LocationSettings.setPlace(place, true, placeBuffer.getAttributions());
+                            placeBuffer.release();
+                            getActivity().setResult(MainActivity.PLACE_SELECTED_CODE);
+                            getActivity().finish();
+                        }
+                    });
+                }
             });
         }
     }
@@ -141,26 +149,29 @@ public class SavedPlacesTab extends Tab {
                     }
                     break;
                 default:
-                    NormalViewHolder holder = (NormalViewHolder) viewHolder;
+                    final NormalViewHolder holder = (NormalViewHolder) viewHolder;
                     PendingResult result = Places.GeoDataApi.getPlaceById(
                             googleApiClient, savedPlaces.get(i).getPlaceId());
 
                     holder.id = i;
                     holder.nameView.setText("");
-                    result.setResultCallback(result1 -> {
-                        PlaceBuffer placeBuffer = (PlaceBuffer) result1;
-                        Place place = placeBuffer.get(0);
-                        if (place.getPlaceTypes().contains(Place.TYPE_POLITICAL))
-                            holder.nameView.setText(place.getAddress());
-                        else
-                            holder.nameView.setText(place.getName());
+                    result.setResultCallback(new ResultCallback() {
+                        @Override
+                        public void onResult(Result result1) {
+                            PlaceBuffer placeBuffer = (PlaceBuffer) result1;
+                            Place place = placeBuffer.get(0);
+                            if (place.getPlaceTypes().contains(Place.TYPE_POLITICAL))
+                                holder.nameView.setText(place.getAddress());
+                            else
+                                holder.nameView.setText(place.getName());
 
-                        CharSequence attribution = placeBuffer.getAttributions();
-                        if (attribution != null && !attributions.contains(attribution.toString())) {
-                            attributions.add(attribution.toString());
-                            adapter.notifyItemChanged(adapter.getItemCount() - 1);
+                            CharSequence attribution = placeBuffer.getAttributions();
+                            if (attribution != null && !attributions.contains(attribution.toString())) {
+                                attributions.add(attribution.toString());
+                                adapter.notifyItemChanged(adapter.getItemCount() - 1);
+                            }
+                            placeBuffer.release();
                         }
-                        placeBuffer.release();
                     });
                     break;
             }

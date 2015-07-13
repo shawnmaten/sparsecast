@@ -12,6 +12,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Place;
@@ -170,27 +171,33 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
 
             super(listItemView);
             this.nameView = (TextView) listItemView.findViewById(R.id.name);
-            listItemView.setOnClickListener(view -> {
-                PendingResult result = Places.GeoDataApi.getPlaceById(
-                        getApp().getNetworkComponent().googleApiClient(),
-                        predictions.get(id).getPlaceId());
+            listItemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PendingResult result = Places.GeoDataApi.getPlaceById(
+                            getApp().getNetworkComponent().googleApiClient(),
+                            predictions.get(id).getPlaceId());
 
-                result.setResultCallback(result1 -> {
-                    placeBuffer = (PlaceBuffer) result1;
-                    place = placeBuffer.get(0);
+                    result.setResultCallback(new ResultCallback() {
+                        @Override
+                        public void onResult(Result result1) {
+                            placeBuffer = (PlaceBuffer) result1;
+                            place = placeBuffer.get(0);
 
-                    LocationSettings.setPlace(place, false, placeBuffer.getAttributions());
+                            LocationSettings.setPlace(place, false, placeBuffer.getAttributions());
 
-                    if (savedPlaces != null) {
-                        for (SavedPlace savedPlace : savedPlaces) {
-                            if (savedPlace.getPlaceId().equals(place.getId()))
-                                LocationSettings.setPlace(place, true, placeBuffer.getAttributions());
+                            if (savedPlaces != null) {
+                                for (SavedPlace savedPlace : savedPlaces) {
+                                    if (savedPlace.getPlaceId().equals(place.getId()))
+                                        LocationSettings.setPlace(place, true, placeBuffer.getAttributions());
+                                }
+                            }
+                            placeBuffer.release();
+                            getActivity().setResult(MainActivity.PLACE_SELECTED_CODE);
+                            getActivity().finish();
                         }
-                    }
-                    placeBuffer.release();
-                    getActivity().setResult(MainActivity.PLACE_SELECTED_CODE);
-                    getActivity().finish();
-                });
+                    });
+                }
             });
         }
     }

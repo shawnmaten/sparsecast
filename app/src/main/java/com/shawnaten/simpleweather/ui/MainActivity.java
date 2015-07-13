@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 import com.shawnaten.simpleweather.R;
@@ -50,6 +52,9 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func2;
+import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity implements Target {
@@ -146,8 +151,10 @@ public class MainActivity extends BaseActivity implements Target {
         invalidateOptionsMenu();
 
         decorView = getWindow().getDecorView();
-        getWindow().setStatusBarColor(0x00000000);
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            getWindow().setStatusBarColor(0x00000000);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
         int result;
@@ -158,73 +165,87 @@ public class MainActivity extends BaseActivity implements Target {
         }
 
         if (LocationSettings.getMode() == LocationSettings.Mode.CURRENT) {
-            subs.add(forecast.subscribe(forecast -> {
-                dataMap.put(FORECAST_DATA, forecast);
-                sendDataToFragments(FORECAST_DATA, forecast);
+            subs.add(forecast.subscribe(new Action1<Forecast.Response>() {
+                @Override
+                public void call(Forecast.Response forecast) {
+                    dataMap.put(FORECAST_DATA, forecast);
+                    MainActivity.this.sendDataToFragments(FORECAST_DATA, forecast);
+                }
             }));
 
             Observable.zip(locationObservable, geocodingService.getAddresses(),
                     placeLikelihoodService.getPlaceLikelihood(),
-                    (location, addresses, likelihoods) -> {
+                    new Func3<Location, Geocoding.Response, PlaceLikelihoodBuffer, String[]>() {
+                        @Override
+                        public String[] call(Location location, Geocoding.Response addresses, PlaceLikelihoodBuffer likelihoods) {
 
-                        Geocoding.Result address = addresses.getResults()[0];
+                            Geocoding.Result address = addresses.getResults()[0];
 
-                        LatLng actualLocation = new LatLng(location.getLatitude(),
-                                location.getLongitude());
-                        LatLng addressLocation = new LatLng(
-                                address.getGeometry().getLocation().getLat(),
-                                address.getGeometry().getLocation().getLng()
-                        );
+                            LatLng actualLocation = new LatLng(location.getLatitude(),
+                                    location.getLongitude());
+                            LatLng addressLocation = new LatLng(
+                                    address.getGeometry().getLocation().getLat(),
+                                    address.getGeometry().getLocation().getLng()
+                            );
 
-                        double addressDistance = SphericalUtil.computeDistanceBetween(
-                                actualLocation, addressLocation);
-                        Place place = likelihoods.get(0).getPlace();
-                        double placeDistance = SphericalUtil.computeDistanceBetween(
-                                actualLocation, place.getLatLng());
+                            double addressDistance = SphericalUtil.computeDistanceBetween(
+                                    actualLocation, addressLocation);
+                            Place place = likelihoods.get(0).getPlace();
+                            double placeDistance = SphericalUtil.computeDistanceBetween(
+                                    actualLocation, place.getLatLng());
 
-                        String returns[] = new String[2];
+                            String returns[] = new String[2];
 
-                        String streetNumber = null;
-                        String route = null;
+                            String streetNumber = null;
+                            String route = null;
 
-                        for (Geocoding.AddressComponents component :
-                                address.getAddressComponents()) {
-                            if (Arrays.asList(component.getTypes()).contains("street_number")) {
-                                streetNumber = component.getShortName();
+                            for (Geocoding.AddressComponents component :
+                                    address.getAddressComponents()) {
+                                if (Arrays.asList(component.getTypes()).contains("street_number")) {
+                                    streetNumber = component.getShortName();
+                                }
+                                if (Arrays.asList(component.getTypes()).contains("route")) {
+                                    route = component.getShortName();
+                                }
+                                if (Arrays.asList(component.getTypes()).contains("locality"))
+                                    returns[0] = component.getLongName();
                             }
-                            if (Arrays.asList(component.getTypes()).contains("route")) {
-                                route = component.getShortName();
-                            }
-                            if (Arrays.asList(component.getTypes()).contains("locality"))
-                                returns[0] = component.getLongName();
-                        }
 
-                        if (placeDistance < addressDistance) {
-                            returns[1] = place.getName().toString();
-                        } else {
-                            if (streetNumber != null) {
-                                returns[1] = streetNumber + " " + route;
+                            if (placeDistance < addressDistance) {
+                                returns[1] = place.getName().toString();
                             } else {
-                                returns[1] = address.getAddressComponents()[0].getShortName();
+                                if (streetNumber != null) {
+                                    returns[1] = streetNumber + " " + route;
+                                } else {
+                                    returns[1] = address.getAddressComponents()[0].getShortName();
+                                }
                             }
+
+                            likelihoods.release();
+
+                            return returns;
                         }
-
-                        likelihoods.release();
-
-                        return returns;
-                    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(strings -> {
-                        ((TextView) findViewById(R.id.main_location)).setText(strings[0]);
-                        findViewById(R.id.secondary_location).setVisibility(View.VISIBLE);
-                        ((TextView) findViewById(R.id.secondary_location)).setText(strings[1]);
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<String[]>() {
+                        @Override
+                        public void call(String[] strings) {
+                            ((TextView) MainActivity.this.findViewById(R.id.main_location)).setText(strings[0]);
+                            MainActivity.this.findViewById(R.id.secondary_location).setVisibility(View.VISIBLE);
+                            ((TextView) MainActivity.this.findViewById(R.id.secondary_location)).setText(strings[1]);
+                        }
                     });
         } else {
-            forecast.subscribe(forecast -> {
-                sendDataToFragments(FORECAST_DATA, forecast);
-                ((TextView) findViewById(R.id.main_location))
-                        .setText(LocationSettings.getName());
-                ((TextView) findViewById(R.id.secondary_location))
-                        .setText(LocationSettings.getAddress());
+            forecast.subscribe(new Action1<Forecast.Response>() {
+                @Override
+                public void call(Forecast.Response forecast) {
+                    MainActivity.this.sendDataToFragments(FORECAST_DATA, forecast);
+                    ((TextView) MainActivity.this.findViewById(R.id.main_location))
+                            .setText(LocationSettings.getName());
+                    ((TextView) MainActivity.this.findViewById(R.id.secondary_location))
+                            .setText(LocationSettings.getAddress());
+                }
             });
         }
     }
@@ -261,7 +282,7 @@ public class MainActivity extends BaseActivity implements Target {
         switch (item.getItemId()) {
             case R.id.action_favorite:
                 if (LocationSettings.isFavorite()) {
-                    SavedPlace savedPlace = new SavedPlace();
+                    final SavedPlace savedPlace = new SavedPlace();
                     savedPlace.setPlaceId(LocationSettings.getPlaceId());
                     item.setIcon(R.drawable.ic_favorite_border_white_24dp);
                     LocationSettings.setIsFavorite(false);
@@ -331,7 +352,7 @@ public class MainActivity extends BaseActivity implements Target {
         super.sendDataToFragments(key, data);
 
         if (Forecast.Response.class.isInstance(data)) {
-            Forecast.Response forecast = (Forecast.Response) data;
+            final Forecast.Response forecast = (Forecast.Response) data;
 
             DecimalFormat tf = ForecastTools.getTempForm();
             Forecast.DataPoint currently = forecast.getCurrently();
@@ -357,29 +378,36 @@ public class MainActivity extends BaseActivity implements Target {
             });
 
             Observable<Keys> keysObservable = getApp().getNetworkComponent().keys();
-            Instagram.Service instagramService = getApp().getNetworkComponent().instagramService();
-            Observable.zip(keysObservable, imageObservable, (keys, imageData) ->
-                    instagramService.getMedia(keys.getInstagramAPIKey(), imageData.getShortcode()))
+            final Instagram.Service instagramService = getApp().getNetworkComponent().instagramService();
+            Observable.zip(keysObservable, imageObservable, new Func2<Keys, Image, Instagram.SingleMediaResponse>() {
+                @Override
+                public Instagram.SingleMediaResponse call(Keys keys, Image imageData) {
+                    return instagramService.getMedia(keys.getInstagramAPIKey(), imageData.getShortcode());
+                }
+            })
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(instagramData -> {
-                        TextView instagramUserView = (TextView)
-                                instagramAttribution.findViewById(R.id.user);
-                        String url = instagramData.getData()
-                                .getImages().getStandardResolution().getUrl();
-                        String username = instagramData.getData()
-                                .getUser().getUsername();
-                        Picasso.with(photo.getContext()).load(url).into(this);
-                        instagramUserView.setText(username);
-                        instagramAttribution.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent browserIntent = new Intent(
-                                        Intent.ACTION_VIEW,
-                                        Uri.parse(instagramData.getData().getLink()));
-                                startActivity(browserIntent);
-                            }
-                        });
+                    .subscribe(new Action1<Instagram.SingleMediaResponse>() {
+                        @Override
+                        public void call(final Instagram.SingleMediaResponse instagramData) {
+                            TextView instagramUserView = (TextView)
+                                    instagramAttribution.findViewById(R.id.user);
+                            String url = instagramData.getData()
+                                    .getImages().getStandardResolution().getUrl();
+                            String username = instagramData.getData()
+                                    .getUser().getUsername();
+                            Picasso.with(photo.getContext()).load(url).into(MainActivity.this);
+                            instagramUserView.setText(username);
+                            instagramAttribution.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent browserIntent = new Intent(
+                                            Intent.ACTION_VIEW,
+                                            Uri.parse(instagramData.getData().getLink()));
+                                    startActivity(browserIntent);
+                                }
+                            });
+                        }
                     });
 
         }

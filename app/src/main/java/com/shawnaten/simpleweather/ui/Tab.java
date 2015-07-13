@@ -67,24 +67,31 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
 
         if (scroll != null) {
             scroll.addCallbacks(this);
-            scroll.getViewTreeObserver().addOnGlobalLayoutListener(() ->
-                    onOtherScrollChanged(((MainActivity) getBaseActivity()).getScrollPosition()));
+            scroll.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    onOtherScrollChanged(((MainActivity) getBaseActivity()).getScrollPosition());
+                }
+            });
         }
 
         if ((content = root.findViewById(R.id.content)) != null) {
             View topSpace = content.findViewById(R.id.top_space);
-            ViewGroup.LayoutParams topParams = topSpace.getLayoutParams();
+            final ViewGroup.LayoutParams topParams = topSpace.getLayoutParams();
             topParams.height = screenWidth;
             topSpace.setLayoutParams(topParams);
 
-            content.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) -> {
-                View bottomSpace = content.findViewById(R.id.bottom_space);
-                ViewGroup.LayoutParams bottomParams = bottomSpace.getLayoutParams();
-                int newBottomHeight = Math.max(0, screenHeight - getMinPhotoHeight()
-                        - (content.getHeight() - topParams.height - bottomParams.height));
-                if (bottomParams.height != newBottomHeight) {
-                    bottomParams.height = newBottomHeight;
-                    bottomSpace.setLayoutParams(bottomParams);
+            content.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+                    View bottomSpace = content.findViewById(R.id.bottom_space);
+                    ViewGroup.LayoutParams bottomParams = bottomSpace.getLayoutParams();
+                    int newBottomHeight = Math.max(0, screenHeight - Tab.this.getMinPhotoHeight()
+                            - (content.getHeight() - topParams.height - bottomParams.height));
+                    if (bottomParams.height != newBottomHeight) {
+                        bottomParams.height = newBottomHeight;
+                        bottomSpace.setLayoutParams(bottomParams);
+                    }
                 }
             });
         }

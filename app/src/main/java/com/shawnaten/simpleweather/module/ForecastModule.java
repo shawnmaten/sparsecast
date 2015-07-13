@@ -17,6 +17,8 @@ import retrofit.converter.GsonConverter;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 @Module
@@ -30,38 +32,45 @@ public class ForecastModule {
                 .setEndpoint(ENDPOINT)
                 .setClient(client)
                 .setConverter(converter)
+                .setLogLevel(RestAdapter.LogLevel.BASIC)
                 .build().create(Forecast.Service.class);
     }
 
     @Provides
     @Singleton
     public Observable<Forecast.Response> providesForecast(
-            Observable<Keys> keysObservable,
-            Forecast.Service forecastService,
-            Observable<Location> locationObservable) {
+            final Observable<Keys> keysObservable,
+            final Forecast.Service forecastService,
+            final Observable<Location> locationObservable) {
         return Observable.create(new Observable.OnSubscribe<Forecast.Response>() {
             @Override
-            public void call(Subscriber<? super Forecast.Response> subscriber) {
+            public void call(final Subscriber<? super Forecast.Response> subscriber) {
                 if (LocationSettings.getMode() == LocationSettings.Mode.SAVED) {
-                    keysObservable.subscribe(keys -> {
-                                subscriber.onNext(forecastService.getForecast(
-                                        keys.getForecastAPIKey(),
-                                        LocationSettings.getLatLng().latitude,
-                                        LocationSettings.getLatLng().longitude,
-                                        LocalizationSettings.getLangCode(),
-                                        LocalizationSettings.getUnitCode()
-                                ));
-                            }
+                    keysObservable.subscribe(new Action1<Keys>() {
+                                                 @Override
+                                                 public void call(Keys keys) {
+                                                     subscriber.onNext(forecastService.getForecast(
+                                                             keys.getForecastAPIKey(),
+                                                             LocationSettings.getLatLng().latitude,
+                                                             LocationSettings.getLatLng().longitude,
+                                                             LocalizationSettings.getLangCode(),
+                                                             LocalizationSettings.getUnitCode()
+                                                     ));
+                                                 }
+                                             }
                     );
                 } else {
-                    Observable.zip(keysObservable, locationObservable, (keys, location) -> {
-                        subscriber.onNext(forecastService.getForecast(
-                                keys.getForecastAPIKey(),
-                                location.getLatitude(), location.getLongitude(),
-                                LocalizationSettings.getLangCode(),
-                                LocalizationSettings.getUnitCode()
-                        ));
-                        return null;
+                    Observable.zip(keysObservable, locationObservable, new Func2<Keys, Location, Object>() {
+                        @Override
+                        public Object call(Keys keys, Location location) {
+                            subscriber.onNext(forecastService.getForecast(
+                                    keys.getForecastAPIKey(),
+                                    location.getLatitude(), location.getLongitude(),
+                                    LocalizationSettings.getLangCode(),
+                                    LocalizationSettings.getUnitCode()
+                            ));
+                            return null;
+                        }
                     }).subscribe();
                 }
             }

@@ -1,4 +1,6 @@
+/*
 // for retrolambda
+
 buildscript {
     repositories {
         mavenCentral()
@@ -10,18 +12,21 @@ buildscript {
 }
 
 // Required because retrolambda is on maven central
+*/
+
 repositories {
-    mavenCentral()
+    //mavenCentral()
     maven { url "https://jitpack.io" }
 }
+
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda' // for retrolambda
+//apply plugin: 'me.tatarka.retrolambda' // for retrolambda
 apply plugin: 'com.neenbedankt.android-apt'
+
 
 android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
-
     def getVersionCode = { ->
         def stdout = new ByteArrayOutputStream()
         exec {
@@ -30,7 +35,6 @@ android {
         }
         return stdout.toString().trim().toInteger()
     }
-
     def getVersionName = { ->
         def stdout = new ByteArrayOutputStream()
         exec {
@@ -39,7 +43,6 @@ android {
         }
         return stdout.toString().trim()
     }
-
     defaultConfig {
         applicationId 'com.shawnaten.simpleweather'
         minSdkVersion 14
@@ -48,20 +51,20 @@ android {
         versionName getVersionName()
         multiDexEnabled true
     }
-
     buildTypes {
         debug {
 
         }
         release {
+            shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
         sourceCompatibility
-        targetCompatibility JavaVersion.VERSION_1_8
-        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_7
     }
     productFlavors {
         devLocalhost {
@@ -95,10 +98,8 @@ dependencies {
     // provided, not included in apk
     apt 'com.google.dagger:dagger-compiler:2.0'
     provided 'org.glassfish:javax.annotation:10.0-b28'
-
     // for RxAndroid
     compile 'io.reactivex:rxandroid:0.24.0'
-
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.google.maps.android:android-maps-utils:0.3.4'
     compile 'com.github.PhilJay:MPAndroidChart:v2.1.0'

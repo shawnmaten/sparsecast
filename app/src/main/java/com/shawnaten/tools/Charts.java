@@ -8,6 +8,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.utils.ValueFormatter;
 import com.shawnaten.simpleweather.R;
 
 import java.text.DecimalFormat;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.TimeZone;
 
 public class Charts {
-    public static void setPrecipitationGraph(Context context, LineChart chart,
+    public static void setPrecipitationGraph(final Context context, LineChart chart,
         Forecast.DataPoint data[], TimeZone timeZone) {
 
         ArrayList<Entry> intensities = new ArrayList<>();
@@ -55,17 +56,20 @@ public class Charts {
         leftAxis.setAxisMinValue(0);
         leftAxis.setAxisMaxValue((float) LocalizationSettings.getPrecipitationHeavy());
         leftAxis.setLabelCount(2);
-        leftAxis.setValueFormatter(value -> {
-            switch (Precipitation.getIntensityCode(value)) {
-                case Precipitation.VERY_LIGHT:
-                case Precipitation.LIGHT:
-                    return context.getString(R.string.light);
-                case Precipitation.MODERATE:
-                    return context.getString(R.string.moderate);
-                case Precipitation.HEAVY:
-                    return context.getString(R.string.heavy);
-                default:
-                    return Float.toString(value);
+        leftAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                switch (Precipitation.getIntensityCode(value)) {
+                    case Precipitation.VERY_LIGHT:
+                    case Precipitation.LIGHT:
+                        return context.getString(R.string.light);
+                    case Precipitation.MODERATE:
+                        return context.getString(R.string.moderate);
+                    case Precipitation.HEAVY:
+                        return context.getString(R.string.heavy);
+                    default:
+                        return Float.toString(value);
+                }
             }
         });
         leftAxis.setTextSize(textSize);

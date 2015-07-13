@@ -14,7 +14,7 @@ import rx.schedulers.Schedulers;
 @Module
 public class LocationModule {
     @Provides
-    public Observable<Location> providesLocation(GoogleApiClient client) {
+    public Observable<Location> providesLocation(final GoogleApiClient client) {
         return Observable.create(new Observable.OnSubscribe<Location>() {
             @Override
             public void call(Subscriber<? super Location> subscriber) {

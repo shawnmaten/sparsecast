@@ -23,7 +23,7 @@ public class KeysModule {
 
     @Provides
     @Singleton
-    public Observable<Keys> providesKeysModule(App app) {
+    public Observable<Keys> providesKeysModule(final App app) {
         return Observable.create(new Observable.OnSubscribe<Keys>() {
             @Override
             public void call(Subscriber<? super Keys> subscriber) {

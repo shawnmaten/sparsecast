@@ -11,7 +11,9 @@ import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
 import java.io.IOException;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class SearchActivity extends BaseActivity {
@@ -24,7 +26,7 @@ public class SearchActivity extends BaseActivity {
 
         super.onCreate(savedInstanceState);
 
-        SavedPlaceApi savedPlaceApi = getApp().getNetworkComponent().savedPlaceApi();
+        final SavedPlaceApi savedPlaceApi = getApp().getNetworkComponent().savedPlaceApi();
 
         setContentView(R.layout.activity_search);
 
@@ -49,15 +51,21 @@ public class SearchActivity extends BaseActivity {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         setSupportActionBar(toolbar);
 
-        Observable.create(subscriber -> {
-            try {
-                subscriber.onNext(savedPlaceApi.list().execute().getItems());
-            } catch (IOException e) {
-                e.printStackTrace();
+        Observable.create(new Observable.OnSubscribe<Object>() {
+            @Override
+            public void call(Subscriber<? super Object> subscriber) {
+                try {
+                    subscriber.onNext(savedPlaceApi.list().execute().getItems());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
-                result -> {
-                    sendDataToFragments(result);
+                new Action1<Object>() {
+                    @Override
+                    public void call(Object result) {
+                        SearchActivity.this.sendDataToFragments(result);
+                    }
                 });
     }
 

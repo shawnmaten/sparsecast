@@ -16,6 +16,7 @@
 #   public *;
 #}
 
+
 # for Google Play services
 
 -keep class * extends java.util.ListResourceBundle {
@@ -54,12 +55,14 @@
     @retrofit.http.* <methods>;
 }
 
+-keepattributes Exceptions
+
 # changed this from a -keep to -dontwarn on 2014-12-17
 # https://github.com/ReactiveX/RxJava/issues/1415
 -dontwarn sun.misc.Unsafe
 
 #your package path where your gson models are stored
--keep class com.shawnaten.networking.** { *; }
+-keep class com.shawnaten.tools.** { *; }
 
 # end of retrofit
 
