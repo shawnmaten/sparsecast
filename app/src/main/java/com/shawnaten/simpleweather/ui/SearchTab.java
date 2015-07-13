@@ -181,9 +181,11 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
 
                     LocationSettings.setPlace(place, false, placeBuffer.getAttributions());
 
-                    for (SavedPlace savedPlace : savedPlaces) {
-                        if (savedPlace.getPlaceId().equals(place.getId()))
-                            LocationSettings.setPlace(place, true, placeBuffer.getAttributions());
+                    if (savedPlaces != null) {
+                        for (SavedPlace savedPlace : savedPlaces) {
+                            if (savedPlace.getPlaceId().equals(place.getId()))
+                                LocationSettings.setPlace(place, true, placeBuffer.getAttributions());
+                        }
                     }
                     placeBuffer.release();
                     getActivity().setResult(MainActivity.PLACE_SELECTED_CODE);
