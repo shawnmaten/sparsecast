@@ -81,6 +81,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:cardview-v7:22.2.0'
     compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.android.support:gridlayout-v7:22.2.0'
     compile 'com.android.support:palette-v7:22.2.0'
     compile 'com.google.android.gms:play-services:7.5.0'
     compile 'com.squareup.retrofit:retrofit:1.6.1'
@@ -98,7 +99,7 @@ dependencies {
     // for RxAndroid
     compile 'io.reactivex:rxandroid:0.24.0'
 
-    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:multidex:1.0.1'
     compile 'com.google.maps.android:android-maps-utils:0.3.4'
     compile 'com.github.PhilJay:MPAndroidChart:v2.1.0'
     compile 'com.github.clans:fab:1.5.4'

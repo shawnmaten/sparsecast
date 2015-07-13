@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.shawnaten.simpleweather.ui.widget.ObservableScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,10 +23,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <GridLayout
+            <android.support.v7.widget.GridLayout
                 android:id="@+id/stats_section"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"></GridLayout>
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/standard_margin"
+                android:visibility="invisible"
+                app:columnCount="2" />
 
             <RelativeLayout
                 android:id="@+id/next_hour_section"
@@ -50,7 +54,7 @@
                         style="@style/text.title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAlignment="center"></TextView>
+                        android:textAlignment="center" />
 
                     <TextView
                         android:id="@+id/nearest_storm"
@@ -58,7 +62,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="center"
-                        android:visibility="gone"></TextView>
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -102,24 +106,40 @@
                 android:textAlignment="center">
             </TextView>
 
-            <TextView
-                android:id="@+id/sunset"
-                style="@style/text.title"
+            <LinearLayout
+                android:id="@+id/sun"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="@dimen/standard_margin"
+                android:orientation="vertical"
                 android:paddingEnd="@dimen/standard_margin"
                 android:paddingLeft="@dimen/standard_margin"
                 android:paddingRight="@dimen/standard_margin"
-                android:paddingStart="@dimen/standard_margin"
-                android:textAlignment="center"></TextView>
+                android:paddingStart="@dimen/standard_margin">
+
+                <TextView
+                    android:id="@+id/sun_text_1"
+                    style="@style/text.title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"></TextView>
+
+                <TextView
+                    android:id="@+id/sun_text_2"
+                    style="@style/text.body_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"></TextView>
+
+            </LinearLayout>
+
 
             <com.shawnaten.simpleweather.ui.widget.VerticalWeatherBar
                 android:id="@+id/vertical_weather_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/sunset"
+                android:layout_above="@id/sun"
                 android:layout_below="@id/next_24_hours_summary"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="@dimen/standard_margin"

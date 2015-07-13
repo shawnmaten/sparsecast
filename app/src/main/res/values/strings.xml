@@ -70,6 +70,8 @@
     <string name="snow_accumulation">Snow Accumulation</string>
     <string name="average">Average</string>
     <string name="to_the">to the</string>
+    <string name="of">of</string>
+    <string name="daylight">daylight</string>
 
     <string-array name="helper_fragments">
         <item>searching</item>

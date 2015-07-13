@@ -1,6 +1,9 @@
 package com.shawnaten.simpleweather.ui;
 
 import android.os.Bundle;
+import android.support.v7.widget.GridLayout;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -16,12 +19,15 @@ import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.LocalizationSettings;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.util.Date;
 
 public class Next24HoursTab extends Tab {
+    private static int[] statIds = {R.string.wind, R.string.humidity, R.string.dew_point,
+            R.string.pressure, R.string.visibility};
     private View nextHourAndStatsSection;
     private View nextHourSection;
-    private View statsSection;
+    private GridLayout statsSection;
     private View next24HoursSection;
     private VerticalWeatherBar verticalWeatherBar;
 
@@ -44,6 +50,7 @@ public class Next24HoursTab extends Tab {
         fam = getMainActivity().getFam();
 
         item1 = new FloatingActionButton(fam.getContext());
+        item1.setButtonSize(FloatingActionButton.SIZE_MINI);
         item1.setColorNormalResId(R.color.white);
         item1.setColorPressedResId(R.color.button_pressed_light);
         item1.setImageResource(R.drawable.ic_trending_up_black_24dp);
@@ -58,6 +65,7 @@ public class Next24HoursTab extends Tab {
         getMainActivity().addFab(item1);
 
         item2 = new FloatingActionButton(fam.getContext());
+        item2.setButtonSize(FloatingActionButton.SIZE_MINI);
         item2.setColorNormalResId(R.color.white);
         item2.setColorPressedResId(R.color.button_pressed_light);
         item2.setImageResource(R.drawable.ic_list_black_24dp);
@@ -78,7 +86,7 @@ public class Next24HoursTab extends Tab {
 
         nextHourAndStatsSection = view.findViewById(R.id.next_hour_and_stats_section);
         nextHourSection = nextHourAndStatsSection.findViewById(R.id.next_hour_section);
-        statsSection = nextHourAndStatsSection.findViewById(R.id.stats_section);
+        statsSection = (GridLayout) nextHourAndStatsSection.findViewById(R.id.stats_section);
         next24HoursSection = view.findViewById(R.id.next_24_hours_section);
         verticalWeatherBar = (VerticalWeatherBar) next24HoursSection
                 .findViewById(R.id.vertical_weather_bar);
@@ -95,6 +103,30 @@ public class Next24HoursTab extends Tab {
                 next24HoursSection.setLayoutParams(layoutParams1);
             }
         });
+
+        GridLayout.Spec col1 = GridLayout.spec(0, 1f);
+        GridLayout.Spec col2 = GridLayout.spec(1, 1f);
+        LayoutInflater inflater = LayoutInflater.from(statsSection.getContext());
+        for (int i = 0; i < statIds.length; i++) {
+            GridLayout.Spec row = GridLayout.spec(i, 1f);
+            GridLayout.LayoutParams gridParams = new GridLayout.LayoutParams();
+
+            TextView label = (TextView) inflater.inflate(R.layout.stats_label, statsSection, false);
+            TextView text = (TextView) inflater.inflate(R.layout.stats_text, statsSection, false);
+            text.setId(statIds[i]);
+
+            gridParams.columnSpec = col1;
+            gridParams.rowSpec = row;
+            gridParams.setGravity(Gravity.FILL_HORIZONTAL | Gravity.CENTER);
+            label.setText(statIds[i]);
+            statsSection.addView(label, gridParams);
+
+            gridParams = new GridLayout.LayoutParams();
+            gridParams.columnSpec = col2;
+            gridParams.rowSpec = row;
+            gridParams.setGravity(Gravity.FILL_HORIZONTAL | Gravity.CENTER);
+            statsSection.addView(text, gridParams);
+        }
     }
 
     @Override
@@ -145,7 +177,8 @@ public class Next24HoursTab extends Tab {
             TextView nearestStorm = (TextView) root.findViewById(R.id.nearest_storm);
             TextView next24HourSummary = (TextView)
                     root.findViewById(R.id.next_24_hours_summary);
-            TextView sunset = (TextView) root.findViewById(R.id.sunset);
+            TextView sunText1 = (TextView) root.findViewById(R.id.sun_text_1);
+            TextView sunText2 = (TextView) root.findViewById(R.id.sun_text_2);
 
             if (forecast.getMinutely() != null) {
                 statsSection.setVisibility(View.INVISIBLE);
@@ -173,11 +206,47 @@ public class Next24HoursTab extends Tab {
             } else
                 nearestStorm.setVisibility(View.GONE);
 
+            for (int id : statIds) {
+                DecimalFormat intForm = ForecastTools.getIntForm();
+                DecimalFormat tempForm = ForecastTools.getTempForm();
+                DecimalFormat percForm = ForecastTools.getPercForm();
+
+                String text = "";
+                TextView textView = (TextView) statsSection.findViewById(id);
+
+                switch (id) {
+                    case R.string.wind:
+                        text = String.format("%s %s %s",
+                                intForm.format(currently.getWindSpeed()),
+                                getString(LocalizationSettings.getSpeedUnit()),
+                                getString(ForecastTools.getWindString(currently.getWindBearing())));
+                        break;
+                    case R.string.humidity:
+                        text = percForm.format(currently.getHumidity());
+                        break;
+                    case R.string.dew_point:
+                        text = tempForm.format(currently.getDewPoint());
+                        break;
+                    case R.string.pressure:
+                        text = String.format("%s %s",
+                                intForm.format(currently.getPressure()),
+                                getString(LocalizationSettings.getPressureUnit()));
+                        break;
+                    case R.string.visibility:
+                        text = String.format("%s %s",
+                                intForm.format(currently.getVisibility()),
+                                getString(LocalizationSettings.getDistanceUnit()));
+                        break;
+                }
+
+                textView.setText(text);
+            }
+
             next24HourSummary.setText(hourly.getSummary());
 
             verticalWeatherBar.setData(forecast);
 
-            Date nowTime, sunTime;
+            Date nowTime, sunTime1, sunTime2;
             Forecast.DataPoint today, tomorrow;
 
             today = forecast.getDaily().getData()[0];
@@ -188,32 +257,37 @@ public class Next24HoursTab extends Tab {
             int sunString;
 
             if (nowTime.before(today.getSunriseTime())) {
-                sunTime = today.getSunriseTime();
+                sunTime1 = today.getSunriseTime();
                 sunString = R.string.sunrise;
+                sunTime2 = today.getSunsetTime();
             } else if (nowTime.before(today.getSunsetTime())) {
-                sunTime = today.getSunsetTime();
+                sunTime1 = today.getSunsetTime();
                 sunString = R.string.sunset;
+                sunTime2 = today.getSunriseTime();
             } else {
-                sunTime = tomorrow.getSunriseTime();
+                sunTime1 = tomorrow.getSunriseTime();
                 sunString = R.string.sunrise;
+                sunTime2 = tomorrow.getSunsetTime();
             }
 
-            long difference = sunTime.getTime() - nowTime.getTime();
+            long difference = sunTime1.getTime() - nowTime.getTime();
             long hours = difference / 3600000;
             difference -= hours * 3600000;
             long minutes = difference / 60000;
 
             if (hours == 0 && minutes == 0) {
                 if (sunString == R.string.sunrise) {
-                    sunTime = today.getSunsetTime();
+                    sunTime1 = today.getSunsetTime();
                     sunString = R.string.sunset;
+                    sunTime2 = today.getSunriseTime();
                 } else {
-                    sunTime = tomorrow.getSunriseTime();
+                    sunTime1 = tomorrow.getSunriseTime();
                     sunString = R.string.sunrise;
+                    sunTime2 = tomorrow.getSunsetTime();
                 }
             }
 
-            difference = sunTime.getTime() - nowTime.getTime();
+            difference = sunTime1.getTime() - nowTime.getTime();
             hours = difference / 3600000;
             difference -= hours * 3600000;
             minutes = difference / 60000;
@@ -232,9 +306,30 @@ public class Next24HoursTab extends Tab {
 
             DateFormat dateFormat = ForecastTools.getTimeForm(forecast.getTimezone());
 
-            text += String.format(" (%s)", dateFormat.format(sunTime.getTime()));
+            text += String.format(" (%s)", dateFormat.format(sunTime1.getTime()));
 
-            sunset.setText(text);
+            sunText1.setText(text);
+
+            difference = Math.abs(sunTime1.getTime() - sunTime2.getTime());
+            hours = difference / 3600000;
+            difference -= hours * 3600000;
+            minutes = difference / 60000;
+
+            text = "(";
+
+            if (hours > 0) {
+                text += String.format("%d %s ", hours, hours > 1 ? getString(R.string.hours_short)
+                        : getString(R.string.hour_short));
+            }
+
+            if (minutes > 0) {
+                text += String.format("%d %s ", minutes, minutes > 1 ? getString(R.string.minutes_short)
+                        : getString(R.string.minute_short));
+            }
+
+            text += String.format("%s %s)", getString(R.string.of), getString(R.string.daylight));
+
+            sunText2.setText(text);
         }
     }
 }

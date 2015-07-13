@@ -11,13 +11,13 @@
     <string name="millimeters_per_hour">mm/h</string>
     <string name="millimeters">mm</string>
 
-    <string name="north">north</string>
-    <string name="south">south</string>
-    <string name="east">east</string>
-    <string name="west">west</string>
-    <string name="northeast">northeast</string>
-    <string name="southeast">southeast</string>
-    <string name="northwest">northwest</string>
-    <string name="southwest">southwest</string>
+    <string name="north">n</string>
+    <string name="south">s</string>
+    <string name="east">e</string>
+    <string name="west">w</string>
+    <string name="northeast">ne</string>
+    <string name="southeast">se</string>
+    <string name="northwest">nw</string>
+    <string name="southwest">sw</string>
 
 </resources>
