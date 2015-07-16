@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,6 +23,13 @@ import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.SphericalUtil;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.imagesApi.ImagesApi;
 import com.shawnaten.simpleweather.backend.imagesApi.model.Image;
@@ -32,21 +38,23 @@ import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
 import com.shawnaten.tools.Forecast;
 import com.shawnaten.tools.ForecastTools;
-import com.shawnaten.tools.GeocodingService;
+import com.shawnaten.tools.Geocoding;
 import com.shawnaten.tools.Instagram;
+import com.shawnaten.tools.LocalizationSettings;
 import com.shawnaten.tools.LocationSettings;
-import com.shawnaten.tools.PlaceLikelihoodService;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func2;
@@ -59,9 +67,7 @@ public class MainActivity extends BaseActivity implements Target {
     private static final String SCROLL_POSITION = "scrollPosition";
     private static final String FORECAST_DATA = "forecastData";
     @Inject Observable<Forecast.Response> forecast;
-    @Inject PlaceLikelihoodService placeLikelihoodService;
-    @Inject GeocodingService geocodingService;
-    @Inject Observable<Location> locationObservable;
+    @Inject Observable<Location> locObser;
     @Inject ImagesApi imagesApi;
     @Inject
     GoogleApiClient googleApiClient;
@@ -75,6 +81,11 @@ public class MainActivity extends BaseActivity implements Target {
     private ArrayList<FloatingActionButton> fabs;
     private SavedPlaceApi savedPlaceApi;
     private ArrayList<ScrollListener> scrollListeners = new ArrayList<>();
+    @Inject
+    Observable<Keys> keyObser;
+
+    @Inject
+    Geocoding.Service geocodingService;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -153,102 +164,146 @@ public class MainActivity extends BaseActivity implements Target {
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
-        int result;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int resultCode;
+        final int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-            findViewById(R.id.toolbar).setTranslationY(result);
+            resultCode = getResources().getDimensionPixelSize(resourceId);
+            findViewById(R.id.toolbar).setTranslationY(resultCode);
         }
 
         if (LocationSettings.getMode() == LocationSettings.Mode.CURRENT) {
-            subs.add(locationObservable.doOnError(new Action1<Throwable>() {
-                @Override
-                public void call(Throwable throwable) {
-                    Log.e("this is the error", "this is the error");
-                    throwable.printStackTrace();
-                }
-            }).subscribe());
+            Func2<Location, Keys, Forecast.Response> function;
+            Subscriber<Forecast.Response> subscriber;
+            Subscription subscription;
+            final PendingResult<PlaceLikelihoodBuffer> result;
 
-            /*
-            subs.add(forecast.subscribe(new Action1<Forecast.Response>() {
-                @Override
-                public void call(Forecast.Response forecast) {
-                    dataMap.put(FORECAST_DATA, forecast);
-                    MainActivity.this.sendDataToFragments(FORECAST_DATA, forecast);
-                }
-            }));
+            result = Places.PlaceDetectionApi.getCurrentPlace(googleApiClient, null);
 
-            Observable.zip(locationObservable, geocodingService.getAddresses(),
-                    placeLikelihoodService.getPlaceLikelihood(),
-                    new Func3<Location, Geocoding.Response, PlaceLikelihoodBuffer, String[]>() {
+            function = new Func2<Location, Keys, Forecast.Response>() {
+                @Override
+                public Forecast.Response call(Location l, Keys k) {
+                    Geocoding.Response response;
+                    ResultCallback<PlaceLikelihoodBuffer> callback;
+                    final Geocoding.Result add;
+                    final LatLng actLoc, addLoc;
+                    final double addDist;
+
+                    response = geocodingService.getAddresses(
+                            k.getGoogleAPIKey(),
+                            String.format("%f,%f", l.getLatitude(), l.getLongitude())
+                    );
+
+                    add = response.getResults()[0];
+
+                    actLoc = new LatLng(l.getLatitude(), l.getLongitude());
+                    addLoc = new LatLng(
+                            add.getGeometry().getLocation().getLat(),
+                            add.getGeometry().getLocation().getLng()
+                    );
+
+                    addDist = SphericalUtil.computeDistanceBetween(actLoc, addLoc);
+
+                    callback = new ResultCallback<PlaceLikelihoodBuffer>() {
                         @Override
-                        public String[] call(Location location, Geocoding.Response addresses, PlaceLikelihoodBuffer likelihoods) {
+                        public void onResult(PlaceLikelihoodBuffer like) {
+                            Place place;
+                            double placeDist;
+                            String streetNum = null, route = null, main = null, sec = null;
 
-                            Geocoding.Result address = addresses.getResults()[0];
+                            place = like.get(0).getPlace();
 
-                            LatLng actualLocation = new LatLng(location.getLatitude(),
-                                    location.getLongitude());
-                            LatLng addressLocation = new LatLng(
-                                    address.getGeometry().getLocation().getLat(),
-                                    address.getGeometry().getLocation().getLng()
+                            placeDist = SphericalUtil.computeDistanceBetween(
+                                    actLoc,
+                                    place.getLatLng()
                             );
 
-                            double addressDistance = SphericalUtil.computeDistanceBetween(
-                                    actualLocation, addressLocation);
-                            Place place = likelihoods.get(0).getPlace();
-                            double placeDistance = SphericalUtil.computeDistanceBetween(
-                                    actualLocation, place.getLatLng());
-
-                            String returns[] = new String[2];
-
-                            String streetNumber = null;
-                            String route = null;
-
-                            for (Geocoding.AddressComponents component :
-                                    address.getAddressComponents()) {
-                                if (Arrays.asList(component.getTypes()).contains("street_number")) {
-                                    streetNumber = component.getShortName();
+                            for (Geocoding.AddressComponents comp : add.getAddressComponents()) {
+                                if (Arrays.asList(comp.getTypes()).contains("street_number")) {
+                                    streetNum = comp.getShortName();
                                 }
-                                if (Arrays.asList(component.getTypes()).contains("route")) {
-                                    route = component.getShortName();
+                                if (Arrays.asList(comp.getTypes()).contains("route")) {
+                                    route = comp.getShortName();
                                 }
-                                if (Arrays.asList(component.getTypes()).contains("locality"))
-                                    returns[0] = component.getLongName();
+                                if (Arrays.asList(comp.getTypes()).contains("locality"))
+                                    main = comp.getLongName();
                             }
 
-                            if (placeDistance < addressDistance) {
-                                returns[1] = place.getName().toString();
+                            if (placeDist < addDist) {
+                                sec = place.getName().toString();
                             } else {
-                                if (streetNumber != null) {
-                                    returns[1] = streetNumber + " " + route;
+                                if (streetNum != null) {
+                                    sec = streetNum + " " + route;
                                 } else {
-                                    returns[1] = address.getAddressComponents()[0].getShortName();
+                                    sec = add.getAddressComponents()[0].getShortName();
                                 }
                             }
 
-                            likelihoods.release();
+                            like.release();
 
-                            return returns;
+                            Observable.just(main)
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Action1<String>() {
+                                        @Override
+                                        public void call(String s) {
+                                            ((TextView) findViewById(R.id.main_loc)).setText(s);
+                                        }
+                                    });
+
+                            Observable.just(sec)
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Action1<String>() {
+                                        @Override
+                                        public void call(String s) {
+                                            ((TextView) findViewById(R.id.sec_loc)).setText(s);
+                                        }
+                                    });
                         }
-                    })
+                    };
+
+                    result.setResultCallback(callback);
+
+                    return forecastService.getForecast(
+                            k.getForecastAPIKey(),
+                            l.getLatitude(),
+                            l.getLongitude(),
+                            LocalizationSettings.getLangCode(),
+                            LocalizationSettings.getUnitCode()
+                    );
+                }
+            };
+
+            subscriber = new Subscriber<Forecast.Response>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onNext(Forecast.Response response) {
+                    dataMap.put(FORECAST_DATA, response);
+                    MainActivity.this.sendDataToFragments(FORECAST_DATA, response);
+                }
+            };
+
+            subscription = Observable.zip(locObser, keyObser, function)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<String[]>() {
-                        @Override
-                        public void call(String[] strings) {
-                            ((TextView) MainActivity.this.findViewById(R.id.main_location)).setText(strings[0]);
-                            MainActivity.this.findViewById(R.id.secondary_location).setVisibility(View.VISIBLE);
-                            ((TextView) MainActivity.this.findViewById(R.id.secondary_location)).setText(strings[1]);
-                        }
-                    });*/
+                    .subscribe(subscriber);
+
+            subs.add(subscription);
         } else {
             forecast.subscribe(new Action1<Forecast.Response>() {
                 @Override
                 public void call(Forecast.Response forecast) {
                     MainActivity.this.sendDataToFragments(FORECAST_DATA, forecast);
-                    ((TextView) MainActivity.this.findViewById(R.id.main_location))
+                    ((TextView) MainActivity.this.findViewById(R.id.main_loc))
                             .setText(LocationSettings.getName());
-                    ((TextView) MainActivity.this.findViewById(R.id.secondary_location))
+                    ((TextView) MainActivity.this.findViewById(R.id.sec_loc))
                             .setText(LocationSettings.getAddress());
                 }
             });

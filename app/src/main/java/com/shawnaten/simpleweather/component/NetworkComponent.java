@@ -6,6 +6,7 @@ import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
 import com.shawnaten.simpleweather.module.AppModule;
 import com.shawnaten.simpleweather.module.ForecastModule;
+import com.shawnaten.simpleweather.module.GeocodingModule;
 import com.shawnaten.simpleweather.module.GoogleAccountCredentialModule;
 import com.shawnaten.simpleweather.module.GoogleApiClientModule;
 import com.shawnaten.simpleweather.module.GsonConverterModule;
@@ -41,7 +42,8 @@ import rx.Observable;
                 GoogleAccountCredentialModule.class,
                 ImagesApiModule.class,
                 SavedPlaceApiModule.class,
-                InstagramModule.class
+                InstagramModule.class,
+                GeocodingModule.class
         }
 )
 public interface NetworkComponent {

@@ -71,7 +71,7 @@
                 android:layout_rowSpan="3" />
 
             <TextView
-                android:id="@+id/main_location"
+                android:id="@+id/main_loc"
                 style="@style/text.title.light"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
                 android:singleLine="true" />
 
             <TextView
-                android:id="@+id/secondary_location"
+                android:id="@+id/sec_loc"
                 style="@style/text.body_1.light"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

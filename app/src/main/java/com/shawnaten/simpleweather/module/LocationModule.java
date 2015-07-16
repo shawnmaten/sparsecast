@@ -4,6 +4,7 @@ import android.location.Location;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderApi;
+import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationServices;
 
 import dagger.Module;
@@ -23,10 +24,12 @@ public class LocationModule {
 
                 client.blockingConnect();
 
-                if (api.getLocationAvailability(client).isLocationAvailable())
+                LocationAvailability availability = api.getLocationAvailability(client);
+
+                if (availability != null && availability.isLocationAvailable())
                     subscriber.onNext(api.getLastLocation(client));
                 else
-                    subscriber.onError(new Throwable());
+                    subscriber.onError(new Throwable("Location Services Unavailable"));
             }
         }).subscribeOn(Schedulers.io());
     }
