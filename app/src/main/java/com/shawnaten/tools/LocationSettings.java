@@ -2,7 +2,6 @@ package com.shawnaten.tools;
 
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
-import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
 
 public class LocationSettings {
     private static Mode mode = Mode.CURRENT;

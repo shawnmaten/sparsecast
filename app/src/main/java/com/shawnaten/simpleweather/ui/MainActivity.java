@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,10 +23,7 @@ import android.widget.TextView;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.maps.android.SphericalUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.imagesApi.ImagesApi;
 import com.shawnaten.simpleweather.backend.imagesApi.model.Image;
@@ -34,7 +32,6 @@ import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
 import com.shawnaten.tools.Forecast;
 import com.shawnaten.tools.ForecastTools;
-import com.shawnaten.tools.Geocoding;
 import com.shawnaten.tools.GeocodingService;
 import com.shawnaten.tools.Instagram;
 import com.shawnaten.tools.LocationSettings;
@@ -45,7 +42,6 @@ import com.squareup.picasso.Target;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.inject.Inject;
 
@@ -54,7 +50,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func2;
-import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity implements Target {
@@ -68,16 +63,17 @@ public class MainActivity extends BaseActivity implements Target {
     @Inject GeocodingService geocodingService;
     @Inject Observable<Location> locationObservable;
     @Inject ImagesApi imagesApi;
+    @Inject
+    GoogleApiClient googleApiClient;
+    @Inject
+    Forecast.Service forecastService;
     private int scrollPosition;
     private ImageView photo;
     private View overlay;
     private View instagramAttribution;
-
     private FloatingActionMenu fam;
     private ArrayList<FloatingActionButton> fabs;
-
     private SavedPlaceApi savedPlaceApi;
-
     private ArrayList<ScrollListener> scrollListeners = new ArrayList<>();
 
     @Override
@@ -165,6 +161,15 @@ public class MainActivity extends BaseActivity implements Target {
         }
 
         if (LocationSettings.getMode() == LocationSettings.Mode.CURRENT) {
+            subs.add(locationObservable.doOnError(new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    Log.e("this is the error", "this is the error");
+                    throwable.printStackTrace();
+                }
+            }).subscribe());
+
+            /*
             subs.add(forecast.subscribe(new Action1<Forecast.Response>() {
                 @Override
                 public void call(Forecast.Response forecast) {
@@ -235,7 +240,7 @@ public class MainActivity extends BaseActivity implements Target {
                             MainActivity.this.findViewById(R.id.secondary_location).setVisibility(View.VISIBLE);
                             ((TextView) MainActivity.this.findViewById(R.id.secondary_location)).setText(strings[1]);
                         }
-                    });
+                    });*/
         } else {
             forecast.subscribe(new Action1<Forecast.Response>() {
                 @Override

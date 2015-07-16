@@ -32,7 +32,6 @@ public class ForecastModule {
                 .setEndpoint(ENDPOINT)
                 .setClient(client)
                 .setConverter(converter)
-                .setLogLevel(RestAdapter.LogLevel.BASIC)
                 .build().create(Forecast.Service.class);
     }
 
