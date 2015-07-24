@@ -280,7 +280,7 @@ public class MainActivity extends BaseActivity implements Target {
 
                 @Override
                 public void onError(Throwable e) {
-                    e.printStackTrace();
+                    startActivity(new Intent(getApplicationContext(), SearchActivity.class));
                 }
 
                 @Override

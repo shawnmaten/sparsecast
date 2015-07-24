@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,7 @@ import java.util.List;
 public class SavedPlacesTab extends Tab {
     private SearchAdapter adapter;
     private GoogleApiClient googleApiClient;
-    private List<SavedPlace> savedPlaces;
+    private final ArrayMap<SavedPlace, String> savedPlaces = new ArrayMap<>();
     private ArrayList<String> attributions = new ArrayList<>();
 
     public static SavedPlacesTab newInstance(String title, int layout) {
@@ -60,22 +61,43 @@ public class SavedPlacesTab extends Tab {
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
-        if (isVisibleToUser) {
-
-        }
-    }
-
-    @Override
     public void onNewData(Object data) {
         super.onNewData(data);
 
         if (List.class.isInstance(data) && SavedPlace.class.isInstance(((List) data).get(0))) {
-            savedPlaces = (List<SavedPlace>) data;
-            if (savedPlaces != null)
-                adapter.notifyItemRangeInserted(0, savedPlaces.size());
+            final List<SavedPlace> ids = (List<SavedPlace>) data;
+            savedPlaces.clear();
+
+            for (final SavedPlace id : ids) {
+                PendingResult result = Places.GeoDataApi.getPlaceById(googleApiClient,
+                        id.getPlaceId());
+
+                result.setResultCallback(new ResultCallback() {
+                    @Override
+                    public void onResult(Result result1) {
+                        String name;
+                        PlaceBuffer placeBuffer = (PlaceBuffer) result1;
+                        Place place = placeBuffer.get(0);
+                        if (place.getPlaceTypes().contains(Place.TYPE_POLITICAL))
+                            name = place.getAddress().toString();
+                        else
+                            name = place.getName().toString();
+
+                        CharSequence attribution = placeBuffer.getAttributions();
+                        if (attribution != null && !attributions.contains(attribution.toString())) {
+                            attributions.add(attribution.toString());
+                            adapter.notifyItemChanged(adapter.getItemCount() - 1);
+                        }
+                        placeBuffer.release();
+
+                        synchronized (savedPlaces) {
+                            savedPlaces.put(id, name);
+                            if (savedPlaces.size() == ids.size())
+                                adapter.notifyItemRangeInserted(0, savedPlaces.size());
+                        }
+                    }
+                });
+            }
         }
     }
 
@@ -91,7 +113,7 @@ public class SavedPlacesTab extends Tab {
                 public void onClick(View view) {
                     PendingResult result = Places.GeoDataApi.getPlaceById(
                             getApp().getNetworkComponent().googleApiClient(),
-                            savedPlaces.get(id).getPlaceId());
+                            savedPlaces.keyAt(id).getPlaceId());
 
                     result.setResultCallback(new ResultCallback() {
                         @Override
@@ -150,36 +172,14 @@ public class SavedPlacesTab extends Tab {
                     break;
                 default:
                     final NormalViewHolder holder = (NormalViewHolder) viewHolder;
-                    PendingResult result = Places.GeoDataApi.getPlaceById(
-                            googleApiClient, savedPlaces.get(i).getPlaceId());
-
                     holder.id = i;
-                    holder.nameView.setText("");
-                    result.setResultCallback(new ResultCallback() {
-                        @Override
-                        public void onResult(Result result1) {
-                            PlaceBuffer placeBuffer = (PlaceBuffer) result1;
-                            Place place = placeBuffer.get(0);
-                            if (place.getPlaceTypes().contains(Place.TYPE_POLITICAL))
-                                holder.nameView.setText(place.getAddress());
-                            else
-                                holder.nameView.setText(place.getName());
-
-                            CharSequence attribution = placeBuffer.getAttributions();
-                            if (attribution != null && !attributions.contains(attribution.toString())) {
-                                attributions.add(attribution.toString());
-                                adapter.notifyItemChanged(adapter.getItemCount() - 1);
-                            }
-                            placeBuffer.release();
-                        }
-                    });
-                    break;
+                    holder.nameView.setText(savedPlaces.valueAt(i));
             }
         }
 
         @Override
         public int getItemCount() {
-            return savedPlaces != null ? savedPlaces.size() + 1: 0;
+            return savedPlaces != null && savedPlaces.size() > 0 ? savedPlaces.size() + 1: 0;
         }
 
         @Override

@@ -60,13 +60,16 @@ public class SearchActivity extends BaseActivity {
                     e.printStackTrace();
                 }
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(
-                new Action1<Object>() {
-                    @Override
-                    public void call(Object result) {
-                        SearchActivity.this.sendDataToFragments(result);
-                    }
-                });
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<Object>() {
+                            @Override
+                            public void call(Object result) {
+                                SearchActivity.this.sendDataToFragments(result);
+                            }
+                        });
     }
 
     @Override
