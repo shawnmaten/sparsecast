@@ -41,8 +41,8 @@ public class Next24HoursTab extends Tab {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         FloatingActionMenu fam;
         FloatingActionButton item1, item2;
