@@ -25,7 +25,7 @@ public class SummaryFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Observable<Forecast.Response> forecast = getApp().getNetworkComponent().forecast();
+        Observable<Forecast.Response> forecast = getApp().mainComponent.forecast();
         final View root = inflater.inflate(R.layout.tab_current_summary, container, false);
 
         subs.add(forecast.subscribe(new Action1<Forecast.Response>() {

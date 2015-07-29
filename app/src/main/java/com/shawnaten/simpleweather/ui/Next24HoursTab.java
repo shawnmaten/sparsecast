@@ -47,7 +47,7 @@ public class Next24HoursTab extends Tab {
         FloatingActionMenu fam;
         FloatingActionButton item1, item2;
 
-        fam = getMainActivity().getFam();
+        fam = (FloatingActionMenu) getMainActivity().findViewById(R.id.fam);
 
         item1 = new FloatingActionButton(fam.getContext());
         item1.setButtonSize(FloatingActionButton.SIZE_MINI);
@@ -62,7 +62,7 @@ public class Next24HoursTab extends Tab {
             }
         });
         fabs.add(item1);
-        getMainActivity().addFab(item1);
+        fam.addMenuButton(item1);
 
         item2 = new FloatingActionButton(fam.getContext());
         item2.setButtonSize(FloatingActionButton.SIZE_MINI);
@@ -77,7 +77,7 @@ public class Next24HoursTab extends Tab {
             }
         });
         fabs.add(item2);
-        getMainActivity().addFab(item2);
+        fam.addMenuButton(item2);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class Next24HoursTab extends Tab {
         super.fabSetup();
 
         if (getUserVisibleHint() && isVisible()) {
-            FloatingActionMenu fam = getMainActivity().getFam();
+            FloatingActionMenu fam = (FloatingActionMenu) getMainActivity().findViewById(R.id.fam);
 
             if (nextHourSection.getVisibility() != View.GONE) {
                 if (scroll.getScrollY() > screenHeight - screenWidth) {

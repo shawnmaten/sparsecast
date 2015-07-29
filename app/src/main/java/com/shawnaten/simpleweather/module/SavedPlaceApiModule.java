@@ -14,9 +14,10 @@ import dagger.Provides;
 
 @Module
 public class SavedPlaceApiModule {
+
     @Provides
     @Singleton
-    public SavedPlaceApi providesImagesApi(App app, GoogleAccountCredential credential) {
+    public SavedPlaceApi providesSavedPlacesApi(App app, GoogleAccountCredential credential) {
         SavedPlaceApi.Builder build;
         build = new SavedPlaceApi.Builder(
                 AndroidHttp.newCompatibleTransport(),

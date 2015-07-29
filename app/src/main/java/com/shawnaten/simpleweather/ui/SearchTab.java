@@ -81,7 +81,7 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
     @Override
     public boolean onQueryTextChange(String newText) {
         PendingResult result = Places.GeoDataApi.getAutocompletePredictions(
-            getApp().getNetworkComponent().googleApiClient(),
+            getApp().mainComponent.googleApiClient(),
             newText,
             new LatLngBounds(new LatLng(-85, -180), new LatLng(85, 180)),
             null);
@@ -162,7 +162,7 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
                 @Override
                 public void onClick(View view) {
                     PendingResult result = Places.GeoDataApi.getPlaceById(
-                            getApp().getNetworkComponent().googleApiClient(),
+                            getApp().mainComponent.googleApiClient(),
                             predictions.get(id).getPlaceId());
 
                     result.setResultCallback(new ResultCallback() {

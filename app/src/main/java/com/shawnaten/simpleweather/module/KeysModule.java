@@ -23,40 +23,32 @@ public class KeysModule {
 
     @Provides
     @Singleton
-    public Observable<Keys> providesKeysModule(final App app) {
+    public KeysEndpoint providesKeysApi(App app, GoogleAccountCredential credential) {
+        KeysEndpoint.Builder build;
+
+        build = new KeysEndpoint.Builder(
+                AndroidHttp.newCompatibleTransport(),
+                new AndroidJsonFactory(),
+                credential);
+        if (app.getResources().getBoolean(R.bool.localhost))
+            build.setRootUrl(app.getString(R.string.root_url));
+        build.setApplicationName(app.getString(R.string.app_name));
+
+        return build.build();
+    }
+
+    @Provides
+    @Singleton
+    public Observable<Keys> providesKeysModule(final KeysEndpoint endpoint) {
         return Observable.create(new Observable.OnSubscribe<Keys>() {
             @Override
             public void call(Subscriber<? super Keys> subscriber) {
-                GoogleAccountCredential cred;
-                KeysEndpoint.Builder build;
-                KeysEndpoint end;
-
-                cred = GoogleAccountCredential.usingAudience(
-                        app,
-                        "server:client_id:" + app.getString(R.string.WEB_ID));
-                if (cred.getAllAccounts() != null)
-                    cred.setSelectedAccountName(cred.getAllAccounts()[0].name);
-                else
-                    subscriber.onError(new Exception());
-
-                build = new KeysEndpoint.Builder(
-                        AndroidHttp.newCompatibleTransport(),
-                        new AndroidJsonFactory(),
-                        cred);
-                if (app.getResources().getBoolean(R.bool.localhost))
-                    build.setRootUrl(app.getString(R.string.root_url));
-                build.setApplicationName(app.getString(R.string.app_name));
-
-                end = build.build();
-
                 try {
-                    subscriber.onNext(end.getKeys().execute());
+                    subscriber.onNext(endpoint.getKeys().execute());
                 } catch (IOException e) {
                     subscriber.onError(e);
                 }
             }
-        })
-                .cache()
-                .subscribeOn(Schedulers.io());
+        }).cache().subscribeOn(Schedulers.io());
     }
 }

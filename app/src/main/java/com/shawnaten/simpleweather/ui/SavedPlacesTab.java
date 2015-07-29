@@ -43,7 +43,7 @@ public class SavedPlacesTab extends Tab {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        googleApiClient = getApp().getNetworkComponent().googleApiClient();
+        googleApiClient = getApp().mainComponent.googleApiClient();
         adapter = new SearchAdapter();
     }
 
@@ -112,7 +112,7 @@ public class SavedPlacesTab extends Tab {
                 @Override
                 public void onClick(View view) {
                     PendingResult result = Places.GeoDataApi.getPlaceById(
-                            getApp().getNetworkComponent().googleApiClient(),
+                            getApp().mainComponent.googleApiClient(),
                             savedPlaces.keyAt(id).getPlaceId());
 
                     result.setResultCallback(new ResultCallback() {

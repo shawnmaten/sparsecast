@@ -14,6 +14,7 @@ import dagger.Provides;
 
 @Module
 public class ImagesApiModule {
+
     @Provides
     @Singleton
     public ImagesApi providesImagesApi(App app, GoogleAccountCredential credential) {

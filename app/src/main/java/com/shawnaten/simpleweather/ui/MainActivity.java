@@ -106,8 +106,8 @@ public class MainActivity extends BaseActivity implements Target {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getApp().getNetworkComponent().injectMainActivity(this);
-        savedPlaceApi = getApp().getNetworkComponent().savedPlaceApi();
+        getApp().mainComponent.injectMainActivity(this);
+        savedPlaceApi = getApp().mainComponent.savedPlaceApi();
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
@@ -115,7 +115,7 @@ public class MainActivity extends BaseActivity implements Target {
         photoContainer = findViewById(R.id.photo_container);
         photo = (ImageView) findViewById(R.id.photo);
         overlay = findViewById(R.id.overlay);
-        fam = (FloatingActionMenu) findViewById(R.id.fab);
+        fam = (FloatingActionMenu) findViewById(R.id.fam);
         fam.hideMenuButton(false);
         fabs = new ArrayList<>();
 
@@ -381,6 +381,9 @@ public class MainActivity extends BaseActivity implements Target {
             case R.id.action_change_location:
                 startActivityForResult(new Intent(this, SearchActivity.class), PLACE_SEARCH_CODE);
                 return true;
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
             default:
                 return false;
         }
@@ -437,8 +440,8 @@ public class MainActivity extends BaseActivity implements Target {
                 }
             });
 
-            Observable<Keys> keysObservable = getApp().getNetworkComponent().keys();
-            final Instagram.Service instagramService = getApp().getNetworkComponent().instagramService();
+            Observable<Keys> keysObservable = getApp().mainComponent.keys();
+            final Instagram.Service instagramService = getApp().mainComponent.instagramService();
             Observable.zip(keysObservable, imageObservable, new Func2<Keys, Image, Instagram.SingleMediaResponse>() {
                 @Override
                 public Instagram.SingleMediaResponse call(Keys keys, Image imageData) {
@@ -491,29 +494,6 @@ public class MainActivity extends BaseActivity implements Target {
     @Override
     public void onPrepareLoad(Drawable placeHolderDrawable) {
 
-    }
-
-    public void removeFab(FloatingActionButton fab) {
-        fam.removeMenuButton(fab);
-    }
-
-    public void removeAllFabs() {
-        for (FloatingActionButton fab : fabs) {
-            fam.removeMenuButton(fab);
-        }
-    }
-
-    public ArrayList<FloatingActionButton> getFabs() {
-        return fabs;
-    }
-
-    public void addFab(FloatingActionButton fab) {
-        fabs.add(fab);
-        fam.addMenuButton(fab);
-    }
-
-    public FloatingActionMenu getFam() {
-        return fam;
     }
 
     public interface ScrollListener {

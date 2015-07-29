@@ -8,8 +8,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-@Singleton
 @Module
+@Singleton
 public class AppModule {
 
     private App app;
@@ -19,7 +19,6 @@ public class AppModule {
         this.app = app;
     }
 
-    @Singleton
     @Provides
     public App provideApp(){
         return app;

@@ -26,7 +26,7 @@ public class SearchActivity extends BaseActivity {
 
         super.onCreate(savedInstanceState);
 
-        final SavedPlaceApi savedPlaceApi = getApp().getNetworkComponent().savedPlaceApi();
+        final SavedPlaceApi savedPlaceApi = getApp().mainComponent.savedPlaceApi();
 
         setContentView(R.layout.activity_search);
 

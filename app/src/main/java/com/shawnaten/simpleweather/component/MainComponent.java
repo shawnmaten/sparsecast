@@ -1,7 +1,7 @@
 package com.shawnaten.simpleweather.component;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.shawnaten.simpleweather.App;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
 import com.shawnaten.simpleweather.module.AppModule;
@@ -46,12 +46,12 @@ import rx.Observable;
                 GeocodingModule.class
         }
 )
-public interface NetworkComponent {
+public interface MainComponent {
     Observable<Forecast.Response> forecast();
-    App injectApp(App app);
     MainActivity injectMainActivity(MainActivity activity);
     GoogleApiClient googleApiClient();
     SavedPlaceApi savedPlaceApi();
     Instagram.Service instagramService();
     Observable<Keys> keys();
+    GoogleAccountCredential credential();
 }

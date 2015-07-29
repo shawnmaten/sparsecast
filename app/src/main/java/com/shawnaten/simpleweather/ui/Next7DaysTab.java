@@ -115,7 +115,7 @@ public class Next7DaysTab extends Tab implements View.OnClickListener {
         super.fabSetup();
 
         if (getUserVisibleHint() && isVisible()) {
-            FloatingActionMenu fam = getMainActivity().getFam();
+            FloatingActionMenu fam = (FloatingActionMenu) getMainActivity().findViewById(R.id.fam);
 
             if (!fam.isMenuButtonHidden()) {
                 fam.hideMenuButton(true);
