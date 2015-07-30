@@ -6,10 +6,11 @@
 
     <color name="button_pressed_light">#66999999</color>
 
-    <color name="primary">#00BCD4</color>
-    <color name="primary_dark">#0097A7</color>
+    <color name="primary">#F44336</color>
+    <color name="primary_dark">#D32F2F</color>
 
-    <color name="chart">#DE00BCD4</color>
+    <color name="chart">@color/primary</color>
+
     <color name="chart_min">@color/chart</color>
     <color name="chart_max">#DEFF9800</color>
 

@@ -40,15 +40,15 @@ public class SearchActivity extends BaseActivity {
         slidingTabLayout.setCustomTabView(R.layout.tab_title, R.id.title);
         slidingTabLayout.setSelectedIndicatorColors(0xFF000000);
         slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.SimpleTabColorizer(
-                getResources().getColor(R.color.text_primary),
-                getResources().getColor(R.color.text_primary),
-                getResources().getColor(R.color.text_secondary),
-                getResources().getColor(R.color.text_primary)
+                getResources().getColor(R.color.text_primary_light),
+                getResources().getColor(R.color.text_primary_light),
+                getResources().getColor(R.color.text_secondary_light),
+                getResources().getColor(R.color.text_primary_light)
         ));
         slidingTabLayout.setViewPager(viewPager);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         setSupportActionBar(toolbar);
 
         Observable.create(new Observable.OnSubscribe<Object>() {

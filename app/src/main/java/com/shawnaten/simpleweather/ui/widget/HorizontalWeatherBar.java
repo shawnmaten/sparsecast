@@ -105,11 +105,11 @@ public class HorizontalWeatherBar extends View {
         while (24 % skip != 0)
             skip++;
 
-        float tempBottom = height - margin;
+        float tempBottom = height - margin / 2;
         float timeBottom = tempBottom - textHeight - margin / 2;
 
         float barBottom = timeBottom - textHeight - margin / 2;
-        float barTop = margin;
+        float barTop = margin / 2;
 
         for (int i = skip; i < 24; i += skip) {
             Forecast.DataPoint dataPoint = data[offset + i];

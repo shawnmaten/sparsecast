@@ -136,7 +136,7 @@
         android:layout_margin="@dimen/half_margin"
         fab:menu_colorNormal="@color/primary"
         fab:menu_colorPressed="@color/primary_dark"
-        fab:menu_icon="@drawable/ic_add_black_24dp" />
+        fab:menu_icon="@drawable/ic_add_white_24dp"/>
 
     <include layout="@layout/toolbar"/>
 
