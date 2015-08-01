@@ -1,6 +1,10 @@
 package com.shawnaten.simpleweather.ui;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +18,7 @@ import com.shawnaten.simpleweather.ui.widget.HorizontalWeatherBar;
 import com.shawnaten.simpleweather.ui.widget.TemperatureBar;
 import com.shawnaten.tools.Forecast;
 import com.shawnaten.tools.ForecastIconSelector;
+import com.shawnaten.tools.LocationSettings;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -22,6 +27,7 @@ import java.util.Calendar;
 public class Next7DaysTab extends Tab implements View.OnClickListener {
     private LinearLayout daysList;
     private TextView summary;
+    private TextView thirdPartyAttrs;
 
     public static Next7DaysTab newInstance(String title, int layout) {
         Bundle args = new Bundle();
@@ -35,9 +41,22 @@ public class Next7DaysTab extends Tab implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
+        View attributions;
 
         summary = (TextView) root.findViewById(R.id.summary);
         daysList = (LinearLayout) root.findViewById(R.id.days_list);
+        attributions = root.findViewById(R.id.attributions);
+        thirdPartyAttrs = (TextView) attributions.findViewById(R.id.third_party);
+        thirdPartyAttrs.setMovementMethod(LinkMovementMethod.getInstance());
+        attributions.findViewById(R.id.powered_by_forecast)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                                Uri.parse("https://www.forecast.io/"));
+                        startActivity(browserIntent);
+                    }
+                });
 
         for (int i = 0; i < 7; i++) {
             View item = inflater.inflate(R.layout.day_list_item, daysList, false);
@@ -58,6 +77,10 @@ public class Next7DaysTab extends Tab implements View.OnClickListener {
             Forecast.DataPoint hourly[] = forecast.getHourly().getData();
             SimpleDateFormat dayFormat = new SimpleDateFormat("ccc");
             dayFormat.setTimeZone(forecast.getTimezone());
+
+            if (LocationSettings.getAttributions() != null) {
+                thirdPartyAttrs.setText(Html.fromHtml(LocationSettings.getAttributions()));
+            }
 
             Forecast.DataPoint dailyMin[] = Arrays.copyOf(daily, daily.length);
             Arrays.sort(dailyMin, new Forecast.DataPoint.DailyMinComparator());

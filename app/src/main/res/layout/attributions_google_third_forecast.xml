@@ -4,9 +4,12 @@
     android:id="@+id/attributions"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?selectableItemBackground"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingLeft="@dimen/standard_margin"
+    android:paddingStart="@dimen/standard_margin"
+    android:paddingRight="@dimen/standard_margin"
+    android:paddingEnd="@dimen/standard_margin"
+    android:paddingBottom="@dimen/standard_margin">
 
     <ImageView
         android:id="@+id/powered_by_google"
@@ -24,14 +27,6 @@
         android:textAlignment="center"
         android:textColorLink="@color/text_secondary"
         android:visibility="gone"/>
-
-    <TextView
-        style="@style/text.caption"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textAlignment="center"
-        android:text="@string/and_short"/>
 
     <TextView
         android:id="@+id/powered_by_forecast"

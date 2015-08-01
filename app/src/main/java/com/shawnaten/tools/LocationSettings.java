@@ -10,7 +10,7 @@ public class LocationSettings {
     private static String address;
     private static LatLng latLng;
     private static String placeId;
-    private static CharSequence attributions;
+    private static String attributions;
     private static boolean isFavorite;
 
     public static void configure() {
@@ -30,7 +30,7 @@ public class LocationSettings {
         latLng = place.getLatLng();
         placeId = place.getId();
         LocationSettings.isFavorite = isFavorite;
-        LocationSettings.attributions = attributions;
+        LocationSettings.attributions = attributions != null ? attributions.toString() : null;
     }
 
     public static void setIsFavorite(boolean isFavorite) {
@@ -63,7 +63,7 @@ public class LocationSettings {
         return placeId;
     }
 
-    public static CharSequence getAttributions() {
+    public static String getAttributions() {
         return attributions;
     }
 

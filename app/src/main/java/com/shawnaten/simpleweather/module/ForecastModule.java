@@ -41,37 +41,43 @@ public class ForecastModule {
             final Observable<Keys> keysObservable,
             final Forecast.Service forecastService,
             final Observable<Location> locationObservable) {
+
         return Observable.create(new Observable.OnSubscribe<Forecast.Response>() {
+
+
             @Override
             public void call(final Subscriber<? super Forecast.Response> subscriber) {
-                if (LocationSettings.getMode() == LocationSettings.Mode.SAVED) {
-                    keysObservable.subscribe(new Action1<Keys>() {
-                                                 @Override
-                                                 public void call(Keys keys) {
-                                                     subscriber.onNext(forecastService.getForecast(
-                                                             keys.getForecastAPIKey(),
-                                                             LocationSettings.getLatLng().latitude,
-                                                             LocationSettings.getLatLng().longitude,
-                                                             LocalizationSettings.getLangCode(),
-                                                             LocalizationSettings.getUnitCode()
-                                                     ));
-                                                 }
-                                             }
-                    );
-                } else {
-                    Observable.zip(keysObservable, locationObservable, new Func2<Keys, Location, Object>() {
-                        @Override
-                        public Object call(Keys keys, Location location) {
-                            subscriber.onNext(forecastService.getForecast(
-                                    keys.getForecastAPIKey(),
-                                    location.getLatitude(), location.getLongitude(),
-                                    LocalizationSettings.getLangCode(),
-                                    LocalizationSettings.getUnitCode()
-                            ));
-                            return null;
-                        }
-                    }).subscribe();
-                }
+                Action1<Keys> action1 = new Action1<Keys>() {
+                    @Override
+                    public void call(Keys keys) {
+                        subscriber.onNext(forecastService.getForecast(
+                                keys.getForecastAPIKey(),
+                                LocationSettings.getLatLng().latitude,
+                                LocationSettings.getLatLng().longitude,
+                                LocalizationSettings.getLangCode(),
+                                LocalizationSettings.getUnitCode()
+                        ));
+                    }
+                };
+
+                Func2<Keys, Location, Object> func2 = new Func2<Keys, Location, Object>() {
+                    @Override
+                    public Object call(Keys keys, Location location) {
+                        subscriber.onNext(forecastService.getForecast(
+                                keys.getForecastAPIKey(),
+                                location.getLatitude(), location.getLongitude(),
+                                LocalizationSettings.getLangCode(),
+                                LocalizationSettings.getUnitCode()
+                        ));
+                        return null;
+                    }
+                };
+
+
+                if (LocationSettings.getMode() == LocationSettings.Mode.SAVED)
+                    keysObservable.subscribe(action1);
+                else
+                    Observable.zip(keysObservable, locationObservable, func2).subscribe();
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }

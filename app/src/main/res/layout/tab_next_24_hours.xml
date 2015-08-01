@@ -106,11 +106,17 @@
                 android:textAlignment="center">
             </TextView>
 
+            <include
+                layout="@layout/attributions_google_third_forecast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"/>
+
             <LinearLayout
                 android:id="@+id/sun"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
+                android:layout_above="@id/attributions"
                 android:layout_marginBottom="@dimen/standard_margin"
                 android:orientation="vertical"
                 android:paddingEnd="@dimen/standard_margin"
@@ -123,17 +129,16 @@
                     style="@style/text.title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center"></TextView>
+                    android:textAlignment="center"/>
 
                 <TextView
                     android:id="@+id/sun_text_2"
                     style="@style/text.body_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center"></TextView>
+                    android:textAlignment="center"/>
 
             </LinearLayout>
-
 
             <com.shawnaten.simpleweather.ui.widget.VerticalWeatherBar
                 android:id="@+id/vertical_weather_bar"

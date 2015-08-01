@@ -32,10 +32,6 @@
             android:paddingStart="@dimen/standard_margin"
             android:textAlignment="center" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/half_margin" />
-
         <LinearLayout
             android:id="@+id/days_list"
             android:layout_width="match_parent"
@@ -43,13 +39,11 @@
             android:orientation="vertical" />
 
         <Space
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/half_margin" />
-
-        <Space
             android:id="@+id/bottom_space"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <include layout="@layout/attributions_google_third_forecast"/>
 
     </LinearLayout>
 

@@ -150,7 +150,7 @@ public class SavedPlacesTab extends Tab {
             switch (viewType) {
                 case ATTRIBUTIONS_TYPE:
                     View attributionsView = LayoutInflater.from(viewGroup.getContext())
-                            .inflate(R.layout.attributions_google_and_third_party, viewGroup, false);
+                            .inflate(R.layout.attributions_google_third, viewGroup, false);
                     return new AttributionsViewHolder(attributionsView);
                 default:
                     View listItemView = LayoutInflater.from(viewGroup.getContext())

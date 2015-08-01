@@ -67,12 +67,14 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
 
         if (scroll != null) {
             scroll.addCallbacks(this);
+            /*
             scroll.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
                     onOtherScrollChanged(((MainActivity) getBaseActivity()).getScrollPosition());
                 }
             });
+            */
         }
 
         if ((content = root.findViewById(R.id.content)) != null) {

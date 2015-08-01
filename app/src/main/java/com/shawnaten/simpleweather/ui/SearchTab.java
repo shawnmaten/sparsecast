@@ -213,8 +213,6 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
             }
         }
 
-
-
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
             switch (getItemViewType(i)) {

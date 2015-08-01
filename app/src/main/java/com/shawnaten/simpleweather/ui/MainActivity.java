@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
@@ -87,6 +88,8 @@ public class MainActivity extends BaseActivity implements Target {
     @Inject
     Geocoding.Service geocodingService;
 
+    private LoadingFragment loadingFragment;
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -118,6 +121,7 @@ public class MainActivity extends BaseActivity implements Target {
         fam = (FloatingActionMenu) findViewById(R.id.fam);
         fam.hideMenuButton(false);
         fabs = new ArrayList<>();
+        loadingFragment = new LoadingFragment();
 
         if (savedInstanceState != null) {
             scrollPosition = savedInstanceState.getInt(SCROLL_POSITION);
@@ -152,6 +156,11 @@ public class MainActivity extends BaseActivity implements Target {
     @Override
     protected void onResume() {
         View decorView;
+        FragmentManager fm = getSupportFragmentManager();
+
+        fm.beginTransaction()
+                .add(R.id.root, loadingFragment)
+                .commit();
 
         super.onResume();
 
@@ -308,6 +317,17 @@ public class MainActivity extends BaseActivity implements Target {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onPause() {
+        FragmentManager fm = getSupportFragmentManager();
+
+        super.onPause();
+
+        fm.beginTransaction()
+                .remove(loadingFragment)
+                .commit();
     }
 
     @Override
@@ -478,12 +498,18 @@ public class MainActivity extends BaseActivity implements Target {
 
     @Override
     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+        FragmentManager fm = getSupportFragmentManager();
+
         photo.setImageBitmap(bitmap);
         Palette palette = Palette.from(bitmap).generate();
         int color = palette.getMutedColor(0x000000);
         color = Color.argb(102, Color.red(color), Color.green(color),
                 Color.blue(color));
         overlay.setBackgroundColor(color);
+
+        fm.beginTransaction()
+                .remove(loadingFragment)
+                .commit();
     }
 
     @Override
