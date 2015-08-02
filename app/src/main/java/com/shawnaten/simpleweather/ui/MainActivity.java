@@ -384,6 +384,7 @@ public class MainActivity extends BaseActivity implements Target {
 
                 } else {
                     item.setIcon(R.drawable.ic_favorite_white_24dp);
+                    LocationSettings.setIsFavorite(true);
                     subs.add(Observable.create(new Observable.OnSubscribe<SavedPlace>() {
                         @Override
                         public void call(Subscriber<? super SavedPlace> subscriber) {

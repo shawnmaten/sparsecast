@@ -17,6 +17,7 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class SearchActivity extends BaseActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Toolbar toolbar;

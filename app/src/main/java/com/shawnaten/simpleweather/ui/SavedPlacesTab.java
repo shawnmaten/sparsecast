@@ -8,6 +8,7 @@ import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -29,6 +30,8 @@ public class SavedPlacesTab extends Tab {
     private GoogleApiClient googleApiClient;
     private final ArrayMap<SavedPlace, String> savedPlaces = new ArrayMap<>();
     private ArrayList<String> attributions = new ArrayList<>();
+
+    private ProgressBar progressBar;
 
     public static SavedPlacesTab newInstance(String title, int layout) {
         Bundle args = new Bundle();
@@ -58,6 +61,12 @@ public class SavedPlacesTab extends Tab {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+
+        progressBar.getIndeterminateDrawable().setColorFilter(
+                getResources().getColor(R.color.primary),
+                android.graphics.PorterDuff.Mode.SRC_ATOP);
     }
 
     @Override
@@ -67,6 +76,8 @@ public class SavedPlacesTab extends Tab {
         if (List.class.isInstance(data) && SavedPlace.class.isInstance(((List) data).get(0))) {
             final List<SavedPlace> ids = (List<SavedPlace>) data;
             savedPlaces.clear();
+
+            progressBar.setVisibility(View.VISIBLE);
 
             for (final SavedPlace id : ids) {
                 PendingResult result = Places.GeoDataApi.getPlaceById(googleApiClient,
@@ -92,8 +103,10 @@ public class SavedPlacesTab extends Tab {
 
                         synchronized (savedPlaces) {
                             savedPlaces.put(id, name);
-                            if (savedPlaces.size() == ids.size())
+                            if (savedPlaces.size() == ids.size()) {
+                                progressBar.setVisibility(View.GONE);
                                 adapter.notifyItemRangeInserted(0, savedPlaces.size());
+                            }
                         }
                     }
                 });

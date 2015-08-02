@@ -17,6 +17,8 @@ public class App extends MultiDexApplication {
 
     public static String lastTracked = "";
 
+    public static final String KIIP_FAVORITE = "favorite";
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -32,5 +34,11 @@ public class App extends MultiDexApplication {
 
         tracker = analytics.newTracker(R.xml.analytics_global_config);
         tracker.enableAdvertisingIdCollection(true);
+
+        /*
+        Kiip kiip = Kiip.init(this, "49b1e29db28b0fa7dcd5fdda21c5cad8",
+                "34c3d6ffe0030d104c944dbfabfef073");
+        Kiip.setInstance(kiip);
+        */
     }
 }
