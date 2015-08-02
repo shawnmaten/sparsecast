@@ -10,10 +10,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
 import com.github.mikephil.charting.charts.LineChart;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.ui.widget.VerticalWeatherBar;
@@ -36,6 +35,8 @@ public class Next24HoursTab extends Tab {
     private View next24HoursSection;
     private VerticalWeatherBar verticalWeatherBar;
     private TextView thirdPartyAttrs;
+    private ImageButton toggle;
+    private boolean toggleState;
 
     public static Next24HoursTab newInstance(String title, int layout) {
         Bundle args = new Bundle();
@@ -46,6 +47,7 @@ public class Next24HoursTab extends Tab {
         return tab;
     }
 
+    /*
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -85,6 +87,7 @@ public class Next24HoursTab extends Tab {
         fabs.add(item2);
         fam.addMenuButton(item2);
     }
+    */
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -100,6 +103,23 @@ public class Next24HoursTab extends Tab {
                 .findViewById(R.id.vertical_weather_bar);
         attributions = view.findViewById(R.id.attributions);
         thirdPartyAttrs = (TextView) attributions.findViewById(R.id.third_party);
+        toggle = (ImageButton) nextHourAndStatsSection.findViewById(R.id.toggle);
+
+        toggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (toggleState) {
+                    toggle.setImageResource(R.drawable.ic_add_circle_outline_black_24dp);
+                    statsSection.setVisibility(View.INVISIBLE);
+                    nextHourSection.setVisibility(View.VISIBLE);
+                } else {
+                    toggle.setImageResource(R.drawable.ic_remove_circle_outline_black_24dp);
+                    statsSection.setVisibility(View.VISIBLE);
+                    nextHourSection.setVisibility(View.INVISIBLE);
+                }
+                toggleState = !toggleState;
+            }
+        });
 
         thirdPartyAttrs.setMovementMethod(LinkMovementMethod.getInstance());
         attributions.findViewById(R.id.powered_by_forecast)
@@ -150,6 +170,7 @@ public class Next24HoursTab extends Tab {
         }
     }
 
+    /*
     @Override
     protected void fabSetup() {
         super.fabSetup();
@@ -171,6 +192,7 @@ public class Next24HoursTab extends Tab {
             }
         }
     }
+    */
 
     @Override
     public void onScrollChanged(int deltaX, int deltaY) {
@@ -205,16 +227,16 @@ public class Next24HoursTab extends Tab {
             TextView sunText2 = (TextView) root.findViewById(R.id.sun_text_2);
 
             if (forecast.getMinutely() != null) {
-                statsSection.setVisibility(View.INVISIBLE);
-                nextHourSection.setVisibility(View.VISIBLE);
-                fabSetup();
+                toggle.setVisibility(View.VISIBLE);
+                toggleState = true;
+                toggle.callOnClick();
                 nextHourSummary.setText(forecast.getMinutely().getSummary());
                 Charts.setPrecipitationGraph(getActivity(), chart,
                         forecast.getMinutely().getData(), forecast.getTimezone());
             } else {
-                statsSection.setVisibility(View.VISIBLE);
-                nextHourSection.setVisibility(View.GONE);
-                fabSetup();
+                toggleState = false;
+                toggle.callOnClick();
+                toggle.setVisibility(View.INVISIBLE);
             }
 
             if ((int) currently.getNearestStormDistance() > 0) {

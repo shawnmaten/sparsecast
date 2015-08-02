@@ -21,32 +21,34 @@
         <FrameLayout
             android:id="@+id/next_hour_and_stats_section"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="@dimen/standard_margin">
 
             <android.support.v7.widget.GridLayout
                 android:id="@+id/stats_section"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/standard_margin"
                 android:visibility="invisible"
                 app:columnCount="2" />
 
             <RelativeLayout
                 android:id="@+id/next_hour_section"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/precipitation_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/summary_section"
+                    android:layout_marginBottom="@dimen/standard_margin"/>
 
                 <LinearLayout
-                    android:id="@+id/summary_section"
+                    android:id="@id/summary_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginEnd="@dimen/fab_offset"
-                    android:layout_marginLeft="@dimen/fab_offset"
-                    android:layout_marginRight="@dimen/fab_offset"
-                    android:layout_marginStart="@dimen/fab_offset"
-                    android:gravity="center_vertical"
-                    android:minHeight="@dimen/fab_offset"
                     android:orientation="vertical">
 
                     <TextView
@@ -66,24 +68,16 @@
 
                 </LinearLayout>
 
-                <Space
-                    android:id="@+id/space_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/double_margin"
-                    android:layout_alignParentTop="true" />
-
-                <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/precipitation_chart"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@id/summary_section"
-                    android:layout_below="@id/space_1"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginStart="16dp" />
-
             </RelativeLayout>
+
+            <ImageButton
+                android:id="@+id/toggle"
+                android:layout_width="@dimen/icon_button"
+                android:layout_height="@dimen/icon_button"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_add_circle_outline_black_24dp"
+                android:layout_gravity="bottom|right|end"
+                android:alpha=".54"/>
 
         </FrameLayout>
 
@@ -117,7 +111,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/attributions"
-                android:layout_marginBottom="@dimen/standard_margin"
+                android:layout_marginBottom="@dimen/half_margin"
                 android:orientation="vertical"
                 android:paddingEnd="@dimen/standard_margin"
                 android:paddingLeft="@dimen/standard_margin"
@@ -147,8 +141,8 @@
                 android:layout_above="@id/sun"
                 android:layout_below="@id/next_24_hours_summary"
                 android:layout_gravity="center_vertical"
-                android:layout_marginBottom="@dimen/standard_margin"
-                android:layout_marginTop="@dimen/standard_margin"
+                android:layout_marginBottom="@dimen/half_margin"
+                android:layout_marginTop="@dimen/half_margin"
                 android:orientation="vertical" />
 
         </RelativeLayout>

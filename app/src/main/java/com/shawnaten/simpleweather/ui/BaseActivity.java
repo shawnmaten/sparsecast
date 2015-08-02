@@ -38,12 +38,8 @@ public class BaseActivity extends AppCompatActivity {
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
 
-        try {
-            FragmentDataListener dataListener = (FragmentDataListener) fragment;
-            dataListeners.add(dataListener);
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-        }
+        if (FragmentDataListener.class.isInstance(fragment))
+            dataListeners.add((FragmentDataListener) fragment);
     }
 
     protected void sendDataToFragments(String key, Object data) {

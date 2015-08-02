@@ -2,6 +2,8 @@
 
     <!-- Default screen margin, per the Android Design guidelines. -->
 
+    <dimen name="icon_button">48dp</dimen>
+
     <dimen name="vertical_weather_bar_width">32dp</dimen>
 
     <dimen name="half_fab">28dp</dimen>

@@ -10,7 +10,15 @@ import android.widget.ProgressBar;
 
 import com.shawnaten.simpleweather.R;
 
-public class LoadingFragment extends BaseFragment {
+public class LoadingFragment extends BaseFragment implements BaseActivity.FragmentDataListener {
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        analyticsTrack = false;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -31,5 +39,10 @@ public class LoadingFragment extends BaseFragment {
         }
 
         return root;
+    }
+
+    @Override
+    public void onNewData(Object data) {
+
     }
 }

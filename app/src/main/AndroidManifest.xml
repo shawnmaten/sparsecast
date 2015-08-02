@@ -21,6 +21,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppBaseTheme.AppTheme" >
         <meta-data
+            android:name="com.google.android.gms.analytics.globalConfigResource"
+            android:resource="@xml/analytics_global_config" />
+        <meta-data
             android:name="android.app.default_searchable"
             android:value=".SearchableActivity" />
         <meta-data

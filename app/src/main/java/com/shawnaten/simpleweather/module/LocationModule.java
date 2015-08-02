@@ -15,6 +15,8 @@ import rx.schedulers.Schedulers;
 
 @Module
 public class LocationModule {
+    public static final String ERROR = "Location Services Unavailable";
+
     @Provides
     public Observable<Location> providesLocation(final GoogleApiClient client) {
         return Observable.create(new Observable.OnSubscribe<Location>() {
@@ -29,7 +31,7 @@ public class LocationModule {
                 if (availability != null && availability.isLocationAvailable())
                     subscriber.onNext(api.getLastLocation(client));
                 else
-                    subscriber.onError(new Throwable("Location Services Unavailable"));
+                    subscriber.onError(new Throwable(ERROR));
             }
         }).subscribeOn(Schedulers.io());
     }

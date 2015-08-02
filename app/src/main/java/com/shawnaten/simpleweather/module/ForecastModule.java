@@ -44,7 +44,6 @@ public class ForecastModule {
 
         return Observable.create(new Observable.OnSubscribe<Forecast.Response>() {
 
-
             @Override
             public void call(final Subscriber<? super Forecast.Response> subscriber) {
                 Action1<Keys> action1 = new Action1<Keys>() {

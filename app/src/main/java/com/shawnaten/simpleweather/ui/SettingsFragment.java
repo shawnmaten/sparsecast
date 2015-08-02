@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.shawnaten.simpleweather.App;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.tools.LocalizationSettings;
@@ -47,8 +49,17 @@ public class SettingsFragment extends PreferenceFragment implements
 
     @Override
     public void onResume() {
+        String className = this.getClass().getSimpleName();
+
         super.onResume();
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+
+        if (getUserVisibleHint()  && !App.lastTracked.equals(className)) {
+            App.lastTracked = className;
+            Tracker tracker = getApp().tracker;
+            tracker.setScreenName(className);
+            tracker.send(new HitBuilders.ScreenViewBuilder().build());
+        }
     }
 
     @Override

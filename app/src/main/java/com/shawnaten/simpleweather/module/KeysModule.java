@@ -20,7 +20,6 @@ import rx.schedulers.Schedulers;
 
 @Module
 public class KeysModule {
-
     @Provides
     @Singleton
     public KeysEndpoint providesKeysApi(App app, GoogleAccountCredential credential) {
@@ -41,14 +40,21 @@ public class KeysModule {
     @Singleton
     public Observable<Keys> providesKeysModule(final KeysEndpoint endpoint) {
         return Observable.create(new Observable.OnSubscribe<Keys>() {
+            private Keys keys;
+
             @Override
             public void call(Subscriber<? super Keys> subscriber) {
-                try {
-                    subscriber.onNext(endpoint.getKeys().execute());
-                } catch (IOException e) {
-                    subscriber.onError(e);
+                if (keys == null) {
+                    try {
+                        keys = endpoint.getKeys().execute();
+                        subscriber.onNext(keys);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    subscriber.onNext(keys);
                 }
             }
-        }).cache().subscribeOn(Schedulers.io());
+        }).subscribeOn(Schedulers.io());
     }
 }

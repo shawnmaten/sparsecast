@@ -21,8 +21,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -37,6 +35,7 @@ import com.shawnaten.simpleweather.backend.imagesApi.model.Image;
 import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
+import com.shawnaten.simpleweather.module.LocationModule;
 import com.shawnaten.tools.Forecast;
 import com.shawnaten.tools.ForecastTools;
 import com.shawnaten.tools.Geocoding;
@@ -78,8 +77,8 @@ public class MainActivity extends BaseActivity implements Target {
     private ImageView photo;
     private View overlay;
     private View instagramAttribution;
-    private FloatingActionMenu fam;
-    private ArrayList<FloatingActionButton> fabs;
+    //private FloatingActionMenu fam;
+    //private ArrayList<FloatingActionButton> fabs;
     private SavedPlaceApi savedPlaceApi;
     private ArrayList<ScrollListener> scrollListeners = new ArrayList<>();
     @Inject
@@ -118,9 +117,11 @@ public class MainActivity extends BaseActivity implements Target {
         photoContainer = findViewById(R.id.photo_container);
         photo = (ImageView) findViewById(R.id.photo);
         overlay = findViewById(R.id.overlay);
+        /*
         fam = (FloatingActionMenu) findViewById(R.id.fam);
         fam.hideMenuButton(false);
         fabs = new ArrayList<>();
+        */
         loadingFragment = new LoadingFragment();
 
         if (savedInstanceState != null) {
@@ -183,7 +184,7 @@ public class MainActivity extends BaseActivity implements Target {
         if (LocationSettings.getMode() == LocationSettings.Mode.CURRENT) {
             Func2<Location, Keys, Forecast.Response> function;
             Subscriber<Forecast.Response> subscriber;
-            Subscription subscription;
+            final Subscription subscription;
             final PendingResult<PlaceLikelihoodBuffer> result;
 
             result = Places.PlaceDetectionApi.getCurrentPlace(googleApiClient, null);
@@ -289,7 +290,10 @@ public class MainActivity extends BaseActivity implements Target {
 
                 @Override
                 public void onError(Throwable e) {
-                    startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                    if (e.getMessage().equals(LocationModule.ERROR))
+                        startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                    else
+                        e.printStackTrace();
                 }
 
                 @Override
@@ -306,16 +310,16 @@ public class MainActivity extends BaseActivity implements Target {
 
             subs.add(subscription);
         } else {
-            forecast.subscribe(new Action1<Forecast.Response>() {
+            subs.add(forecast.subscribe(new Action1<Forecast.Response>() {
                 @Override
-                public void call(Forecast.Response forecast) {
-                    MainActivity.this.sendDataToFragments(FORECAST_DATA, forecast);
+                public void call(Forecast.Response response) {
+                    sendDataToFragments(FORECAST_DATA, response);
                     ((TextView) MainActivity.this.findViewById(R.id.main_loc))
                             .setText(LocationSettings.getName());
                     ((TextView) MainActivity.this.findViewById(R.id.sec_loc))
                             .setText(LocationSettings.getAddress());
                 }
-            });
+            }));
         }
     }
 
@@ -412,12 +416,9 @@ public class MainActivity extends BaseActivity implements Target {
     @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
-        try {
-            ScrollListener scrollListener = (ScrollListener) fragment;
-            scrollListeners.add(scrollListener);
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-        }
+
+        if (ScrollListener.class.isInstance(fragment))
+            scrollListeners.add((ScrollListener) fragment);
     }
 
     public int getScrollPosition() {
