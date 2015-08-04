@@ -185,29 +185,8 @@
     <!-- Application theme. -->
     <style name="AppBaseTheme.AppTheme" >
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="android:colorPrimary">@color/primary</item>
-        <item name="android:colorPrimaryDark">@color/primary_dark</item>
-        <!--
-        <item name="android:actionBarStyle">@style/ActionBar</item>
-        <item name="android:actionBarWidgetTheme">@style/ActionBarWidget</item>
-        <item name="android:actionBarTabStyle">@style/ActionBarTab</item>
-        -->
     </style>
 
-    <!--
-    <style name="ActionBar" parent="android:Widget.Holo.Light.ActionBar.Solid.Inverse" >
-        <item name="android:background">@color_holder/green_500</item>
-        <item name="android:backgroundStacked">@color_holder/green_500</item>
-        <item name="android:backgroundSplit">@color_holder/green_500</item>
-    </style>
-
-    <style name="ActionBarWidget" parent="android:Theme.Holo" >
-        <item name="android:textColorHint">@color_holder/secondary_text_dark</item>
-    </style>
-
-    <style name="ActionBarTab" parent="android:Widget.Holo.Light.ActionBar.TabView.Inverse" >
-        <item name="android:background">@drawable/tab_indicator_ab_weather</item>
-    </style>
-    -->
+    <style name="text_24_hour" parent="text.subhead"/>
 
 </resources>

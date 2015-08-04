@@ -72,9 +72,9 @@
 
             <ImageButton
                 android:id="@+id/toggle"
+                style="@style/Widget.AppCompat.ActionButton"
                 android:layout_width="@dimen/icon_button"
                 android:layout_height="@dimen/icon_button"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_add_circle_outline_black_24dp"
                 android:layout_gravity="bottom|right|end"
                 android:alpha=".54"/>
@@ -89,7 +89,7 @@
 
             <TextView
                 android:id="@+id/next_24_hours_summary"
-                style="@style/text.title"
+                style="@style/text_24_hour"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/standard_margin"
@@ -120,7 +120,7 @@
 
                 <TextView
                     android:id="@+id/sun_text_1"
-                    style="@style/text.title"
+                    style="@style/text_24_hour"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"/>

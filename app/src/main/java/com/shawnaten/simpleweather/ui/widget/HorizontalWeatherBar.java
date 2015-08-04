@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Build;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -158,16 +159,28 @@ public class HorizontalWeatherBar extends View {
         colorLeft = margin + extra;
         colorRight = colorLeft + segWidth;
         paint.setColor(Precipitation.evaluate(getResources(), data[offset]).color);
-        canvas.drawRoundRect(colorLeft, barTop, colorRight, barBottom, cornerRadius,
-                cornerRadius, paint);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            canvas.drawRoundRect(colorLeft, barTop, colorRight, barBottom, cornerRadius,
+                    cornerRadius, paint);
+        } else {
+            canvas.drawRect(colorLeft, barTop, colorRight, barBottom, paint);
+        }
+
         colorLeft += segWidth / 2;
         canvas.drawRect(colorLeft, barTop, colorRight, barBottom, paint);
 
         colorLeft = margin + extra + barWidth - segWidth;
         colorRight = colorLeft + segWidth;
         paint.setColor(Precipitation.evaluate(getResources(), data[offset + 23]).color);
-        canvas.drawRoundRect(colorLeft, barTop, colorRight, barBottom, cornerRadius,
-                cornerRadius, paint);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            canvas.drawRoundRect(colorLeft, barTop, colorRight, barBottom, cornerRadius,
+                    cornerRadius, paint);
+        } else {
+            canvas.drawRect(colorLeft, barTop, colorRight, barBottom, paint);
+        }
+
         colorRight -= segWidth / 2;
         canvas.drawRect(colorLeft, barTop, colorRight, barBottom, paint);
 

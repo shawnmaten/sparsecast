@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Build;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -114,8 +115,14 @@ public class VerticalWeatherBar extends View {
         }
 
         paint.setColor(Precipitation.evaluate(getResources(), data[0]).color);
-        canvas.drawRoundRect(colorLeft, colorTop, colorRight, colorBottom, cornerRadius,
-                cornerRadius, paint);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            canvas.drawRoundRect(colorLeft, colorTop, colorRight, colorBottom, cornerRadius,
+                    cornerRadius, paint);
+        } else {
+            canvas.drawRect(colorLeft, colorTop, colorRight, colorBottom, paint);
+        }
+
         colorTop += colorHeight / 2;
         canvas.drawRect(colorLeft, colorTop, colorRight, colorBottom, paint);
         colorTop += colorHeight / 2;
@@ -132,8 +139,14 @@ public class VerticalWeatherBar extends View {
         }
 
         paint.setColor(Precipitation.evaluate(getResources(), data[23]).color);
-        canvas.drawRoundRect(colorLeft, colorTop, colorRight, colorBottom, cornerRadius,
-                cornerRadius, paint);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            canvas.drawRoundRect(colorLeft, colorTop, colorRight, colorBottom, cornerRadius,
+                    cornerRadius, paint);
+        } else {
+            canvas.drawRect(colorLeft, colorTop, colorRight, colorBottom, paint);
+        }
+
         colorBottom -= colorHeight / 2;
         canvas.drawRect(colorLeft, colorTop, colorRight, colorBottom, paint);
 

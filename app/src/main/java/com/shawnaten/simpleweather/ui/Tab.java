@@ -1,17 +1,16 @@
 package com.shawnaten.simpleweather.ui;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.ui.widget.ObservableScrollView;
 import com.shawnaten.simpleweather.ui.widget.ScrollCallbacks;
-import com.shawnaten.tools.Forecast;
 
 public class Tab extends BaseFragment implements ScrollCallbacks,
         MainActivity.ScrollListener, MainActivity.FragmentDataListener {
@@ -110,8 +109,11 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
         float elevation = scrollPercent * 4 * density;
 
         photoContainer.setY(-scrollAmount);
-        toolbar.setElevation(elevation);
-        photoContainer.setElevation(elevation);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(elevation);
+            photoContainer.setElevation(elevation);
+        }
         photo.setTranslationY(scrollAmount * 0.5f);
 
         ((MainActivity) getBaseActivity()).setScrollPosition(scrollAmount);
@@ -135,7 +137,7 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
 
     @Override
     public void onNewData(Object data) {
-
+        /*
         if (scroll != null && getUserVisibleHint() && Forecast.Response.class.isInstance(data)) {
             scroll.getViewTreeObserver().addOnGlobalLayoutListener(
                     new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -146,6 +148,7 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
                         }
                     });
         }
+        */
     }
 
     protected int getMinPhotoHeight() {

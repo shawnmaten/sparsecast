@@ -38,7 +38,7 @@ public class SearchActivity extends BaseActivity {
                 SavedPlacesTab.newInstance(getString(R.string.saved), R.layout.tab_saved),
                 SearchTab.newInstance(getString(R.string.search), R.layout.tab_search));
         viewPager.setAdapter(tabAdapter);
-        slidingTabLayout.setCustomTabView(R.layout.tab_title, R.id.title);
+        slidingTabLayout.setCustomTabView(R.layout.tab_title_light, R.id.title);
         slidingTabLayout.setSelectedIndicatorColors(0xFF000000);
         slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.SimpleTabColorizer(
                 getResources().getColor(R.color.text_primary_light),

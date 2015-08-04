@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
@@ -81,8 +82,13 @@ public class TemperatureBar extends View {
         float barStart = (float) (paddingStart + (min - totalMin) * degreeWidth);
         float barEnd = (float) (width - paddingEnd - (totalMax - max) * degreeWidth);
 
-        canvas.drawRoundRect(barStart, halfMargin, barEnd, height - halfMargin, cornerRadius,
-                cornerRadius, paint);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            canvas.drawRoundRect(barStart, halfMargin, barEnd, height - halfMargin, cornerRadius,
+                    cornerRadius, paint);
+        } else {
+            canvas.drawRect(barStart, halfMargin, barEnd, height - halfMargin, paint);
+        }
+
 
         String tempString = tempFormat.format(min);
         textPaint.getTextBounds(tempString, 0, tempString.length(), bounds);
