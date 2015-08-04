@@ -17,6 +17,8 @@ import java.util.ArrayList;
 
 public class SettingsFragment extends PreferenceFragment implements
         SharedPreferences.OnSharedPreferenceChangeListener {
+    protected String analyticsTrackName = "SettingsFragment";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,15 +51,13 @@ public class SettingsFragment extends PreferenceFragment implements
 
     @Override
     public void onResume() {
-        String className = this.getClass().getSimpleName();
-
         super.onResume();
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
-        if (getUserVisibleHint()  && !App.lastTracked.equals(className)) {
-            App.lastTracked = className;
+        if (getUserVisibleHint()  && !App.lastTracked.equals(analyticsTrackName)) {
+            App.lastTracked = analyticsTrackName;
             Tracker tracker = getApp().tracker;
-            tracker.setScreenName(className);
+            tracker.setScreenName(analyticsTrackName);
             tracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
     }

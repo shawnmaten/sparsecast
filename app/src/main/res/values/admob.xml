@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="admob_settings_native">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="admob_settings_activity_banner">ca-app-pub-3720253517224881/4994747454</string>
+</resources>

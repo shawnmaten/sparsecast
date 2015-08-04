@@ -39,6 +39,7 @@ public class SavedPlacesTab extends Tab {
         args.putString(TabAdapter.TAB_TITLE, title);
         args.putInt(TAB_LAYOUT, layout);
         tab.setArguments(args);
+        tab.analyticsTrackName = "SavedPlacesTab";
         return tab;
     }
 

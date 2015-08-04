@@ -170,4 +170,6 @@
     <string name="hail">Hail</string>
     <string name="title_activity_test">TestActivity</string>
 
+    <string name="advertisement">Advertisement</string>
+
 </resources>

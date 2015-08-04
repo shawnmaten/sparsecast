@@ -8,7 +8,7 @@
     android:background="@drawable/tab_ripple">
 
     <ImageView
-        android:id="@+id/logo"
+        android:id="@+id/image"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:padding="12dp"
@@ -20,8 +20,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAllCaps="true"
-        android:layout_toRightOf="@+id/logo"
-        android:layout_toEndOf="@id/logo"
+        android:layout_toRightOf="@+id/image"
+        android:layout_toEndOf="@id/image"
         android:layout_centerVertical="true"/>
 
 </RelativeLayout>

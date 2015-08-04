@@ -12,10 +12,7 @@ import com.shawnaten.simpleweather.R;
 
 public class LoadingFragment extends BaseFragment implements BaseActivity.FragmentDataListener {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public LoadingFragment() {
         analyticsTrack = false;
     }
 

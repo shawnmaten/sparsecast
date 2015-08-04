@@ -6,6 +6,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationServices;
+import com.shawnaten.tools.LocationSettings;
 
 import dagger.Module;
 import dagger.Provides;
@@ -28,9 +29,11 @@ public class LocationModule {
 
                 LocationAvailability availability = api.getLocationAvailability(client);
 
-                if (availability != null && availability.isLocationAvailable())
-                    subscriber.onNext(api.getLastLocation(client));
-                else
+                if (availability != null && availability.isLocationAvailable()) {
+                    Location location = api.getLastLocation(client);
+                    LocationSettings.currentLocation = location;
+                    subscriber.onNext(location);
+                } else
                     subscriber.onError(new Throwable(ERROR));
             }
         }).subscribeOn(Schedulers.io());

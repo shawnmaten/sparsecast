@@ -1,5 +1,7 @@
 package com.shawnaten.tools;
 
+import android.location.Location;
+
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -9,6 +11,7 @@ public class LocationSettings {
     private static String name;
     private static String address;
     private static LatLng latLng;
+    public static Location currentLocation;
     private static String placeId;
     private static String attributions;
     private static boolean isFavorite;

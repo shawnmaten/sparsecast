@@ -11,6 +11,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class BaseFragment extends Fragment {
     protected CompositeSubscription subs;
+    protected String analyticsTrackName = "BaseFragment";
     protected boolean analyticsTrack = true;
 
     @Override
@@ -22,14 +23,12 @@ public class BaseFragment extends Fragment {
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        String className = this.getClass().getSimpleName();
-
         super.setUserVisibleHint(isVisibleToUser);
 
-        if (getUserVisibleHint() && analyticsTrack && !App.lastTracked.equals(className)) {
-            App.lastTracked = className;
+        if (getUserVisibleHint() && analyticsTrack && !App.lastTracked.equals(analyticsTrackName)) {
+            App.lastTracked = analyticsTrackName;
             Tracker tracker = getApp().tracker;
-            tracker.setScreenName(className);
+            tracker.setScreenName(analyticsTrackName);
             tracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
 
@@ -37,14 +36,12 @@ public class BaseFragment extends Fragment {
 
     @Override
     public void onResume() {
-        String className = this.getClass().getSimpleName();
-
         super.onResume();
 
-        if (getUserVisibleHint() && analyticsTrack && !App.lastTracked.equals(className)) {
-            App.lastTracked = className;
+        if (getUserVisibleHint() && analyticsTrack && !App.lastTracked.equals(analyticsTrackName)) {
+            App.lastTracked = analyticsTrackName;
             Tracker tracker = getApp().tracker;
-            tracker.setScreenName(className);
+            tracker.setScreenName(analyticsTrackName);
             tracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
     }

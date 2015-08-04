@@ -8,13 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
-import com.github.clans.fab.FloatingActionButton;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.ui.widget.ObservableScrollView;
 import com.shawnaten.simpleweather.ui.widget.ScrollCallbacks;
 import com.shawnaten.tools.Forecast;
-
-import java.util.ArrayList;
 
 public class Tab extends BaseFragment implements ScrollCallbacks,
         MainActivity.ScrollListener, MainActivity.FragmentDataListener {
@@ -22,7 +19,6 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
     protected int screenWidth;
     protected int screenHeight;
     protected ObservableScrollView scroll;
-    protected ArrayList<FloatingActionButton> fabs;
     private View toolbar;
     private View photoContainer;
     private View photo;
@@ -46,8 +42,6 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
 
         screenWidth = getResources().getDisplayMetrics().widthPixels;
         screenHeight = getResources().getDisplayMetrics().heightPixels;
-
-        fabs = new ArrayList<>();
     }
 
     @Override

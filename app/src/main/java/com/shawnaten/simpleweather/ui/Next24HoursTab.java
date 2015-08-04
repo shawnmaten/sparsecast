@@ -44,6 +44,7 @@ public class Next24HoursTab extends Tab {
         args.putString(TabAdapter.TAB_TITLE, title);
         args.putInt(TAB_LAYOUT, layout);
         tab.setArguments(args);
+        tab.analyticsTrackName = "Next24HoursTab";
         return tab;
     }
 

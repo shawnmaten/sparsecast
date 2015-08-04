@@ -40,6 +40,7 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
         args.putString(TabAdapter.TAB_TITLE, title);
         args.putInt(TAB_LAYOUT, layout);
         tab.setArguments(args);
+        tab.analyticsTrackName = "SearchTab";
         return tab;
     }
 

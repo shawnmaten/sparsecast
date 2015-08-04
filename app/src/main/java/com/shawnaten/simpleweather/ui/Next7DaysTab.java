@@ -34,6 +34,7 @@ public class Next7DaysTab extends Tab implements View.OnClickListener {
         args.putString(TabAdapter.TAB_TITLE, title);
         args.putInt(TAB_LAYOUT, layout);
         tab.setArguments(args);
+        tab.analyticsTrackName = "Next7DaysTab";
         return tab;
     }
 
