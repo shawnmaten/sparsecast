@@ -16,13 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdLoader;
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.ads.formats.NativeContentAd;
 import com.google.android.gms.ads.formats.NativeContentAdView;
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.tools.LocationSettings;
 
 import java.util.List;
 
@@ -47,7 +45,7 @@ public class SettingsActivity extends BaseActivity {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         setSupportActionBar(toolbar);
 
-        adView = (AdView) findViewById(R.id.ad_view);
+        //adView = (AdView) findViewById(R.id.ad_view);
 
         /*
         adFrame = (FrameLayout) findViewById(R.id.ad_frame);
@@ -78,10 +76,12 @@ public class SettingsActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
+        /*
         AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
         if (LocationSettings.currentLocation != null)
             adRequestBuilder.setLocation(LocationSettings.currentLocation);
         adView.loadAd(adRequestBuilder.build());
+        */
     }
 
     private void displayContentAd(ViewGroup parent, final NativeContentAd contentAd) {
