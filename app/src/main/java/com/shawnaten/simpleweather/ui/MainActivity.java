@@ -60,7 +60,7 @@ import rx.functions.Action1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends BaseActivity implements Target {
+public class MainActivity extends BaseActivity {
     public static final int PLACE_SEARCH_CODE = RESULT_FIRST_USER + 1;
     public static final int PLACE_SELECTED_CODE = RESULT_FIRST_USER + 2;
 
@@ -88,6 +88,8 @@ public class MainActivity extends BaseActivity implements Target {
     Geocoding.Service geocodingService;
 
     private LoadingFragment loadingFragment;
+
+    private Target target;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -481,7 +483,36 @@ public class MainActivity extends BaseActivity implements Target {
                                     .getImages().getStandardResolution().getUrl();
                             String username = instagramData.getData()
                                     .getUser().getUsername();
-                            Picasso.with(photo.getContext()).load(url).into(MainActivity.this);
+
+                            target = new Target() {
+                                @Override
+                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                    FragmentManager fm = getSupportFragmentManager();
+
+                                    photo.setImageBitmap(bitmap);
+                                    Palette palette = Palette.from(bitmap).generate();
+                                    int color = palette.getMutedColor(0x000000);
+                                    color = Color.argb(102, Color.red(color), Color.green(color),
+                                            Color.blue(color));
+                                    overlay.setBackgroundColor(color);
+
+                                    fm.beginTransaction()
+                                            .remove(loadingFragment)
+                                            .commitAllowingStateLoss();
+                                }
+
+                                @Override
+                                public void onBitmapFailed(Drawable errorDrawable) {
+
+                                }
+
+                                @Override
+                                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                                }
+                            };
+
+                            Picasso.with(photo.getContext()).load(url).into(target);
                             instagramUserView.setText(username);
                             instagramAttribution.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -496,32 +527,6 @@ public class MainActivity extends BaseActivity implements Target {
                     });
 
         }
-    }
-
-    @Override
-    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-        FragmentManager fm = getSupportFragmentManager();
-
-        photo.setImageBitmap(bitmap);
-        Palette palette = Palette.from(bitmap).generate();
-        int color = palette.getMutedColor(0x000000);
-        color = Color.argb(102, Color.red(color), Color.green(color),
-                Color.blue(color));
-        overlay.setBackgroundColor(color);
-
-        fm.beginTransaction()
-                .remove(loadingFragment)
-                .commit();
-    }
-
-    @Override
-    public void onBitmapFailed(Drawable errorDrawable) {
-
-    }
-
-    @Override
-    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
     }
 
     public interface ScrollListener {
