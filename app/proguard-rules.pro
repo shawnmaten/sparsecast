@@ -62,7 +62,7 @@
 -dontwarn sun.misc.Unsafe
 
 #your package path where your gson models are stored
--keep class com.shawnaten.tools.** { *; }
+-keep class com.shawnaten.simpleweather.tools.** { *; }
 
 # end of retrofit
 

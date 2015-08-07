@@ -3,6 +3,7 @@ package com.shawnaten.simpleweather.component;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
+import com.shawnaten.simpleweather.backend.registrationApi.RegistrationApi;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
 import com.shawnaten.simpleweather.module.AppModule;
 import com.shawnaten.simpleweather.module.ForecastModule;
@@ -17,10 +18,11 @@ import com.shawnaten.simpleweather.module.LocationModule;
 import com.shawnaten.simpleweather.module.OkClientModule;
 import com.shawnaten.simpleweather.module.PlacesAutocompleteModule;
 import com.shawnaten.simpleweather.module.PlacesDetailsModule;
+import com.shawnaten.simpleweather.module.RegistrationApiModule;
 import com.shawnaten.simpleweather.module.SavedPlaceApiModule;
+import com.shawnaten.simpleweather.tools.Forecast;
+import com.shawnaten.simpleweather.tools.Instagram;
 import com.shawnaten.simpleweather.ui.MainActivity;
-import com.shawnaten.tools.Forecast;
-import com.shawnaten.tools.Instagram;
 
 import javax.inject.Singleton;
 
@@ -43,7 +45,8 @@ import rx.Observable;
                 ImagesApiModule.class,
                 SavedPlaceApiModule.class,
                 InstagramModule.class,
-                GeocodingModule.class
+                GeocodingModule.class,
+                RegistrationApiModule.class
         }
 )
 public interface MainComponent {
@@ -54,4 +57,5 @@ public interface MainComponent {
     Instagram.Service instagramService();
     Observable<Keys> keys();
     GoogleAccountCredential credential();
+    RegistrationApi registrationApi();
 }

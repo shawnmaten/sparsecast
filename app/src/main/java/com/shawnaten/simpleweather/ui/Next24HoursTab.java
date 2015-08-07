@@ -15,12 +15,12 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.tools.Charts;
+import com.shawnaten.simpleweather.tools.Forecast;
+import com.shawnaten.simpleweather.tools.ForecastTools;
+import com.shawnaten.simpleweather.tools.LocalizationSettings;
+import com.shawnaten.simpleweather.tools.LocationSettings;
 import com.shawnaten.simpleweather.ui.widget.VerticalWeatherBar;
-import com.shawnaten.tools.Charts;
-import com.shawnaten.tools.Forecast;
-import com.shawnaten.tools.ForecastTools;
-import com.shawnaten.tools.LocalizationSettings;
-import com.shawnaten.tools.LocationSettings;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;

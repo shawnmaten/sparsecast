@@ -3,9 +3,9 @@ package com.shawnaten.simpleweather.module;
 import android.net.Uri;
 
 import com.google.gson.GsonBuilder;
-import com.shawnaten.tools.DateDeserializer;
-import com.shawnaten.tools.TimeZoneDeserializer;
-import com.shawnaten.tools.UriDeserializer;
+import com.shawnaten.simpleweather.tools.DateDeserializer;
+import com.shawnaten.simpleweather.tools.TimeZoneDeserializer;
+import com.shawnaten.simpleweather.tools.UriDeserializer;
 
 import java.util.Date;
 import java.util.TimeZone;

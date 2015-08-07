@@ -13,9 +13,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.tools.Forecast;
-import com.shawnaten.tools.ForecastTools;
-import com.shawnaten.tools.Precipitation;
+import com.shawnaten.simpleweather.tools.Forecast;
+import com.shawnaten.simpleweather.tools.ForecastTools;
+import com.shawnaten.simpleweather.tools.Precipitation;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;

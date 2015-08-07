@@ -57,7 +57,10 @@ public class ImagesEndpoint {
             Random random = new Random();
             List<Image> images = OfyService.ofy().load().type(Image.class)
                     .filter("category", category).list();
-            return images.get(random.nextInt(images.size()));
+            if (images.size() > 0)
+                return images.get(random.nextInt(images.size()));
+            else
+                return null;
         } else
             throw new OAuthRequestException("unauthorized request");
     }

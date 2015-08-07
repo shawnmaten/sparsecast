@@ -7,10 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.tools.Forecast;
+import com.shawnaten.simpleweather.tools.ForecastTools;
+import com.shawnaten.simpleweather.tools.LocalizationSettings;
 import com.shawnaten.simpleweather.ui.BaseFragment;
-import com.shawnaten.tools.Forecast;
-import com.shawnaten.tools.ForecastTools;
-import com.shawnaten.tools.LocalizationSettings;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;

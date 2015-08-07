@@ -9,10 +9,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.tools.Forecast;
+import com.shawnaten.simpleweather.tools.ForecastTools;
+import com.shawnaten.simpleweather.tools.WeatherBarShape;
 import com.shawnaten.simpleweather.ui.BaseFragment;
-import com.shawnaten.tools.Forecast;
-import com.shawnaten.tools.ForecastTools;
-import com.shawnaten.tools.WeatherBarShape;
 
 import javax.inject.Inject;
 

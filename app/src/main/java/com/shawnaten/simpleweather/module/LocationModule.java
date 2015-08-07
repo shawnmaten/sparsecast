@@ -6,7 +6,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationServices;
-import com.shawnaten.tools.LocationSettings;
+import com.shawnaten.simpleweather.tools.LocationSettings;
 
 import dagger.Module;
 import dagger.Provides;

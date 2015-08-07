@@ -1,6 +1,6 @@
 package com.shawnaten.simpleweather.module;
 
-import com.shawnaten.tools.Places;
+import com.shawnaten.simpleweather.tools.Places;
 
 import javax.inject.Singleton;
 

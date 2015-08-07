@@ -1,6 +1,6 @@
 package com.shawnaten.simpleweather.module;
 
-import com.shawnaten.tools.Geocoding;
+import com.shawnaten.simpleweather.tools.Geocoding;
 
 import javax.inject.Singleton;
 

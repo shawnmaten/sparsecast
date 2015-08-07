@@ -3,9 +3,9 @@ package com.shawnaten.simpleweather.module;
 import android.location.Location;
 
 import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
-import com.shawnaten.tools.Forecast;
-import com.shawnaten.tools.LocalizationSettings;
-import com.shawnaten.tools.LocationSettings;
+import com.shawnaten.simpleweather.tools.Forecast;
+import com.shawnaten.simpleweather.tools.LocalizationSettings;
+import com.shawnaten.simpleweather.tools.LocationSettings;
 
 import javax.inject.Singleton;
 

@@ -36,12 +36,12 @@ import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
 import com.shawnaten.simpleweather.module.LocationModule;
-import com.shawnaten.tools.Forecast;
-import com.shawnaten.tools.ForecastTools;
-import com.shawnaten.tools.Geocoding;
-import com.shawnaten.tools.Instagram;
-import com.shawnaten.tools.LocalizationSettings;
-import com.shawnaten.tools.LocationSettings;
+import com.shawnaten.simpleweather.tools.Forecast;
+import com.shawnaten.simpleweather.tools.ForecastTools;
+import com.shawnaten.simpleweather.tools.Geocoding;
+import com.shawnaten.simpleweather.tools.Instagram;
+import com.shawnaten.simpleweather.tools.LocalizationSettings;
+import com.shawnaten.simpleweather.tools.LocationSettings;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 

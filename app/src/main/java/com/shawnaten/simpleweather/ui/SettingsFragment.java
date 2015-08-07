@@ -10,8 +10,8 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.shawnaten.simpleweather.App;
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.tools.LocalizationSettings;
-import com.shawnaten.tools.LocationSettings;
+import com.shawnaten.simpleweather.tools.LocalizationSettings;
+import com.shawnaten.simpleweather.tools.LocationSettings;
 
 import java.util.ArrayList;
 

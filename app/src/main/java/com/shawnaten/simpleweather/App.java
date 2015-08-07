@@ -1,5 +1,6 @@
 package com.shawnaten.simpleweather;
 
+import android.content.Intent;
 import android.support.multidex.MultiDexApplication;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -7,8 +8,9 @@ import com.google.android.gms.analytics.Tracker;
 import com.shawnaten.simpleweather.component.DaggerMainComponent;
 import com.shawnaten.simpleweather.component.MainComponent;
 import com.shawnaten.simpleweather.module.AppModule;
-import com.shawnaten.tools.LocalizationSettings;
-import com.shawnaten.tools.LocationSettings;
+import com.shawnaten.simpleweather.services.LocationService;
+import com.shawnaten.simpleweather.tools.LocalizationSettings;
+import com.shawnaten.simpleweather.tools.LocationSettings;
 
 public class App extends MultiDexApplication {
     public MainComponent mainComponent;
@@ -34,6 +36,9 @@ public class App extends MultiDexApplication {
 
         tracker = analytics.newTracker(R.xml.analytics_global_config);
         tracker.enableAdvertisingIdCollection(true);
+
+        Intent serviceIntent = new Intent(this , LocationService.class);
+        startService(serviceIntent);
 
         /*
         Kiip kiip = Kiip.init(this, "49b1e29db28b0fa7dcd5fdda21c5cad8",

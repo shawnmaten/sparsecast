@@ -91,6 +91,7 @@
     <string name="network_error_positive">Reconnect</string>
 
     <string name="app_name">Sparsecast</string>
+    <string name="location_service_name">Location Service</string>
     <string name="powered_by_forecast">Powered by Forecast</string>
     <string name="action_favorite">Favorite</string>
     <string name="action_refresh">Refresh</string>

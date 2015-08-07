@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.tools.ForecastTools;
+import com.shawnaten.simpleweather.tools.ForecastTools;
 
 import java.text.DecimalFormat;
 

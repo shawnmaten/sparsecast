@@ -20,7 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
-import com.shawnaten.tools.LocationSettings;
+import com.shawnaten.simpleweather.tools.LocationSettings;
 
 import java.util.List;
 

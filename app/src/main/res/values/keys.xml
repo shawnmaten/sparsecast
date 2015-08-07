@@ -2,5 +2,6 @@
 <resources>
 
     <string name="GOOGLE_API_KEY">AIzaSyADwEf8riAObeIS7DfBPXgGWWJ46yZosmY</string>
+    <string name="gcm_sender_id">332711553534</string>
 
 </resources>

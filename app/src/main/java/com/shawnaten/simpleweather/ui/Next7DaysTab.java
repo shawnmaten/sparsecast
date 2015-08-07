@@ -13,11 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.tools.Forecast;
+import com.shawnaten.simpleweather.tools.ForecastIconSelector;
+import com.shawnaten.simpleweather.tools.LocationSettings;
 import com.shawnaten.simpleweather.ui.widget.HorizontalWeatherBar;
 import com.shawnaten.simpleweather.ui.widget.TemperatureBar;
-import com.shawnaten.tools.Forecast;
-import com.shawnaten.tools.ForecastIconSelector;
-import com.shawnaten.tools.LocationSettings;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;

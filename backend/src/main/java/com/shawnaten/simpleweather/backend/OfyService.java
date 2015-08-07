@@ -15,6 +15,7 @@ public class OfyService {
         ObjectifyService.register(Image.class);
         ObjectifyService.register(SavedPlace.class);
         ObjectifyService.register(UserIdFix.class);
+        ObjectifyService.register(RegistrationRecord.class);
     }
 
     public static Objectify ofy() {
