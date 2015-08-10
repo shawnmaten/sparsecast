@@ -47,37 +47,51 @@
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="com.example.gcm" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
-            android:name=".services.GCMBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
                 <category android:name="com.shawnaten.simpleweather" />
             </intent-filter>
         </receiver>
-        <service android:name=".services.GCMIntentService" />
-
-        <provider
-            android:name=".tools.SearchProvider"
-            android:authorities="com.shawnaten.simpleweather.searchprovider"
-            android:enabled="true"
-            android:exported="false" >
-        </provider>
-
-        <service
-            android:name=".services.LocationService"
-            android:exported="false"
-            android:label="@string/location_service_name" />
 
         <receiver android:name=".services.BootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".services.GCMNotificationService"
+            android:label="@string/service_gcm_notification"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".services.GCMRegistrarService"
+            android:label="@string/service_gcm_registrar"
+            android:exported="false"/>
+
+        <service
+            android:name=".services.GCMTokenRefreshService"
+            android:label="@string/service_gcm_token_refresh"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".services.GeofenceService"
+            android:label="@string/service_geofence"
+            android:exported="false"/>
+
+        <service
+            android:name=".services.LocationReportService"
+            android:label="@string/service_location_report"
+            android:exported="false"/>
+
+
 
         <activity
             android:name=".ui.MainActivity"
@@ -87,7 +101,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -98,7 +111,7 @@
         </activity>
         <activity
             android:name=".ui.SettingsActivity"
-            android:label="@string/settings_label"
+            android:label="@string/pref_activity_title"
             android:screenOrientation="portrait" >
         </activity>
         <activity

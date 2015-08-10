@@ -1,12 +1,12 @@
 package com.shawnaten.simpleweather.module;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
-import com.shawnaten.simpleweather.App;
 
 import javax.inject.Singleton;
 
@@ -18,8 +18,8 @@ public class GoogleApiClientModule {
 
     @Provides
     @Singleton
-    GoogleApiClient providesGoogleApiClient(App app) {
-        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(app)
+    GoogleApiClient providesGoogleApiClient(Context context) {
+        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
                     public void onConnected(Bundle bundle) {

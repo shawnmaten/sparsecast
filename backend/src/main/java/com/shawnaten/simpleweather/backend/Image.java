@@ -6,10 +6,12 @@ import com.googlecode.objectify.annotation.Index;
 
 @Entity
 public class Image {
-    @Id private Long id;
-    @Index private String category;
-    private String postUrl;
-    private String imageUrl;
+    @Id
+    private Long id;
+
+    @Index
+    private String category;
+
     private String shortcode;
 
     public Long getId() {
@@ -22,22 +24,6 @@ public class Image {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public String getPostUrl() {
-        return postUrl;
-    }
-
-    public void setPostUrl(String postUrl) {
-        this.postUrl = postUrl;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 
     public String getShortcode() {

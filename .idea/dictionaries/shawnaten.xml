@@ -2,7 +2,11 @@
   <dictionary name="shawnaten">
     <words>
       <w>admob</w>
+      <w>geofence</w>
+      <w>geofences</w>
+      <w>geofencing</w>
       <w>kiip</w>
+      <w>precip</w>
     </words>
   </dictionary>
 </component>

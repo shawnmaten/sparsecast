@@ -5,7 +5,7 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
 import com.shawnaten.simpleweather.backend.registrationApi.RegistrationApi;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
-import com.shawnaten.simpleweather.module.AppModule;
+import com.shawnaten.simpleweather.module.ContextModule;
 import com.shawnaten.simpleweather.module.ForecastModule;
 import com.shawnaten.simpleweather.module.GeocodingModule;
 import com.shawnaten.simpleweather.module.GoogleAccountCredentialModule;
@@ -32,7 +32,7 @@ import rx.Observable;
 @Singleton
 @Component(
         modules = {
-                AppModule.class,
+                ContextModule.class,
                 ForecastModule.class,
                 GsonConverterModule.class,
                 KeysModule.class,

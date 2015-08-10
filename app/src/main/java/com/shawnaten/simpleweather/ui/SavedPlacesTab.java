@@ -75,6 +75,7 @@ public class SavedPlacesTab extends Tab {
         super.onNewData(data);
 
         if (List.class.isInstance(data) && SavedPlace.class.isInstance(((List) data).get(0))) {
+
             final List<SavedPlace> ids = (List<SavedPlace>) data;
             savedPlaces.clear();
 

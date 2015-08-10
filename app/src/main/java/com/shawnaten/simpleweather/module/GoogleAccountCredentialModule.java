@@ -1,10 +1,10 @@
 package com.shawnaten.simpleweather.module;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.shawnaten.simpleweather.App;
 import com.shawnaten.simpleweather.R;
 
 import javax.inject.Singleton;
@@ -17,15 +17,15 @@ public class GoogleAccountCredentialModule {
 
     @Provides
     @Singleton
-    public GoogleAccountCredential providesGoogleAccountCredential(App app) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(app);
+    public GoogleAccountCredential providesGoogleAccountCredential(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String accountName;
         GoogleAccountCredential cred;
 
-        cred = GoogleAccountCredential.usingAudience(app,
-                "server:client_id:" + app.getString(R.string.WEB_ID));
+        cred = GoogleAccountCredential.usingAudience(context,
+                "server:client_id:" + context.getString(R.string.WEB_ID));
 
-        accountName = preferences.getString(app.getString(R.string.account_key),
+        accountName = preferences.getString(context.getString(R.string.pref_account_key),
                 cred.getAllAccounts()[0].name);
 
         cred.setSelectedAccountName(accountName);

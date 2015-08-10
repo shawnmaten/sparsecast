@@ -24,8 +24,12 @@ import javax.inject.Named;
                 ownerName = "backend.simpleweather.shawnaten.com",
                 packagePath = ""
         ),
-        clientIds = {Constants.WEB_LOCAL_ID, Constants.WEB_APP_ENGINE_ID,
-        Constants.ANDROID_DEBUG_ID, Constants.ANDROID_RELEASE_ID},
+        clientIds = {
+                Constants.WEB_LOCAL_ID,
+                Constants.WEB_APP_ENGINE_ID,
+                Constants.ANDROID_DEBUG_ID,
+                Constants.ANDROID_RELEASE_ID
+        },
         audiences = {Constants.WEB_LOCAL_ID, Constants.WEB_APP_ENGINE_ID}
 )
 public class ImagesEndpoint {
@@ -57,10 +61,14 @@ public class ImagesEndpoint {
             Random random = new Random();
             List<Image> images = OfyService.ofy().load().type(Image.class)
                     .filter("category", category).list();
-            if (images.size() > 0)
+            if (images.size() > 0) {
                 return images.get(random.nextInt(images.size()));
-            else
-                return null;
+            } else {
+                Image defaultImage = new Image();
+                defaultImage.setCategory("default");
+                defaultImage.setShortcode("q-GYnWOuZO");
+                return defaultImage;
+            }
         } else
             throw new OAuthRequestException("unauthorized request");
     }

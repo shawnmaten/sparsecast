@@ -1,0 +1,96 @@
+_prodLocalhostDebugApk - ## Internal use, do not manually configure ##
++--- com.android.support:multidex:1.0.1
++--- project :backend
+|    \--- com.google.api-client:google-api-client-android:1.19.0
+|         +--- com.google.api-client:google-api-client:1.19.0
+|         |    +--- com.google.oauth-client:google-oauth-client:1.19.0
+|         |    |    +--- com.google.http-client:google-http-client:1.19.0
+|         |    |    |    \--- com.google.code.findbugs:jsr305:1.3.9
+|         |    |    \--- com.google.code.findbugs:jsr305:1.3.9
+|         |    +--- com.google.http-client:google-http-client-jackson2:1.19.0
+|         |    |    +--- com.google.http-client:google-http-client:1.19.0 (*)
+|         |    |    \--- com.fasterxml.jackson.core:jackson-core:2.1.3
+|         |    \--- com.google.guava:guava-jdk5:13.0
+|         \--- com.google.http-client:google-http-client-android:1.19.0
+|              \--- com.google.http-client:google-http-client:1.19.0 (*)
++--- com.android.support:appcompat-v7:22.2.0
+|    \--- com.android.support:support-v4:22.2.0
+|         \--- com.android.support:support-annotations:22.2.0
++--- com.android.support:cardview-v7:22.2.0
++--- com.android.support:recyclerview-v7:22.2.0
+|    +--- com.android.support:support-annotations:22.2.0
+|    \--- com.android.support:support-v4:22.2.0 (*)
++--- com.android.support:gridlayout-v7:22.2.0
+|    \--- com.android.support:support-v4:22.2.0 (*)
++--- com.android.support:palette-v7:22.2.0
+|    \--- com.android.support:support-v4:22.2.0 (*)
++--- com.google.android.gms:play-services:7.5.0
+|    +--- com.google.android.gms:play-services-ads:7.5.0
+|    |    +--- com.google.android.gms:play-services-base:7.5.0
+|    |    |    \--- com.android.support:support-v4:22.0.0 -> 22.2.0 (*)
+|    |    \--- com.google.android.gms:play-services-analytics:7.5.0
+|    |         \--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-analytics:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-appindexing:7.5.0
+|    |    \--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-appinvite:7.5.0
+|    |    \--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-appstate:7.5.0
+|    |    \--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-cast:7.5.0
+|    |    +--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    |    \--- com.android.support:mediarouter-v7:22.0.0
+|    |         \--- com.android.support:appcompat-v7:22.0.0 -> 22.2.0 (*)
+|    +--- com.google.android.gms:play-services-drive:7.5.0
+|    |    \--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-fitness:7.5.0
+|    |    +--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    |    \--- com.google.android.gms:play-services-location:7.5.0
+|    |         +--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    |         \--- com.google.android.gms:play-services-maps:7.5.0
+|    |              \--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-games:7.5.0
+|    |    +--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    |    \--- com.google.android.gms:play-services-drive:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-gcm:7.5.0
+|    |    \--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-identity:7.5.0
+|    |    \--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-location:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-maps:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-nearby:7.5.0
+|    |    \--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-panorama:7.5.0
+|    |    \--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-plus:7.5.0
+|    |    \--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-safetynet:7.5.0
+|    |    \--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    +--- com.google.android.gms:play-services-wallet:7.5.0
+|    |    +--- com.google.android.gms:play-services-base:7.5.0 (*)
+|    |    +--- com.google.android.gms:play-services-identity:7.5.0 (*)
+|    |    \--- com.google.android.gms:play-services-maps:7.5.0 (*)
+|    \--- com.google.android.gms:play-services-wearable:7.5.0
+|         \--- com.google.android.gms:play-services-base:7.5.0 (*)
++--- com.squareup.picasso:picasso:2.5.2
++--- com.squareup.okhttp:okhttp-urlconnection:2.4.0
+|    \--- com.squareup.okhttp:okhttp:2.4.0
+|         \--- com.squareup.okio:okio:1.4.0
++--- com.squareup.okhttp:okhttp:2.4.0 (*)
++--- io.reactivex:rxandroid:0.24.0
+|    \--- io.reactivex:rxjava:1.0.4
++--- com.google.maps.android:android-maps-utils:0.3.4
++--- com.github.PhilJay:MPAndroidChart:v2.1.0
++--- com.google.android.gms:play-services-ads:7.5.0 (*)
+\--- project :lib
+     +--- com.google.dagger:dagger-compiler:2.0
+     |    +--- com.google.dagger:dagger:2.0
+     |    |    \--- javax.inject:javax.inject:1
+     |    +--- com.google.dagger:dagger-producers:2.0-beta
+     |    |    +--- com.google.dagger:dagger:2.0 (*)
+     |    |    \--- com.google.guava:guava:18.0
+     |    \--- com.google.guava:guava:18.0
+     +--- com.google.dagger:dagger:2.0 (*)
+     \--- com.squareup.retrofit:retrofit:1.9.0
+          \--- com.google.code.gson:gson:2.3.1

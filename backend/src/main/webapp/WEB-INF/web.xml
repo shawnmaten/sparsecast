@@ -9,8 +9,8 @@
                 com.shawnaten.simpleweather.backend.KeysEndpoint,
                 com.shawnaten.simpleweather.backend.ImagesEndpoint,
                 com.shawnaten.simpleweather.backend.SavedPlaceEndpoint,
-                com.shawnaten.simpleweather.backend.MessagingEndpoint,
-                com.shawnaten.simpleweather.backend.RegistrationEndpoint
+                com.shawnaten.simpleweather.backend.GCMRegistrationEndpoint,
+                com.shawnaten.simpleweather.backend.LocationEndpoint
             </param-value>
         </init-param>
     </servlet>
@@ -31,5 +31,9 @@
         <filter-name>ObjectifyFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+
+    <listener>
+        <listener-class>com.shawnaten.simpleweather.backend.Dagger</listener-class>
+    </listener>
 
 </web-app>

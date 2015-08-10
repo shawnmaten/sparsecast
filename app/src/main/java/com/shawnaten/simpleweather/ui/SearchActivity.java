@@ -7,8 +7,10 @@ import android.view.MenuItem;
 
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
+import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
 
 import java.io.IOException;
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -68,7 +70,12 @@ public class SearchActivity extends BaseActivity {
                         new Action1<Object>() {
                             @Override
                             public void call(Object result) {
-                                SearchActivity.this.sendDataToFragments(result);
+                                if (List.class.isInstance(result)) {
+                                    List<SavedPlace> list = (List<SavedPlace>) result;
+
+                                    if (list.size() > 0)
+                                        SearchActivity.this.sendDataToFragments(result);
+                                }
                             }
                         });
     }

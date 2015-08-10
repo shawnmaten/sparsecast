@@ -3,11 +3,7 @@ package com.shawnaten.simpleweather.backend;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
 
@@ -35,8 +31,12 @@ import static com.shawnaten.simpleweather.backend.OfyService.ofy;
                 ownerName = "backend.simpleweather.shawnaten.com",
                 packagePath = ""
         ),
-        clientIds = {Constants.WEB_LOCAL_ID, Constants.WEB_APP_ENGINE_ID,
-                Constants.ANDROID_DEBUG_ID, Constants.ANDROID_RELEASE_ID},
+        clientIds = {
+                Constants.WEB_LOCAL_ID,
+                Constants.WEB_APP_ENGINE_ID,
+                Constants.ANDROID_DEBUG_ID,
+                Constants.ANDROID_RELEASE_ID
+        },
         audiences = {Constants.WEB_LOCAL_ID, Constants.WEB_APP_ENGINE_ID}
 )
 public class SavedPlaceEndpoint {
@@ -51,7 +51,7 @@ public class SavedPlaceEndpoint {
             EntityNotFoundException {
         if (user != null) {
             SavedPlace existing = check(user, savedPlace);
-            savedPlace.setUserId(getUserId(user));
+            savedPlace.setUserId(UserIdFix.getUserId(user));
             savedPlace.setTimestamp(new Date());
             if (existing == null) {
                 ofy().save().entity(savedPlace).now();
@@ -71,7 +71,7 @@ public class SavedPlaceEndpoint {
             EntityNotFoundException {
         if (user != null) {
             List<SavedPlace> savedPlaces = ofy().load().type(SavedPlace.class)
-                    .filter("userId", getUserId(user)).list();
+                    .filter("userId", UserIdFix.getUserId(user)).list();
             Collections.sort(savedPlaces, new Comparator<SavedPlace>() {
                 @Override
                 public int compare(SavedPlace o1, SavedPlace o2) {
@@ -91,7 +91,7 @@ public class SavedPlaceEndpoint {
             EntityNotFoundException {
         if (user != null) {
             List<SavedPlace> matches = ofy().load().type(SavedPlace.class)
-                    .filter("userId", getUserId(user))
+                    .filter("userId", UserIdFix.getUserId(user))
                     .filter("placeId", savedPlace.getPlaceId())
                     .list();
             return matches.size() == 0 ? null : matches.get(0);
@@ -109,16 +109,5 @@ public class SavedPlaceEndpoint {
             ofy().delete().entity(check(user, savedPlace));
         } else
             throw new OAuthRequestException("unauthorized request");
-    }
-
-    private String getUserId(User user) throws EntityNotFoundException {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Entity userEntity = new Entity("User");
-        userEntity.setProperty("user", user);
-        Key userKey = datastore.put(userEntity);
-        userEntity = datastore.get(userKey);
-        datastore.delete(userKey);
-        user = (User) userEntity.getProperty("user");
-        return user.getUserId();
     }
 }

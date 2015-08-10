@@ -1,11 +1,11 @@
 package com.shawnaten.simpleweather.module;
 
-import com.shawnaten.simpleweather.App;
+import android.content.Context;
+
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.inject.Singleton;
 
@@ -20,19 +20,15 @@ public class OkClientModule {
 
     @Provides
     @Singleton
-    public OkClient providesOkClient(App app) {
+    public OkClient providesOkClient(Context context) {
         File cacheFile;
         Cache cache;
         OkHttpClient okHttpClient;
 
-        cacheFile = new File(app.getCacheDir(), OKHTTP_CACHE_FILE);
+        cacheFile = new File(context.getCacheDir(), OKHTTP_CACHE_FILE);
         okHttpClient = new OkHttpClient();
-        try {
-            cache = new Cache(cacheFile, CACHE_SIZE);
-            okHttpClient.setCache(cache);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        cache = new Cache(cacheFile, CACHE_SIZE);
+        okHttpClient.setCache(cache);
 
         return new OkClient(okHttpClient);
 

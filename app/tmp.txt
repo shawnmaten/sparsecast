@@ -1,0 +1,68 @@
+Information:Gradle tasks [:lib:dependencies]
+:lib:dependencies
+------------------------------------------------------------
+Project :lib
+------------------------------------------------------------
+archives - Configuration for archive artifacts.
+No dependencies
+compile - Compile classpath for source set 'main'.
++--- com.google.dagger:dagger-compiler:2.0
+|    +--- com.google.dagger:dagger:2.0
+Error:\--- javax.inject:javax.inject:1
+|    +--- com.google.dagger:dagger-producers:2.0-beta
+Error:+--- com.google.dagger:dagger:2.0 (*)
+Error:\--- com.google.guava:guava:18.0
+|    \--- com.google.guava:guava:18.0
++--- com.google.dagger:dagger:2.0 (*)
+\--- com.squareup.retrofit:retrofit:1.9.0
+     \--- com.google.code.gson:gson:2.3.1
+default - Configuration for default artifacts.
++--- com.google.dagger:dagger-compiler:2.0
+|    +--- com.google.dagger:dagger:2.0
+Error:\--- javax.inject:javax.inject:1
+|    +--- com.google.dagger:dagger-producers:2.0-beta
+Error:+--- com.google.dagger:dagger:2.0 (*)
+Error:\--- com.google.guava:guava:18.0
+|    \--- com.google.guava:guava:18.0
++--- com.google.dagger:dagger:2.0 (*)
+\--- com.squareup.retrofit:retrofit:1.9.0
+     \--- com.google.code.gson:gson:2.3.1
+runtime - Runtime classpath for source set 'main'.
++--- com.google.dagger:dagger-compiler:2.0
+|    +--- com.google.dagger:dagger:2.0
+Error:\--- javax.inject:javax.inject:1
+|    +--- com.google.dagger:dagger-producers:2.0-beta
+Error:+--- com.google.dagger:dagger:2.0 (*)
+Error:\--- com.google.guava:guava:18.0
+|    \--- com.google.guava:guava:18.0
++--- com.google.dagger:dagger:2.0 (*)
+\--- com.squareup.retrofit:retrofit:1.9.0
+     \--- com.google.code.gson:gson:2.3.1
+testCompile - Compile classpath for source set 'test'.
++--- com.google.dagger:dagger-compiler:2.0
+|    +--- com.google.dagger:dagger:2.0
+Error:\--- javax.inject:javax.inject:1
+|    +--- com.google.dagger:dagger-producers:2.0-beta
+Error:+--- com.google.dagger:dagger:2.0 (*)
+Error:\--- com.google.guava:guava:18.0
+|    \--- com.google.guava:guava:18.0
++--- com.google.dagger:dagger:2.0 (*)
+\--- com.squareup.retrofit:retrofit:1.9.0
+     \--- com.google.code.gson:gson:2.3.1
+testRuntime - Runtime classpath for source set 'test'.
++--- com.google.dagger:dagger-compiler:2.0
+|    +--- com.google.dagger:dagger:2.0
+Error:\--- javax.inject:javax.inject:1
+|    +--- com.google.dagger:dagger-producers:2.0-beta
+Error:+--- com.google.dagger:dagger:2.0 (*)
+Error:\--- com.google.guava:guava:18.0
+|    \--- com.google.guava:guava:18.0
++--- com.google.dagger:dagger:2.0 (*)
+\--- com.squareup.retrofit:retrofit:1.9.0
+     \--- com.google.code.gson:gson:2.3.1
+(*) - dependencies omitted (listed previously)
+Information:BUILD SUCCESSFUL
+Information:Total time: 0.405 secs
+Information:15 errors
+Information:0 warnings
+Information:See complete output in console

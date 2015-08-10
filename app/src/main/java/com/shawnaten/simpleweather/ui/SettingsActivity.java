@@ -21,6 +21,9 @@ import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.ads.formats.NativeContentAd;
 import com.google.android.gms.ads.formats.NativeContentAdView;
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.component.DaggerSettingsComponent;
+import com.shawnaten.simpleweather.component.SettingsComponent;
+import com.shawnaten.simpleweather.module.ContextModule;
 
 import java.util.List;
 
@@ -30,12 +33,18 @@ public class SettingsActivity extends BaseActivity {
 
     private AdView adView;
 
+    private SettingsComponent settingsComponent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FragmentManager fm = getFragmentManager();
         Toolbar toolbar;
 
         super.onCreate(savedInstanceState);
+
+        settingsComponent = DaggerSettingsComponent.builder()
+                .contextModule(new ContextModule(this))
+                .build();
 
         setContentView(R.layout.activity_settings);
 
@@ -163,5 +172,9 @@ public class SettingsActivity extends BaseActivity {
             default:
                 return false;
         }
+    }
+
+    public SettingsComponent getSettingsComponent() {
+        return settingsComponent;
     }
 }

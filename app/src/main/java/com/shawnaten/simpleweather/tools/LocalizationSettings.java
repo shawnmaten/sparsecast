@@ -22,7 +22,7 @@ public class LocalizationSettings {
     public static void configure(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        unitCode = preferences.getString(context.getString(R.string.units_key),
+        unitCode = preferences.getString(context.getString(R.string.pref_units_key),
                 context.getResources().getConfiguration().locale.getCountry().toLowerCase());
         langCode = context.getResources().getConfiguration().locale.getLanguage().toLowerCase();
 
@@ -65,7 +65,7 @@ public class LocalizationSettings {
             pressureUnit = R.string.hectopascals;
         }
 
-        preferences.edit().putString(context.getString(R.string.units_key), unitCode).apply();
+        preferences.edit().putString(context.getString(R.string.pref_units_key), unitCode).apply();
     }
 
     public static String getLangCode() {

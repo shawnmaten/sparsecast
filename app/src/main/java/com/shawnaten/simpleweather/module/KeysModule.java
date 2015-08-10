@@ -1,9 +1,10 @@
 package com.shawnaten.simpleweather.module;
 
+import android.content.Context;
+
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.shawnaten.simpleweather.App;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.keysEndpoint.KeysEndpoint;
 import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
@@ -22,16 +23,16 @@ import rx.schedulers.Schedulers;
 public class KeysModule {
     @Provides
     @Singleton
-    public KeysEndpoint providesKeysApi(App app, GoogleAccountCredential credential) {
+    public KeysEndpoint providesKeysApi(Context context, GoogleAccountCredential credential) {
         KeysEndpoint.Builder build;
 
         build = new KeysEndpoint.Builder(
                 AndroidHttp.newCompatibleTransport(),
                 new AndroidJsonFactory(),
                 credential);
-        if (app.getResources().getBoolean(R.bool.localhost))
-            build.setRootUrl(app.getString(R.string.root_url));
-        build.setApplicationName(app.getString(R.string.app_name));
+        if (context.getResources().getBoolean(R.bool.localhost))
+            build.setRootUrl(context.getString(R.string.root_url));
+        build.setApplicationName(context.getString(R.string.app_name));
 
         return build.build();
     }

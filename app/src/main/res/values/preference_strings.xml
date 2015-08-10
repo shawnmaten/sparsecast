@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="settings_label">Settings</string>
+    <string name="pref_activity_title">Settings</string>
 
-    <string name="account_key">prefAccountName</string>
-    <string name="account_title">Account</string>
+    <string name="pref_category_general">General</string>
 
-    <string name="units_key">prefUnits</string>
-    <string name="units_title">Units</string>
+    <string name="pref_account_key">prefAccountName</string>
+    <string name="pref_account_title">Sync Account</string>
+
+    <string name="pref_units_key">prefUnits</string>
+    <string name="pref_units_title">Units</string>
 
     <string-array name="units_entries" >
         <item>CA - SI with wind in kph</item>
@@ -23,17 +25,14 @@
         <item>us</item>
     </string-array>
 
-    <string name="moisture_key">prefMoistureMetric</string>
-    <string name="moisture_title">Moisture Metric</string>
+    <string name="pref_category_notifications">Precipitation Notifications</string>
 
-    <string-array name="moisture_entries" >
-        <item>Relative Humidity</item>
-        <item>Dew Point</item>
-    </string-array>
+    <string name="pref_gcm_token">prefGcmToken</string>
 
-    <string-array name="moisture_values" >
-        <item>humidity</item>
-        <item>dew</item>
-    </string-array>
+    <string name="pref_location_notify_key">prefLocationNotify</string>
+    <string name="pref_location_notify_title">Current Location</string>
+    <string name="pref_location_notify_summary">
+        Securely sent to server using negligible data and power
+    </string>
 
 </resources>
