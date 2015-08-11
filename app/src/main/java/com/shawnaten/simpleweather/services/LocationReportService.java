@@ -59,6 +59,9 @@ public class LocationReportService extends IntentService {
             if (response.getMessage() == ResponseCodes.NOT_REGISTERED) {
                 Intent registrarIntent = new Intent(this, GCMRegistrarService.class);
                 startService(registrarIntent);
+            } else {
+                preferences.edit().putLong(getString(R.string.pref_last_location_report),
+                        System.currentTimeMillis()).apply();
             }
         } catch (IOException e) {
             e.printStackTrace();

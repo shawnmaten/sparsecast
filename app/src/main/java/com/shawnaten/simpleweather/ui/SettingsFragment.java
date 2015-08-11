@@ -9,6 +9,8 @@ import android.preference.PreferenceFragment;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.shawnaten.simpleweather.App;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.locationReportAPI.LocationReportAPI;
@@ -33,6 +35,8 @@ public class SettingsFragment extends PreferenceFragment implements
 
     @Inject
     LocationReportAPI locationReportAPI;
+    @Inject
+    GoogleApiClient googleApiClient;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -119,6 +123,8 @@ public class SettingsFragment extends PreferenceFragment implements
                                         GeofenceService.class);
                                 getBaseActivity().startService(intent);
                             } else {
+                                LocationServices.GeofencingApi.removeGeofences(googleApiClient,
+                                        GeofenceService.GEOFENCES);
                                 locationReportAPI.disable(deviceRecord).execute();
                             }
                         } catch (IOException e) {

@@ -26,7 +26,7 @@ android {
     }
     defaultConfig {
         applicationId 'com.shawnaten.simpleweather'
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 22
         versionCode getVersionCode()
         versionName getVersionName()
@@ -55,10 +55,10 @@ android {
             minSdkVersion 22
         }
         prod {
-            minSdkVersion 14
+            minSdkVersion 15
         }
         prodLocalhost {
-            minSdkVersion 14
+            minSdkVersion 15
         }
     }
 }

@@ -49,6 +49,10 @@ public class CheckForecastTask implements DeferredTask {
                 "us"
         );
 
+        locationRecord.setLat(0);
+        locationRecord.setLng(0);
+        ofy().save().entity(locationRecord).now();
+
         Forecast.DataBlock minutely = forecast.getMinutely();
         Forecast.DataBlock hourly = forecast.getHourly();
         Forecast.DataBlock daily = forecast.getDaily();
