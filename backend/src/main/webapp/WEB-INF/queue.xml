@@ -1,13 +1,7 @@
 <queue-entries>
 
     <queue>
-        <name>get-location-queue</name>
-        <rate>20/s</rate>
-        <bucket-size>40</bucket-size>
-    </queue>
-
-    <queue>
-        <name>notify-precip-queue</name>
+        <name>forecast-queue</name>
         <rate>20/s</rate>
         <bucket-size>40</bucket-size>
     </queue>

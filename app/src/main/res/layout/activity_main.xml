@@ -46,21 +46,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
-                android:layout_gravity="top"
+                android:layout_gravity="center_vertical"
                 android:layout_row="1"
-                android:layout_rowSpan="3"
-                android:includeFontPadding="false" />
-
-            <TextView
-                android:id="@+id/feels_like"
-                style="@style/text.caption.light"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:layout_gravity="bottom"
-                android:layout_row="1"
-                android:layout_rowSpan="3"
-                android:singleLine="true" />
+                android:layout_rowSpan="3" />
 
             <Space
                 android:layout_width="@dimen/standard_margin"
@@ -81,8 +69,8 @@
                 android:singleLine="true" />
 
             <TextView
-                android:id="@+id/sec_loc"
-                style="@style/text.body_1.light"
+                android:id="@+id/current_condition"
+                style="@style/text.subhead.light"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="4"
@@ -92,8 +80,8 @@
                 android:singleLine="true" />
 
             <TextView
-                android:id="@+id/current_condition"
-                style="@style/text.subhead.light"
+                android:id="@+id/feels_like"
+                style="@style/text.caption.light"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_column="4"

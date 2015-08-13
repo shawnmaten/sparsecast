@@ -4,14 +4,22 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
-import java.util.Date;
+import java.util.List;
 
 @Entity
 public class SavedPlace {
-    @Id private Long id;
-    @Index private String userId;
-    @Index private String placeId;
-    private Date timestamp;
+
+    @Id
+    private Long id;
+
+    @Index
+    private String userId;
+    @Index
+    private String placeId;
+    @Index
+    private String name;
+    private double lat;
+    private double lng;
 
     public Long getId() {
         return id;
@@ -37,11 +45,40 @@ public class SavedPlace {
         this.placeId = placeId;
     }
 
-    public Date getTimestamp() {
-        return timestamp;
+    public String getName() {
+        return name;
     }
 
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
+    public void setName(String name) {
+        this.name = name;
     }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
+    public static class Response {
+        private List<SavedPlace> data;
+
+        public List<SavedPlace> getData() {
+            return data;
+        }
+
+        public void setData(List<SavedPlace> data) {
+            this.data = data;
+        }
+    }
+
 }

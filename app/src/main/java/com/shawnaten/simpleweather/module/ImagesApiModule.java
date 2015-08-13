@@ -24,8 +24,7 @@ public class ImagesApiModule {
                 AndroidHttp.newCompatibleTransport(),
                 new AndroidJsonFactory(),
                 credential);
-        if (context.getResources().getBoolean(R.bool.localhost))
-            build.setRootUrl(context.getString(R.string.root_url));
+        build.setRootUrl(context.getString(R.string.root_url));
         build.setApplicationName(context.getString(R.string.app_name));
 
         return build.build();

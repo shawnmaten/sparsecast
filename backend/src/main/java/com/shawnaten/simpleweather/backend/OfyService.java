@@ -9,9 +9,6 @@ public class OfyService {
     static {
         ObjectifyService.register(Image.class);
         ObjectifyService.register(SavedPlace.class);
-        ObjectifyService.register(GCMDeviceRecord.class);
-        ObjectifyService.register(LocationRecord.class);
-        ObjectifyService.register(Response.class);
     }
 
     public static Objectify ofy() {

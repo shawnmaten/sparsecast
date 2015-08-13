@@ -4,6 +4,7 @@ import android.location.Location;
 
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
+import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
 
 public class LocationSettings {
     private static Mode mode = Mode.CURRENT;
@@ -33,6 +34,18 @@ public class LocationSettings {
         latLng = place.getLatLng();
         placeId = place.getId();
         LocationSettings.isFavorite = isFavorite;
+        LocationSettings.attributions = attributions != null ? attributions.toString() : null;
+    }
+
+    public static void setPlace(SavedPlace savedPlace, CharSequence attributions) {
+        mode = Mode.SAVED;
+        name = savedPlace.getName();
+
+        address = "";
+
+        latLng = new LatLng(savedPlace.getLat(), savedPlace.getLng());
+        placeId = savedPlace.getPlaceId();
+        LocationSettings.isFavorite = true;
         LocationSettings.attributions = attributions != null ? attributions.toString() : null;
     }
 

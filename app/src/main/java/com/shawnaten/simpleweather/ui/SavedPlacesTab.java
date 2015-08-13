@@ -4,21 +4,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Result;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBuffer;
-import com.google.android.gms.location.places.Places;
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.backend.savedPlaceApi.model.Response;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
 import com.shawnaten.simpleweather.tools.LocationSettings;
 
@@ -27,11 +19,10 @@ import java.util.List;
 
 public class SavedPlacesTab extends Tab {
     private SearchAdapter adapter;
-    private GoogleApiClient googleApiClient;
-    private final ArrayMap<SavedPlace, String> savedPlaces = new ArrayMap<>();
-    private ArrayList<String> attributions = new ArrayList<>();
 
-    private ProgressBar progressBar;
+    private List<SavedPlace> savedPlaces;
+
+    private ArrayList<String> attributions = new ArrayList<>();
 
     public static SavedPlacesTab newInstance(String title, int layout) {
         Bundle args = new Bundle();
@@ -47,7 +38,6 @@ public class SavedPlacesTab extends Tab {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        googleApiClient = getApp().mainComponent.googleApiClient();
         adapter = new SearchAdapter();
     }
 
@@ -63,56 +53,18 @@ public class SavedPlacesTab extends Tab {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
-        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-
-        progressBar.getIndeterminateDrawable().setColorFilter(
-                getResources().getColor(R.color.primary),
-                android.graphics.PorterDuff.Mode.SRC_ATOP);
     }
 
     @Override
     public void onNewData(Object data) {
         super.onNewData(data);
 
-        if (List.class.isInstance(data) && SavedPlace.class.isInstance(((List) data).get(0))) {
+        if (data instanceof Response) {
 
-            final List<SavedPlace> ids = (List<SavedPlace>) data;
-            savedPlaces.clear();
+            savedPlaces = ((Response) data).getData();
 
-            progressBar.setVisibility(View.VISIBLE);
+            adapter.notifyItemRangeInserted(0, savedPlaces.size());
 
-            for (final SavedPlace id : ids) {
-                PendingResult result = Places.GeoDataApi.getPlaceById(googleApiClient,
-                        id.getPlaceId());
-
-                result.setResultCallback(new ResultCallback() {
-                    @Override
-                    public void onResult(Result result1) {
-                        String name;
-                        PlaceBuffer placeBuffer = (PlaceBuffer) result1;
-                        Place place = placeBuffer.get(0);
-                        if (place.getPlaceTypes().contains(Place.TYPE_POLITICAL))
-                            name = place.getAddress().toString();
-                        else
-                            name = place.getName().toString();
-
-                        CharSequence attribution = placeBuffer.getAttributions();
-                        if (attribution != null && !attributions.contains(attribution.toString())) {
-                            attributions.add(attribution.toString());
-                            adapter.notifyItemChanged(adapter.getItemCount() - 1);
-                        }
-                        placeBuffer.release();
-
-                        synchronized (savedPlaces) {
-                            savedPlaces.put(id, name);
-                            if (savedPlaces.size() == ids.size()) {
-                                progressBar.setVisibility(View.GONE);
-                                adapter.notifyItemRangeInserted(0, savedPlaces.size());
-                            }
-                        }
-                    }
-                });
-            }
         }
     }
 
@@ -126,21 +78,11 @@ public class SavedPlacesTab extends Tab {
             listItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    PendingResult result = Places.GeoDataApi.getPlaceById(
-                            getApp().mainComponent.googleApiClient(),
-                            savedPlaces.keyAt(id).getPlaceId());
 
-                    result.setResultCallback(new ResultCallback() {
-                        @Override
-                        public void onResult(Result result1) {
-                            PlaceBuffer placeBuffer = (PlaceBuffer) result1;
-                            Place place = placeBuffer.get(0);
-                            LocationSettings.setPlace(place, true, placeBuffer.getAttributions());
-                            placeBuffer.release();
-                            getActivity().setResult(MainActivity.PLACE_SELECTED_CODE);
-                            getActivity().finish();
-                        }
-                    });
+                    LocationSettings.setPlace(savedPlaces.get(id), null);
+                    getActivity().setResult(MainActivity.PLACE_SELECTED_CODE);
+                    getActivity().finish();
+
                 }
             });
         }
@@ -188,7 +130,7 @@ public class SavedPlacesTab extends Tab {
                 default:
                     final NormalViewHolder holder = (NormalViewHolder) viewHolder;
                     holder.id = i;
-                    holder.nameView.setText(savedPlaces.valueAt(i));
+                    holder.nameView.setText(savedPlaces.get(i).getName());
             }
         }
 

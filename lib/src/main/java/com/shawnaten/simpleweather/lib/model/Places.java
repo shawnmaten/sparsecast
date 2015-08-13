@@ -1,9 +1,7 @@
-package com.shawnaten.simpleweather.tools;
+package com.shawnaten.simpleweather.lib.model;
 
-import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Query;
-import rx.Observable;
 
 public class Places {
     public static class AutocompleteResponse {
@@ -104,18 +102,20 @@ public class Places {
 
     public interface AutoCompleteService {
         @GET("/json")
-        AutocompleteResponse getAutocomplete(@Query("key") String key, @Query("input") String query,
-            @Query("language") String langCode);
-
-        @GET("/json")
-        Observable<AutocompleteResponse> getAutocomplete(@Query("key") String key, @Query("input") String query,
-            @Query("language") String langCode, Callback<AutocompleteResponse> cb);
+        AutocompleteResponse getAutocomplete(
+                @Query("key") String key,
+                @Query("input") String query,
+                @Query("language") String langCode
+        );
     }
 
     public interface DetailsService {
-        @GET("/json")
-        Observable<DetailsResponse> getDetails(@Query("key") String key, @Query("placeid") String placeid,
-            @Query("language") String langCode, Callback<DetailsResponse> cb);
+        @GET("/details/json")
+        DetailsResponse getDetails(
+                @Query("key") String key,
+                @Query("placeid") String placeid,
+                @Query("language") String langCode
+        );
     }
 
 }

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
@@ -22,13 +24,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.maps.android.SphericalUtil;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.imagesApi.ImagesApi;
 import com.shawnaten.simpleweather.backend.imagesApi.model.Image;
@@ -48,7 +43,7 @@ import com.squareup.picasso.Target;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -187,92 +182,31 @@ public class MainActivity extends BaseActivity {
             Func2<Location, Keys, Forecast.Response> function;
             Subscriber<Forecast.Response> subscriber;
             final Subscription subscription;
-            final PendingResult<PlaceLikelihoodBuffer> result;
-
-            result = Places.PlaceDetectionApi.getCurrentPlace(googleApiClient, null);
 
             function = new Func2<Location, Keys, Forecast.Response>() {
                 @Override
                 public Forecast.Response call(Location l, Keys k) {
-                    Geocoding.Response response;
-                    ResultCallback<PlaceLikelihoodBuffer> callback;
-                    final Geocoding.Result add;
-                    final LatLng actLoc, addLoc;
-                    final double addDist;
+                    Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
-                    response = geocodingService.getAddresses(
-                            k.getGoogleAPIKey(),
-                            String.format("%f,%f", l.getLatitude(), l.getLongitude())
-                    );
+                    try {
+                        Address address = geocoder.getFromLocation(
+                                l.getLatitude(),
+                                l.getLongitude(),
+                                1
+                        ).get(0);
 
-                    add = response.getResults()[0];
+                        Observable.just(address.getLocality())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Action1<String>() {
+                                    @Override
+                                    public void call(String name) {
+                                        ((TextView) findViewById(R.id.main_loc)).setText(name);
+                                    }
+                                });
 
-                    actLoc = new LatLng(l.getLatitude(), l.getLongitude());
-                    addLoc = new LatLng(
-                            add.getGeometry().getLocation().getLat(),
-                            add.getGeometry().getLocation().getLng()
-                    );
-
-                    addDist = SphericalUtil.computeDistanceBetween(actLoc, addLoc);
-
-                    callback = new ResultCallback<PlaceLikelihoodBuffer>() {
-                        @Override
-                        public void onResult(PlaceLikelihoodBuffer like) {
-                            Place place;
-                            double placeDist;
-                            String streetNum = null, route = null, main = null, sec = null;
-
-                            place = like.get(0).getPlace();
-
-                            placeDist = SphericalUtil.computeDistanceBetween(
-                                    actLoc,
-                                    place.getLatLng()
-                            );
-
-                            for (Geocoding.AddressComponents comp : add.getAddressComponents()) {
-                                if (Arrays.asList(comp.getTypes()).contains("street_number")) {
-                                    streetNum = comp.getShortName();
-                                }
-                                if (Arrays.asList(comp.getTypes()).contains("route")) {
-                                    route = comp.getShortName();
-                                }
-                                if (Arrays.asList(comp.getTypes()).contains("locality"))
-                                    main = comp.getLongName();
-                            }
-
-                            if (placeDist < addDist) {
-                                sec = place.getName().toString();
-                            } else {
-                                if (streetNum != null) {
-                                    sec = streetNum + " " + route;
-                                } else {
-                                    sec = add.getAddressComponents()[0].getShortName();
-                                }
-                            }
-
-                            like.release();
-
-                            Observable.just(main)
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<String>() {
-                                        @Override
-                                        public void call(String s) {
-                                            ((TextView) findViewById(R.id.main_loc)).setText(s);
-                                        }
-                                    });
-
-                            Observable.just(sec)
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<String>() {
-                                        @Override
-                                        public void call(String s) {
-                                            ((TextView) findViewById(R.id.sec_loc)).setText(s);
-                                        }
-                                    });
-                        }
-                    };
-
-                    result.setResultCallback(callback);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                     return forecastService.getForecast(
                             k.getForecastAPIKey(),
@@ -318,8 +252,6 @@ public class MainActivity extends BaseActivity {
                     sendDataToFragments(FORECAST_DATA, response);
                     ((TextView) MainActivity.this.findViewById(R.id.main_loc))
                             .setText(LocationSettings.getName());
-                    ((TextView) MainActivity.this.findViewById(R.id.sec_loc))
-                            .setText(LocationSettings.getAddress());
                 }
             }));
         }
@@ -387,18 +319,29 @@ public class MainActivity extends BaseActivity {
                 } else {
                     item.setIcon(R.drawable.ic_favorite_white_24dp);
                     LocationSettings.setIsFavorite(true);
-                    subs.add(Observable.create(new Observable.OnSubscribe<SavedPlace>() {
+
+                    final SavedPlace savedPlace = new SavedPlace();
+                    savedPlace.setPlaceId(LocationSettings.getPlaceId());
+                    savedPlace.setName(LocationSettings.getName());
+                    savedPlace.setLat(LocationSettings.getLatLng().latitude);
+                    savedPlace.setLng(LocationSettings.getLatLng().longitude);
+
+                    Observable.OnSubscribe<Void> onSubscribe;
+                    onSubscribe = new Observable.OnSubscribe<Void>() {
                         @Override
-                        public void call(Subscriber<? super SavedPlace> subscriber) {
-                            SavedPlace savedPlace = new SavedPlace();
-                            savedPlace.setPlaceId(LocationSettings.getPlaceId());
+                        public void call(Subscriber<? super Void> subscriber) {
                             try {
-                                subscriber.onNext(savedPlaceApi.insert(savedPlace).execute());
+                                savedPlaceApi.insert(savedPlace).execute();
+                                subscriber.onCompleted();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         }
-                    }).subscribeOn(Schedulers.io()).subscribe());
+                    };
+
+                    subs.add(Observable.create(onSubscribe)
+                            .subscribeOn(Schedulers.io())
+                            .subscribe());
                 }
                 return true;
             case R.id.action_current_location:
@@ -410,6 +353,9 @@ public class MainActivity extends BaseActivity {
                 return true;
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            case R.id.action_ad:
+                startActivity(new Intent(this, AdActivity.class));
                 return true;
             default:
                 return false;

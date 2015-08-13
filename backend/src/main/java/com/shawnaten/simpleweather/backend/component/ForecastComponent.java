@@ -15,6 +15,6 @@ import dagger.Component;
                 ForecastModule.class
         }
 )
-public interface NotifyComponent {
+public interface ForecastComponent {
     Forecast.Service forecastService();
 }

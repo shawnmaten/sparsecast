@@ -51,8 +51,5 @@
     <orderEntry type="library" exported="" name="appengine-api-1.0-sdk-1.9.21" level="project" />
     <orderEntry type="library" exported="" name="guava-18.0" level="project" />
     <orderEntry type="library" exported="" name="json-simple-1.1" level="project" />
-    <orderEntry type="library" exported="" name="backend.backend" level="project" />
-    <orderEntry type="library" exported="" name="backend.backend-endpoints" level="project" />
-    <orderEntry type="library" exported="" name="backend.backend-android-endpoints" level="project" />
   </component>
 </module>

@@ -3,14 +3,14 @@ package com.shawnaten.simpleweather.ui;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
-import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
+import com.shawnaten.simpleweather.backend.savedPlaceApi.model.Response;
 
 import java.io.IOException;
-import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -21,7 +21,7 @@ import rx.schedulers.Schedulers;
 public class SearchActivity extends BaseActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         Toolbar toolbar;
         ViewPager viewPager;
         SlidingTabLayout slidingTabLayout;
@@ -54,30 +54,37 @@ public class SearchActivity extends BaseActivity {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         setSupportActionBar(toolbar);
 
-        Observable.create(new Observable.OnSubscribe<Object>() {
+        Action1<Response> subscriber;
+        subscriber = new Action1<Response>() {
             @Override
-            public void call(Subscriber<? super Object> subscriber) {
+            public void call(Response response) {
+                sendDataToFragments(response);
+            }
+        };
+
+        Observable.OnSubscribe<Response> onSubscribe;
+        onSubscribe = new Observable.OnSubscribe<Response>() {
+            @Override
+            public void call(Subscriber<? super Response> subscriber) {
                 try {
-                    subscriber.onNext(savedPlaceApi.list().execute().getItems());
+                    Response response = savedPlaceApi.get().execute();
+                    if (response.getData() != null)
+                        subscriber.onNext(savedPlaceApi.get().execute());
+                    else {
+                        Log.e("was null", "was null");
+                        subscriber.onCompleted();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-        })
+        };
+
+        Observable.create(onSubscribe)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<Object>() {
-                            @Override
-                            public void call(Object result) {
-                                if (List.class.isInstance(result)) {
-                                    List<SavedPlace> list = (List<SavedPlace>) result;
+                .subscribe(subscriber);
 
-                                    if (list.size() > 0)
-                                        SearchActivity.this.sendDataToFragments(result);
-                                }
-                            }
-                        });
     }
 
     @Override

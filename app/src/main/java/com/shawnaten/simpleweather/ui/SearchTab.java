@@ -19,6 +19,7 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.backend.savedPlaceApi.model.Response;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
 import com.shawnaten.simpleweather.tools.LocationSettings;
 
@@ -32,7 +33,7 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
     private SearchView searchView;
     private RecyclerView recyclerView;
 
-    private List<SavedPlace> savedPlaces;
+    private List<SavedPlace> favorites;
 
     public static SearchTab newInstance(String title, int layout) {
         Bundle args = new Bundle();
@@ -142,8 +143,8 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
     public void onNewData(Object data) {
         super.onNewData(data);
 
-        if (List.class.isInstance(data) && SavedPlace.class.isInstance(((List) data).get(0))) {
-            savedPlaces = (List<SavedPlace>) data;
+        if (data instanceof Response) {
+            favorites = ((Response) data).getData();
         }
     }
 
@@ -174,8 +175,8 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
 
                             LocationSettings.setPlace(place, false, placeBuffer.getAttributions());
 
-                            if (savedPlaces != null) {
-                                for (SavedPlace savedPlace : savedPlaces) {
+                            if (favorites != null) {
+                                for (SavedPlace savedPlace : favorites) {
                                     if (savedPlace.getPlaceId().equals(place.getId()))
                                         LocationSettings.setPlace(place, true, placeBuffer.getAttributions());
                                 }
