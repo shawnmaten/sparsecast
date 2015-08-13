@@ -10,24 +10,17 @@ import android.preference.PreferenceFragment;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.shawnaten.simpleweather.App;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.locationReportAPI.LocationReportAPI;
-import com.shawnaten.simpleweather.backend.locationReportAPI.model.GCMDeviceRecord;
-import com.shawnaten.simpleweather.services.GeofenceService;
+import com.shawnaten.simpleweather.services.GCMRegistrarService;
+import com.shawnaten.simpleweather.services.LocationService;
 import com.shawnaten.simpleweather.tools.LocalizationSettings;
 import com.shawnaten.simpleweather.tools.LocationSettings;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class SettingsFragment extends PreferenceFragment implements
         SharedPreferences.OnSharedPreferenceChangeListener {
@@ -107,34 +100,16 @@ public class SettingsFragment extends PreferenceFragment implements
                 LocalizationSettings.configure(getApp());
                 break;
             case "prefLocationNotify":
-                final String prefLocationNotifyKey = getString(R.string.pref_location_notify_key);
-                final GCMDeviceRecord deviceRecord = new GCMDeviceRecord();
 
-                deviceRecord.setGcmToken(prefs.getString(getString(R.string.pref_gcm_token), null));
+                String prefLocationNotifyKey = getString(R.string.pref_location_notify_key);
 
-                Observable<Void> observable;
-
-                observable = Observable.create(new Observable.OnSubscribe<Void>() {
-                    @Override
-                    public void call(Subscriber<? super Void> subscriber) {
-                        try {
-                            if (prefs.getBoolean(prefLocationNotifyKey, false)) {
-                                Intent intent = new Intent(getBaseActivity(),
-                                        GeofenceService.class);
-                                getBaseActivity().startService(intent);
-                            } else {
-                                LocationServices.GeofencingApi.removeGeofences(googleApiClient,
-                                        GeofenceService.GEOFENCES);
-                                locationReportAPI.disable(deviceRecord).execute();
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        subscriber.onCompleted();
-                    }
-                }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-
-                getBaseActivity().subs.add(observable.subscribe());
+                if (prefs.getBoolean(prefLocationNotifyKey, false)) {
+                    Intent intent = new Intent(getBaseActivity(), GCMRegistrarService.class);
+                    getBaseActivity().startService(intent);
+                } else {
+                    Intent intent = new Intent(getBaseActivity(), LocationService.class);
+                    getBaseActivity().stopService(intent);
+                }
 
                 break;
         }

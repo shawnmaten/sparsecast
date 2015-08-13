@@ -16,7 +16,7 @@ public class Dagger implements ServletContextListener {
         // This will be invoked as part of a warmup request, or the first user
         // request if no warmup request was invoked.
 
-        notifyComp = DaggerForecastComponent.create();
+        //notifyComp = DaggerForecastComponent.create();
     }
 
     public void contextDestroyed(ServletContextEvent event) {

@@ -29,24 +29,24 @@ import java.util.logging.Logger;
         audiences = {Constants.WEB_LOCAL_ID, Constants.WEB_APP_ENGINE_ID}
 
 )
-public class LocationEndpoint {
+public class LocationReportEndpoint {
 
-    private static final Logger log = Logger.getLogger(LocationEndpoint.class.getName());
+    private static final Logger log = Logger.getLogger(LocationReportEndpoint.class.getName());
 
     @ApiMethod(
             name = "report",
             httpMethod = ApiMethod.HttpMethod.POST
     )
-    public void report(User user, Location location) throws OAuthRequestException {
+    public void report(User user, LocationReport locationReport) throws OAuthRequestException {
 
         if (user == null)
             throw new OAuthRequestException("unauthorized request");
 
         ForecastTask task = new ForecastTask(
                 MessagingCodes.HOUR_TYPE_CURRENT,
-                location.getGcmToken(),
-                location.getLat(),
-                location.getLng()
+                locationReport.getGcmToken(),
+                locationReport.getLat(),
+                locationReport.getLng()
         );
 
         Queue queue = QueueFactory.getQueue(ForecastTask.QUEUE);

@@ -81,17 +81,6 @@
             </intent-filter>
         </service>
 
-        <service
-            android:name=".services.GeofenceService"
-            android:label="@string/service_geofence"
-            android:exported="false"/>
-
-        <service
-            android:name=".services.LocationReportService"
-            android:label="@string/service_location_report"
-            android:exported="false"/>
-
-
 
         <activity
             android:name=".ui.MainActivity"

@@ -7,70 +7,44 @@ import android.preference.PreferenceManager;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
-import com.shawnaten.simpleweather.App;
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.simpleweather.backend.registrationApi.RegistrationApi;
-import com.shawnaten.simpleweather.backend.registrationApi.model.GCMDeviceRecord;
 
 import java.io.IOException;
 
-import javax.inject.Inject;
-
 public class GCMRegistrarService extends IntentService {
-
-    @Inject
-    RegistrationApi registrationApi;
 
     public GCMRegistrarService() {
         super("GCMRegistrationService");
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-
-        ((App) getApplication()).getServiceComponent().injectGCMRegistrarService(this);
-    }
-
-    @Override
     protected void onHandleIntent(Intent intent) {
-        InstanceID instanceID;
-        SharedPreferences preferences;
 
-        String gcmTokenKey = getString(R.string.pref_gcm_token);
+        SharedPreferences preferences;
+        String key;
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        instanceID = InstanceID.getInstance(this);
+        key = getString(R.string.pref_gcm_token);
 
-        try {
-            String oldToken = preferences.getString(gcmTokenKey, null);
+        if (!preferences.contains(key)) {
+            try {
 
-            if (oldToken != null) {
-                GCMDeviceRecord oldDeviceRecord = new GCMDeviceRecord();
+                InstanceID instanceID = InstanceID.getInstance(this);
+                String senderId = getString(R.string.gcm_sender_id);
+                String scope = GoogleCloudMessaging.INSTANCE_ID_SCOPE;
 
-                oldDeviceRecord.setGcmToken(oldToken);
-                preferences.edit().remove(gcmTokenKey).apply();
+                String token = instanceID.getToken(senderId, scope, null);
+                preferences.edit().putString(key, token).apply();
 
-                registrationApi.unregister(oldDeviceRecord).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            String newToken = instanceID.getToken(getString(R.string.gcm_sender_id),
-                    GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-
-            GCMDeviceRecord newDeviceRecord = new GCMDeviceRecord();
-            newDeviceRecord.setGcmToken(newToken);
-
-            preferences.edit().putString(gcmTokenKey, newToken).apply();
-
-            registrationApi.register(newDeviceRecord).execute();
-
-            if (preferences.getBoolean(getString(R.string.pref_location_notify_key), false)) {
-                Intent serviceIntent = new Intent(this, GeofenceService.class);
-                startService(serviceIntent);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
+        if (preferences.getBoolean(getString(R.string.pref_location_notify_key), false)) {
+            Intent locationServiceIntent = new Intent(this, LocationService.class);
+            startService(locationServiceIntent);
+        }
+
     }
 }

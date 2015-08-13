@@ -14,7 +14,7 @@ public class BootReceiver extends BroadcastReceiver {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         if (preferences.getBoolean(context.getString(R.string.pref_location_notify_key), false)) {
-            Intent serviceIntent = new Intent(context , GeofenceService.class);
+            Intent serviceIntent = new Intent(context , LocationService.class);
             context.startService(serviceIntent);
         }
 
