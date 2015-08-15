@@ -55,7 +55,6 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
-
     public static final int PLACE_SEARCH_CODE = RESULT_FIRST_USER + 1;
     public static final int PLACE_SELECTED_CODE = RESULT_FIRST_USER + 2;
 
@@ -100,10 +99,6 @@ public class MainActivity extends BaseActivity {
 
         Resources res = getResources();
 
-        ViewPager viewPager = ButterKnife.findById(this, R.id.view_pager);
-        SlidingTabLayout slidingTabLayout = ButterKnife.findById(this, R.id.sliding_tabs);
-        View photoContainer = ButterKnife.findById(this, R.id.photo_container);
-
         int screenWidth = res.getDisplayMetrics().widthPixels;
         statBarSize = res.getDimension(res.getIdentifier("status_bar_height", "dimen", "android"));
 
@@ -111,6 +106,12 @@ public class MainActivity extends BaseActivity {
         decorView = window.getDecorView();
 
         setContentView(R.layout.activity_main);
+
+        ButterKnife.bind(this);
+
+        ViewPager viewPager = ButterKnife.findById(this, R.id.view_pager);
+        SlidingTabLayout slidingTabLayout = ButterKnife.findById(this, R.id.sliding_tabs);
+        View photoContainer = ButterKnife.findById(this, R.id.photo_container);
 
         getApp().getMainComponent().injectMainActivity(this);
 
@@ -152,19 +153,19 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
-
         super.onResume();
 
         Observable<Forecast.Response> forecastObservable;
 
         if (LocationSettings.getMode() == LocationSettings.Mode.CURRENT) {
-            forecastObservable = locationProvider
-                    .getLastKnownLocation()
+            Observable<Location> locationObservable = locationProvider.getLastKnownLocation();
+
+            forecastObservable = locationObservable
                     .flatMap(new Func1<Location, Observable<Forecast.Response>>() {
                         @Override
                         public Observable<Forecast.Response> call(Location location) {
                             return forecastService.getForecast(
-                                    APIKeys.PUBLIC_FORECAST_API_KEY,
+                                    APIKeys.FORECAST_API_KEY,
                                     location.getLatitude(),
                                     location.getLongitude(),
                                     LocalizationSettings.getLangCode(),
@@ -174,8 +175,7 @@ public class MainActivity extends BaseActivity {
                     })
                     .observeOn(AndroidSchedulers.mainThread());
 
-            locationProvider
-                    .getLastKnownLocation()
+            locationObservable
                     .flatMap(new Func1<Location, Observable<List<Address>>>() {
                         @Override
                         public Observable<List<Address>> call(Location location) {
@@ -189,11 +189,10 @@ public class MainActivity extends BaseActivity {
                             locationView.setText(addresses.get(0).getLocality());
                         }
                     });
-
         } else {
 
             forecastObservable = forecastService.getForecast(
-                    APIKeys.PUBLIC_FORECAST_API_KEY,
+                    APIKeys.FORECAST_API_KEY,
                     LocationSettings.getLatLng().latitude,
                     LocationSettings.getLatLng().longitude,
                     LocalizationSettings.getLangCode(),
@@ -201,7 +200,6 @@ public class MainActivity extends BaseActivity {
             ).observeOn(AndroidSchedulers.mainThread());
 
             locationView.setText(LocationSettings.getName());
-
         }
 
         forecastObservable
@@ -394,5 +392,4 @@ public class MainActivity extends BaseActivity {
     public interface ScrollListener {
         void onOtherScrollChanged(int otherScrollAmount);
     }
-
 }

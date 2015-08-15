@@ -34,7 +34,7 @@ public class ForecastTask implements DeferredTask {
     public void run() {
 
         Forecast.Response forecast = Dagger.getForecastComponent().forecastService().notifyVersion(
-                APIKeys.PUBLIC_FORECAST_API_KEY,
+                APIKeys.FORECAST_API_KEY,
                 lat,
                 lng,
                 "en",

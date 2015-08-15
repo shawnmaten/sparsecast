@@ -9,17 +9,17 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-@Singleton
 public class ContextModule {
 
     private Context context;
 
     @Inject
-    public ContextModule(Context contex) {
-        this.context = contex;
+    public ContextModule(Context context) {
+        this.context = context;
     }
 
     @Provides
+    @Singleton
     public Context providesContext(){
         return context;
     }
