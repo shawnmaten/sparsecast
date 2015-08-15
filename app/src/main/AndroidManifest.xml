@@ -81,6 +81,10 @@
             </intent-filter>
         </service>
 
+        <service
+            android:name=".services.LocationService"
+            android:label="@string/service_location"
+            android:exported="false"/>
 
         <activity
             android:name=".ui.MainActivity"

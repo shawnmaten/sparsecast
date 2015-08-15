@@ -178,7 +178,6 @@
     <string name="service_gcm_notification">GCM Notification Service</string>
     <string name="service_gcm_registrar">GCM Registrar Service</string>
     <string name="service_gcm_token_refresh">GCM Token Refresh Service</string>
-    <string name="service_geofence">Geofence Service</string>
-    <string name="service_location_report">Location Report Service</string>
+    <string name="service_location">Location Service</string>
 
 </resources>

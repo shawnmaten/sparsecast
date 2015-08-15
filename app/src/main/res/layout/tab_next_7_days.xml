@@ -36,14 +36,14 @@
             android:id="@+id/days_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            android:paddingTop="@dimen/half_margin"
+            android:paddingBottom="@dimen/half_margin"/>
 
         <Space
             android:id="@+id/bottom_space"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <include layout="@layout/attributions_google_third_forecast"/>
 
     </LinearLayout>
 

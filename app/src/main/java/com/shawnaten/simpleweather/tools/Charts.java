@@ -10,6 +10,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ValueFormatter;
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.lib.model.Forecast;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;

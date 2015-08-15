@@ -66,7 +66,7 @@ public class LocationHandler extends Handler implements LocationListener {
         locationReport.setLng(location.getLongitude());
 
         try {
-            locationReportAPI.report(locationReport);
+            locationReportAPI.report(locationReport).execute();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -3,7 +3,6 @@ package com.shawnaten.simpleweather.ui;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +13,12 @@ import com.shawnaten.simpleweather.backend.savedPlaceApi.model.Response;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
 import com.shawnaten.simpleweather.tools.LocationSettings;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SavedPlacesTab extends Tab {
     private SearchAdapter adapter;
 
     private List<SavedPlace> savedPlaces;
-
-    private ArrayList<String> attributions = new ArrayList<>();
 
     public static SavedPlacesTab newInstance(String title, int layout) {
         Bundle args = new Bundle();
@@ -88,64 +84,31 @@ public class SavedPlacesTab extends Tab {
         }
     }
 
-    private class AttributionsViewHolder extends RecyclerView.ViewHolder {
-        public TextView thirdPartyAttributions;
-
-        public AttributionsViewHolder(View attributionsView) {
-            super(attributionsView);
-
-            thirdPartyAttributions = (TextView) attributionsView.findViewById(R.id.third_party);
-        }
-    }
-
     private class SearchAdapter extends RecyclerView.Adapter {
         private static final int NORMAL_TYPE = 0;
-        private static final int ATTRIBUTIONS_TYPE = 1;
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            switch (viewType) {
-                case ATTRIBUTIONS_TYPE:
-                    View attributionsView = LayoutInflater.from(viewGroup.getContext())
-                            .inflate(R.layout.attributions_google_third, viewGroup, false);
-                    return new AttributionsViewHolder(attributionsView);
-                default:
-                    View listItemView = LayoutInflater.from(viewGroup.getContext())
-                            .inflate(R.layout.saved_place_item, viewGroup, false);
-                    return new NormalViewHolder(listItemView);
-            }
+            View listItemView = LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.saved_place_item, viewGroup, false);
+            return new NormalViewHolder(listItemView);
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-            switch (getItemViewType(i)) {
-                case ATTRIBUTIONS_TYPE:
-                    AttributionsViewHolder attributionsHolder = (AttributionsViewHolder) viewHolder;
-                    attributionsHolder.thirdPartyAttributions.setText(null);
-                    for (String attribution : attributions) {
-                        attributionsHolder.thirdPartyAttributions
-                                .append(Html.fromHtml(attribution) + "\n");
-                    }
-                    break;
-                default:
-                    final NormalViewHolder holder = (NormalViewHolder) viewHolder;
-                    holder.id = i;
-                    holder.nameView.setText(savedPlaces.get(i).getName());
-            }
+            NormalViewHolder holder = (NormalViewHolder) viewHolder;
+            holder.id = i;
+            holder.nameView.setText(savedPlaces.get(i).getName());
         }
 
         @Override
         public int getItemCount() {
-            return savedPlaces != null && savedPlaces.size() > 0 ? savedPlaces.size() + 1: 0;
+            return savedPlaces != null && savedPlaces.size() > 0 ? savedPlaces.size() : 0;
         }
 
         @Override
         public int getItemViewType(int position) {
-            if (position == getItemCount() - 1) {
-                return ATTRIBUTIONS_TYPE;
-            }
-            else
-                return NORMAL_TYPE;
+            return NORMAL_TYPE;
         }
     }
 }

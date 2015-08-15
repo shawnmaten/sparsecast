@@ -28,7 +28,7 @@ public class OkClientModule {
         cacheFile = new File(context.getCacheDir(), OKHTTP_CACHE_FILE);
         okHttpClient = new OkHttpClient();
         cache = new Cache(cacheFile, CACHE_SIZE);
-        okHttpClient.setCache(cache);
+        //okHttpClient.setCache(cache);
 
         return new OkClient(okHttpClient);
 

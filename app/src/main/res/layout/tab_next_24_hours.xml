@@ -49,7 +49,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/icon_button"
+                    android:layout_marginStart="@dimen/icon_button"
+                    android:layout_marginRight="@dimen/icon_button"
+                    android:layout_marginEnd="@dimen/icon_button">
 
                     <TextView
                         android:id="@+id/next_hour_summary"
@@ -100,18 +104,12 @@
                 android:textAlignment="center">
             </TextView>
 
-            <include
-                layout="@layout/attributions_google_third_forecast"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"/>
-
             <LinearLayout
                 android:id="@+id/sun"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/attributions"
-                android:layout_marginBottom="@dimen/half_margin"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/standard_margin"
                 android:orientation="vertical"
                 android:paddingEnd="@dimen/standard_margin"
                 android:paddingLeft="@dimen/standard_margin"

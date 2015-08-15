@@ -5,6 +5,7 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
+import com.shawnaten.simpleweather.lib.model.APIKeys;
 
 import java.util.logging.Logger;
 
@@ -25,9 +26,9 @@ import java.util.logging.Logger;
 
 public class KeysEndpoint {
     private static final Keys keys = new Keys(
-            Constants.PUBLIC_GOOGLE_API_KEY,
-            Constants.PUBLIC_FORECAST_API_KEY,
-            Constants.PUBLIC_INSTAGRAM_API_KEY);
+            APIKeys.PUBLIC_GOOGLE_API_KEY,
+            APIKeys.PUBLIC_FORECAST_API_KEY,
+            APIKeys.PUBLIC_INSTAGRAM_API_KEY);
     private static final Logger LOG = Logger.getLogger(KeysEndpoint.class.getName());
 
     @ApiMethod(name = "getKeys")

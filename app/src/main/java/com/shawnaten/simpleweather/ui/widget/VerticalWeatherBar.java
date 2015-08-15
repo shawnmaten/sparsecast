@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.simpleweather.tools.Forecast;
+import com.shawnaten.simpleweather.lib.model.Forecast;
 import com.shawnaten.simpleweather.tools.ForecastTools;
 import com.shawnaten.simpleweather.tools.Precipitation;
 

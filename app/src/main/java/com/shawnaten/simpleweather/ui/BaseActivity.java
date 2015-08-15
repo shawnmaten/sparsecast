@@ -16,60 +16,13 @@ public class BaseActivity extends AppCompatActivity {
     protected ArrayList<FragmentDataListener> dataListeners = new ArrayList<>();
     protected HashMap<String, Object> dataMap = new HashMap<>();
 
-    /*
-    private final static String KIIP_TAG = "kiip_fragment_tag";
-    private KiipFragmentCompat mKiipFragment;*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         subs = new CompositeSubscription();
 
-        /*
-        if (savedInstanceState != null) {
-            mKiipFragment = (KiipFragmentCompat) getSupportFragmentManager()
-                    .findFragmentByTag(KIIP_TAG);
-        } else {
-            mKiipFragment = new KiipFragmentCompat();
-            getSupportFragmentManager().beginTransaction().add(mKiipFragment, KIIP_TAG).commit();
-        }
-        */
     }
-
-    /*
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Kiip.getInstance().startSession(new Kiip.Callback() {
-            @Override
-            public void onFailed(Kiip kiip, Exception exception) {
-                // handle failure
-            }
-
-            @Override
-            public void onFinished(Kiip kiip, Poptart poptart) {
-                onPoptart(poptart);
-            }
-        });
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Kiip.getInstance().endSession(new Kiip.Callback() {
-            @Override
-            public void onFailed(Kiip kiip, Exception exception) {
-                // handle failure
-            }
-
-            @Override
-            public void onFinished(Kiip kiip, Poptart poptart) {
-                onPoptart(poptart);
-            }
-        });
-    }
-    */
 
     @Override
     protected void onDestroy() {
@@ -78,16 +31,16 @@ public class BaseActivity extends AppCompatActivity {
         subs.unsubscribe();
     }
 
-    public App getApp() {
-        return (App) getApplication();
-    }
-
     @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
 
         if (FragmentDataListener.class.isInstance(fragment))
             dataListeners.add((FragmentDataListener) fragment);
+    }
+
+    public App getApp() {
+        return (App) getApplication();
     }
 
     protected void sendDataToFragments(String key, Object data) {
@@ -110,9 +63,4 @@ public class BaseActivity extends AppCompatActivity {
         void onNewData(Object data);
     }
 
-    /*
-    public void onPoptart(Poptart poptart) {
-        mKiipFragment.showPoptart(poptart);
-    }
-    */
 }

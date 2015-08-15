@@ -21,12 +21,12 @@ public class GCMRegistrarService extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
         SharedPreferences preferences;
-        String key;
+        String gcmKey;
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        key = getString(R.string.pref_gcm_token);
+        gcmKey = getString(R.string.pref_gcm_token);
 
-        if (!preferences.contains(key)) {
+        if (!preferences.contains(gcmKey)) {
             try {
 
                 InstanceID instanceID = InstanceID.getInstance(this);
@@ -34,14 +34,16 @@ public class GCMRegistrarService extends IntentService {
                 String scope = GoogleCloudMessaging.INSTANCE_ID_SCOPE;
 
                 String token = instanceID.getToken(senderId, scope, null);
-                preferences.edit().putString(key, token).apply();
+                preferences.edit().putString(gcmKey, token).apply();
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        if (preferences.getBoolean(getString(R.string.pref_location_notify_key), false)) {
+        String notifyKey = getString(R.string.pref_location_notify_key);
+
+        if (preferences.getBoolean(notifyKey, false)) {
             Intent locationServiceIntent = new Intent(this, LocationService.class);
             startService(locationServiceIntent);
         }

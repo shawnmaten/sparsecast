@@ -52,4 +52,8 @@ public class App extends MultiDexApplication {
     public ServiceComponent getServiceComponent() {
         return serviceComponent;
     }
+
+    public MainComponent getMainComponent() {
+        return mainComponent;
+    }
 }

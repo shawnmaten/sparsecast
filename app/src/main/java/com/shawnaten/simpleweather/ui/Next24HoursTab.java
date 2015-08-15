@@ -1,11 +1,7 @@
 package com.shawnaten.simpleweather.ui;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayout;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +11,10 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.lib.model.Forecast;
 import com.shawnaten.simpleweather.tools.Charts;
-import com.shawnaten.simpleweather.tools.Forecast;
 import com.shawnaten.simpleweather.tools.ForecastTools;
 import com.shawnaten.simpleweather.tools.LocalizationSettings;
-import com.shawnaten.simpleweather.tools.LocationSettings;
 import com.shawnaten.simpleweather.ui.widget.VerticalWeatherBar;
 
 import java.text.DateFormat;
@@ -34,11 +29,10 @@ public class Next24HoursTab extends Tab {
     private GridLayout statsSection;
     private View next24HoursSection;
     private VerticalWeatherBar verticalWeatherBar;
-    private TextView thirdPartyAttrs;
     private ImageButton toggle;
     private boolean toggleState;
 
-    public static Next24HoursTab newInstance(String title, int layout) {
+    public static Next24HoursTab create(String title, int layout) {
         Bundle args = new Bundle();
         Next24HoursTab tab = new Next24HoursTab();
         args.putString(TabAdapter.TAB_TITLE, title);
@@ -92,7 +86,6 @@ public class Next24HoursTab extends Tab {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        View attributions;
 
         super.onViewCreated(view, savedInstanceState);
 
@@ -102,8 +95,6 @@ public class Next24HoursTab extends Tab {
         next24HoursSection = view.findViewById(R.id.next_24_hours_section);
         verticalWeatherBar = (VerticalWeatherBar) next24HoursSection
                 .findViewById(R.id.vertical_weather_bar);
-        attributions = view.findViewById(R.id.attributions);
-        thirdPartyAttrs = (TextView) attributions.findViewById(R.id.third_party);
         toggle = (ImageButton) nextHourAndStatsSection.findViewById(R.id.toggle);
 
         toggle.setOnClickListener(new View.OnClickListener() {
@@ -121,17 +112,6 @@ public class Next24HoursTab extends Tab {
                 toggleState = !toggleState;
             }
         });
-
-        thirdPartyAttrs.setMovementMethod(LinkMovementMethod.getInstance());
-        attributions.findViewById(R.id.powered_by_forecast)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                                Uri.parse("https://www.forecast.io/"));
-                        startActivity(browserIntent);
-                    }
-                });
 
         ViewGroup.LayoutParams layoutParams = nextHourAndStatsSection.getLayoutParams();
         layoutParams.height = screenHeight - screenWidth;
@@ -209,9 +189,6 @@ public class Next24HoursTab extends Tab {
         if (isVisible() && Forecast.Response.class.isInstance(data)) {
             Forecast.Response forecast = (Forecast.Response) data;
 
-            if (LocationSettings.getAttributions() != null) {
-                thirdPartyAttrs.setText(Html.fromHtml(LocationSettings.getAttributions()));
-            }
             verticalWeatherBar.setData(forecast);
 
             Forecast.DataPoint currently = forecast.getCurrently();

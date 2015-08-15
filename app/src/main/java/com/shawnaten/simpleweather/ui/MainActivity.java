@@ -1,17 +1,15 @@
 package com.shawnaten.simpleweather.ui;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,14 +25,12 @@ import android.widget.TextView;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.imagesApi.ImagesApi;
-import com.shawnaten.simpleweather.backend.imagesApi.model.Image;
-import com.shawnaten.simpleweather.backend.keysEndpoint.model.Keys;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
-import com.shawnaten.simpleweather.module.LocationModule;
-import com.shawnaten.simpleweather.tools.Forecast;
+import com.shawnaten.simpleweather.lib.model.APIKeys;
+import com.shawnaten.simpleweather.lib.model.Forecast;
+import com.shawnaten.simpleweather.module.ImagesApiModule;
 import com.shawnaten.simpleweather.tools.ForecastTools;
-import com.shawnaten.simpleweather.tools.Geocoding;
 import com.shawnaten.simpleweather.tools.Instagram;
 import com.shawnaten.simpleweather.tools.LocalizationSettings;
 import com.shawnaten.simpleweather.tools.LocationSettings;
@@ -43,229 +40,240 @@ import com.squareup.picasso.Target;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Locale;
+import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func2;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
+
     public static final int PLACE_SEARCH_CODE = RESULT_FIRST_USER + 1;
     public static final int PLACE_SELECTED_CODE = RESULT_FIRST_USER + 2;
 
-    private static final String SCROLL_POSITION = "scrollPosition";
+    private static final String SCROLL_POSITION = "scrollPos";
     private static final String FORECAST_DATA = "forecastData";
-    @Inject Observable<Forecast.Response> forecast;
-    @Inject Observable<Location> locObser;
+
+    @Inject ReactiveLocationProvider locationProvider;
+
+    @Inject GoogleApiClient googleApiClient;
+
+    @Inject Forecast.Service forecastService;
+    @Inject Instagram.Service instagramService;
+
     @Inject ImagesApi imagesApi;
-    @Inject
-    GoogleApiClient googleApiClient;
-    @Inject
-    Forecast.Service forecastService;
-    private int scrollPosition;
-    private ImageView photo;
-    private View overlay;
-    private View instagramAttribution;
-    //private FloatingActionMenu fam;
-    //private ArrayList<FloatingActionButton> fabs;
-    private SavedPlaceApi savedPlaceApi;
+    @Inject SavedPlaceApi savedPlaceApi;
+
+    @Bind(R.id.toolbar) Toolbar toolbar;
+
+    @Bind(R.id.overlay) View overlay;
+    @Bind(R.id.photo) ImageView photo;
+
+    @Bind(R.id.temp) TextView temp;
+    @Bind(R.id.main_loc) TextView locationView;
+    @Bind(R.id.current_condition) TextView status;
+    @Bind(R.id.feels_like) TextView feelsLikes;
+
+    private int scrollPos;
+
     private ArrayList<ScrollListener> scrollListeners = new ArrayList<>();
-    @Inject
-    Observable<Keys> keyObser;
 
-    @Inject
-    Geocoding.Service geocodingService;
+    private View decorView;
 
-    private LoadingFragment loadingFragment;
+    private float statBarSize;
+
+    private Window window;
 
     private Target target;
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putInt(SCROLL_POSITION, scrollPosition);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ViewPager viewPager;
-        SlidingTabLayout slidingTabLayout;
-        TabAdapter tabAdapter;
-        Toolbar toolbar;
-        View photoContainer;
-        int screenWidth;
-        float density;
-
         super.onCreate(savedInstanceState);
+
+        Resources res = getResources();
+
+        ViewPager viewPager = ButterKnife.findById(this, R.id.view_pager);
+        SlidingTabLayout slidingTabLayout = ButterKnife.findById(this, R.id.sliding_tabs);
+        View photoContainer = ButterKnife.findById(this, R.id.photo_container);
+
+        int screenWidth = res.getDisplayMetrics().widthPixels;
+        statBarSize = res.getDimension(res.getIdentifier("status_bar_height", "dimen", "android"));
+
+        window = getWindow();
+        decorView = window.getDecorView();
+
         setContentView(R.layout.activity_main);
-        getApp().mainComponent.injectMainActivity(this);
-        savedPlaceApi = getApp().mainComponent.savedPlaceApi();
 
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
-        slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        photoContainer = findViewById(R.id.photo_container);
-        photo = (ImageView) findViewById(R.id.photo);
-        overlay = findViewById(R.id.overlay);
-        /*
-        fam = (FloatingActionMenu) findViewById(R.id.fam);
-        fam.hideMenuButton(false);
-        fabs = new ArrayList<>();
-        */
-        loadingFragment = new LoadingFragment();
+        getApp().getMainComponent().injectMainActivity(this);
 
-        if (savedInstanceState != null) {
-            scrollPosition = savedInstanceState.getInt(SCROLL_POSITION);
-        }
+        if (savedInstanceState != null)
+            scrollPos = savedInstanceState.getInt(SCROLL_POSITION);
 
-        instagramAttribution = getLayoutInflater()
-                .inflate(R.layout.instagram_attribution, toolbar, false);
-        toolbar.addView(instagramAttribution);
-        screenWidth = getResources().getDisplayMetrics().widthPixels;
-        density = getResources().getDisplayMetrics().density;
         photoContainer.setLayoutParams(new RelativeLayout.LayoutParams(screenWidth, screenWidth));
-        //fam.setY(screenWidth - 28 * density);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(null);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(null);
 
-        tabAdapter = new TabAdapter(getSupportFragmentManager(),
-                Next24HoursTab.newInstance(getString(R.string.next_24_hours), R.layout.tab_next_24_hours),
-                Next7DaysTab.newInstance(getString(R.string.next_7_days), R.layout.tab_next_7_days));
+        TabAdapter tabAdapter = new TabAdapter(
+                getSupportFragmentManager(),
+                Next24HoursTab.create(
+                        getString(R.string.next_24_hours),
+                        R.layout.tab_next_24_hours
+                ),
+                Next7DaysTab.create(
+                        getString(R.string.next_7_days),
+                        R.layout.tab_next_7_days
+                )
+        );
+
         viewPager.setAdapter(tabAdapter);
+
         slidingTabLayout.setCustomTabView(R.layout.tab_title_light, R.id.title);
         slidingTabLayout.setSelectedIndicatorColors(0xFFFFFFFF);
-        slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.SimpleTabColorizer(
-                getResources().getColor(R.color.text_primary_light),
-                getResources().getColor(R.color.text_primary_light),
-                getResources().getColor(R.color.text_secondary_light),
-                getResources().getColor(R.color.text_primary_light)
-        ));
+        slidingTabLayout.setCustomTabColorizer(
+                new SlidingTabLayout.SimpleTabColorizer(
+                        getResources().getColor(R.color.text_primary_light),
+                        getResources().getColor(R.color.text_primary_light),
+                        getResources().getColor(R.color.text_secondary_light),
+                        getResources().getColor(R.color.text_primary_light)
+                )
+        );
         slidingTabLayout.setViewPager(viewPager);
     }
 
     @Override
     protected void onResume() {
-        View decorView;
-        FragmentManager fm = getSupportFragmentManager();
-
-        fm.beginTransaction()
-                .add(R.id.root, loadingFragment)
-                .commit();
 
         super.onResume();
 
-        invalidateOptionsMenu();
-
-        decorView = getWindow().getDecorView();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            getWindow().setStatusBarColor(0x00000000);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-
-        int resultCode;
-        final int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            resultCode = getResources().getDimensionPixelSize(resourceId);
-            findViewById(R.id.toolbar).setTranslationY(resultCode);
-        }
+        Observable<Forecast.Response> forecastObservable;
 
         if (LocationSettings.getMode() == LocationSettings.Mode.CURRENT) {
-            Func2<Location, Keys, Forecast.Response> function;
-            Subscriber<Forecast.Response> subscriber;
-            final Subscription subscription;
+            forecastObservable = locationProvider
+                    .getLastKnownLocation()
+                    .flatMap(new Func1<Location, Observable<Forecast.Response>>() {
+                        @Override
+                        public Observable<Forecast.Response> call(Location location) {
+                            return forecastService.getForecast(
+                                    APIKeys.PUBLIC_FORECAST_API_KEY,
+                                    location.getLatitude(),
+                                    location.getLongitude(),
+                                    LocalizationSettings.getLangCode(),
+                                    LocalizationSettings.getUnitCode()
+                            );
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread());
 
-            function = new Func2<Location, Keys, Forecast.Response>() {
-                @Override
-                public Forecast.Response call(Location l, Keys k) {
-                    Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+            locationProvider
+                    .getLastKnownLocation()
+                    .flatMap(new Func1<Location, Observable<List<Address>>>() {
+                        @Override
+                        public Observable<List<Address>> call(Location location) {
+                            return locationProvider.getReverseGeocodeObservable(
+                                    location.getLatitude(), location.getLongitude(), 1);
+                        }
+                    })
+                    .subscribe(new Action1<List<Address>>() {
+                        @Override
+                        public void call(List<Address> addresses) {
+                            locationView.setText(addresses.get(0).getLocality());
+                        }
+                    });
 
-                    try {
-                        Address address = geocoder.getFromLocation(
-                                l.getLatitude(),
-                                l.getLongitude(),
-                                1
-                        ).get(0);
+        } else {
 
-                        Observable.just(address.getLocality())
-                                .observeOn(AndroidSchedulers.mainThread())
+            forecastObservable = forecastService.getForecast(
+                    APIKeys.PUBLIC_FORECAST_API_KEY,
+                    LocationSettings.getLatLng().latitude,
+                    LocationSettings.getLatLng().longitude,
+                    LocalizationSettings.getLangCode(),
+                    LocalizationSettings.getUnitCode()
+            ).observeOn(AndroidSchedulers.mainThread());
+
+            locationView.setText(LocationSettings.getName());
+
+        }
+
+        forecastObservable
+                .subscribe(new Action1<Forecast.Response>() {
+                    @Override
+                    public void call(Forecast.Response response) {
+                        sendDataToFragments(FORECAST_DATA, response);
+
+                        String category = response.getCurrently().getIcon();
+
+                        target = new Target() {
+                            @Override
+                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+
+                                Palette palette = Palette.from(bitmap).generate();
+                                int color = palette.getMutedColor(0x000000);
+
+                                color = Color.argb(
+                                        102,
+                                        Color.red(color),
+                                        Color.green(color),
+                                        Color.blue(color)
+                                );
+
+                                photo.setImageBitmap(bitmap);
+                                overlay.setBackgroundColor(color);
+                            }
+
+                            @Override
+                            public void onBitmapFailed(Drawable errorDrawable) {
+
+                            }
+
+                            @Override
+                            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                            }
+                        };
+
+                        ImagesApiModule
+                                .getImage(imagesApi, instagramService, category)
                                 .subscribe(new Action1<String>() {
                                     @Override
-                                    public void call(String name) {
-                                        ((TextView) findViewById(R.id.main_loc)).setText(name);
+                                    public void call(String url) {
+                                        Picasso.with(photo.getContext()).load(url).into(target);
                                     }
                                 });
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        DecimalFormat tf = ForecastTools.getTempForm();
+
+                        temp.setText(tf.format(response.getCurrently().getTemperature()));
+                        status.setText(response.getCurrently().getSummary());
+
+                        String feelsLikeText;
+
+                        feelsLikeText = String.format("%s %s", getString(R.string.feels_like),
+                                tf.format(response.getCurrently().getApparentTemperature()));
+
+                        feelsLikes.setText(feelsLikeText);
+
                     }
+                });
 
-                    return forecastService.getForecast(
-                            k.getForecastAPIKey(),
-                            l.getLatitude(),
-                            l.getLongitude(),
-                            LocalizationSettings.getLangCode(),
-                            LocalizationSettings.getUnitCode()
-                    );
-                }
-            };
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            window.setStatusBarColor(0x00000000);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
-            subscriber = new Subscriber<Forecast.Response>() {
-                @Override
-                public void onCompleted() {
+        toolbar.setTranslationY(statBarSize);
 
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    if (e.getMessage().equals(LocationModule.ERROR))
-                        startActivity(new Intent(getApplicationContext(), SearchActivity.class));
-                    else
-                        e.printStackTrace();
-                }
-
-                @Override
-                public void onNext(Forecast.Response response) {
-                    dataMap.put(FORECAST_DATA, response);
-                    MainActivity.this.sendDataToFragments(FORECAST_DATA, response);
-                }
-            };
-
-            subscription = Observable.zip(locObser, keyObser, function)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(subscriber);
-
-            subs.add(subscription);
-        } else {
-            subs.add(forecast.subscribe(new Action1<Forecast.Response>() {
-                @Override
-                public void call(Forecast.Response response) {
-                    sendDataToFragments(FORECAST_DATA, response);
-                    ((TextView) MainActivity.this.findViewById(R.id.main_loc))
-                            .setText(LocationSettings.getName());
-                }
-            }));
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        FragmentManager fm = getSupportFragmentManager();
-
-        super.onPause();
-
-        fm.beginTransaction()
-                .remove(loadingFragment)
-                .commit();
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -370,112 +378,21 @@ public class MainActivity extends BaseActivity {
             scrollListeners.add((ScrollListener) fragment);
     }
 
-    public int getScrollPosition() {
-        return scrollPosition;
-    }
-
-    public void setScrollPosition(int scrollPosition) {
-        this.scrollPosition = scrollPosition;
-        for (ScrollListener scrollListener : scrollListeners)
-            scrollListener.onOtherScrollChanged(scrollPosition);
-    }
-
     @Override
-    protected void sendDataToFragments(String key, Object data) {
-        super.sendDataToFragments(key, data);
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-        if (Forecast.Response.class.isInstance(data)) {
-            final Forecast.Response forecast = (Forecast.Response) data;
+        outState.putInt(SCROLL_POSITION, scrollPos);
+    }
 
-            DecimalFormat tf = ForecastTools.getTempForm();
-            Forecast.DataPoint currently = forecast.getCurrently();
-            TextView temp = (TextView) findViewById(R.id.temp);
-            TextView status = (TextView) findViewById(R.id.current_condition);
-            TextView feelsLikes = (TextView) findViewById(R.id.feels_like);
-
-            temp.setText(tf.format(forecast.getCurrently().getTemperature()));
-            status.setText(forecast.getCurrently().getSummary());
-
-            feelsLikes.setText(String.format("%s %s", getString(R.string.feels_like),
-                    tf.format(forecast.getCurrently().getApparentTemperature())));
-
-            Observable<Image> imageObservable = Observable.create(new Observable.OnSubscribe<Image>() {
-                @Override
-                public void call(Subscriber<? super Image> subscriber) {
-                    try {
-                        subscriber.onNext(imagesApi.getImage(forecast.getCurrently().getIcon()).execute());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-            Observable<Keys> keysObservable = getApp().mainComponent.keys();
-            final Instagram.Service instagramService = getApp().mainComponent.instagramService();
-            Observable.zip(keysObservable, imageObservable, new Func2<Keys, Image, Instagram.SingleMediaResponse>() {
-                @Override
-                public Instagram.SingleMediaResponse call(Keys keys, Image imageData) {
-                    return instagramService.getMedia(keys.getInstagramAPIKey(), imageData.getShortcode());
-                }
-            })
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<Instagram.SingleMediaResponse>() {
-                        @Override
-                        public void call(final Instagram.SingleMediaResponse instagramData) {
-                            TextView instagramUserView = (TextView)
-                                    instagramAttribution.findViewById(R.id.user);
-                            String url = instagramData.getData()
-                                    .getImages().getStandardResolution().getUrl();
-                            String username = instagramData.getData()
-                                    .getUser().getUsername();
-
-                            target = new Target() {
-                                @Override
-                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                    FragmentManager fm = getSupportFragmentManager();
-
-                                    photo.setImageBitmap(bitmap);
-                                    Palette palette = Palette.from(bitmap).generate();
-                                    int color = palette.getMutedColor(0x000000);
-                                    color = Color.argb(102, Color.red(color), Color.green(color),
-                                            Color.blue(color));
-                                    overlay.setBackgroundColor(color);
-
-                                    fm.beginTransaction()
-                                            .remove(loadingFragment)
-                                            .commitAllowingStateLoss();
-                                }
-
-                                @Override
-                                public void onBitmapFailed(Drawable errorDrawable) {
-
-                                }
-
-                                @Override
-                                public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                                }
-                            };
-
-                            Picasso.with(photo.getContext()).load(url).into(target);
-                            instagramUserView.setText(username);
-                            instagramAttribution.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Intent browserIntent = new Intent(
-                                            Intent.ACTION_VIEW,
-                                            Uri.parse(instagramData.getData().getLink()));
-                                    startActivity(browserIntent);
-                                }
-                            });
-                        }
-                    });
-
-        }
+    public void setScrollPos(int scrollPos) {
+        this.scrollPos = scrollPos;
+        for (ScrollListener scrollListener : scrollListeners)
+            scrollListener.onOtherScrollChanged(scrollPos);
     }
 
     public interface ScrollListener {
         void onOtherScrollChanged(int otherScrollAmount);
     }
+
 }

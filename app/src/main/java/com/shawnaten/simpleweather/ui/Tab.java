@@ -116,7 +116,7 @@ public class Tab extends BaseFragment implements ScrollCallbacks,
         }
         photo.setTranslationY(scrollAmount * 0.5f);
 
-        ((MainActivity) getBaseActivity()).setScrollPosition(scrollAmount);
+        ((MainActivity) getBaseActivity()).setScrollPos(scrollAmount);
     }
 
     @Override

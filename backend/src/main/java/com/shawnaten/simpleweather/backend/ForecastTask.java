@@ -2,6 +2,7 @@ package com.shawnaten.simpleweather.backend;
 
 import com.google.android.gcm.server.Message;
 import com.google.appengine.api.taskqueue.DeferredTask;
+import com.shawnaten.simpleweather.lib.model.APIKeys;
 import com.shawnaten.simpleweather.lib.model.Forecast;
 import com.shawnaten.simpleweather.lib.model.MessagingCodes;
 import com.shawnaten.simpleweather.lib.tools.Precip;
@@ -32,8 +33,8 @@ public class ForecastTask implements DeferredTask {
     @Override
     public void run() {
 
-        Forecast.Response forecast = Dagger.getNotifyComp().forecastService().notifyVersion(
-                Constants.PUBLIC_FORECAST_API_KEY,
+        Forecast.Response forecast = Dagger.getForecastComponent().forecastService().notifyVersion(
+                APIKeys.PUBLIC_FORECAST_API_KEY,
                 lat,
                 lng,
                 "en",

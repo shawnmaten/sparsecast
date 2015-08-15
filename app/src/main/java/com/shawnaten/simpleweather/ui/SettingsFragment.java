@@ -86,7 +86,7 @@ public class SettingsFragment extends PreferenceFragment implements
     }
 
     @Override
-    public void onSharedPreferenceChanged(final SharedPreferences prefs, String key) {
+    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         switch(key) {
             case "prefAccountName":
                 findPreference(key).setSummary(prefs.getString(key, ""));
@@ -101,9 +101,7 @@ public class SettingsFragment extends PreferenceFragment implements
                 break;
             case "prefLocationNotify":
 
-                String prefLocationNotifyKey = getString(R.string.pref_location_notify_key);
-
-                if (prefs.getBoolean(prefLocationNotifyKey, false)) {
+                if (prefs.getBoolean(key, false)) {
                     Intent intent = new Intent(getBaseActivity(), GCMRegistrarService.class);
                     getBaseActivity().startService(intent);
                 } else {

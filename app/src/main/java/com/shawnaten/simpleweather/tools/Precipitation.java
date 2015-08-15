@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.lib.model.Forecast;
 
 public class Precipitation {
     public static final int VERY_LIGHT = 0;

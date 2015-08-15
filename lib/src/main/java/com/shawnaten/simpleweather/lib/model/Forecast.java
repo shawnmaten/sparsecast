@@ -9,6 +9,7 @@ import java.util.TimeZone;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import rx.Observable;
 
 @SuppressWarnings("unused")
 public class Forecast {
@@ -31,7 +32,7 @@ public class Forecast {
 
     public interface Service {
         @GET("/{key}/{lat},{lng}?extend=hourly")
-        Response getForecast(
+        Observable<Response> getForecast(
                 @Path("key") String key,
                 @Path("lat") double lat,
                 @Path("lng") double lng,

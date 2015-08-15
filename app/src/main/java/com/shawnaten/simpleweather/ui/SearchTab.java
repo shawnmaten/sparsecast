@@ -150,10 +150,8 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
 
     private class NormalViewHolder extends RecyclerView.ViewHolder {
         public TextView nameView;
-        public View actionFavorite;
         public int id;
         public Place place;
-        public SavedPlace savedPlace;
         public PlaceBuffer placeBuffer;
 
         public NormalViewHolder(View listItemView) {
@@ -191,56 +189,32 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
         }
     }
 
-    private class AttributionsViewHolder extends RecyclerView.ViewHolder {
-        public AttributionsViewHolder(View attributionsView) {
-            super(attributionsView);
-        }
-    }
-
     private class SearchAdapter extends RecyclerView.Adapter {
         private static final int NORMAL_TYPE = 0;
-        private static final int ATTRIBUTIONS_TYPE = 1;
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            switch (viewType) {
-                case ATTRIBUTIONS_TYPE:
-                    View attributionView = LayoutInflater.from(viewGroup.getContext())
-                            .inflate(R.layout.attributions_google_only, viewGroup, false);
-                    return new AttributionsViewHolder(attributionView);
-                default:
-                    View listItemView = LayoutInflater.from(viewGroup.getContext())
-                            .inflate(R.layout.search_result, viewGroup, false);
-                    return new NormalViewHolder(listItemView);
-            }
+            View listItemView = LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.search_result, viewGroup, false);
+            return new NormalViewHolder(listItemView);
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
-            switch (getItemViewType(i)) {
-                case ATTRIBUTIONS_TYPE:
-                    break;
-                default:
-                    NormalViewHolder holder = (NormalViewHolder) viewHolder;
-                    holder.id = i;
-                    holder.nameView.setText(predictions.get(i).getDescription());
-                    break;
-            }
+            NormalViewHolder holder = (NormalViewHolder) viewHolder;
+            holder.id = i;
+            holder.nameView.setText(predictions.get(i).getDescription());
         }
 
         @Override
         public int getItemCount() {
             return predictions != null && !predictions.isClosed() && predictions.getCount() > 0
-                    ? predictions.getCount() + 1 : 0;
+                    ? predictions.getCount() : 0;
         }
 
         @Override
         public int getItemViewType(int position) {
-            if (position == getItemCount() - 1) {
-                return ATTRIBUTIONS_TYPE;
-            }
-            else
-                return NORMAL_TYPE;
+            return NORMAL_TYPE;
         }
     }
 }
