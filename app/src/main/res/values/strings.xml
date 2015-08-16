@@ -1,53 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="main_fragments">
-        <item>Current</item>
-        <item>Week</item>
-        <item>Map</item>
-    </string-array>
-
-    <string name="empty"></string>
-
-    <string name="now">Now</string>
-    <string name="today">Today</string>
-    <string name="week">Week</string>
-    <string name="radar">Radar</string>
-
-    <string name="summary">Summary</string>
-    <string name="for_next_hour">For the next hour</string>
-    <string name="precipitation">Precipitation</string>
-    <string name="probability_and_intensity">Probability and intensity</string>
-    <string name="probability">Probability</string>
-    <string name="intensity">Intensity</string>
-    <string name="temperature">Temperature</string>
-    <string name="actual_and_apparent">Actual and apparent</string>
-    <string name="actual">Actual</string>
-    <string name="apparent">Apparent</string>
-    <string name="stats">Stats</string>
-    <string name="for_right_now">For right now</string>
     <string name="nearest_storm">Nearest Storm</string>
     <string name="dew_point">Dew Point</string>
     <string name="wind">Wind</string>
-    <string name="cloud_cover">Cloud Cover</string>
     <string name="humidity">Humidity</string>
     <string name="pressure">Pressure</string>
     <string name="visibility">Visibility</string>
     <string name="ozone">Ozone</string>
-    <string name="fahrenheit">fahrenheit</string>
-    <string name="celsius">celsius</string>
+
     <string name="millibars">mbar</string>
     <string name="hectopascals">hpa</string>
     <string name="dobson_units">du</string>
-    <string name="for_next_24_hours">For the next 24 hours</string>
-    <string name="for_today">For today</string>
+
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
-    <string name="moon">Moon</string>
-    <string name="snow_buildup">Snow Buildup</string>
-    <string name="for_next_7_days">For the next 7 days</string>
-    <string name="min">Min</string>
-    <string name="max">Max</string>
     <string name="action_change_location">Change Location</string>
     <string name="saved">Saved</string>
     <string name="search">Search</string>
@@ -55,104 +22,31 @@
     <string name="light">Light</string>
     <string name="moderate">Moderate</string>
     <string name="heavy">Heavy</string>
-    <string name="time">Time</string>
-    <string name="precipitation_intensity">Precipitation Intensity</string>
-    <string name="precipitation_probability">Precipitation Probability</string>
-    <string name="precipitation_type">Precipitation Type</string>
-    <string name="forecast_link">http://forecast.io/</string>
-    <string name="and_short">&amp;</string>
+
     <string name="in">in</string>
     <string name="hours_short">hrs</string>
     <string name="hour_short">hr</string>
     <string name="minutes_short">mins</string>
     <string name="minute_short">min</string>
-    <string name="moon_phase">Moon Phase</string>
-    <string name="snow_accumulation">Snow Accumulation</string>
-    <string name="average">Average</string>
-    <string name="to_the">to the</string>
     <string name="of">of</string>
     <string name="daylight">daylight</string>
 
-    <string-array name="helper_fragments">
-        <item>searching</item>
-        <item>loading</item>
-    </string-array>
-
-    <string-array name="tab_current_child_fragments">
-        <item>stats</item>
-        <item>summary</item>
-        <item>details</item>
-        <item>graphics</item>
-    </string-array>
-
-    <string name="network_error_title">Network Error</string>
-    <string name="network_error_message">Reconnect?</string>
-    <string name="network_error_negative">Cancel</string>
-    <string name="network_error_positive">Reconnect</string>
-
     <string name="app_name">Sparsecast</string>
-    <string name="location_service_name">Location Service</string>
-    <string name="powered_by_forecast">Powered by Forecast</string>
     <string name="action_favorite">Favorite</string>
-    <string name="action_refresh">Refresh</string>
     <string name="action_settings">Settings</string>
-    <string name="action_search">Search</string>
     <string name="action_current_location">Current Location</string>
-    <string name="action_marker">Location Marker</string>
     <string name="search_hint">Search locations</string>
-    <string name="tab_current">Current</string>
-    <string name="tab_week">Week</string>
-    <string name="tab_map">Map</string>
 
-    <string name="currently">Currently</string>
-    <string name="next_week">Next Week</string>
-    <string name="day">day</string>
-    <string name="next_hour">Next Hour</string>
     <string name="next_24_hours">24 Hours</string>
     <string name="next_7_days">7 Days</string>
 
-    <string name="details_button">details</string>
-    <string name="summary_button">summary</string>
-
-    <string name="unknown">\?</string>
-    <string name="dismiss">Dismiss</string>
-    <string name="play_services">Google Play services</string>
-    <string name="play_services_unsupported">This app won\'t run because Google Play services is unsupported for this device.</string>
-    <string name="no_search_results">No Search Results</string>
-    <string name="network_error">Network Error</string>
-
-    <string name="bottom_banner">ca-app-pub-3720253517224881/2328717056</string>
-
-    <string name="weather_bar_description">graphic showing weather over time</string>
-    <string name="weather_icon_description">icon depicting current weather conditions</string>
-
     <string name="feels_like">Feels like</string>
-
-    <string name="none">none</string>
-    <string name="very_light">Very Light</string>
-
-    <string name="fog">Fog</string>
-    <string name="mist">Mist</string>
-    <string name="haze">Haze</string>
-
-    <string name="temp">Temp</string>
-    <string name="title_activity_main">MainActivity</string>
-
-    <string name="scattered">Scattered</string>
-
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_search">SearchActivity</string>
 
     <string name="drizzle">Drizzle</string>
     <string name="light_rain">Light Rain</string>
     <string name="moderate_rain">Rain</string>
     <string name="heavy_rain">Heavy Rain</string>
 
-    <string name="flurries">Flurries</string>
     <string name="light_snow">Light Snow</string>
     <string name="moderate_snow">Snow</string>
     <string name="heavy_snow">Heavy Snow</string>
@@ -164,20 +58,18 @@
     <string name="clear">Clear</string>
 
     <string name="partly_cloudy">Partly Cloudy</string>
-    <string name="cloudy">Cloudy</string>
     <string name="mostly_cloudy">Mostly Cloudy</string>
     <string name="overcast">Overcast</string>
 
     <string name="hail">Hail</string>
-    <string name="title_activity_test">TestActivity</string>
-
-    <string name="advertisement">Advertisement</string>
-
-    <string name="pref_error">Error applying setting, try again.</string>
 
     <string name="service_gcm_notification">GCM Notification Service</string>
     <string name="service_gcm_registrar">GCM Registrar Service</string>
     <string name="service_gcm_token_refresh">GCM Token Refresh Service</string>
     <string name="service_location">Location Service</string>
+
+    <string name="close">close</string>
+
+    <string name="about">About</string>
 
 </resources>

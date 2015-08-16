@@ -9,31 +9,42 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Result;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.Response;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
+import com.shawnaten.simpleweather.tools.Attributions;
 import com.shawnaten.simpleweather.tools.LocationSettings;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
-        ResultCallback<AutocompletePredictionBuffer> {
+import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
+import rx.functions.Action1;
+
+import static butterknife.ButterKnife.findById;
+
+public class SearchTab extends Tab implements SearchView.OnQueryTextListener {
+
+    static final LatLngBounds bounds = new LatLngBounds(new LatLng(-85,-180), new LatLng(85,180));
+
+    @Inject ReactiveLocationProvider locationProvider;
+    @Bind(R.id.list) RecyclerView recyclerView;
+
     private SearchAdapter adapter;
-    private AutocompletePredictionBuffer predictions;
-
     private SearchView searchView;
-    private RecyclerView recyclerView;
-
-    private List<SavedPlace> favorites;
+    private ArrayList<String> placeIds = new ArrayList<>();
+    private ArrayList<String> descriptions = new ArrayList<>();
+    private List<SavedPlace> saved;
 
     public static SearchTab newInstance(String title, int layout) {
         Bundle args = new Bundle();
@@ -41,22 +52,30 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
         args.putString(TabAdapter.TAB_TITLE, title);
         args.putInt(TAB_LAYOUT, layout);
         tab.setArguments(args);
-        tab.analyticsTrackName = "SearchTab";
         return tab;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        getApp().getMainComponent().injectSearchTab(this);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        searchView = (SearchView) getActivity().findViewById(R.id.search_view);
-        recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        ButterKnife.bind(this, view);
+
+        searchView = findById(getBaseActivity(), R.id.search_view);
+        searchView.setOnQueryTextListener(this);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new SearchAdapter();
         recyclerView.setAdapter(adapter);
-        searchView.setOnQueryTextListener(this);
+
     }
 
     @Override
@@ -75,6 +94,11 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
         }
     }
 
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
@@ -82,139 +106,127 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener,
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        PendingResult result = Places.GeoDataApi.getAutocompletePredictions(
-            getApp().mainComponent.googleApiClient(),
-            newText,
-            new LatLngBounds(new LatLng(-85, -180), new LatLng(85, 180)),
-            null);
-        result.setResultCallback(this);
-        return false;
-    }
+        locationProvider
+                .getPlaceAutocompletePredictions(newText, bounds, null)
+                .subscribe(new Action1<AutocompletePredictionBuffer>() {
+                    @Override
+                    public void call(AutocompletePredictionBuffer buffer) {
 
-    @Override
-    public void onResult(AutocompletePredictionBuffer predictions) {
-        if (this.predictions == null) {
-            this.predictions = predictions;
-            adapter.notifyItemRangeInserted(0, predictions.getCount());
-        } else {
-            AutocompletePredictionBuffer old, smaller, larger;
+                        if (buffer.getCount() == 0) {
+                            placeIds.clear();
+                            descriptions.clear();
 
-            old = this.predictions;
+                            // adapter.notifyItemRangeRemoved(smaller.getCount(),larger.getCount());
+                            // this should work but there's a bug in RecyclerView
+                            // using notifyDataSetChanged instead for empty case
+                            adapter.notifyDataSetChanged();
 
-            if (this.predictions.getCount() <= predictions.getCount()) {
-                smaller = this.predictions;
-                larger = predictions;
-            } else {
-                smaller = predictions;
-                larger = this.predictions;
-            }
+                            return;
+                        }
 
-            this.predictions = predictions;
+                        for (int i = 0; i < Math.min(placeIds.size(), buffer.getCount()); i++) {
+                            if (!placeIds.get(i).equals(buffer.get(i).getPlaceId())) {
+                                placeIds.set(i, buffer.get(i).getPlaceId());
+                                descriptions.set(i, buffer.get(i).getDescription());
+                                adapter.notifyItemChanged(i);
+                            }
+                        }
 
-            for (int i = 0; i < smaller.getCount(); i++)
-                if (!smaller.get(i).equals(larger.get(i)))
-                    adapter.notifyItemChanged(i);
-            if (smaller.getCount() != larger.getCount()) {
-                if (old.equals(smaller))
-                    adapter.notifyItemRangeInserted(smaller.getCount(),
-                            larger.getCount() - smaller.getCount());
-                else {
-                    // This should work but there's a bug in RecyclerView, using
-                    // notifyDataSetChanged instead
-                    //adapter.notifyItemRangeRemoved(smaller.getCount(), larger.getCount());
-                    adapter.notifyDataSetChanged();
-                }
-            }
+                        if (placeIds.size() < buffer.getCount()) {
+                            int index = placeIds.size();
+                            int count = buffer.getCount() - placeIds.size();
 
-            recyclerView.smoothScrollToPosition(0);
-            old.release();
-        }
-    }
+                            for (int i = index; i < buffer.getCount(); i++) {
+                                placeIds.add(i, buffer.get(i).getPlaceId());
+                                descriptions.add(i, buffer.get(i).getDescription());
+                            }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+                            adapter.notifyItemRangeInserted(index, count);
 
-        if (predictions != null)
-            predictions.release();
+                        } else {
+                            int index = buffer.getCount();
+                            int count = placeIds.size() - buffer.getCount();
+
+                            for (int i = index; i < buffer.getCount(); i++) {
+                                placeIds.remove(i);
+                                descriptions.remove(i);
+                            }
+
+                            adapter.notifyItemRangeRemoved(index, count);
+                        }
+
+                        buffer.release();
+                        recyclerView.smoothScrollToPosition(0);
+                    }
+                });
+
+        return true;
     }
 
     @Override
     public void onNewData(Object data) {
         super.onNewData(data);
 
-        if (data instanceof Response) {
-            favorites = ((Response) data).getData();
-        }
+        if (data instanceof Response)
+            saved = ((Response) data).getData();
     }
 
-    private class NormalViewHolder extends RecyclerView.ViewHolder {
-        public TextView nameView;
-        public int id;
-        public Place place;
-        public PlaceBuffer placeBuffer;
+    public class NormalViewHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.name) TextView nameView;
+        int id;
 
-        public NormalViewHolder(View listItemView) {
+        public NormalViewHolder(View view) {
+            super(view);
 
-            super(listItemView);
-            this.nameView = (TextView) listItemView.findViewById(R.id.name);
-            listItemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    PendingResult result = Places.GeoDataApi.getPlaceById(
-                            getApp().mainComponent.googleApiClient(),
-                            predictions.get(id).getPlaceId());
+            ButterKnife.bind(this, view);
+        }
 
-                    result.setResultCallback(new ResultCallback() {
+        @OnClick(R.id.root)
+        @SuppressWarnings("unused")
+        public void onClick(View view) {
+            locationProvider
+                    .getPlaceById(placeIds.get(id))
+                    .subscribe(new Action1<PlaceBuffer>() {
                         @Override
-                        public void onResult(Result result1) {
-                            placeBuffer = (PlaceBuffer) result1;
-                            place = placeBuffer.get(0);
+                        public void call(PlaceBuffer places) {
+                            Place place = places.get(0);
 
-                            LocationSettings.setPlace(place, false, placeBuffer.getAttributions());
+                            if (saved != null) {
+                                for (SavedPlace save : saved)
+                                    if (save.getPlaceId().equals(place.getId())) {
+                                        LocationSettings.setPlace(save);
+                                        Attributions.setCurrentPlace(save.getAttributions());
+                                    }
+                            } else
+                                LocationSettings.setPlace(place, places.getAttributions());
 
-                            if (favorites != null) {
-                                for (SavedPlace savedPlace : favorites) {
-                                    if (savedPlace.getPlaceId().equals(place.getId()))
-                                        LocationSettings.setPlace(place, true, placeBuffer.getAttributions());
-                                }
-                            }
-                            placeBuffer.release();
+                            places.release();
                             getActivity().setResult(MainActivity.PLACE_SELECTED_CODE);
                             getActivity().finish();
                         }
                     });
-                }
-            });
         }
     }
 
-    private class SearchAdapter extends RecyclerView.Adapter {
-        private static final int NORMAL_TYPE = 0;
-
+    public class SearchAdapter extends RecyclerView.Adapter {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            View listItemView = LayoutInflater.from(viewGroup.getContext())
+            View view = LayoutInflater
+                    .from(viewGroup.getContext())
                     .inflate(R.layout.search_result, viewGroup, false);
-            return new NormalViewHolder(listItemView);
+            return new NormalViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
             NormalViewHolder holder = (NormalViewHolder) viewHolder;
             holder.id = i;
-            holder.nameView.setText(predictions.get(i).getDescription());
+            holder.nameView.setText(descriptions.get(i));
         }
 
         @Override
         public int getItemCount() {
-            return predictions != null && !predictions.isClosed() && predictions.getCount() > 0
-                    ? predictions.getCount() : 0;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return NORMAL_TYPE;
+            return placeIds.size();
         }
     }
 }

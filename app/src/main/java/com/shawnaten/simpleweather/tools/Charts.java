@@ -12,7 +12,6 @@ import com.github.mikephil.charting.utils.ValueFormatter;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.lib.model.Forecast;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.TimeZone;
@@ -82,113 +81,6 @@ public class Charts {
         chart.invalidate();
         chart.setTouchEnabled(false);
         chart.setDrawGridBackground(false);
-    }
-
-    public static void setTemperatureGraph(Context context, LineChart chart,
-        Forecast.DataPoint data[], TimeZone timeZone) {
-
-        DecimalFormat percentFormat = new DecimalFormat("###%");
-        ArrayList<Entry> actualTemps = new ArrayList<>();
-        ArrayList<Entry> apparentTemps = new ArrayList<>();
-
-        YAxis leftAxis = chart.getAxisLeft();
-        YAxis rightAxis = chart.getAxisRight();
-
-        for (int i = 0; i < data.length; i++) {
-            Forecast.DataPoint dataPoint = data[i];
-            Entry actual = new Entry((float) dataPoint.getTemperature(), i);
-            Entry apparent = new Entry((float) dataPoint.getApparentTemperature(), i);
-            actualTemps.add(actual);
-            apparentTemps.add(apparent);
-        }
-
-        LineDataSet actualSet = new LineDataSet(actualTemps,
-                context.getString(R.string.actual));
-        LineDataSet apparentSet = new LineDataSet(apparentTemps,
-                context.getString(R.string.apparent));
-
-        apparentSet.setDrawCircles(false);
-        apparentSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-        apparentSet.setColor(context.getResources().getColor(R.color.text_primary));
-
-        actualSet.setDrawCircles(false);
-        actualSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-        actualSet.setDrawFilled(true);
-        actualSet.setColor(context.getResources().getColor(R.color.chart));
-        actualSet.setFillColor(context.getResources().getColor(R.color.chart));
-
-        ArrayList<LineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(apparentSet);
-        dataSets.add(actualSet);
-
-        LineData lineData = new LineData(genXValues(data, timeZone, context), dataSets);
-        lineData.setDrawValues(false);
-
-        chart.getXAxis().setDrawGridLines(false);
-        chart.getXAxis().setDrawAxisLine(false);
-        chart.getXAxis().setAvoidFirstLastClipping(true);
-
-        leftAxis.setDrawGridLines(false);
-        leftAxis.setDrawAxisLine(false);
-        //leftAxis.setAxisMaxValue(1.1f);
-        //leftAxis.setValueFormatter(percentFormat::format);
-
-        rightAxis.setEnabled(false);
-        //rightAxis.setDrawGridLines(false);
-        //rightAxis.setDrawAxisLine(false);
-        //rightAxis.setAxisMaxValue(LocalizationSettings.getPrecipitationHeavy());
-
-        chart.setDescription(null);
-        chart.setData(lineData);
-        chart.invalidate();
-        chart.setTouchEnabled(false);
-    }
-
-    public static void setDailyTemperatureGraph(Context context, LineChart chart,
-                                           Forecast.DataPoint data[], TimeZone timeZone) {
-
-        ArrayList<Entry> minTemps = new ArrayList<>();
-        ArrayList<Entry> maxTemps = new ArrayList<>();
-
-        YAxis leftAxis = chart.getAxisLeft();
-        YAxis rightAxis = chart.getAxisRight();
-
-        for (int i = 0; i < data.length; i++) {
-            Forecast.DataPoint dataPoint = data[i];
-            minTemps.add(new Entry((float) dataPoint.getTemperatureMin(), i));
-            maxTemps.add(new Entry((float) dataPoint.getTemperatureMax(), i));
-        }
-
-        LineDataSet minSet = new LineDataSet(minTemps, context.getString(R.string.min));
-        LineDataSet maxSet = new LineDataSet(maxTemps, context.getString(R.string.max));
-
-        minSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-        minSet.setColor(context.getResources().getColor(R.color.chart_min));
-        minSet.setCircleColor(context.getResources().getColor(R.color.chart_min));
-
-        maxSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-        maxSet.setColor(context.getResources().getColor(R.color.chart_max));
-        maxSet.setCircleColor(context.getResources().getColor(R.color.chart_max));
-
-        ArrayList<LineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(minSet);
-        dataSets.add(maxSet);
-
-        LineData lineData = new LineData(genXValues(data, timeZone, context), dataSets);
-
-        chart.getXAxis().setDrawGridLines(false);
-        chart.getXAxis().setDrawAxisLine(false);
-        chart.getXAxis().setAvoidFirstLastClipping(true);
-
-        leftAxis.setDrawGridLines(false);
-        leftAxis.setDrawAxisLine(false);
-
-        rightAxis.setEnabled(false);
-
-        chart.setDescription(null);
-        chart.setData(lineData);
-        chart.invalidate();
-        chart.setTouchEnabled(false);
     }
 
     private static ArrayList<String> genXValues(Forecast.DataPoint[] data, TimeZone timeZone,

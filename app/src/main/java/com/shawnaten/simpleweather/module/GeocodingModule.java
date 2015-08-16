@@ -19,7 +19,6 @@ public class GeocodingModule {
         return new RestAdapter.Builder()
                 .setEndpoint(ENDPOINT)
                 .setClient(client)
-                .setLogLevel(RestAdapter.LogLevel.HEADERS_AND_ARGS)
                 .build().create(Geocoding.Service.class);
     }
 }

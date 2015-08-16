@@ -20,6 +20,7 @@ public class SavedPlace {
     private String name;
     private double lat;
     private double lng;
+    private String attributions;
 
     public Long getId() {
         return id;
@@ -67,6 +68,14 @@ public class SavedPlace {
 
     public void setLng(double lng) {
         this.lng = lng;
+    }
+
+    public String getAttributions() {
+        return attributions;
+    }
+
+    public void setAttributions(String attributions) {
+        this.attributions = attributions;
     }
 
     public static class Response {

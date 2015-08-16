@@ -28,7 +28,6 @@ public class Next7DaysTab extends Tab implements View.OnClickListener {
         args.putString(TabAdapter.TAB_TITLE, title);
         args.putInt(TAB_LAYOUT, layout);
         tab.setArguments(args);
-        tab.analyticsTrackName = "Next7DaysTab";
         return tab;
     }
 
@@ -110,18 +109,4 @@ public class Next7DaysTab extends Tab implements View.OnClickListener {
         }
     }
 
-    /*
-    @Override
-    protected void fabSetup() {
-        super.fabSetup();
-
-        if (getUserVisibleHint() && isVisible()) {
-            FloatingActionMenu fam = (FloatingActionMenu) getMainActivity().findViewById(R.id.fam);
-
-            if (!fam.isMenuButtonHidden()) {
-                fam.hideMenuButton(true);
-            }
-        }
-    }
-    */
 }

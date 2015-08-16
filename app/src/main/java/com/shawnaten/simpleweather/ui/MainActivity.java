@@ -22,14 +22,19 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.imagesApi.ImagesApi;
+import com.shawnaten.simpleweather.backend.imagesApi.model.Image;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
 import com.shawnaten.simpleweather.lib.model.APIKeys;
 import com.shawnaten.simpleweather.lib.model.Forecast;
 import com.shawnaten.simpleweather.module.ImagesApiModule;
+import com.shawnaten.simpleweather.tools.AnalyticsCodes;
+import com.shawnaten.simpleweather.tools.Attributions;
 import com.shawnaten.simpleweather.tools.ForecastTools;
 import com.shawnaten.simpleweather.tools.Instagram;
 import com.shawnaten.simpleweather.tools.LocalizationSettings;
@@ -41,6 +46,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -60,6 +66,8 @@ public class MainActivity extends BaseActivity {
 
     private static final String SCROLL_POSITION = "scrollPos";
     private static final String FORECAST_DATA = "forecastData";
+
+    @Inject Tracker tracker;
 
     @Inject ReactiveLocationProvider locationProvider;
 
@@ -155,6 +163,8 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
+        final long startLoad = System.currentTimeMillis();
+
         Observable<Forecast.Response> forecastObservable;
 
         if (LocationSettings.getMode() == LocationSettings.Mode.CURRENT) {
@@ -193,8 +203,8 @@ public class MainActivity extends BaseActivity {
 
             forecastObservable = forecastService.getForecast(
                     APIKeys.FORECAST_API_KEY,
-                    LocationSettings.getLatLng().latitude,
-                    LocationSettings.getLatLng().longitude,
+                    LocationSettings.getLat(),
+                    LocationSettings.getLng(),
                     LocalizationSettings.getLangCode(),
                     LocalizationSettings.getUnitCode()
             ).observeOn(AndroidSchedulers.mainThread());
@@ -226,6 +236,13 @@ public class MainActivity extends BaseActivity {
 
                                 photo.setImageBitmap(bitmap);
                                 overlay.setBackgroundColor(color);
+
+                                Map<String, String> hit = new HitBuilders.TimingBuilder()
+                                        .setCategory(AnalyticsCodes.CATEGORY_FULL_LOAD)
+                                        .setValue(System.currentTimeMillis() - startLoad)
+                                        .build();
+
+                                tracker.send(hit);
                             }
 
                             @Override
@@ -240,10 +257,30 @@ public class MainActivity extends BaseActivity {
                         };
 
                         ImagesApiModule
-                                .getImage(imagesApi, instagramService, category)
-                                .subscribe(new Action1<String>() {
+                                .getImage(imagesApi, category)
+                                .flatMap(new Func1<Image, Observable<Instagram.Response>>() {
                                     @Override
-                                    public void call(String url) {
+                                    public Observable<Instagram.Response> call(Image image) {
+                                        return instagramService.getMedia(
+                                                APIKeys.PUBLIC_INSTAGRAM_API_KEY,
+                                                image.getShortcode()
+                                        );
+                                    }
+                                })
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Action1<Instagram.Response>() {
+                                    @Override
+                                    public void call(Instagram.Response res) {
+                                        Instagram.MediaData data = res.getData();
+                                        Instagram.MediaData.Images images = data.getImages();
+
+                                        String url = images.getStandardResolution().getUrl();
+                                        String post = data.getLink();
+                                        String user = data.getUser().getUsername();
+
+                                        Attributions.setInstagramUser(user);
+                                        Attributions.setInstagramUrl(post);
+
                                         Picasso.with(photo.getContext()).load(url).into(target);
                                     }
                                 });
@@ -306,22 +343,22 @@ public class MainActivity extends BaseActivity {
         switch (item.getItemId()) {
             case R.id.action_favorite:
                 if (LocationSettings.isFavorite()) {
-                    final SavedPlace savedPlace = new SavedPlace();
-                    savedPlace.setPlaceId(LocationSettings.getPlaceId());
                     item.setIcon(R.drawable.ic_favorite_border_white_24dp);
                     LocationSettings.setIsFavorite(false);
+
+                    final SavedPlace savedPlace = new SavedPlace();
+                    savedPlace.setPlaceId(LocationSettings.getPlaceId());
                     subs.add(Observable.create(new Observable.OnSubscribe<Void>() {
                         @Override
                         public void call(Subscriber<? super Void> subscriber) {
                             try {
-                                subscriber.onNext(savedPlaceApi
-                                        .delete(savedPlace).execute());
+                                savedPlaceApi.delete(savedPlace).execute();
+                                subscriber.onCompleted();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         }
                     }).subscribeOn(Schedulers.io()).subscribe());
-
                 } else {
                     item.setIcon(R.drawable.ic_favorite_white_24dp);
                     LocationSettings.setIsFavorite(true);
@@ -329,8 +366,9 @@ public class MainActivity extends BaseActivity {
                     final SavedPlace savedPlace = new SavedPlace();
                     savedPlace.setPlaceId(LocationSettings.getPlaceId());
                     savedPlace.setName(LocationSettings.getName());
-                    savedPlace.setLat(LocationSettings.getLatLng().latitude);
-                    savedPlace.setLng(LocationSettings.getLatLng().longitude);
+                    savedPlace.setLat(LocationSettings.getLat());
+                    savedPlace.setLng(LocationSettings.getLng());
+                    savedPlace.setAttributions(Attributions.getCurrentPlace());
 
                     Observable.OnSubscribe<Void> onSubscribe;
                     onSubscribe = new Observable.OnSubscribe<Void>() {
@@ -360,9 +398,12 @@ public class MainActivity extends BaseActivity {
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
-            case R.id.action_ad:
-                startActivity(new Intent(this, AdActivity.class));
+            case R.id.action_info:
+                startActivity(new Intent(this, AboutActivity.class));
                 return true;
+            /*case R.id.action_ad:
+                startActivity(new Intent(this, AdActivity.class));
+                return true;*/
             default:
                 return false;
         }

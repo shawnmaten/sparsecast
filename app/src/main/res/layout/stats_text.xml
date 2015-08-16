@@ -4,5 +4,4 @@
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/half_margin"
-    android:paddingStart="@dimen/half_margin"
-    android:text="@string/summary" />
+    android:paddingStart="@dimen/half_margin"/>

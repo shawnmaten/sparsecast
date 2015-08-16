@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 
 import com.shawnaten.simpleweather.R;
 
+@SuppressWarnings("unused")
 public class LocalizationSettings {
     private static String langCode;
     private static String unitCode;
@@ -16,7 +17,6 @@ public class LocalizationSettings {
     private static double precipitationLight;
     private static double precipitationMed;
     private static double precipitationHeavy;
-    private static int tempUnit;
     private static int pressureUnit;
 
     public static void configure(Context context) {
@@ -53,7 +53,6 @@ public class LocalizationSettings {
             precipitationLight = 0.017;
             precipitationMed = 0.1;
             precipitationHeavy = 0.4;
-            tempUnit = R.string.fahrenheit;
             pressureUnit = R.string.millibars;
         } else {
             precipitationUnit = R.string.millimeters;
@@ -61,7 +60,6 @@ public class LocalizationSettings {
             precipitationLight = 0.432;
             precipitationMed = 2.54;
             precipitationHeavy = 10.2;
-            tempUnit = R.string.celsius;
             pressureUnit = R.string.hectopascals;
         }
 
@@ -102,10 +100,6 @@ public class LocalizationSettings {
 
     public static double getPrecipitationHeavy() {
         return precipitationHeavy;
-    }
-
-    public static int getTempUnit() {
-        return tempUnit;
     }
 
     public static int getPressureUnit() {

@@ -52,10 +52,18 @@ public class Instagram {
         }
     }
 
-    public static class MediaResponse extends Envelope {
+    public static class MultiResponse extends Envelope {
         protected MediaData data[];
 
         public MediaData[] getData() {
+            return data;
+        }
+    }
+
+    public static class Response extends Envelope {
+        protected MediaData data;
+
+        public MediaData getData() {
             return data;
         }
     }
@@ -64,14 +72,6 @@ public class Instagram {
         protected UserData data;
 
         public UserData getData() {
-            return data;
-        }
-    }
-
-    public static class SingleMediaResponse extends Envelope {
-        protected MediaData data;
-
-        public MediaData getData() {
             return data;
         }
     }
@@ -211,7 +211,7 @@ public class Instagram {
 
     public interface Service {
         @GET("/tags/{tag}/media/recent")
-        Instagram.MediaResponse getTagged(
+        MultiResponse getTagged(
                 @Path("tag") String tag,
                 @Query("count") long count,
                 @Query("min_tag_id") long minTagId,
@@ -226,14 +226,14 @@ public class Instagram {
         );
 
         @GET("/media/popular")
-        Observable<Instagram.MediaResponse> getPopular(
+        Observable<MultiResponse> getPopular(
                 @Query("min_tag_id") long minTagId,
                 @Query("max_tag_id") long maxTagId,
                 @Query("client_id") String key
         );
 
         @GET("/media/search")
-        Observable<Instagram.MediaResponse> getNearby(
+        Observable<MultiResponse> getNearby(
                 @Query("lat") Double lat,
                 @Query("lng") Double lng,
                 @Query("min_timestamp") long minTimestamp,
@@ -244,7 +244,7 @@ public class Instagram {
         );
 
         @GET("/media/shortcode/{shortcode}")
-        Instagram.SingleMediaResponse getMedia(
+        Observable<Response> getMedia(
                 @Query("client_id") String key,
                 @Path("shortcode") String shortcode
 

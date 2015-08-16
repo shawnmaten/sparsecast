@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.Response;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
+import com.shawnaten.simpleweather.tools.Attributions;
 import com.shawnaten.simpleweather.tools.LocationSettings;
 
 import java.util.List;
@@ -26,7 +27,6 @@ public class SavedPlacesTab extends Tab {
         args.putString(TabAdapter.TAB_TITLE, title);
         args.putInt(TAB_LAYOUT, layout);
         tab.setArguments(args);
-        tab.analyticsTrackName = "SavedPlacesTab";
         return tab;
     }
 
@@ -75,7 +75,8 @@ public class SavedPlacesTab extends Tab {
                 @Override
                 public void onClick(View view) {
 
-                    LocationSettings.setPlace(savedPlaces.get(id), null);
+                    LocationSettings.setPlace(savedPlaces.get(id));
+                    Attributions.setCurrentPlace(savedPlaces.get(id).getAttributions());
                     getActivity().setResult(MainActivity.PLACE_SELECTED_CODE);
                     getActivity().finish();
 

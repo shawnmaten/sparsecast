@@ -38,51 +38,8 @@ public class Next24HoursTab extends Tab {
         args.putString(TabAdapter.TAB_TITLE, title);
         args.putInt(TAB_LAYOUT, layout);
         tab.setArguments(args);
-        tab.analyticsTrackName = "Next24HoursTab";
         return tab;
     }
-
-    /*
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        FloatingActionMenu fam;
-        FloatingActionButton item1, item2;
-
-        fam = (FloatingActionMenu) getMainActivity().findViewById(R.id.fam);
-
-        item1 = new FloatingActionButton(fam.getContext());
-        item1.setButtonSize(FloatingActionButton.SIZE_MINI);
-        item1.setColorNormalResId(R.color.white);
-        item1.setColorPressedResId(R.color.button_pressed_light);
-        item1.setImageResource(R.drawable.ic_trending_up_black_24dp);
-        item1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                nextHourSection.setVisibility(View.VISIBLE);
-                statsSection.setVisibility(View.INVISIBLE);
-            }
-        });
-        fabs.add(item1);
-        fam.addMenuButton(item1);
-
-        item2 = new FloatingActionButton(fam.getContext());
-        item2.setButtonSize(FloatingActionButton.SIZE_MINI);
-        item2.setColorNormalResId(R.color.white);
-        item2.setColorPressedResId(R.color.button_pressed_light);
-        item2.setImageResource(R.drawable.ic_list_black_24dp);
-        item2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                statsSection.setVisibility(View.VISIBLE);
-                nextHourSection.setVisibility(View.INVISIBLE);
-            }
-        });
-        fabs.add(item2);
-        fam.addMenuButton(item2);
-    }
-    */
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -150,30 +107,6 @@ public class Next24HoursTab extends Tab {
             statsSection.addView(text, gridParams);
         }
     }
-
-    /*
-    @Override
-    protected void fabSetup() {
-        super.fabSetup();
-
-        if (getUserVisibleHint() && isVisible()) {
-            FloatingActionMenu fam = (FloatingActionMenu) getMainActivity().findViewById(R.id.fam);
-
-            if (nextHourSection.getVisibility() != View.GONE) {
-                if (scroll.getScrollY() > screenHeight - screenWidth) {
-                    if (!fam.isMenuButtonHidden())
-                        fam.hideMenuButton(true);
-                } else {
-                    if (fam.isMenuButtonHidden())
-                        fam.showMenuButton(true);
-                }
-            } else {
-                if (!fam.isMenuButtonHidden())
-                    fam.hideMenuButton(true);
-            }
-        }
-    }
-    */
 
     @Override
     public void onScrollChanged(int deltaX, int deltaY) {

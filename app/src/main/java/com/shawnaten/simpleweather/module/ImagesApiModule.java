@@ -8,8 +8,6 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.imagesApi.ImagesApi;
 import com.shawnaten.simpleweather.backend.imagesApi.model.Image;
-import com.shawnaten.simpleweather.lib.model.APIKeys;
-import com.shawnaten.simpleweather.tools.Instagram;
 
 import java.io.IOException;
 
@@ -39,32 +37,17 @@ public class ImagesApiModule {
         return build.build();
     }
 
-    public static Observable<String> getImage(
-            final ImagesApi imagesApi,
-            final Instagram.Service service,
-            final String category
-    ) {
-        return Observable.create(new Observable.OnSubscribe<String>() {
+    public static Observable<Image> getImage(final ImagesApi imagesApi, final String category) {
+        return Observable.create(new Observable.OnSubscribe<Image>() {
             @Override
-            public void call(Subscriber<? super String> subscriber) {
+            public void call(Subscriber<? super Image> subscriber) {
                 try {
-                    Image image = imagesApi.getImage(category).execute();
-                    String key = APIKeys.PUBLIC_INSTAGRAM_API_KEY;
-
-                    String url = service.getMedia(key, image.getShortcode())
-                            .getData()
-                            .getImages()
-                            .getStandardResolution()
-                            .getUrl();
-
-                    subscriber.onNext(url);
+                    subscriber.onNext(imagesApi.getImage(category).execute());
                 } catch (IOException e) {
                     subscriber.onCompleted();
                     e.printStackTrace();
                 }
             }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 }

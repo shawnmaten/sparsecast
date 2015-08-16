@@ -3,89 +3,97 @@ package com.shawnaten.simpleweather.tools;
 import android.location.Location;
 
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.maps.model.LatLng;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
 
 public class LocationSettings {
+    public enum Mode {SAVED, CURRENT}
+
     private static Mode mode = Mode.CURRENT;
-    private static boolean locationServicesAvailable = true;
+
+    private static Location currentLocation;
+
     private static String name;
-    private static String address;
-    private static LatLng latLng;
-    public static Location currentLocation;
+    private static double lat;
+    private static double lng;
     private static String placeId;
-    private static String attributions;
     private static boolean isFavorite;
 
-    public static void configure() {
-        // check if place services is available and change settings
-    }
-
-    public static void setPlace(Place place, boolean isFavorite, CharSequence attributions) {
+    public static void setPlace(Place place, CharSequence attributions) {
         mode = Mode.SAVED;
         name = place.getName().toString();
-        address = place.getAddress().toString();
-        if (address.regionMatches(0, name, 0, name.length())) {
-            address = address.replaceFirst(name, "");
-            if (address.charAt(0) == ',')
-                address = address.substring(1);
-            address = address.trim();
-        }
-        latLng = place.getLatLng();
+        lat = place.getLatLng().latitude;
+        lng = place.getLatLng().longitude;
         placeId = place.getId();
-        LocationSettings.isFavorite = isFavorite;
-        LocationSettings.attributions = attributions != null ? attributions.toString() : null;
+        LocationSettings.isFavorite = false;
+        if (attributions != null)
+            Attributions.setCurrentPlace(attributions.toString());
+        else
+            Attributions.setCurrentPlace(null);
     }
 
-    public static void setPlace(SavedPlace savedPlace, CharSequence attributions) {
+    public static void setPlace(SavedPlace savedPlace) {
         mode = Mode.SAVED;
         name = savedPlace.getName();
-
-        address = "";
-
-        latLng = new LatLng(savedPlace.getLat(), savedPlace.getLng());
+        lat = savedPlace.getLat();
+        lng = savedPlace.getLng();
         placeId = savedPlace.getPlaceId();
         LocationSettings.isFavorite = true;
-        LocationSettings.attributions = attributions != null ? attributions.toString() : null;
-    }
-
-    public static void setIsFavorite(boolean isFavorite) {
-        LocationSettings.isFavorite = isFavorite;
+        Attributions.setCurrentPlace(savedPlace.getAttributions());
     }
 
     public static Mode getMode() {
         return mode;
     }
 
-    public static void setMode(Mode newMode) {
-        if (!locationServicesAvailable && mode == Mode.CURRENT)
-            mode = Mode.SAVED;
-        mode = newMode;
+    public static void setMode(Mode mode) {
+        LocationSettings.mode = mode;
+    }
+
+    public static Location getCurrentLocation() {
+        return currentLocation;
+    }
+
+    public static void setCurrentLocation(Location currentLocation) {
+        LocationSettings.currentLocation = currentLocation;
     }
 
     public static String getName() {
         return name;
     }
 
-    public static String getAddress() {
-        return address;
+    public static void setName(String name) {
+        LocationSettings.name = name;
     }
 
-    public static LatLng getLatLng() {
-        return latLng;
+    public static double getLat() {
+        return lat;
+    }
+
+    public static void setLat(double lat) {
+        LocationSettings.lat = lat;
+    }
+
+    public static double getLng() {
+        return lng;
+    }
+
+    public static void setLng(double lng) {
+        LocationSettings.lng = lng;
     }
 
     public static String getPlaceId() {
         return placeId;
     }
 
-    public static String getAttributions() {
-        return attributions;
+    public static void setPlaceId(String placeId) {
+        LocationSettings.placeId = placeId;
     }
 
     public static boolean isFavorite() {
         return isFavorite;
     }
 
-    public enum Mode {SAVED, CURRENT}
+    public static void setIsFavorite(boolean isFavorite) {
+        LocationSettings.isFavorite = isFavorite;
+    }
 }
