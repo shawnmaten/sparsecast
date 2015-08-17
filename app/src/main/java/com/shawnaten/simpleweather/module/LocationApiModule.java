@@ -6,7 +6,7 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.simpleweather.backend.locationReportAPI.LocationReportAPI;
+import com.shawnaten.simpleweather.backend.locationAPI.LocationAPI;
 
 import javax.inject.Singleton;
 
@@ -14,13 +14,13 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class LocationReportApiModule {
+public class LocationApiModule {
 
     @Provides
     @Singleton
-    public LocationReportAPI locationReportAPI(Context context, GoogleAccountCredential credential) {
-        LocationReportAPI.Builder build;
-        build = new LocationReportAPI.Builder(
+    public LocationAPI locationReportAPI(Context context, GoogleAccountCredential credential) {
+        LocationAPI.Builder build;
+        build = new LocationAPI.Builder(
                 AndroidHttp.newCompatibleTransport(),
                 new AndroidJsonFactory(),
                 credential);

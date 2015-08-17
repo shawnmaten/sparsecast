@@ -12,8 +12,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.shawnaten.simpleweather.App;
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.simpleweather.backend.locationReportAPI.LocationReportAPI;
-import com.shawnaten.simpleweather.services.GCMRegistrarService;
 import com.shawnaten.simpleweather.services.LocationService;
 import com.shawnaten.simpleweather.tools.AnalyticsCodes;
 import com.shawnaten.simpleweather.tools.LocalizationSettings;
@@ -26,7 +24,6 @@ import javax.inject.Inject;
 public class SettingsFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    @Inject LocationReportAPI locationReportAPI;
     @Inject GoogleApiClient googleApiClient;
     @Inject GoogleAccountCredential credential;
     @Inject Tracker tracker;
@@ -95,14 +92,12 @@ public class SettingsFragment extends PreferenceFragment
                 LocalizationSettings.configure(getApp());
                 break;
             case "prefLocationNotify":
+                Intent intent = new Intent(getBaseActivity(), LocationService.class);
 
-                if (prefs.getBoolean(key, false)) {
-                    Intent intent = new Intent(getBaseActivity(), GCMRegistrarService.class);
+                if (prefs.getBoolean(key, false))
                     getBaseActivity().startService(intent);
-                } else {
-                    Intent intent = new Intent(getBaseActivity(), LocationService.class);
+                else
                     getBaseActivity().stopService(intent);
-                }
 
                 break;
         }

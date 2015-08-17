@@ -5,7 +5,7 @@ import com.shawnaten.simpleweather.module.GCMApiModule;
 import com.shawnaten.simpleweather.module.GCMTokenModule;
 import com.shawnaten.simpleweather.module.GoogleAccountCredentialModule;
 import com.shawnaten.simpleweather.module.GoogleApiClientModule;
-import com.shawnaten.simpleweather.module.LocationReportApiModule;
+import com.shawnaten.simpleweather.module.LocationApiModule;
 import com.shawnaten.simpleweather.module.PreferencesModule;
 import com.shawnaten.simpleweather.module.ReactiveLocationProviderModule;
 import com.shawnaten.simpleweather.services.GCMNotificationService;
@@ -23,7 +23,7 @@ import dagger.Component;
                 ContextModule.class,
                 GoogleApiClientModule.class,
                 GoogleAccountCredentialModule.class,
-                LocationReportApiModule.class,
+                LocationApiModule.class,
                 PreferencesModule.class,
                 GCMTokenModule.class,
                 GCMApiModule.class,

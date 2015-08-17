@@ -9,7 +9,6 @@ import com.shawnaten.simpleweather.module.GoogleApiClientModule;
 import com.shawnaten.simpleweather.module.GsonConverterModule;
 import com.shawnaten.simpleweather.module.ImagesApiModule;
 import com.shawnaten.simpleweather.module.InstagramModule;
-import com.shawnaten.simpleweather.module.LocationReportApiModule;
 import com.shawnaten.simpleweather.module.OkClientModule;
 import com.shawnaten.simpleweather.module.PlacesAutocompleteModule;
 import com.shawnaten.simpleweather.module.PlacesDetailsModule;
@@ -42,7 +41,6 @@ import dagger.Component;
                 InstagramModule.class,
                 ReactiveLocationProviderModule.class,
                 AnalyticsModule.class,
-                LocationReportApiModule.class,
                 PreferencesModule.class
         }
 )
