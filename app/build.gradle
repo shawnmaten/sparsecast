@@ -9,15 +9,6 @@ android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
 
-    def getVersionCode = { ->
-        def stdout = new ByteArrayOutputStream()
-        exec {
-            commandLine 'git', 'rev-list', 'HEAD', '--count'
-            standardOutput = stdout
-        }
-        return stdout.toString().trim().toInteger()
-    }
-
     def getVersionName = { ->
         def stdout = new ByteArrayOutputStream()
         exec {
@@ -31,7 +22,7 @@ android {
         applicationId 'com.shawnaten.simpleweather'
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode getVersionCode()
+        versionCode 135
         versionName getVersionName()
         multiDexEnabled true
     }
@@ -40,11 +31,13 @@ android {
         debug {
 
         }
+
         release {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
     }
 
     compileOptions {

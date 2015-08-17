@@ -64,6 +64,8 @@
 #your package path where your gson models are stored
 -keep class com.shawnaten.simpleweather.tools.** { *; }
 
+-keep class com.shawnaten.simpleweather.lib.model.** { *; }
+
 # end of retrofit
 
 # Needed by google-api-client to keep generic types and @Key annotations accessed via reflection
@@ -75,3 +77,29 @@
 # for retrolambda
 
 -dontwarn java.lang.invoke.*
+
+# for butterknife
+
+-keep class butterknife.** { *; }
+-dontwarn butterknife.internal.**
+-keep class **$$ViewBinder { *; }
+
+-keepclasseswithmembernames class * {
+    @butterknife.* <fields>;
+}
+
+-keepclasseswithmembernames class * {
+    @butterknife.* <methods>;
+}
+
+# end of butterknife
+
+# for dagger (because of the exclusions to prevent duplicate classes)
+
+-dontwarn javax**
+-dontwarn com.google.auto.value.AutoAnnotation
+-dontwarn dagger.internal.codegen.ComponentProcessor
+-dontwarn dagger.shaded.auto.common.BasicAnnotationProcessor
+-dontwarn com.google.auto.service.AutoService
+
+# end of dagger

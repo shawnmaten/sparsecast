@@ -8,7 +8,6 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.shawnaten.simpleweather.backend.OfyService.ofy;
@@ -58,9 +57,6 @@ public class SavedPlaceEndpoint {
         if (user == null)
             throw new OAuthRequestException("unauthorized request");
 
-        logger.setLevel(Level.INFO);
-        logger.info(user.getUserId());
-
         SavedPlace.Response response = new SavedPlace.Response();
 
         response.setData(ofy().load()
@@ -81,7 +77,7 @@ public class SavedPlaceEndpoint {
         if (user == null)
             throw new OAuthRequestException("unauthorized request");
 
-        ofy().delete().entity(savedPlace);
+        ofy().delete().entity(savedPlace).now();
 
     }
 

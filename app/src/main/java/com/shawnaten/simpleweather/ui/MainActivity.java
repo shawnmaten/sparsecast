@@ -29,7 +29,6 @@ import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.imagesApi.ImagesApi;
 import com.shawnaten.simpleweather.backend.imagesApi.model.Image;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
-import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
 import com.shawnaten.simpleweather.lib.model.APIKeys;
 import com.shawnaten.simpleweather.lib.model.Forecast;
 import com.shawnaten.simpleweather.module.ImagesApiModule;
@@ -130,7 +129,7 @@ public class MainActivity extends BaseActivity {
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(null);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         TabAdapter tabAdapter = new TabAdapter(
                 getSupportFragmentManager(),
@@ -346,13 +345,11 @@ public class MainActivity extends BaseActivity {
                     item.setIcon(R.drawable.ic_favorite_border_white_24dp);
                     LocationSettings.setIsFavorite(false);
 
-                    final SavedPlace savedPlace = new SavedPlace();
-                    savedPlace.setPlaceId(LocationSettings.getPlaceId());
                     subs.add(Observable.create(new Observable.OnSubscribe<Void>() {
                         @Override
                         public void call(Subscriber<? super Void> subscriber) {
                             try {
-                                savedPlaceApi.delete(savedPlace).execute();
+                                savedPlaceApi.delete(LocationSettings.getSavedPlace()).execute();
                                 subscriber.onCompleted();
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -363,19 +360,12 @@ public class MainActivity extends BaseActivity {
                     item.setIcon(R.drawable.ic_favorite_white_24dp);
                     LocationSettings.setIsFavorite(true);
 
-                    final SavedPlace savedPlace = new SavedPlace();
-                    savedPlace.setPlaceId(LocationSettings.getPlaceId());
-                    savedPlace.setName(LocationSettings.getName());
-                    savedPlace.setLat(LocationSettings.getLat());
-                    savedPlace.setLng(LocationSettings.getLng());
-                    savedPlace.setAttributions(Attributions.getCurrentPlace());
-
                     Observable.OnSubscribe<Void> onSubscribe;
                     onSubscribe = new Observable.OnSubscribe<Void>() {
                         @Override
                         public void call(Subscriber<? super Void> subscriber) {
                             try {
-                                savedPlaceApi.insert(savedPlace).execute();
+                                savedPlaceApi.insert(LocationSettings.getSavedPlace()).execute();
                                 subscriber.onCompleted();
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -398,14 +388,14 @@ public class MainActivity extends BaseActivity {
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
-            case R.id.action_info:
+            case R.id.action_about:
                 startActivity(new Intent(this, AboutActivity.class));
                 return true;
             /*case R.id.action_ad:
                 startActivity(new Intent(this, AdActivity.class));
                 return true;*/
             default:
-                return false;
+                return super.onOptionsItemSelected(item);
         }
     }
 

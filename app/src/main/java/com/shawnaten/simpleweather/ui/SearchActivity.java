@@ -61,8 +61,8 @@ public class SearchActivity extends BaseActivity {
         slidingTabLayout.setViewPager(viewPager);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
 
         Action1<Response> subscriber;
         subscriber = new Action1<Response>() {
@@ -77,15 +77,18 @@ public class SearchActivity extends BaseActivity {
             @Override
             public void call(Subscriber<? super Response> subscriber) {
                 try {
-                    ArrayList<String> attributions = Attributions.getSavedPlaces();
-                    attributions.clear();
+                    ArrayList<String> attr = Attributions.getSavedPlaces();
+                    attr.clear();
 
                     Response response = savedPlaceApi.get().execute();
                     List<SavedPlace> places = response.getData();
 
-                    for (SavedPlace place : places)
-                        if (!attributions.contains(place.getAttributions()))
-                            attributions.add(place.getAttributions());
+                    if (places != null) {
+                        for (SavedPlace place : places)
+                            if (place.getAttributions() != null
+                                    && !attr.contains(place.getAttributions()))
+                                attr.add(place.getAttributions());
+                    }
 
                     subscriber.onNext(response);
                 } catch (IOException e) {
@@ -111,14 +114,11 @@ public class SearchActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.action_info:
+            case R.id.action_about:
                 startActivity(new Intent(this, AboutActivity.class));
                 return true;
             default:
-                return false;
+                return super.onOptionsItemSelected(item);
         }
     }
 }

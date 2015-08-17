@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -113,20 +114,13 @@
 
     </RelativeLayout>
 
-    <!--
-    <com.github.clans.fab.FloatingActionMenu
-        android:id="@+id/fam"
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/half_margin"
-        fab:menu_colorNormal="@color/primary"
-        fab:menu_colorPressed="@color/primary_dark"
-        fab:menu_icon="@drawable/ic_add_white_24dp"/>
-        -->
-
-    <include layout="@layout/toolbar"/>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
 </RelativeLayout>

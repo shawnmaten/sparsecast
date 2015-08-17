@@ -17,7 +17,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.Response;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
-import com.shawnaten.simpleweather.tools.Attributions;
 import com.shawnaten.simpleweather.tools.LocationSettings;
 
 import java.util.ArrayList;
@@ -191,14 +190,24 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener {
                         public void call(PlaceBuffer places) {
                             Place place = places.get(0);
 
+                            SavedPlace savedPlace = new SavedPlace();
+
+                            savedPlace.setPlaceId(place.getId());
+                            savedPlace.setName(place.getName().toString());
+                            savedPlace.setLat(place.getLatLng().latitude);
+                            savedPlace.setLng(place.getLatLng().longitude);
+                            if (places.getAttributions() != null)
+                                savedPlace.setAttributions(places.getAttributions().toString());
+
+                            LocationSettings.setPlace(savedPlace, false);
+
                             if (saved != null) {
-                                for (SavedPlace save : saved)
+                                for (SavedPlace save : saved) {
                                     if (save.getPlaceId().equals(place.getId())) {
-                                        LocationSettings.setPlace(save);
-                                        Attributions.setCurrentPlace(save.getAttributions());
+                                        LocationSettings.setPlace(save, true);
                                     }
-                            } else
-                                LocationSettings.setPlace(place, places.getAttributions());
+                                }
+                            }
 
                             places.release();
                             getActivity().setResult(MainActivity.PLACE_SELECTED_CODE);

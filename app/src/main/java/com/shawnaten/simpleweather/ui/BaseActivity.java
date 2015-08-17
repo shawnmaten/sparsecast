@@ -3,6 +3,7 @@ package com.shawnaten.simpleweather.ui;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import com.shawnaten.simpleweather.App;
 
@@ -61,6 +62,17 @@ public class BaseActivity extends AppCompatActivity {
 
     public interface FragmentDataListener {
         void onNewData(Object data);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return false;
+        }
     }
 
 }

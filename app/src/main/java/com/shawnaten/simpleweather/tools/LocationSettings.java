@@ -1,7 +1,5 @@
 package com.shawnaten.simpleweather.tools;
 
-import android.location.Location;
-
 import com.google.android.gms.location.places.Place;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.model.SavedPlace;
 
@@ -10,34 +8,17 @@ public class LocationSettings {
 
     private static Mode mode = Mode.CURRENT;
 
-    private static Location currentLocation;
-
-    private static String name;
-    private static double lat;
-    private static double lng;
-    private static String placeId;
+    private static SavedPlace savedPlace;
+    private static Place place;
     private static boolean isFavorite;
 
-    public static void setPlace(Place place, CharSequence attributions) {
+    public static void setPlace(SavedPlace savedPlace, boolean isFavorite) {
         mode = Mode.SAVED;
-        name = place.getName().toString();
-        lat = place.getLatLng().latitude;
-        lng = place.getLatLng().longitude;
-        placeId = place.getId();
-        LocationSettings.isFavorite = false;
-        if (attributions != null)
-            Attributions.setCurrentPlace(attributions.toString());
-        else
-            Attributions.setCurrentPlace(null);
-    }
 
-    public static void setPlace(SavedPlace savedPlace) {
-        mode = Mode.SAVED;
-        name = savedPlace.getName();
-        lat = savedPlace.getLat();
-        lng = savedPlace.getLng();
-        placeId = savedPlace.getPlaceId();
-        LocationSettings.isFavorite = true;
+        LocationSettings.savedPlace = savedPlace;
+        LocationSettings.place = null;
+        LocationSettings.isFavorite = isFavorite;
+
         Attributions.setCurrentPlace(savedPlace.getAttributions());
     }
 
@@ -49,44 +30,22 @@ public class LocationSettings {
         LocationSettings.mode = mode;
     }
 
-    public static Location getCurrentLocation() {
-        return currentLocation;
-    }
-
-    public static void setCurrentLocation(Location currentLocation) {
-        LocationSettings.currentLocation = currentLocation;
-    }
-
     public static String getName() {
-        return name;
-    }
-
-    public static void setName(String name) {
-        LocationSettings.name = name;
+        if (savedPlace != null)
+            return savedPlace.getName();
+        return place.getName().toString();
     }
 
     public static double getLat() {
-        return lat;
-    }
-
-    public static void setLat(double lat) {
-        LocationSettings.lat = lat;
+        if (savedPlace != null)
+            return savedPlace.getLat();
+        return place.getLatLng().latitude;
     }
 
     public static double getLng() {
-        return lng;
-    }
-
-    public static void setLng(double lng) {
-        LocationSettings.lng = lng;
-    }
-
-    public static String getPlaceId() {
-        return placeId;
-    }
-
-    public static void setPlaceId(String placeId) {
-        LocationSettings.placeId = placeId;
+        if (savedPlace != null)
+            return savedPlace.getLng();
+        return place.getLatLng().longitude;
     }
 
     public static boolean isFavorite() {
@@ -96,4 +55,9 @@ public class LocationSettings {
     public static void setIsFavorite(boolean isFavorite) {
         LocationSettings.isFavorite = isFavorite;
     }
+
+    public static SavedPlace getSavedPlace() {
+        return savedPlace;
+    }
+
 }

@@ -17,6 +17,8 @@
 
     </PreferenceCategory>
 
+    <!--
+
     <PreferenceCategory
         android:title="@string/pref_category_notifications">
 
@@ -25,6 +27,6 @@
             android:title="@string/pref_location_notify_title"
             android:summary="@string/pref_location_notify_summary"/>
 
-    </PreferenceCategory>
+    </PreferenceCategory>-->
 
 </PreferenceScreen>

@@ -1,6 +1,5 @@
 package com.shawnaten.simpleweather;
 
-import android.content.Intent;
 import android.support.multidex.MultiDexApplication;
 
 import com.shawnaten.simpleweather.component.DaggerMainComponent;
@@ -8,7 +7,6 @@ import com.shawnaten.simpleweather.component.DaggerServiceComponent;
 import com.shawnaten.simpleweather.component.MainComponent;
 import com.shawnaten.simpleweather.component.ServiceComponent;
 import com.shawnaten.simpleweather.module.ContextModule;
-import com.shawnaten.simpleweather.services.GCMRegistrarService;
 import com.shawnaten.simpleweather.tools.LocalizationSettings;
 
 public class App extends MultiDexApplication {
@@ -30,8 +28,9 @@ public class App extends MultiDexApplication {
 
         LocalizationSettings.configure(this);
 
+        /*
         Intent gcmRegistrarServiceIntent = new Intent(this, GCMRegistrarService.class);
-        startService(gcmRegistrarServiceIntent);
+        startService(gcmRegistrarServiceIntent);*/
 
     }
 

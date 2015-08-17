@@ -72,4 +72,21 @@
 
     <string name="about">About</string>
 
+    <string-array name="attr_location">
+        <item>Location Data</item>
+        <item>Provided by the Google Places API.</item>
+        <item>https://developers.google.com/places/</item>
+    </string-array>
+
+    <string-array name="attr_forecast">
+        <item>Weather Data</item>
+        <item>Provided by the Forecast.io API.</item>
+        <item>http://forecast.io</item>
+    </string-array>
+
+    <string-array name="attr_image">
+        <item>Cover Photo</item>
+        <item>Sourced through the Instagram API. The current photo is from</item>
+    </string-array>
+
 </resources>

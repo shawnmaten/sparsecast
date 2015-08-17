@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/list_three_item_icon"
+    android:background="?android:attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/icon"
+        style="@style/list_three_item_icon_image"
+        android:alpha=".54"/>
+
+    <TextView
+        android:id="@+id/primary"
+        style="@style/list_three_item_icon_text.primary"/>
+
+    <TextView
+        android:id="@+id/secondary"
+        style="@style/list_three_item_icon_text.secondary"
+        android:layout_below="@id/primary"/>
+
+</RelativeLayout>

@@ -59,7 +59,8 @@ public class SavedPlacesTab extends Tab {
 
             savedPlaces = ((Response) data).getData();
 
-            adapter.notifyItemRangeInserted(0, savedPlaces.size());
+            if (savedPlaces!= null)
+                adapter.notifyItemRangeInserted(0, savedPlaces.size());
 
         }
     }
@@ -75,7 +76,7 @@ public class SavedPlacesTab extends Tab {
                 @Override
                 public void onClick(View view) {
 
-                    LocationSettings.setPlace(savedPlaces.get(id));
+                    LocationSettings.setPlace(savedPlaces.get(id), true);
                     Attributions.setCurrentPlace(savedPlaces.get(id).getAttributions());
                     getActivity().setResult(MainActivity.PLACE_SELECTED_CODE);
                     getActivity().finish();
@@ -104,7 +105,7 @@ public class SavedPlacesTab extends Tab {
 
         @Override
         public int getItemCount() {
-            return savedPlaces != null && savedPlaces.size() > 0 ? savedPlaces.size() : 0;
+            return savedPlaces != null ? savedPlaces.size() : 0;
         }
 
         @Override
