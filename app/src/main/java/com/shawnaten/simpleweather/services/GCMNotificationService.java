@@ -8,10 +8,11 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.android.gms.gcm.GcmListenerService;
-import com.shawnaten.simpleweather.App;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.locationReportAPI.LocationReportAPI;
+import com.shawnaten.simpleweather.component.DaggerServiceComponent;
 import com.shawnaten.simpleweather.lib.model.MessagingCodes;
+import com.shawnaten.simpleweather.module.ContextModule;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -31,7 +32,11 @@ public class GCMNotificationService extends GcmListenerService {
     public void onCreate() {
         super.onCreate();
 
-        ((App) getApplication()).getServiceComponent().injectGCMNotificationService(this);
+        DaggerServiceComponent
+                .builder()
+                .contextModule(new ContextModule(getApplicationContext()))
+                .build()
+                .inject(this);
 
         notifyManager = (NotificationManager) getApplicationContext()
                 .getSystemService(Context.NOTIFICATION_SERVICE);

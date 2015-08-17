@@ -58,7 +58,7 @@ public class SearchTab extends Tab implements SearchView.OnQueryTextListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getApp().getMainComponent().injectSearchTab(this);
+        getApp().getMainComponent().inject(this);
     }
 
     @Override

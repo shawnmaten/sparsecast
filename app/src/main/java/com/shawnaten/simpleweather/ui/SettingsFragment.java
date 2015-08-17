@@ -36,7 +36,7 @@ public class SettingsFragment extends PreferenceFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getApp().getMainComponent().injectSettingsFragment(this);
+        getApp().getMainComponent().inject(this);
 
         Account accounts[];
         ArrayList<CharSequence> accountNamesList = new ArrayList<>();

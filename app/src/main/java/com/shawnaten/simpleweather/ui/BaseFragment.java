@@ -20,7 +20,7 @@ public class BaseFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getApp().getMainComponent().injectBaseFragment(this);
+        getApp().getMainComponent().inject(this);
 
         subs = new CompositeSubscription();
     }

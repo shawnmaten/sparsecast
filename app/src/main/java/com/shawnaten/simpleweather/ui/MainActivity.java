@@ -125,7 +125,7 @@ public class MainActivity extends BaseActivity {
         SlidingTabLayout slidingTabLayout = ButterKnife.findById(this, R.id.sliding_tabs);
         View photoContainer = ButterKnife.findById(this, R.id.photo_container);
 
-        getApp().getMainComponent().injectMainActivity(this);
+        getApp().getMainComponent().inject(this);
 
         if (savedInstanceState != null)
             scrollPos = savedInstanceState.getInt(SCROLL_POSITION);

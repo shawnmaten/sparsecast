@@ -39,7 +39,7 @@ public class SearchActivity extends BaseActivity {
 
         super.onCreate(savedInstanceState);
 
-        getApp().getMainComponent().injectSearchActivity(this);
+        getApp().getMainComponent().inject(this);
 
         setContentView(R.layout.activity_search);
 

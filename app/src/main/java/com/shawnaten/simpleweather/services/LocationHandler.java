@@ -37,7 +37,7 @@ public class LocationHandler extends Handler implements LocationListener {
         DaggerServiceComponent.builder()
                 .contextModule(new ContextModule(context))
                 .build()
-                .injectLocationHandler(this);
+                .inject(this);
     }
 
     @Override

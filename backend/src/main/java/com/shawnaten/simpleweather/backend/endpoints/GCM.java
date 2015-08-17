@@ -3,14 +3,18 @@ package com.shawnaten.simpleweather.backend.endpoints;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
 import com.shawnaten.simpleweather.backend.Constants;
+import com.shawnaten.simpleweather.backend.UserIdFix;
+import com.shawnaten.simpleweather.backend.model.GCMToken;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
+
+import static com.shawnaten.simpleweather.backend.OfyService.ofy;
 
 @Api(
         name = "gcmAPI",
@@ -41,14 +45,16 @@ public class GCM {
     )
     public void insert(
             User user, @Named("token") String token
-    ) throws OAuthRequestException {
+    ) throws OAuthRequestException, EntityNotFoundException {
 
         if (user == null)
             throw new OAuthRequestException("unauthorized request");
 
-        log.setLevel(Level.INFO);
-        log.info(user.getUserId());
+        GCMToken record = new GCMToken();
+        record.setUserId(UserIdFix.getUserId(user));
+        record.setGcmToken(token);
 
+        ofy().save().entity(record).now();
     }
 
     @ApiMethod(
@@ -64,9 +70,14 @@ public class GCM {
         if (user == null)
             throw new OAuthRequestException("unauthorized request");
 
-        log.setLevel(Level.INFO);
-        log.info(user.getUserId());
+        GCMToken record = ofy()
+                .load()
+                .type(GCMToken.class)
+                .filter("gcmToken", oldToken)
+                .first()
+                .now();
 
+        record.setGcmToken(newToken);
+        ofy().save().entity(record).now();
     }
-
 }

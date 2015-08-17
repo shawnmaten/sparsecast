@@ -1,18 +1,21 @@
 package com.shawnaten.simpleweather;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.multidex.MultiDexApplication;
 
 import com.shawnaten.simpleweather.component.DaggerMainComponent;
-import com.shawnaten.simpleweather.component.DaggerServiceComponent;
 import com.shawnaten.simpleweather.component.MainComponent;
-import com.shawnaten.simpleweather.component.ServiceComponent;
 import com.shawnaten.simpleweather.module.ContextModule;
+import com.shawnaten.simpleweather.services.GCMRegistrarService;
 import com.shawnaten.simpleweather.tools.LocalizationSettings;
 
+import javax.inject.Inject;
+
 public class App extends MultiDexApplication {
+    @Inject SharedPreferences prefs;
 
     private MainComponent mainComponent;
-    private ServiceComponent serviceComponent;
 
     @Override
     public void onCreate() {
@@ -22,20 +25,17 @@ public class App extends MultiDexApplication {
                 .contextModule(new ContextModule(this))
                 .build();
 
-        serviceComponent = DaggerServiceComponent
-                .builder().contextModule(new ContextModule(this))
-                .build();
+        mainComponent.inject(this);
 
         LocalizationSettings.configure(this);
 
-        /*
-        Intent gcmRegistrarServiceIntent = new Intent(this, GCMRegistrarService.class);
-        startService(gcmRegistrarServiceIntent);*/
+        String gcmKey = getString(R.string.pref_gcm_token);
+        String notifyKey = getString(R.string.pref_location_notify_key);
 
-    }
-
-    public ServiceComponent getServiceComponent() {
-        return serviceComponent;
+        if (!prefs.contains(gcmKey))
+            startService(new Intent(this, GCMRegistrarService.class));
+        //else if (prefs.getBoolean(notifyKey, false))
+        //    startService(new Intent(this, LocationService.class));
     }
 
     public MainComponent getMainComponent() {
