@@ -35,9 +35,9 @@ import static com.shawnaten.simpleweather.backend.OfyService.ofy;
                 Constants.WEB_APP_ENGINE_ID
         }
 )
-public class GCM {
+public class GCMEndpoint {
 
-    private static final Logger log = Logger.getLogger(GCM.class.getName());
+    private static final Logger log = Logger.getLogger(GCMEndpoint.class.getName());
 
     @ApiMethod(
             name = "insert",

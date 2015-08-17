@@ -6,13 +6,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderApi;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.shawnaten.simpleweather.backend.locationReportAPI.LocationReportAPI;
-import com.shawnaten.simpleweather.backend.locationReportAPI.model.LocationReport;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.SphericalUtil;
+import com.shawnaten.simpleweather.backend.locationAPI.LocationAPI;
 import com.shawnaten.simpleweather.component.DaggerServiceComponent;
 import com.shawnaten.simpleweather.module.ContextModule;
 
@@ -22,14 +19,18 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-public class LocationHandler extends Handler implements LocationListener {
+import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
+import rx.Subscription;
+import rx.functions.Action1;
 
-    @Inject
-    GoogleApiClient googleApiClient;
-    @Inject
-    LocationReportAPI locationReportAPI;
-    @Inject @Named("gcmToken")
-    String gcmToken;
+public class LocationHandler extends Handler {
+    public static final double REPORT_DISTANCE = 1000;
+
+    @Inject LocationAPI locationAPI;
+    @Inject ReactiveLocationProvider locationProvider;
+    @Inject @Named("gcmToken") String gcmToken;
+
+    private Subscription locationUpdates;
 
     public LocationHandler(Looper looper, Context context) {
         super(looper);
@@ -43,33 +44,50 @@ public class LocationHandler extends Handler implements LocationListener {
     @Override
     public void handleMessage(Message msg) {
 
-        FusedLocationProviderApi fusedLocationApi = LocationServices.FusedLocationApi;
+        if (locationUpdates != null)
+            locationUpdates.unsubscribe();
 
         LocationRequest request = new LocationRequest();
-
         request.setInterval(TimeUnit.HOURS.toMillis(1));
         request.setFastestInterval(TimeUnit.HOURS.toMillis(1));
         request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
-        googleApiClient.blockingConnect();
-
-        fusedLocationApi.requestLocationUpdates(googleApiClient, request, this);
-
+        locationUpdates = locationProvider
+                .getUpdatedLocation(request)
+                .subscribe(new LocationAction(locationAPI, gcmToken));
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        LocationReport locationReport = new LocationReport();
+    public static class LocationAction implements Action1<Location> {
+        private Location lastReport;
+        private LocationAPI locationAPI;
+        private String gcmToken;
 
-        locationReport.setGcmToken(gcmToken);
-        locationReport.setLat(location.getLatitude());
-        locationReport.setLng(location.getLongitude());
+        public LocationAction(LocationAPI locationAPI, String gcmToken) {
+            this.locationAPI = locationAPI;
+            this.gcmToken = gcmToken;
+        }
 
-        try {
-            locationReportAPI.report(locationReport).execute();
-        } catch (IOException e) {
-            e.printStackTrace();
+        @Override
+        public void call(Location location) {
+            if (lastReport != null) {
+                LatLng oldLatLng = new LatLng(lastReport.getLatitude(), lastReport.getLongitude());
+
+                LatLng newLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+                double distance = SphericalUtil.computeDistanceBetween(oldLatLng, newLatLng);
+
+                if (distance < REPORT_DISTANCE)
+                    return;
+            }
+
+            try {
+                locationAPI
+                        .report(gcmToken, location.getLatitude(), location.getLongitude())
+                        .execute();
+                lastReport = location;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
-
 }

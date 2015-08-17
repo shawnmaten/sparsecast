@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 public class LocationService extends Service {
 
     private LocationHandler locationHandler;
-    private Message msg;
 
     @Nullable
     @Override
@@ -33,11 +32,9 @@ public class LocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (msg == null) {
-            msg = locationHandler.obtainMessage();
-            msg.arg1 = startId;
-            locationHandler.sendMessage(msg);
-        }
+        Message msg = locationHandler.obtainMessage();
+        msg.arg1 = startId;
+        locationHandler.sendMessage(msg);
 
         return START_STICKY;
     }

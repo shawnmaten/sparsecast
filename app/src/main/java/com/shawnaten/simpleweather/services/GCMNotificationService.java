@@ -9,7 +9,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.simpleweather.backend.locationReportAPI.LocationReportAPI;
+import com.shawnaten.simpleweather.backend.locationAPI.LocationAPI;
 import com.shawnaten.simpleweather.component.DaggerServiceComponent;
 import com.shawnaten.simpleweather.lib.model.MessagingCodes;
 import com.shawnaten.simpleweather.module.ContextModule;
@@ -17,16 +17,19 @@ import com.shawnaten.simpleweather.module.ContextModule;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+
+import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 
 public class GCMNotificationService extends GcmListenerService {
-
     private final static AtomicInteger c = new AtomicInteger(0);
+
+    @Inject LocationAPI locationAPI;
+    @Inject ReactiveLocationProvider locationProvider;
+    @Inject @Named("gcmToken") String gcmToken;
 
     private NotificationManager notifyManager;
     private Uri soundUri;
-
-    @Inject
-    LocationReportAPI locationReportAPI;
 
     @Override
     public void onCreate() {
@@ -55,8 +58,13 @@ public class GCMNotificationService extends GcmListenerService {
                     case MessagingCodes.HOUR_TYPE_SAVED:
                         break;
                 }
+                break;
+            case MessagingCodes.LOCATION_REQUEST:
+                locationProvider
+                        .getLastKnownLocation()
+                        .subscribe(new LocationHandler.LocationAction(locationAPI, gcmToken));
+                break;
         }
-
     }
 
     private void sendNotification(String content){

@@ -3,6 +3,9 @@ package com.shawnaten.simpleweather.lib.model;
 public class MessagingCodes {
 
     public static final String MESSAGE_TYPE = "messageType";
+
+    public static final String LOCATION_REQUEST = "locationRequest";
+
     public static final String MESSAGE_TYPE_HOUR = "messageTypeHour";
 
     public static final String HOUR_TYPE = "hourType";

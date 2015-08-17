@@ -8,6 +8,7 @@ import com.shawnaten.simpleweather.component.DaggerMainComponent;
 import com.shawnaten.simpleweather.component.MainComponent;
 import com.shawnaten.simpleweather.module.ContextModule;
 import com.shawnaten.simpleweather.services.GCMRegistrarService;
+import com.shawnaten.simpleweather.services.LocationService;
 import com.shawnaten.simpleweather.tools.LocalizationSettings;
 
 import javax.inject.Inject;
@@ -34,8 +35,8 @@ public class App extends MultiDexApplication {
 
         if (!prefs.contains(gcmKey))
             startService(new Intent(this, GCMRegistrarService.class));
-        //else if (prefs.getBoolean(notifyKey, false))
-        //    startService(new Intent(this, LocationService.class));
+        else if (prefs.getBoolean(notifyKey, false))
+            startService(new Intent(this, LocationService.class));
     }
 
     public MainComponent getMainComponent() {

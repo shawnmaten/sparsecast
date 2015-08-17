@@ -1,6 +1,6 @@
 package com.shawnaten.simpleweather.backend;
 
-public class LocationReport {
+public class LocationRecord {
 
     private String gcmToken;
 

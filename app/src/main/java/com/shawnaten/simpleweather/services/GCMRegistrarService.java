@@ -38,14 +38,23 @@ public class GCMRegistrarService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         String gcmKey = getString(R.string.pref_gcm_token);
         String notifyKey = getString(R.string.pref_location_notify_key);
+
+        String oldToken = prefs.getString(gcmKey, null);
+
         InstanceID instanceID = InstanceID.getInstance(this);
         String senderId = getString(R.string.gcm_sender_id);
         String scope = GoogleCloudMessaging.INSTANCE_ID_SCOPE;
 
+        stopService(new Intent(this, LocationService.class));
+        prefs.edit().remove(gcmKey).apply();
+
         try {
-            String token = instanceID.getToken(senderId, scope, null);
-            gcmAPI.insert(token).execute();
-            prefs.edit().putString(gcmKey, token).apply();
+            String newToken = instanceID.getToken(senderId, scope, null);
+            if (oldToken != null)
+                gcmAPI.update(oldToken, newToken).execute();
+            else
+                gcmAPI.insert(newToken).execute();
+            prefs.edit().putString(gcmKey, newToken).apply();
             if (prefs.getBoolean(notifyKey, false))
                 startService(new Intent(this, LocationService.class));
         } catch (IOException e) {

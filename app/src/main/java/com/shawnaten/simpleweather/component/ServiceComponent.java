@@ -7,6 +7,7 @@ import com.shawnaten.simpleweather.module.GoogleAccountCredentialModule;
 import com.shawnaten.simpleweather.module.GoogleApiClientModule;
 import com.shawnaten.simpleweather.module.LocationReportApiModule;
 import com.shawnaten.simpleweather.module.PreferencesModule;
+import com.shawnaten.simpleweather.module.ReactiveLocationProviderModule;
 import com.shawnaten.simpleweather.services.GCMNotificationService;
 import com.shawnaten.simpleweather.services.GCMRegistrarService;
 import com.shawnaten.simpleweather.services.GCMTokenRefreshService;
@@ -25,7 +26,8 @@ import dagger.Component;
                 LocationReportApiModule.class,
                 PreferencesModule.class,
                 GCMTokenModule.class,
-                GCMApiModule.class
+                GCMApiModule.class,
+                ReactiveLocationProviderModule.class
         }
 )
 public interface ServiceComponent {

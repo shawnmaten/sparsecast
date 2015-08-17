@@ -1,19 +1,18 @@
-package com.shawnaten.simpleweather.backend;
+package com.shawnaten.simpleweather.backend.endpoints;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.appengine.api.oauth.OAuthRequestException;
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.users.User;
-import com.shawnaten.simpleweather.lib.model.MessagingCodes;
+import com.shawnaten.simpleweather.backend.Constants;
 
 import java.util.logging.Logger;
 
+import javax.inject.Named;
+
 @Api(
-        name = "locationReportAPI",
+        name = "locationAPI",
         version = "v1",
         namespace = @ApiNamespace(
                 ownerDomain = "backend.simpleweather.shawnaten.com",
@@ -26,22 +25,30 @@ import java.util.logging.Logger;
                 Constants.ANDROID_DEBUG_ID,
                 Constants.ANDROID_RELEASE_ID
         },
-        audiences = {Constants.WEB_LOCAL_ID, Constants.WEB_APP_ENGINE_ID}
-
+        audiences = {
+                Constants.WEB_LOCAL_ID,
+                Constants.WEB_APP_ENGINE_ID
+        }
 )
-public class LocationReportEndpoint {
+public class LocationEndpoint {
 
-    private static final Logger log = Logger.getLogger(LocationReportEndpoint.class.getName());
+    private static final Logger log = Logger.getLogger(LocationEndpoint.class.getName());
 
     @ApiMethod(
             name = "report",
             httpMethod = ApiMethod.HttpMethod.POST
     )
-    public void report(User user, LocationReport locationReport) throws OAuthRequestException {
+    public void report(
+            User user,
+            @Named("gcmToken") String gcmToken,
+            @Named("lat") double lat,
+            @Named("lng") double lng
+    ) throws OAuthRequestException {
 
         if (user == null)
             throw new OAuthRequestException("unauthorized request");
 
+        /*
         ForecastTask task = new ForecastTask(
                 MessagingCodes.HOUR_TYPE_CURRENT,
                 locationReport.getGcmToken(),
@@ -51,7 +58,7 @@ public class LocationReportEndpoint {
 
         Queue queue = QueueFactory.getQueue(ForecastTask.QUEUE);
 
-        queue.add(TaskOptions.Builder.withPayload(task));
+        queue.add(TaskOptions.Builder.withPayload(task));*/
 
     }
 

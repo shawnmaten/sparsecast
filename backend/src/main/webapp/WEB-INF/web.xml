@@ -9,8 +9,8 @@
                 com.shawnaten.simpleweather.backend.KeysEndpoint,
                 com.shawnaten.simpleweather.backend.ImagesEndpoint,
                 com.shawnaten.simpleweather.backend.SavedPlaceEndpoint,
-                com.shawnaten.simpleweather.backend.LocationReportEndpoint,
-                com.shawnaten.simpleweather.backend.endpoints.GCM
+                com.shawnaten.simpleweather.backend.endpoints.LocationEndpoint,
+                com.shawnaten.simpleweather.backend.endpoints.GCMEndpoint
             </param-value>
         </init-param>
     </servlet>
