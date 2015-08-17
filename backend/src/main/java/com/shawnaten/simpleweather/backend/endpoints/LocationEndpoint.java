@@ -7,6 +7,7 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
 import com.shawnaten.simpleweather.backend.Constants;
 import com.shawnaten.simpleweather.backend.Dagger;
+import com.shawnaten.simpleweather.backend.model.Slack;
 
 import java.util.logging.Logger;
 
@@ -49,8 +50,10 @@ public class LocationEndpoint {
         if (user == null)
             throw new OAuthRequestException("unauthorized request");
 
+        Slack.Message message = new Slack.Message();
+        message.setText(LocationEndpoint.class.getName() + " report");
         Dagger.getNotificationComponent().slackService()
-                .sendMessage(Constants.SLACK_KEY, LocationEndpoint.class.getName() + " report");
+                .sendMessage(Constants.SLACK_KEY, message);
 
         /*
         ForecastTask task = new ForecastTask(

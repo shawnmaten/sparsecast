@@ -10,6 +10,7 @@ import com.shawnaten.simpleweather.backend.Constants;
 import com.shawnaten.simpleweather.backend.Dagger;
 import com.shawnaten.simpleweather.backend.UserIdFix;
 import com.shawnaten.simpleweather.backend.model.GCMToken;
+import com.shawnaten.simpleweather.backend.model.Slack;
 
 import java.util.logging.Logger;
 
@@ -57,8 +58,10 @@ public class GCMEndpoint {
 
         ofy().save().entity(record).now();
 
+        Slack.Message message = new Slack.Message();
+        message.setText(GCMEndpoint.class.getName() + " insert");
         Dagger.getNotificationComponent().slackService()
-                .sendMessage(Constants.SLACK_KEY, GCMEndpoint.class.getName() + " insert");
+                .sendMessage(Constants.SLACK_KEY, message);
     }
 
     @ApiMethod(
@@ -84,7 +87,9 @@ public class GCMEndpoint {
         record.setGcmToken(newToken);
         ofy().save().entity(record).now();
 
+        Slack.Message message = new Slack.Message();
+        message.setText(GCMEndpoint.class.getName() + " update");
         Dagger.getNotificationComponent().slackService()
-                .sendMessage(Constants.SLACK_KEY, GCMEndpoint.class.getName() + " update");
+                .sendMessage(Constants.SLACK_KEY, message);
     }
 }

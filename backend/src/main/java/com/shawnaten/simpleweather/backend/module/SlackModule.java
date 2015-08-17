@@ -1,6 +1,6 @@
 package com.shawnaten.simpleweather.backend.module;
 
-import com.shawnaten.simpleweather.backend.model.SlackService;
+import com.shawnaten.simpleweather.backend.model.Slack;
 import com.shawnaten.simpleweather.lib.model.Forecast;
 
 import javax.inject.Singleton;
@@ -15,11 +15,11 @@ public class SlackModule {
 
     @Provides
     @Singleton
-    public SlackService providesSlackService() {
+    public Slack.Service providesSlackService() {
         return new RestAdapter.Builder()
                 .setEndpoint(Forecast.ENDPOINT)
                 .build()
-                .create(SlackService.class);
+                .create(Slack.Service.class);
     }
 
 }

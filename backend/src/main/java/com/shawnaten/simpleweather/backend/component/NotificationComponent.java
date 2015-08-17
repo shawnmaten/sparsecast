@@ -1,6 +1,6 @@
 package com.shawnaten.simpleweather.backend.component;
 
-import com.shawnaten.simpleweather.backend.model.SlackService;
+import com.shawnaten.simpleweather.backend.model.Slack;
 import com.shawnaten.simpleweather.backend.module.ForecastModule;
 import com.shawnaten.simpleweather.backend.module.SlackModule;
 import com.shawnaten.simpleweather.lib.model.Forecast;
@@ -20,5 +20,5 @@ import dagger.Component;
 )
 public interface NotificationComponent {
     Forecast.Service forecastService();
-    SlackService slackService();
+    Slack.Service slackService();
 }
