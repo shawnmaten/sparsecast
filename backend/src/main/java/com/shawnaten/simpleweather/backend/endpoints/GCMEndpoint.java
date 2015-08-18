@@ -59,9 +59,8 @@ public class GCMEndpoint {
         ofy().save().entity(record).now();
 
         Slack.Message message = new Slack.Message();
-        message.setText(GCMEndpoint.class.getName() + " insert");
-        Dagger.getNotificationComponent().slackService()
-                .sendMessage(Constants.SLACK_KEY, message);
+        message.setText(GCMEndpoint.class.getSimpleName() + " insert");
+        Dagger.getNotificationComponent().slackService().sendMessage(message);
     }
 
     @ApiMethod(
@@ -88,8 +87,7 @@ public class GCMEndpoint {
         ofy().save().entity(record).now();
 
         Slack.Message message = new Slack.Message();
-        message.setText(GCMEndpoint.class.getName() + " update");
-        Dagger.getNotificationComponent().slackService()
-                .sendMessage(Constants.SLACK_KEY, message);
+        message.setText(GCMEndpoint.class.getSimpleName() + " update");
+        Dagger.getNotificationComponent().slackService().sendMessage(message);
     }
 }

@@ -51,9 +51,8 @@ public class LocationEndpoint {
             throw new OAuthRequestException("unauthorized request");
 
         Slack.Message message = new Slack.Message();
-        message.setText(LocationEndpoint.class.getName() + " report");
-        Dagger.getNotificationComponent().slackService()
-                .sendMessage(Constants.SLACK_KEY, message);
+        message.setText(LocationEndpoint.class.getSimpleName() + " report");
+        Dagger.getNotificationComponent().slackService().sendMessage(message).getUrl();
 
         /*
         ForecastTask task = new ForecastTask(
