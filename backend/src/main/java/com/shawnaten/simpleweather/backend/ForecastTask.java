@@ -15,6 +15,7 @@ import com.shawnaten.simpleweather.lib.model.Slack;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import static com.shawnaten.simpleweather.backend.OfyService.ofy;
@@ -55,6 +56,7 @@ public class ForecastTask implements DeferredTask {
 
         DateFormat dateFormat;
         dateFormat = SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("US/Central"));
 
         if (minutely == null || hourly == null || daily == null)
             return;
@@ -66,14 +68,14 @@ public class ForecastTask implements DeferredTask {
             text += String.format("%.2f, ", dataPoint.getPrecipProbability());
         }
         text = text.substring(0, text.length() - 2);
-        text += "]";
+        text += "]\n\n";
 
         text += "hourly\n\n[";
         for (Forecast.DataPoint dataPoint : hourly.getData()) {
             text += String.format("%.2f, ", dataPoint.getPrecipProbability());
         }
         text = text.substring(0, text.length() - 2);
-        text += "]";
+        text += "]\n\n";
 
         text += "daily\n\n[";
         for (Forecast.DataPoint dataPoint : daily.getData()) {
