@@ -22,6 +22,9 @@ import static com.shawnaten.simpleweather.backend.OfyService.ofy;
 
 public class ForecastTask implements DeferredTask {
 
+    private static final double MINUTELY_THRESHOLD = .5;
+    private static final double HOURLY_DAILY_THRESHOLD = 0;
+
     public static final String QUEUE = "forecast-queue";
 
     private GCMToken gcmToken;
@@ -48,7 +51,7 @@ public class ForecastTask implements DeferredTask {
         long eta;
         
         forecast = forecastService.notifyVersion(APIKeys.FORECAST_API_KEY, lat, lng, "en", "us");
-        eta = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(10);
+        eta = 0;
 
         Forecast.DataBlock minutely = forecast.getMinutely();
         Forecast.DataBlock hourly = forecast.getHourly();
@@ -61,30 +64,48 @@ public class ForecastTask implements DeferredTask {
         if (minutely == null || hourly == null || daily == null)
             return;
 
-        String text = dateFormat.format(new Date()) + "\n\n";
+        String text = ForecastTask.class.getSimpleName() + "\n\n";
+        text += dateFormat.format(new Date()) + "\n\n";
+        boolean notify = false;
 
         text += "minutely\n\n[";
-        for (Forecast.DataPoint dataPoint : minutely.getData()) {
+        for (int i = 0; i < minutely.getData().length; i++) {
+            Forecast.DataPoint dataPoint = minutely.getData()[i];
             text += String.format("%.2f, ", dataPoint.getPrecipProbability());
+            if (eta == 0 && dataPoint.getPrecipProbability() >= MINUTELY_THRESHOLD) {
+                notify = true;
+                eta = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(60);
+            }
         }
         text = text.substring(0, text.length() - 2);
         text += "]\n\n";
 
         text += "hourly\n\n[";
-        for (Forecast.DataPoint dataPoint : hourly.getData()) {
+        for (int i = 0; i < hourly.getData().length; i++) {
+            Forecast.DataPoint dataPoint = hourly.getData()[i];
             text += String.format("%.2f, ", dataPoint.getPrecipProbability());
+            if (eta == 0 && dataPoint.getPrecipProbability() >= HOURLY_DAILY_THRESHOLD) {
+                eta = dataPoint.getTime().getTime() - TimeUnit.MINUTES.toMillis(30);
+            }
         }
         text = text.substring(0, text.length() - 2);
         text += "]\n\n";
 
         text += "daily\n\n[";
-        for (Forecast.DataPoint dataPoint : daily.getData()) {
+        for (int i = 0; i < daily.getData().length; i++) {
+            Forecast.DataPoint dataPoint = daily.getData()[i];
             text += String.format("%.2f, ", dataPoint.getPrecipProbability());
+            if (eta == 0 && dataPoint.getPrecipProbability() >= HOURLY_DAILY_THRESHOLD) {
+                eta = dataPoint.getTime().getTime() - TimeUnit.MINUTES.toMillis(30);
+            }
         }
         text = text.substring(0, text.length() - 2);
         text += "]\n\n";
 
-        text += "Sending next on " + dateFormat.format(new Date(eta));
+        if (notify)
+            text += ":bell: This would have sent a notification. :bell:\n\n";
+
+        text += "Will check again at " + dateFormat.format(new Date(eta));
 
         Slack.Message message = new Slack.Message();
         message.setText(text);
