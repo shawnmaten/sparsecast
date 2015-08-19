@@ -68,13 +68,16 @@ public class ForecastTask implements DeferredTask {
         text += dateFormat.format(new Date()) + "\n\n";
         boolean notify = false;
 
+        long endOfMinutely = minutely.getData()[60].getTime().getTime();
+        long endOfHourly = hourly.getData()[48].getTime().getTime();
+
         text += "minutely\n\n[";
         for (int i = 0; i < minutely.getData().length; i++) {
             Forecast.DataPoint dataPoint = minutely.getData()[i];
             text += String.format("%.2f, ", dataPoint.getPrecipProbability());
             if (eta == 0 && dataPoint.getPrecipProbability() >= MINUTELY_THRESHOLD) {
                 notify = true;
-                eta = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(60);
+                eta = endOfMinutely;
             }
         }
         text = text.substring(0, text.length() - 2);
@@ -86,17 +89,19 @@ public class ForecastTask implements DeferredTask {
             text += String.format("%.2f, ", dataPoint.getPrecipProbability());
             if (eta == 0 && dataPoint.getPrecipProbability() >= HOURLY_DAILY_THRESHOLD) {
                 eta = dataPoint.getTime().getTime() - TimeUnit.MINUTES.toMillis(30);
+                eta = Math.max(eta, endOfMinutely);
             }
         }
         text = text.substring(0, text.length() - 2);
         text += "]\n\n";
 
         text += "daily\n\n[";
-        for (int i = 1; i < daily.getData().length; i++) {
+        for (int i = 2; i < daily.getData().length; i++) {
             Forecast.DataPoint dataPoint = daily.getData()[i];
             text += String.format("%.2f, ", dataPoint.getPrecipProbability());
             if (eta == 0 && dataPoint.getPrecipProbability() >= HOURLY_DAILY_THRESHOLD) {
                 eta = dataPoint.getTime().getTime() - TimeUnit.MINUTES.toMillis(30);
+                eta = Math.max(eta, endOfHourly);
             }
         }
         text = text.substring(0, text.length() - 2);
