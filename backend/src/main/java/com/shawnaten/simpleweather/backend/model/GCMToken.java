@@ -4,8 +4,10 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
+import java.io.Serializable;
+
 @Entity
-public class GCMToken {
+public class GCMToken implements Serializable {
 
     @Id private Long id;
 
