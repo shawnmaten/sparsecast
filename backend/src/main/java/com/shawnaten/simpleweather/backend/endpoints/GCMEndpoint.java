@@ -10,7 +10,7 @@ import com.shawnaten.simpleweather.backend.Constants;
 import com.shawnaten.simpleweather.backend.Dagger;
 import com.shawnaten.simpleweather.backend.UserIdFix;
 import com.shawnaten.simpleweather.backend.model.GCMToken;
-import com.shawnaten.simpleweather.backend.model.Slack;
+import com.shawnaten.simpleweather.lib.model.Slack;
 
 import java.util.logging.Logger;
 

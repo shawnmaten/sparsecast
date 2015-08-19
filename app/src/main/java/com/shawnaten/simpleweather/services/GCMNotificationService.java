@@ -2,7 +2,6 @@ package com.shawnaten.simpleweather.services;
 
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,7 +42,7 @@ public class GCMNotificationService extends GcmListenerService {
                 }
                 break;
             case MessagingCodes.LOCATION_REQUEST:
-                startService(new Intent(this, LocationService.class));
+                LocationService2.start(this);
                 break;
         }
     }

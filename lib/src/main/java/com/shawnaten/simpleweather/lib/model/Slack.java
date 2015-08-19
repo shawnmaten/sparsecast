@@ -1,4 +1,4 @@
-package com.shawnaten.simpleweather.backend.model;
+package com.shawnaten.simpleweather.lib.model;
 
 import retrofit.client.Response;
 import retrofit.http.Body;

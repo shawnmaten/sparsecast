@@ -67,6 +67,7 @@
     <string name="service_gcm_registrar">GCM Registrar Service</string>
     <string name="service_gcm_token_refresh">GCM Token Refresh Service</string>
     <string name="service_location">Location Service</string>
+    <string name="service_activity_recognition">Activity Recognition Service</string>
 
     <string name="close">close</string>
 

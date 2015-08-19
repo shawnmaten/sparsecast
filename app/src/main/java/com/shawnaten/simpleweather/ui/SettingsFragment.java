@@ -1,7 +1,6 @@
 package com.shawnaten.simpleweather.ui;
 
 import android.accounts.Account;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -12,7 +11,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.shawnaten.simpleweather.App;
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.simpleweather.services.LocationService;
+import com.shawnaten.simpleweather.services.LocationService2;
 import com.shawnaten.simpleweather.tools.AnalyticsCodes;
 import com.shawnaten.simpleweather.tools.LocalizationSettings;
 import com.shawnaten.simpleweather.tools.LocationSettings;
@@ -92,13 +91,10 @@ public class SettingsFragment extends PreferenceFragment
                 LocalizationSettings.configure(getApp());
                 break;
             case "prefLocationNotify":
-                Intent intent = new Intent(getBaseActivity(), LocationService.class);
-
                 if (prefs.getBoolean(key, false))
-                    getBaseActivity().startService(intent);
+                    LocationService2.start(getBaseActivity());
                 else
-                    getBaseActivity().stopService(intent);
-
+                    LocationService2.stop(getBaseActivity());
                 break;
         }
     }

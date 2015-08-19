@@ -1,6 +1,6 @@
-package com.shawnaten.simpleweather.backend.module;
+package com.shawnaten.simpleweather.lib.module;
 
-import com.shawnaten.simpleweather.backend.model.Slack;
+import com.shawnaten.simpleweather.lib.model.Slack;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

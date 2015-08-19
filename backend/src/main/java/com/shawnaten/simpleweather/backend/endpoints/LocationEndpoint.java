@@ -7,7 +7,7 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
 import com.shawnaten.simpleweather.backend.Constants;
 import com.shawnaten.simpleweather.backend.Dagger;
-import com.shawnaten.simpleweather.backend.model.Slack;
+import com.shawnaten.simpleweather.lib.model.Slack;
 
 import java.util.logging.Logger;
 

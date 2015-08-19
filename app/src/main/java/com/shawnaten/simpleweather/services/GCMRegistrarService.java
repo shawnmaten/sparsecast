@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.shawnaten.simpleweather.R;
@@ -18,6 +19,7 @@ import javax.inject.Inject;
 public class GCMRegistrarService extends IntentService {
     @Inject SharedPreferences prefs;
     @Inject GcmAPI gcmAPI;
+    @Inject GoogleApiClient googleApiClient;
 
     public GCMRegistrarService() {
         super("GCMRegistrationService");
@@ -56,7 +58,7 @@ public class GCMRegistrarService extends IntentService {
                 gcmAPI.insert(newToken).execute();
             prefs.edit().putString(gcmKey, newToken).apply();
             if (prefs.getBoolean(notifyKey, false))
-                startService(new Intent(this, LocationService.class));
+                LocationService2.start(this);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -13,10 +13,8 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        if (preferences.getBoolean(context.getString(R.string.pref_location_notify_key), false)) {
-            Intent serviceIntent = new Intent(context , LocationService.class);
-            context.startService(serviceIntent);
-        }
+        if (preferences.getBoolean(context.getString(R.string.pref_location_notify_key), false))
+           LocationService2.start(context);
 
     }
 }

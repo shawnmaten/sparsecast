@@ -8,6 +8,7 @@ import com.shawnaten.simpleweather.module.GoogleApiClientModule;
 import com.shawnaten.simpleweather.module.LocationApiModule;
 import com.shawnaten.simpleweather.module.PreferencesModule;
 import com.shawnaten.simpleweather.module.ReactiveLocationProviderModule;
+import com.shawnaten.simpleweather.services.ActivityRecognitionService;
 import com.shawnaten.simpleweather.services.GCMNotificationService;
 import com.shawnaten.simpleweather.services.GCMRegistrarService;
 import com.shawnaten.simpleweather.services.GCMTokenRefreshService;
@@ -35,4 +36,5 @@ public interface ServiceComponent {
     GCMRegistrarService inject(GCMRegistrarService service);
     GCMTokenRefreshService inject(GCMTokenRefreshService service);
     LocationHandler inject(LocationHandler locationHandler);
+    ActivityRecognitionService inject(ActivityRecognitionService service);
 }
