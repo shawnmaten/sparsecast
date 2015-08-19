@@ -23,7 +23,7 @@ import static com.shawnaten.simpleweather.backend.OfyService.ofy;
 public class ForecastTask implements DeferredTask {
 
     private static final double MINUTELY_THRESHOLD = .5;
-    private static final double HOURLY_DAILY_THRESHOLD = 0;
+    private static final double HOURLY_DAILY_THRESHOLD = .2;
 
     public static final String QUEUE = "forecast-queue";
 
@@ -81,7 +81,7 @@ public class ForecastTask implements DeferredTask {
         text += "]\n\n";
 
         text += "hourly\n\n[";
-        for (int i = 0; i < hourly.getData().length; i++) {
+        for (int i = 1; i < hourly.getData().length; i++) {
             Forecast.DataPoint dataPoint = hourly.getData()[i];
             text += String.format("%.2f, ", dataPoint.getPrecipProbability());
             if (eta == 0 && dataPoint.getPrecipProbability() >= HOURLY_DAILY_THRESHOLD) {
@@ -92,7 +92,7 @@ public class ForecastTask implements DeferredTask {
         text += "]\n\n";
 
         text += "daily\n\n[";
-        for (int i = 0; i < daily.getData().length; i++) {
+        for (int i = 1; i < daily.getData().length; i++) {
             Forecast.DataPoint dataPoint = daily.getData()[i];
             text += String.format("%.2f, ", dataPoint.getPrecipProbability());
             if (eta == 0 && dataPoint.getPrecipProbability() >= HOURLY_DAILY_THRESHOLD) {
