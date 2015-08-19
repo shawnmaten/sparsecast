@@ -110,7 +110,7 @@ public class ForecastTask implements DeferredTask {
         if (notify)
             text += ":bell: This would have sent a notification. :bell:\n\n";
 
-        text += "Will check again at " + dateFormat.format(new Date(eta) + "\n***");
+        text += "Will check again at " + dateFormat.format(new Date(eta)) + "\n***";
 
         Slack.Message message = new Slack.Message();
         message.setText(text);
