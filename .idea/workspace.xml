@@ -9,7 +9,7 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b67a918f-24a8-487a-a64a-74a4340de2b8" name="Default" comment="has to be &gt;= .2 for hour and day&#10;skipping this hour and this day">
+    <list default="true" id="b67a918f-24a8-487a-a64a-74a4340de2b8" name="Default" comment="tweaking timings">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/ForecastTask.java" afterPath="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/ForecastTask.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -101,8 +101,8 @@
       <file leaf-file-name="ForecastTask.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/ForecastTask.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.36480686">
-              <caret line="95" column="24" selection-start-line="95" selection-start-column="24" selection-end-line="95" selection-end-column="24" />
+            <state vertical-scroll-proportion="0.49356222">
+              <caret line="115" column="30" selection-start-line="115" selection-start-column="30" selection-end-line="115" selection-end-column="30" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -5183,12 +5183,6 @@
       <option name="number" value="Default" />
       <updated>1435973806470</updated>
     </task>
-    <task id="LOCAL-00008" summary="vertical weather bar tweaks&#10;temperature bar&#10;horizontal weather bar">
-      <created>1436660497993</created>
-      <option name="number" value="00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1436660497993</updated>
-    </task>
     <task id="LOCAL-00009" summary="fab">
       <created>1436672502663</created>
       <option name="number" value="00009" />
@@ -5477,7 +5471,13 @@
       <option name="project" value="LOCAL" />
       <updated>1439958725676</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="tweaking timings">
+      <created>1440026394285</created>
+      <option name="number" value="00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1440026394287</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="TodoView">
@@ -5569,7 +5569,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
-    <MESSAGE value="fixing filenames" />
     <MESSAGE value="precipitation notifications" />
     <MESSAGE value="limited location updates to every 15 min&#10;location cleared after forecast check" />
     <MESSAGE value="reworking notifications" />
@@ -5594,7 +5593,8 @@
     <MESSAGE value="tweaking test message" />
     <MESSAGE value="processing forecast" />
     <MESSAGE value="has to be &gt;= .2 for hour and day&#10;skipping this hour and this day" />
-    <option name="LAST_COMMIT_MESSAGE" value="has to be &gt;= .2 for hour and day&#10;skipping this hour and this day" />
+    <MESSAGE value="tweaking timings" />
+    <option name="LAST_COMMIT_MESSAGE" value="tweaking timings" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -5979,8 +5979,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/ForecastTask.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.36480686">
-          <caret line="95" column="24" selection-start-line="95" selection-start-column="24" selection-end-line="95" selection-end-column="24" />
+        <state vertical-scroll-proportion="0.49356222">
+          <caret line="115" column="30" selection-start-line="115" selection-start-column="30" selection-end-line="115" selection-end-column="30" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

@@ -64,7 +64,7 @@ public class ForecastTask implements DeferredTask {
         if (minutely == null || hourly == null || daily == null)
             return;
 
-        String text = ForecastTask.class.getSimpleName() + "\n\n";
+        String text = "***\n" + ForecastTask.class.getSimpleName() + "\n\n";
         text += dateFormat.format(new Date()) + "\n\n";
         boolean notify = false;
 
@@ -110,7 +110,7 @@ public class ForecastTask implements DeferredTask {
         if (notify)
             text += ":bell: This would have sent a notification. :bell:\n\n";
 
-        text += "Will check again at " + dateFormat.format(new Date(eta));
+        text += "Will check again at " + dateFormat.format(new Date(eta) + "\n***");
 
         Slack.Message message = new Slack.Message();
         message.setText(text);
