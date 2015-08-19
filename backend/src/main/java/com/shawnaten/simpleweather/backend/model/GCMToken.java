@@ -11,6 +11,8 @@ public class GCMToken {
 
     @Index private String userId;
     @Index private String gcmToken;
+    private String forecastTask;
+    private String locationTask;
 
     public String getUserId() {
         return userId;
@@ -26,5 +28,21 @@ public class GCMToken {
 
     public void setGcmToken(String gcmToken) {
         this.gcmToken = gcmToken;
+    }
+
+    public String getForecastTask() {
+        return forecastTask;
+    }
+
+    public void setForecastTask(String forecastTask) {
+        this.forecastTask = forecastTask;
+    }
+
+    public String getLocationTask() {
+        return locationTask;
+    }
+
+    public void setLocationTask(String locationTask) {
+        this.locationTask = locationTask;
     }
 }

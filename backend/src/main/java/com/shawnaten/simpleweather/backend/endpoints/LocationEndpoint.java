@@ -7,11 +7,15 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
 import com.shawnaten.simpleweather.backend.Constants;
 import com.shawnaten.simpleweather.backend.Dagger;
+import com.shawnaten.simpleweather.backend.ForecastTask;
+import com.shawnaten.simpleweather.backend.model.GCMToken;
 import com.shawnaten.simpleweather.lib.model.Slack;
 
 import java.util.logging.Logger;
 
 import javax.inject.Named;
+
+import static com.shawnaten.simpleweather.backend.OfyService.ofy;
 
 @Api(
         name = "locationAPI",
@@ -54,17 +58,12 @@ public class LocationEndpoint {
         message.setText(LocationEndpoint.class.getSimpleName() + " report");
         Dagger.getNotificationComponent().slackService().sendMessage(message).getUrl();
 
-        /*
-        ForecastTask task = new ForecastTask(
-                MessagingCodes.HOUR_TYPE_CURRENT,
-                locationReport.getGcmToken(),
-                locationReport.getLat(),
-                locationReport.getLng()
-        );
+        GCMToken record;
+        record = ofy().load().type(GCMToken.class).filter("gcmToken", gcmToken).first().now();
 
-        Queue queue = QueueFactory.getQueue(ForecastTask.QUEUE);
+        ForecastTask task = new ForecastTask(record, lat, lng);
 
-        queue.add(TaskOptions.Builder.withPayload(task));*/
+        ForecastTask.enqueue(task);
 
     }
 
