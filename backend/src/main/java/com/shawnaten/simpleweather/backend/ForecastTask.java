@@ -115,8 +115,10 @@ public class ForecastTask implements DeferredTask {
         text = text.substring(0, text.length() - 2);
         text += "]\n\n";
 
-        if (notify)
+        if (notify) {
             text += ":bell: This would have sent a notification. :bell:\n\n";
+            text += minutely.getSummary() + "\n\n";
+        }
 
         text += "Will check again at " + dateFormat.format(new Date(eta)) + "\n***";
 
