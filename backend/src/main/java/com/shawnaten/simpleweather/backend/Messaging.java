@@ -6,6 +6,7 @@ import com.google.android.gcm.server.Sender;
 import com.shawnaten.simpleweather.backend.model.GCMToken;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.google.android.gcm.server.Constants.ERROR_NOT_REGISTERED;
@@ -38,7 +39,8 @@ public class Messaging {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.setLevel(Level.SEVERE);
+            log.severe(e.getMessage());
         }
 
         return result;
