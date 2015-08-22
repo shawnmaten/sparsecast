@@ -11,7 +11,6 @@ import com.shawnaten.simpleweather.backend.Messaging;
 import com.shawnaten.simpleweather.backend.model.GCMToken;
 import com.shawnaten.simpleweather.lib.model.APIKeys;
 import com.shawnaten.simpleweather.lib.model.Forecast;
-import com.shawnaten.simpleweather.lib.model.Slack;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -47,9 +46,7 @@ public class ForecastTask implements DeferredTask {
 
     @Override
     public void run() {
-        
         Forecast.Service forecastService = Dagger.getNotificationComponent().forecastService();
-        Slack.Service slackService = Dagger.getNotificationComponent().slackService();
 
         Forecast.Response forecast;
         long eta;
@@ -74,66 +71,55 @@ public class ForecastTask implements DeferredTask {
         if (minutely == null || hourly == null || daily == null)
             return;
 
-        String text = "***\n" + ForecastTask.class.getSimpleName() + "\n\n";
-        text += dateFormat.format(new Date()) + "\n\n";
+        String message = "***\n" + ForecastTask.class.getSimpleName() + "\n\n";
+        message += dateFormat.format(new Date()) + "\n\n";
         boolean notify = false;
 
         long endOfMinutely = minutely.getData()[60].getTime().getTime();
         long endOfHourly = hourly.getData()[48].getTime().getTime();
 
-        text += "minutely\n\n[";
+        message += "minutely\n\n[";
         for (int i = 0; i < minutely.getData().length; i++) {
             Forecast.DataPoint dataPoint = minutely.getData()[i];
-            text += String.format("%.2f, ", dataPoint.getPrecipProbability());
+            message += String.format("%.2f, ", dataPoint.getPrecipProbability());
             if (eta == 0 && dataPoint.getPrecipProbability() > THRESHOLD) {
                 notify = true;
                 eta = endOfMinutely;
             }
         }
-        text = text.substring(0, text.length() - 2);
-        text += "]\n\n";
+        message = message.substring(0, message.length() - 2);
+        message += "]\n\n";
 
-        text += "hourly\n\n[";
+        message += "hourly\n\n[";
         for (int i = 1; i < hourly.getData().length; i++) {
             Forecast.DataPoint dataPoint = hourly.getData()[i];
-            text += String.format("%.2f, ", dataPoint.getPrecipProbability());
+            message += String.format("%.2f, ", dataPoint.getPrecipProbability());
             if (eta == 0 && dataPoint.getPrecipProbability() > THRESHOLD) {
                 eta = dataPoint.getTime().getTime() - TimeUnit.MINUTES.toMillis(30);
                 eta = Math.max(eta, endOfMinutely);
             }
         }
-        text = text.substring(0, text.length() - 2);
-        text += "]\n\n";
+        message = message.substring(0, message.length() - 2);
+        message += "]\n\n";
 
-        text += "daily\n\n[";
+        message += "daily\n\n[";
         for (int i = 2; i < daily.getData().length; i++) {
             Forecast.DataPoint dataPoint = daily.getData()[i];
-            text += String.format("%.2f, ", dataPoint.getPrecipProbability());
+            message += String.format("%.2f, ", dataPoint.getPrecipProbability());
             if (eta == 0 && dataPoint.getPrecipProbability() > THRESHOLD) {
                 eta = dataPoint.getTime().getTime() - TimeUnit.MINUTES.toMillis(30);
                 eta = Math.max(eta, endOfHourly);
             }
         }
-        text = text.substring(0, text.length() - 2);
-        text += "]\n\n";
+        message = message.substring(0, message.length() - 2);
+        message += "]\n\n";
 
         if (notify) {
-            text += ":bell: This would have sent a notification. :bell:\n\n";
-            text += minutely.getSummary() + "\n\n";
+            message += ":bell: This would have sent a notification. :bell:\n\n";
+            message += minutely.getSummary() + "\n\n";
         }
 
-        text += "Will check again at " + dateFormat.format(new Date(eta)) + "\n***";
-
-        Slack.Message message = new Slack.Message();
-        message.setText(text);
-
-        try {
-            slackService.sendMessage(message);
-        } catch (RetrofitError e) {
-            log.setLevel(Level.SEVERE);
-            log.severe(e.getKind().name());
-            return;
-        }
+        message += "Will check again at " + dateFormat.format(new Date(eta)) + "\n***";
 
         LocationTask task = new LocationTask(gcmToken);
         LocationTask.enqueue(task, eta);
