@@ -37,13 +37,14 @@ import static com.shawnaten.simpleweather.backend.OfyService.ofy;
 )
 public class GCMEndpoint {
 
+    @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger(GCMEndpoint.class.getName());
 
     @ApiMethod(
             name = "insert",
             httpMethod = ApiMethod.HttpMethod.POST
     )
-    public void insert(
+    public void insert(suppre
             User user, @Named("token") String token
     ) throws OAuthRequestException, EntityNotFoundException {
 
