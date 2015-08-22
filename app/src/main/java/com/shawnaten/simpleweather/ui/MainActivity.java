@@ -225,9 +225,19 @@ public class MainActivity extends BaseActivity {
                                     location.getLatitude(), location.getLongitude(), 1);
                         }
                     })
-                    .subscribe(new Action1<List<Address>>() {
+                    .subscribe(new Subscriber<List<Address>>() {
                         @Override
-                        public void call(List<Address> addresses) {
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(List<Address> addresses) {
                             locationView.setText(addresses.get(0).getLocality());
                         }
                     });
@@ -244,94 +254,103 @@ public class MainActivity extends BaseActivity {
             locationView.setText(LocationSettings.getName());
         }
 
-        subs.add(forecastObservable
-                        .subscribe(new Action1<Forecast.Response>() {
-                            @Override
-                            public void call(Forecast.Response response) {
-                                sendDataToFragments(FORECAST_DATA, response);
+        Subscriber<Forecast.Response> subscriber = new Subscriber<Forecast.Response>() {
+            @Override
+            public void onCompleted() {
 
-                                String category = response.getCurrently().getIcon();
+            }
 
-                                target = new Target() {
-                                    @Override
-                                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            @Override
+            public void onError(Throwable e) {
 
-                                        Palette palette = Palette.from(bitmap).generate();
-                                        int color = palette.getMutedColor(0x000000);
+            }
 
-                                        color = Color.argb(
-                                                102,
-                                                Color.red(color),
-                                                Color.green(color),
-                                                Color.blue(color)
-                                        );
+            @Override
+            public void onNext(Forecast.Response response) {
+                sendDataToFragments(FORECAST_DATA, response);
 
-                                        photo.setImageBitmap(bitmap);
-                                        overlay.setBackgroundColor(color);
+                String category = response.getCurrently().getIcon();
 
-                                        Map<String, String> hit = new HitBuilders.TimingBuilder()
-                                                .setCategory(AnalyticsCodes.CATEGORY_FULL_LOAD)
-                                                .setValue(System.currentTimeMillis() - startLoad)
-                                                .build();
+                target = new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 
-                                        tracker.send(hit);
-                                    }
+                        Palette palette = Palette.from(bitmap).generate();
+                        int color = palette.getMutedColor(0x000000);
 
-                                    @Override
-                                    public void onBitmapFailed(Drawable errorDrawable) {
+                        color = Color.argb(
+                                102,
+                                Color.red(color),
+                                Color.green(color),
+                                Color.blue(color)
+                        );
 
-                                    }
+                        photo.setImageBitmap(bitmap);
+                        overlay.setBackgroundColor(color);
 
-                                    @Override
-                                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+                        Map<String, String> hit = new HitBuilders.TimingBuilder()
+                                .setCategory(AnalyticsCodes.CATEGORY_FULL_LOAD)
+                                .setValue(System.currentTimeMillis() - startLoad)
+                                .build();
 
-                                    }
-                                };
+                        tracker.send(hit);
+                    }
 
-                                ImagesApiModule
-                                        .getImage(imagesApi, category)
-                                        .flatMap(new Func1<Image, Observable<Instagram.Response>>() {
-                                            @Override
-                                            public Observable<Instagram.Response> call(Image image) {
-                                                return instagramService.getMedia(
-                                                        APIKeys.INSTAGRAM,
-                                                        image.getShortcode()
-                                                );
-                                            }
-                                        })
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new Action1<Instagram.Response>() {
-                                            @Override
-                                            public void call(Instagram.Response res) {
-                                                Instagram.MediaData data = res.getData();
-                                                Instagram.MediaData.Images images = data.getImages();
-
-                                                String url = images.getStandardResolution().getUrl();
-                                                String post = data.getLink();
-                                                String user = data.getUser().getUsername();
-
-                                                Attributions.setInstagramUser(user);
-                                                Attributions.setInstagramUrl(post);
-
-                                                Picasso.with(photo.getContext()).load(url).into(target);
-                                            }
-                                        });
-
-                                DecimalFormat tf = ForecastTools.getTempForm();
-
-                                temp.setText(tf.format(response.getCurrently().getTemperature()));
-                                status.setText(response.getCurrently().getSummary());
-
-                                String feelsLikeText;
-
-                                feelsLikeText = String.format("%s %s", getString(R.string.feels_like),
-                                        tf.format(response.getCurrently().getApparentTemperature()));
-
-                        feelsLikes.setText(feelsLikeText);
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
 
                     }
-                })
-        );
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                };
+
+                ImagesApiModule
+                        .getImage(imagesApi, category)
+                        .flatMap(new Func1<Image, Observable<Instagram.Response>>() {
+                            @Override
+                            public Observable<Instagram.Response> call(Image image) {
+                                return instagramService.getMedia(
+                                        APIKeys.INSTAGRAM,
+                                        image.getShortcode()
+                                );
+                            }
+                        })
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<Instagram.Response>() {
+                            @Override
+                            public void call(Instagram.Response res) {
+                                Instagram.MediaData data = res.getData();
+                                Instagram.MediaData.Images images = data.getImages();
+
+                                String url = images.getStandardResolution().getUrl();
+                                String post = data.getLink();
+                                String user = data.getUser().getUsername();
+
+                                Attributions.setInstagramUser(user);
+                                Attributions.setInstagramUrl(post);
+
+                                Picasso.with(photo.getContext()).load(url).into(target);
+                            }
+                        });
+
+                DecimalFormat tf = ForecastTools.getTempForm();
+
+                temp.setText(tf.format(response.getCurrently().getTemperature()));
+                status.setText(response.getCurrently().getSummary());
+
+                String feelsLikeText;
+
+                feelsLikeText = String.format("%s %s", getString(R.string.feels_like),
+                        tf.format(response.getCurrently().getApparentTemperature()));
+
+                feelsLikes.setText(feelsLikeText);
+            }
+        };
+
+        subs.add(forecastObservable.subscribe(subscriber));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             window.setStatusBarColor(0x00000000);
