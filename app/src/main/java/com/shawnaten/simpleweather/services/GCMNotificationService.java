@@ -6,11 +6,11 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.lib.model.MessagingCodes;
+import com.shawnaten.simpleweather.tools.ForecastIconSelector;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -33,29 +33,24 @@ public class GCMNotificationService extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
 
         switch (data.getString(MessagingCodes.MESSAGE_TYPE, "")) {
-            case MessagingCodes.MESSAGE_TYPE_HOUR:
-                switch (data.getString(MessagingCodes.HOUR_TYPE, "")) {
-                    case MessagingCodes.HOUR_TYPE_CURRENT:
-                        sendNotification(data.getString(MessagingCodes.HOUR_CONTENT));
-                        break;
-                    case MessagingCodes.HOUR_TYPE_SAVED:
-                        break;
-                }
+            case MessagingCodes.PRECIPITATION:
+                sendNotification(data);
                 break;
             case MessagingCodes.LOCATION_REQUEST:
-                Log.e(this.getClass().getSimpleName(), MessagingCodes.LOCATION_REQUEST);
                 LocationService2.start(this);
                 break;
         }
     }
 
-    private void sendNotification(String content){
+    private void sendNotification(Bundle data) {
+        String icon = data.getString(MessagingCodes.ICON);
+        String content = data.getString(MessagingCodes.CONTENT);
 
-        if (content == null)
+        if (icon == null || content == null)
             return;
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(ForecastIconSelector.getImageId(icon))
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(content)
                 .setSound(soundUri)

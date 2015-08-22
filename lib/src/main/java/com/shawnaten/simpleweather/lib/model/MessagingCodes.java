@@ -5,12 +5,8 @@ public class MessagingCodes {
     public static final String MESSAGE_TYPE = "messageType";
 
     public static final String LOCATION_REQUEST = "locationRequest";
+    public static final String PRECIPITATION = "precipitation";
 
-    public static final String MESSAGE_TYPE_HOUR = "messageTypeHour";
-
-    public static final String HOUR_TYPE = "hourType";
-    public static final String HOUR_TYPE_CURRENT = "hourTypeCurrent";
-    public static final String HOUR_TYPE_SAVED = "hourTypeSaved";
-    public static final String HOUR_CONTENT = "hourContent";
-
+    public static final String ICON = "icon";
+    public static final String CONTENT = "content";
 }
