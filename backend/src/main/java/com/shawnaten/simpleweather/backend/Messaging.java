@@ -3,7 +3,7 @@ package com.shawnaten.simpleweather.backend;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
-import com.shawnaten.simpleweather.backend.model.GCMToken;
+import com.shawnaten.simpleweather.backend.model.GCMRecord;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -27,9 +27,9 @@ public class Messaging {
             if (result.getMessageId() == null) {
                 switch(result.getErrorCodeName()) {
                     case ERROR_NOT_REGISTERED:
-                        GCMToken entity = ofy()
+                        GCMRecord entity = ofy()
                                 .load()
-                                .type(GCMToken.class)
+                                .type(GCMRecord.class)
                                 .filter("gcmToken", gcmToken)
                                 .first()
                                 .now();

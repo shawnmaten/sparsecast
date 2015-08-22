@@ -2,7 +2,7 @@ package com.shawnaten.simpleweather.lib.model;
 
 public class MessagingCodes {
 
-    public static final String MESSAGE_TYPE = "messageType";
+    public static final String TYPE = "type";
 
     public static final String LOCATION_REQUEST = "locationRequest";
     public static final String PRECIPITATION = "precipitation";

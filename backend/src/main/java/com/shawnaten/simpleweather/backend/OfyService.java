@@ -3,7 +3,7 @@ package com.shawnaten.simpleweather.backend;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
-import com.shawnaten.simpleweather.backend.model.GCMToken;
+import com.shawnaten.simpleweather.backend.model.GCMRecord;
 import com.shawnaten.simpleweather.backend.model.Image;
 import com.shawnaten.simpleweather.backend.model.SavedPlace;
 
@@ -12,7 +12,7 @@ public class OfyService {
     static {
         ObjectifyService.register(Image.class);
         ObjectifyService.register(SavedPlace.class);
-        ObjectifyService.register(GCMToken.class);
+        ObjectifyService.register(GCMRecord.class);
     }
 
     public static Objectify ofy() {

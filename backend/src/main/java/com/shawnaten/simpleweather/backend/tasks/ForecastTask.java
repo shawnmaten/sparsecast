@@ -1,5 +1,6 @@
 package com.shawnaten.simpleweather.backend.tasks;
 
+import com.google.android.gcm.server.Message;
 import com.google.appengine.api.taskqueue.DeferredTask;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
@@ -8,15 +9,15 @@ import com.google.appengine.api.taskqueue.TaskOptions;
 import com.googlecode.objectify.VoidWork;
 import com.shawnaten.simpleweather.backend.Dagger;
 import com.shawnaten.simpleweather.backend.Messaging;
-import com.shawnaten.simpleweather.backend.model.GCMToken;
+import com.shawnaten.simpleweather.backend.model.GCMRecord;
 import com.shawnaten.simpleweather.lib.model.APIKeys;
 import com.shawnaten.simpleweather.lib.model.Forecast;
+import com.shawnaten.simpleweather.lib.model.MessagingCodes;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,27 +27,31 @@ import static com.shawnaten.simpleweather.backend.OfyService.ofy;
 
 public class ForecastTask implements DeferredTask {
 
-    private static final double THRESHOLD = .5;
     public static final String QUEUE = "forecast-queue";
     private static final Logger log = Logger.getLogger(Messaging.class.getName());
 
-    private GCMToken gcmToken;
+    private GCMRecord gcmRecord;
     private double lat;
     private double lng;
 
-    public ForecastTask(GCMToken gcmToken, double lat, double lng) {
-        this.gcmToken = gcmToken;
+    public ForecastTask(GCMRecord gcmRecord, double lat, double lng) {
+        this.gcmRecord = gcmRecord;
         this.lat = lat;
         this.lng = lng;
     }
 
-    public GCMToken getGcmToken() {
-        return gcmToken;
+    public GCMRecord getGcmRecord() {
+        return gcmRecord;
     }
 
     @Override
     public void run() {
         Forecast.Service forecastService = Dagger.getNotificationComponent().forecastService();
+        DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance(
+                DateFormat.SHORT,
+                DateFormat.SHORT
+        );
+        dateFormat.setTimeZone(TimeZone.getTimeZone("US/Central"));
 
         Forecast.Response forecast;
         long eta;
@@ -60,29 +65,26 @@ public class ForecastTask implements DeferredTask {
             return;
         }
 
-        Forecast.DataBlock minutely = forecast.getMinutely();
-        Forecast.DataBlock hourly = forecast.getHourly();
-        Forecast.DataBlock daily = forecast.getDaily();
+        Forecast.DataBlock minutelyBlock = forecast.getMinutely();
+        Forecast.DataBlock hourlyBlock = forecast.getHourly();
+        Forecast.DataBlock dailyBlock = forecast.getDaily();
 
-        DateFormat dateFormat;
-        dateFormat = SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("US/Central"));
-
-        if (minutely == null || hourly == null || daily == null)
+        if (minutelyBlock == null || hourlyBlock == null || dailyBlock == null)
             return;
 
-        String message = "***\n" + ForecastTask.class.getSimpleName() + "\n\n";
-        message += dateFormat.format(new Date()) + "\n\n";
+        Forecast.DataPoint minutelyData[] = minutelyBlock.getData();
+        Forecast.DataPoint hourlyData[] = hourlyBlock.getData();
+        Forecast.DataPoint dailyData[] = dailyBlock.getData();
+
         boolean notify = false;
 
-        long endOfMinutely = minutely.getData()[60].getTime().getTime();
-        long endOfHourly = hourly.getData()[48].getTime().getTime();
+        long endOfMinutely = minutelyData[minutelyData.length - 1].getTime().getTime();
+        long endOfHourly = hourlyData[hourlyData.length - 1].getTime().getTime();
 
-        message += "minutely\n\n[";
-        for (int i = 0; i < minutely.getData().length; i++) {
-            Forecast.DataPoint dataPoint = minutely.getData()[i];
+        String message = "\nminutely\n[";
+        for (Forecast.DataPoint dataPoint : minutelyData) {
             message += String.format("%.2f, ", dataPoint.getPrecipProbability());
-            if (eta == 0 && dataPoint.getPrecipProbability() > THRESHOLD) {
+            if (eta == 0 && dataPoint.getPrecipProbability() > 0) {
                 notify = true;
                 eta = endOfMinutely;
             }
@@ -90,43 +92,47 @@ public class ForecastTask implements DeferredTask {
         message = message.substring(0, message.length() - 2);
         message += "]\n\n";
 
-        message += "hourly\n\n[";
-        for (int i = 1; i < hourly.getData().length; i++) {
-            Forecast.DataPoint dataPoint = hourly.getData()[i];
+        message += "hourly\n[";
+        for (Forecast.DataPoint dataPoint : hourlyData) {
             message += String.format("%.2f, ", dataPoint.getPrecipProbability());
-            if (eta == 0 && dataPoint.getPrecipProbability() > THRESHOLD) {
-                eta = dataPoint.getTime().getTime() - TimeUnit.MINUTES.toMillis(30);
-                eta = Math.max(eta, endOfMinutely);
-            }
+            if (eta == 0 && dataPoint.getPrecipProbability() > 0)
+                eta = Math.max(endOfMinutely, dataPoint.getTime().getTime());
         }
         message = message.substring(0, message.length() - 2);
         message += "]\n\n";
 
-        message += "daily\n\n[";
-        for (int i = 2; i < daily.getData().length; i++) {
-            Forecast.DataPoint dataPoint = daily.getData()[i];
+        message += "daily\n[";
+        for (Forecast.DataPoint dataPoint : dailyData) {
             message += String.format("%.2f, ", dataPoint.getPrecipProbability());
-            if (eta == 0 && dataPoint.getPrecipProbability() > THRESHOLD) {
-                eta = dataPoint.getTime().getTime() - TimeUnit.MINUTES.toMillis(30);
-                eta = Math.max(eta, endOfHourly);
-            }
+            if (eta == 0 && dataPoint.getPrecipProbability() > 0)
+                eta = Math.max(endOfHourly, dataPoint.getTime().getTime());
         }
         message = message.substring(0, message.length() - 2);
         message += "]\n\n";
 
         if (notify) {
-            message += ":bell: This would have sent a notification. :bell:\n\n";
-            message += minutely.getSummary() + "\n\n";
+            message += "This sent a notification.\n";
+            message += minutelyBlock.getSummary() + "\n\n";
         }
 
-        message += "Will check again at " + dateFormat.format(new Date(eta)) + "\n***";
+        message += "Next check at " + dateFormat.format(new Date(eta));
 
-        LocationTask task = new LocationTask(gcmToken);
+        log.setLevel(Level.INFO);
+        log.info(message);
+
+        Message msg = new Message.Builder()
+                .addData(MessagingCodes.TYPE, MessagingCodes.PRECIPITATION)
+                .addData(MessagingCodes.ICON, minutelyBlock.getIcon())
+                .addData(MessagingCodes.CONTENT, minutelyBlock.getSummary())
+                .build();
+        Messaging.sendMessage(gcmRecord.getGcmToken(), msg);
+
+        LocationTask task = new LocationTask(gcmRecord);
         LocationTask.enqueue(task, eta);
     }
 
-    public static void delete(final GCMToken gcmToken) {
-        if (gcmToken.getForecastTask() == null)
+    public static void delete(final GCMRecord gcmRecord) {
+        if (gcmRecord.getForecastTask() == null)
             return;
 
         final Queue queue = QueueFactory.getQueue(QUEUE);
@@ -134,17 +140,17 @@ public class ForecastTask implements DeferredTask {
         ofy().transact(new VoidWork() {
             @Override
             public void vrun() {
-                queue.deleteTask(gcmToken.getForecastTask());
-                gcmToken.setForecastTask(null);
-                ofy().save().entity(gcmToken).now();
+                queue.deleteTask(gcmRecord.getForecastTask());
+                gcmRecord.setForecastTask(null);
+                ofy().save().entity(gcmRecord).now();
             }
         });
     }
 
     public static void enqueue(final ForecastTask task) {
 
-        LocationTask.delete(task.getGcmToken());
-        delete(task.getGcmToken());
+        LocationTask.delete(task.getGcmRecord());
+        delete(task.getGcmRecord());
 
         final Queue queue = QueueFactory.getQueue(LocationTask.QUEUE);
 
@@ -153,8 +159,8 @@ public class ForecastTask implements DeferredTask {
             public void vrun() {
                 TaskHandle handler;
                 handler = queue.add(TaskOptions.Builder.withPayload(task));
-                task.gcmToken.setForecastTask(handler.getName());
-                ofy().save().entity(task.gcmToken).now();
+                task.gcmRecord.setForecastTask(handler.getName());
+                ofy().save().entity(task.gcmRecord).now();
             }
         });
     }

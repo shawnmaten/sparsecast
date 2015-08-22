@@ -32,7 +32,7 @@ public class GCMNotificationService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
 
-        switch (data.getString(MessagingCodes.MESSAGE_TYPE, "")) {
+        switch (data.getString(MessagingCodes.TYPE, "")) {
             case MessagingCodes.PRECIPITATION:
                 sendNotification(data);
                 break;

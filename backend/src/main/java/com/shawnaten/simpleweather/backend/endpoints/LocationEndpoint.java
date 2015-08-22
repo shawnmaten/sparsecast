@@ -6,7 +6,7 @@ import com.google.api.server.spi.config.ApiNamespace;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
 import com.shawnaten.simpleweather.backend.model.Constants;
-import com.shawnaten.simpleweather.backend.model.GCMToken;
+import com.shawnaten.simpleweather.backend.model.GCMRecord;
 import com.shawnaten.simpleweather.backend.tasks.ForecastTask;
 
 import java.util.logging.Logger;
@@ -53,8 +53,8 @@ public class LocationEndpoint {
         if (user == null)
             throw new OAuthRequestException("unauthorized request");
 
-        GCMToken record;
-        record = ofy().load().type(GCMToken.class).filter("gcmToken", gcmToken).first().now();
+        GCMRecord record;
+        record = ofy().load().type(GCMRecord.class).filter("gcmToken", gcmToken).first().now();
 
         ForecastTask task = new ForecastTask(record, lat, lng);
 

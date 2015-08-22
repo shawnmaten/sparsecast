@@ -8,7 +8,7 @@ import com.google.appengine.api.taskqueue.TaskHandle;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.googlecode.objectify.VoidWork;
 import com.shawnaten.simpleweather.backend.Messaging;
-import com.shawnaten.simpleweather.backend.model.GCMToken;
+import com.shawnaten.simpleweather.backend.model.GCMRecord;
 import com.shawnaten.simpleweather.lib.model.MessagingCodes;
 
 import static com.shawnaten.simpleweather.backend.OfyService.ofy;
@@ -17,27 +17,27 @@ public class LocationTask implements DeferredTask {
 
     public static final String QUEUE = "location-queue";
 
-    private GCMToken gcmToken;
+    private GCMRecord gcmRecord;
 
-    public LocationTask(GCMToken gcmToken) {
-        this.gcmToken = gcmToken;
+    public LocationTask(GCMRecord gcmRecord) {
+        this.gcmRecord = gcmRecord;
     }
 
     @Override
     public void run() {
         Message message = new Message.Builder()
-                .addData(MessagingCodes.MESSAGE_TYPE, MessagingCodes.LOCATION_REQUEST)
+                .addData(MessagingCodes.TYPE, MessagingCodes.LOCATION_REQUEST)
                 .build();
 
-        Messaging.sendMessage(gcmToken.getGcmToken(), message);
+        Messaging.sendMessage(gcmRecord.getGcmToken(), message);
     }
 
-    public GCMToken getGcmToken() {
-        return gcmToken;
+    public GCMRecord getGcmRecord() {
+        return gcmRecord;
     }
 
-    public static void delete(final GCMToken gcmToken) {
-        if (gcmToken.getLocationTask() == null)
+    public static void delete(final GCMRecord gcmRecord) {
+        if (gcmRecord.getLocationTask() == null)
             return;
 
         final Queue queue = QueueFactory.getQueue(QUEUE);
@@ -45,16 +45,16 @@ public class LocationTask implements DeferredTask {
         ofy().transact(new VoidWork() {
             @Override
             public void vrun() {
-                queue.deleteTask(gcmToken.getLocationTask());
-                gcmToken.setLocationTask(null);
-                ofy().save().entity(gcmToken).now();
+                queue.deleteTask(gcmRecord.getLocationTask());
+                gcmRecord.setLocationTask(null);
+                ofy().save().entity(gcmRecord).now();
             }
         });
     }
 
     public static void enqueue(final LocationTask task, final long eta) {
 
-        delete(task.getGcmToken());
+        delete(task.getGcmRecord());
 
         final Queue queue = QueueFactory.getQueue(QUEUE);
 
@@ -63,8 +63,8 @@ public class LocationTask implements DeferredTask {
             public void vrun() {
                 TaskHandle handler;
                 handler = queue.add(TaskOptions.Builder.withPayload(task).etaMillis(eta));
-                task.getGcmToken().setLocationTask(handler.getName());
-                ofy().save().entity(task.getGcmToken()).now();
+                task.getGcmRecord().setLocationTask(handler.getName());
+                ofy().save().entity(task.getGcmRecord()).now();
             }
         });
     }

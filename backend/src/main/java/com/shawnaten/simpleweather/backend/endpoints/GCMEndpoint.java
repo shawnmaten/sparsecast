@@ -8,7 +8,7 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
 import com.shawnaten.simpleweather.backend.UserIdFix;
 import com.shawnaten.simpleweather.backend.model.Constants;
-import com.shawnaten.simpleweather.backend.model.GCMToken;
+import com.shawnaten.simpleweather.backend.model.GCMRecord;
 
 import java.util.logging.Logger;
 
@@ -51,7 +51,7 @@ public class GCMEndpoint {
         if (user == null)
             throw new OAuthRequestException("unauthorized request");
 
-        GCMToken record = new GCMToken();
+        GCMRecord record = new GCMRecord();
         record.setUserId(UserIdFix.getUserId(user));
         record.setGcmToken(token);
 
@@ -71,9 +71,9 @@ public class GCMEndpoint {
         if (user == null)
             throw new OAuthRequestException("unauthorized request");
 
-        GCMToken record = ofy()
+        GCMRecord record = ofy()
                 .load()
-                .type(GCMToken.class)
+                .type(GCMRecord.class)
                 .filter("gcmToken", oldToken)
                 .first()
                 .now();

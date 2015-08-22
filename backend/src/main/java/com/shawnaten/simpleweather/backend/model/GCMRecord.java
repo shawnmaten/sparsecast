@@ -7,7 +7,7 @@ import com.googlecode.objectify.annotation.Index;
 import java.io.Serializable;
 
 @Entity
-public class GCMToken implements Serializable {
+public class GCMRecord implements Serializable {
 
     @Id private Long id;
 
