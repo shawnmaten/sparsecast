@@ -111,6 +111,13 @@ public class ForecastTask implements DeferredTask {
         message += "]\n\n";
 
         if (notify) {
+            Message msg = new Message.Builder()
+                    .addData(MessagingCodes.TYPE, MessagingCodes.PRECIPITATION)
+                    .addData(MessagingCodes.ICON, minutelyBlock.getIcon())
+                    .addData(MessagingCodes.CONTENT, minutelyBlock.getSummary())
+                    .build();
+            Messaging.sendMessage(gcmRecord.getGcmToken(), msg);
+
             message += "This sent a notification.\n";
             message += minutelyBlock.getSummary() + "\n\n";
         }
@@ -119,13 +126,6 @@ public class ForecastTask implements DeferredTask {
 
         log.setLevel(Level.INFO);
         log.info(message);
-
-        Message msg = new Message.Builder()
-                .addData(MessagingCodes.TYPE, MessagingCodes.PRECIPITATION)
-                .addData(MessagingCodes.ICON, minutelyBlock.getIcon())
-                .addData(MessagingCodes.CONTENT, minutelyBlock.getSummary())
-                .build();
-        Messaging.sendMessage(gcmRecord.getGcmToken(), msg);
 
         LocationTask task = new LocationTask(gcmRecord);
         LocationTask.enqueue(task, eta);
