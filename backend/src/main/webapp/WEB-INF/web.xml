@@ -6,9 +6,9 @@
         <init-param>
             <param-name>services</param-name>
             <param-value>
-                com.shawnaten.simpleweather.backend.KeysEndpoint,
-                com.shawnaten.simpleweather.backend.ImagesEndpoint,
-                com.shawnaten.simpleweather.backend.SavedPlaceEndpoint,
+                com.shawnaten.simpleweather.backend.endpoints.KeysEndpoint,
+                com.shawnaten.simpleweather.backend.endpoints.ImagesEndpoint,
+                com.shawnaten.simpleweather.backend.endpoints.SavedPlaceEndpoint,
                 com.shawnaten.simpleweather.backend.endpoints.LocationEndpoint,
                 com.shawnaten.simpleweather.backend.endpoints.GCMEndpoint
             </param-value>

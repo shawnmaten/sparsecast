@@ -1,4 +1,4 @@
-package com.shawnaten.simpleweather.backend;
+package com.shawnaten.simpleweather.backend.endpoints;
 
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.Api;
@@ -7,6 +7,9 @@ import com.google.api.server.spi.config.ApiNamespace;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
+import com.shawnaten.simpleweather.backend.UserIdFix;
+import com.shawnaten.simpleweather.backend.model.Constants;
+import com.shawnaten.simpleweather.backend.model.SavedPlace;
 
 import java.util.logging.Logger;
 

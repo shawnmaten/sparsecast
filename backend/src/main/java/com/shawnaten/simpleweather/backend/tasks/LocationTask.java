@@ -1,4 +1,4 @@
-package com.shawnaten.simpleweather.backend;
+package com.shawnaten.simpleweather.backend.tasks;
 
 import com.google.android.gcm.server.Message;
 import com.google.appengine.api.taskqueue.DeferredTask;
@@ -7,6 +7,7 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskHandle;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.googlecode.objectify.VoidWork;
+import com.shawnaten.simpleweather.backend.Messaging;
 import com.shawnaten.simpleweather.backend.model.GCMToken;
 import com.shawnaten.simpleweather.lib.model.MessagingCodes;
 

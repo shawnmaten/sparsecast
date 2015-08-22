@@ -1,4 +1,4 @@
-package com.shawnaten.simpleweather.backend;
+package com.shawnaten.simpleweather.backend.model;
 
 /**
  * Created by Shawn Aten on 8/4/14.

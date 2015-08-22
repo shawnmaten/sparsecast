@@ -4,6 +4,8 @@ import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
 import com.shawnaten.simpleweather.backend.model.GCMToken;
+import com.shawnaten.simpleweather.backend.model.Image;
+import com.shawnaten.simpleweather.backend.model.SavedPlace;
 
 public class OfyService {
 

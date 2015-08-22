@@ -1,4 +1,4 @@
-package com.shawnaten.simpleweather.backend;
+package com.shawnaten.simpleweather.backend.model;
 
 public class LocationRecord {
 
