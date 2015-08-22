@@ -7,10 +7,8 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
 import com.shawnaten.simpleweather.backend.Constants;
-import com.shawnaten.simpleweather.backend.Dagger;
 import com.shawnaten.simpleweather.backend.UserIdFix;
 import com.shawnaten.simpleweather.backend.model.GCMToken;
-import com.shawnaten.simpleweather.lib.model.Slack;
 
 import java.util.logging.Logger;
 
@@ -57,10 +55,6 @@ public class GCMEndpoint {
         record.setGcmToken(token);
 
         ofy().save().entity(record).now();
-
-        Slack.Message message = new Slack.Message();
-        message.setText(GCMEndpoint.class.getSimpleName() + " insert");
-        Dagger.getNotificationComponent().slackService().sendMessage(message);
     }
 
     @ApiMethod(
@@ -85,9 +79,5 @@ public class GCMEndpoint {
 
         record.setGcmToken(newToken);
         ofy().save().entity(record).now();
-
-        Slack.Message message = new Slack.Message();
-        message.setText(GCMEndpoint.class.getSimpleName() + " update");
-        Dagger.getNotificationComponent().slackService().sendMessage(message);
     }
 }
