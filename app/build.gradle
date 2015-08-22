@@ -9,6 +9,7 @@ android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
 
+    /*
     def getVersionName = { ->
         def stdout = new ByteArrayOutputStream()
         exec {
@@ -16,14 +17,14 @@ android {
             standardOutput = stdout
         }
         return stdout.toString().trim()
-    }
+    }*/
 
     defaultConfig {
         applicationId 'com.shawnaten.simpleweather'
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 136
-        versionName getVersionName()
+        versionName "2.0" /*getVersionName()*/
         multiDexEnabled true
     }
 

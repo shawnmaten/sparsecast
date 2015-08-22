@@ -104,21 +104,16 @@ public class LocationService2 extends IntentService {
     private void process(LocationResult locationResult) {
         Location location = locationResult.getLastLocation();
 
-        if (location == null || (location.getSpeed() == 0 && prefs.contains(LAT)))
+        if (location == null)
             return;
 
         if (prefs.contains(LAT)) {
             LatLng newLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-            LatLng oldLatLng = new LatLng(
-                    prefs.getFloat(LAT, 0),
-                    prefs.getFloat(LNG, 0)
-            );
+            LatLng oldLatLng = new LatLng(prefs.getFloat(LAT, 0), prefs.getFloat(LNG, 0));
 
             double radius = INTERVAL_SECONDS * location.getSpeed();
             radius = Math.max(radius, MIN_RADIUS_METERS);
             double distance = SphericalUtil.computeDistanceBetween(newLatLng, oldLatLng);
-
-            Log.e(this.getClass().getSimpleName(), "Dist = " + distance + ",Rad = " + radius);
 
             if (distance < radius)
                 return;
@@ -126,12 +121,10 @@ public class LocationService2 extends IntentService {
 
         try {
             api.report(gcmToken, location.getLatitude(), location.getLongitude()).execute();
-            Log.e("lat - double", Double.toString(location.getLatitude()));
             prefs.edit()
                     .putFloat(LAT, (float) location.getLatitude())
                     .putFloat(LNG, (float) location.getLongitude())
                     .apply();
-            Log.e("lat - float", Float.toString(prefs.getFloat(LAT, 0)));
         } catch (IOException e) {
             e.printStackTrace();
         }

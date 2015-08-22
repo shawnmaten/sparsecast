@@ -26,9 +26,9 @@ import java.util.logging.Logger;
 
 public class KeysEndpoint {
     private static final Keys keys = new Keys(
-            APIKeys.PUBLIC_GOOGLE_API_KEY,
-            APIKeys.FORECAST_API_KEY,
-            APIKeys.PUBLIC_INSTAGRAM_API_KEY);
+            APIKeys.GOOGLE,
+            APIKeys.FORECAST,
+            APIKeys.INSTAGRAM);
     private static final Logger LOG = Logger.getLogger(KeysEndpoint.class.getName());
 
     @ApiMethod(name = "getKeys")

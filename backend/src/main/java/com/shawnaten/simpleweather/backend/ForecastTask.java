@@ -53,7 +53,7 @@ public class ForecastTask implements DeferredTask {
         long eta;
 
         try {
-            forecast = forecastService.notifyVersion(APIKeys.FORECAST_API_KEY, lat, lng, "en", "us");
+            forecast = forecastService.notifyVersion(APIKeys.FORECAST, lat, lng, "en", "us");
             eta = 0;
         } catch (RetrofitError e) {
             log.setLevel(Level.SEVERE);

@@ -207,7 +207,7 @@ public class MainActivity extends BaseActivity {
                         @Override
                         public Observable<Forecast.Response> call(Location location) {
                             return forecastService.getForecast(
-                                    APIKeys.FORECAST_API_KEY,
+                                    APIKeys.FORECAST,
                                     location.getLatitude(),
                                     location.getLongitude(),
                                     LocalizationSettings.getLangCode(),
@@ -234,7 +234,7 @@ public class MainActivity extends BaseActivity {
         } else {
 
             forecastObservable = forecastService.getForecast(
-                    APIKeys.FORECAST_API_KEY,
+                    APIKeys.FORECAST,
                     LocationSettings.getLat(),
                     LocationSettings.getLng(),
                     LocalizationSettings.getLangCode(),
@@ -294,7 +294,7 @@ public class MainActivity extends BaseActivity {
                                             @Override
                                             public Observable<Instagram.Response> call(Image image) {
                                                 return instagramService.getMedia(
-                                                        APIKeys.PUBLIC_INSTAGRAM_API_KEY,
+                                                        APIKeys.INSTAGRAM,
                                                         image.getShortcode()
                                                 );
                                             }
