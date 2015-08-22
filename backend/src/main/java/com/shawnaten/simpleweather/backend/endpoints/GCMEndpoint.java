@@ -44,7 +44,7 @@ public class GCMEndpoint {
             name = "insert",
             httpMethod = ApiMethod.HttpMethod.POST
     )
-    public void insert(suppre
+    public void insert(
             User user, @Named("token") String token
     ) throws OAuthRequestException, EntityNotFoundException {
 

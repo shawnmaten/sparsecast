@@ -6,10 +6,8 @@ import com.google.api.server.spi.config.ApiNamespace;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
 import com.shawnaten.simpleweather.backend.Constants;
-import com.shawnaten.simpleweather.backend.Dagger;
 import com.shawnaten.simpleweather.backend.ForecastTask;
 import com.shawnaten.simpleweather.backend.model.GCMToken;
-import com.shawnaten.simpleweather.lib.model.Slack;
 
 import java.util.logging.Logger;
 
@@ -38,6 +36,7 @@ import static com.shawnaten.simpleweather.backend.OfyService.ofy;
 )
 public class LocationEndpoint {
 
+    @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger(LocationEndpoint.class.getName());
 
     @ApiMethod(
@@ -52,11 +51,7 @@ public class LocationEndpoint {
     ) throws OAuthRequestException {
 
         if (user == null)
-            throw new OAuthRequestException("unauthorized request");
-
-        Slack.Message message = new Slack.Message();
-        message.setText(LocationEndpoint.class.getSimpleName() + " report");
-        Dagger.getNotificationComponent().slackService().sendMessage(message).getUrl();
+            throw new OAuthRequestException("unauthorized request");rem
 
         GCMToken record;
         record = ofy().load().type(GCMToken.class).filter("gcmToken", gcmToken).first().now();
