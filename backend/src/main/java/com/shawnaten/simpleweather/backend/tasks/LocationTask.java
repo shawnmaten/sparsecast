@@ -25,13 +25,11 @@ public class LocationTask implements DeferredTask {
 
     @Override
     public void run() {
-
         Message message = new Message.Builder()
                 .addData(MessagingCodes.MESSAGE_TYPE, MessagingCodes.LOCATION_REQUEST)
                 .build();
 
         Messaging.sendMessage(gcmToken.getGcmToken(), message);
-
     }
 
     public GCMToken getGcmToken() {
@@ -58,7 +56,7 @@ public class LocationTask implements DeferredTask {
 
         delete(task.getGcmToken());
 
-        final Queue queue = QueueFactory.getQueue(LocationTask.QUEUE);
+        final Queue queue = QueueFactory.getQueue(QUEUE);
 
         ofy().transact(new VoidWork() {
             @Override
