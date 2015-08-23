@@ -93,14 +93,14 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dependency-cache" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex-cache" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/cardview-v7/22.2.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/gridlayout-v7/22.2.1/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.0.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/gridlayout-v7/23.0.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/mediarouter-v7/22.2.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/multidex/1.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/palette-v7/22.2.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/22.2.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/palette-v7/23.0.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.0.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-ads/7.8.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-analytics/7.8.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-appindexing/7.8.0/jars" />
@@ -124,6 +124,8 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-wearable/7.8.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services/7.8.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.maps.android/android-maps-utils/0.3.4/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.instabug.library/instabugcore/1.6.1/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.instabug.library/instabugsupport/1.6.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/pl.charmas.android/android-reactive-location/0.7/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jacoco" />
@@ -140,11 +142,10 @@
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 22 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="play-services-vision-7.8.0" level="project" />
     <orderEntry type="library" exported="" name="dagger-compiler-2.0" level="project" />
-    <orderEntry type="library" exported="" name="KiipSDK" level="project" />
     <orderEntry type="library" exported="" name="dagger-2.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-identity-7.8.0" level="project" />
     <orderEntry type="library" exported="" name="dagger-producers-2.0-beta" level="project" />
@@ -153,20 +154,20 @@
     <orderEntry type="library" exported="" name="play-services-location-7.8.0" level="project" />
     <orderEntry type="library" exported="" name="android-reactive-location-0.7" level="project" />
     <orderEntry type="library" exported="" name="play-services-nearby-7.8.0" level="project" />
+    <orderEntry type="library" exported="" name="mimecraft-1.1.1" level="project" />
     <orderEntry type="library" exported="" name="google-http-client-android-1.19.0" level="project" />
     <orderEntry type="library" exported="" name="google-http-client-jackson2-1.19.0" level="project" />
+    <orderEntry type="library" exported="" name="instabugcore-1.6.1" level="project" />
     <orderEntry type="library" exported="" name="jsr305-1.3.9" level="project" />
     <orderEntry type="library" exported="" name="mediarouter-v7-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="google-api-client-1.19.0" level="project" />
-    <orderEntry type="library" exported="" name="recyclerview-v7-22.2.1" level="project" />
-    <orderEntry type="library" exported="" name="cardview-v7-22.2.1" level="project" />
-    <orderEntry type="library" exported="" name="gridlayout-v7-22.2.1" level="project" />
     <orderEntry type="library" exported="" name="okhttp-urlconnection-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-base-7.8.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-appinvite-7.8.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-7.8.0" level="project" />
-    <orderEntry type="library" exported="" name="palette-v7-22.2.1" level="project" />
     <orderEntry type="library" exported="" name="google-http-client-1.19.0" level="project" />
+    <orderEntry type="library" exported="" name="cardview-v7-23.0.0" level="project" />
+    <orderEntry type="library" exported="" name="gridlayout-v7-23.0.0" level="project" />
     <orderEntry type="library" exported="" name="okhttp-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-appindexing-7.8.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-gcm-7.8.0" level="project" />
@@ -175,7 +176,6 @@
     <orderEntry type="library" exported="" name="play-services-wearable-7.8.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-appstate-7.8.0" level="project" />
     <orderEntry type="library" exported="" name="android-maps-utils-0.3.4" level="project" />
-    <orderEntry type="library" exported="" name="appcompat-v7-22.2.1" level="project" />
     <orderEntry type="library" exported="" name="okio-1.4.0" level="project" />
     <orderEntry type="library" exported="" name="rxandroid-0.24.0" level="project" />
     <orderEntry type="library" exported="" name="google-oauth-client-1.19.0" level="project" />
@@ -183,23 +183,28 @@
     <orderEntry type="library" exported="" name="multidex-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="google-api-client-android-1.19.0" level="project" />
     <orderEntry type="library" exported="" name="guava-18.0" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-23.0.0" level="project" />
     <orderEntry type="library" exported="" name="backend-android-endpoints" level="project" />
+    <orderEntry type="library" exported="" name="library-1.0.18" level="project" />
     <orderEntry type="library" exported="" name="javax.annotation-10.0-b28" level="project" />
     <orderEntry type="library" exported="" name="MPAndroidChart-v2.1.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-ads-7.8.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-panorama-7.8.0" level="project" />
     <orderEntry type="library" exported="" name="butterknife-7.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-safetynet-7.8.0" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-22.2.1" level="project" />
     <orderEntry type="library" exported="" name="rxjava-1.0.10" level="project" />
     <orderEntry type="library" exported="" name="play-services-analytics-7.8.0" level="project" />
     <orderEntry type="library" exported="" name="retrofit-1.9.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-plus-7.8.0" level="project" />
     <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-fitness-7.8.0" level="project" />
-    <orderEntry type="library" exported="" name="support-v4-22.2.1" level="project" />
+    <orderEntry type="library" exported="" name="instabugsupport-1.6.1" level="project" />
+    <orderEntry type="library" exported="" name="palette-v7-23.0.0" level="project" />
     <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="play-services-wallet-7.8.0" level="project" />
+    <orderEntry type="library" exported="" name="appcompat-v7-23.0.0" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-23.0.0" level="project" />
+    <orderEntry type="library" exported="" name="recyclerview-v7-23.0.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-maps-7.8.0" level="project" />
     <orderEntry type="module" module-name="lib" exported="" />
   </component>

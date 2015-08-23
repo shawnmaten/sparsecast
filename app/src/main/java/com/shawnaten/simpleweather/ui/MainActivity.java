@@ -31,8 +31,10 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.backend.gcmAPI.GcmAPI;
 import com.shawnaten.simpleweather.backend.imagesApi.ImagesApi;
 import com.shawnaten.simpleweather.backend.imagesApi.model.Image;
+import com.shawnaten.simpleweather.backend.prefsAPI.PrefsAPI;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
 import com.shawnaten.simpleweather.lib.model.APIKeys;
 import com.shawnaten.simpleweather.lib.model.Forecast;
@@ -82,6 +84,8 @@ public class MainActivity extends BaseActivity {
 
     @Inject ImagesApi imagesApi;
     @Inject SavedPlaceApi savedPlaceApi;
+    @Inject GcmAPI gcmAPI;
+    @Inject PrefsAPI prefsAPI;
 
     @Bind(R.id.toolbar) Toolbar toolbar;
 
@@ -166,6 +170,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        LocalizationSettings.configure(this, prefsAPI, gcmAPI);
 
         final long startLoad = System.currentTimeMillis();
 

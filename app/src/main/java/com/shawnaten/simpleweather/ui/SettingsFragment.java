@@ -2,6 +2,8 @@ package com.shawnaten.simpleweather.ui;
 
 import android.accounts.Account;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Location;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
@@ -20,8 +22,14 @@ import com.shawnaten.simpleweather.tools.LocalizationSettings;
 import com.shawnaten.simpleweather.tools.LocationSettings;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
+
+import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class SettingsFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -32,6 +40,7 @@ public class SettingsFragment extends PreferenceFragment
     @Inject SharedPreferences preferences;
     @Inject GcmAPI gcmAPI;
     @Inject PrefsAPI prefsAPI;
+    @Inject ReactiveLocationProvider locationProvider;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,7 +52,6 @@ public class SettingsFragment extends PreferenceFragment
         ArrayList<CharSequence> accountNamesList = new ArrayList<>();
         CharSequence accountNames[];
         ListPreference accountPref, unitsPref;
-        SwitchPreference notifyPref;
 
         addPreferencesFromResource(R.xml.preferences);
 
@@ -65,19 +73,47 @@ public class SettingsFragment extends PreferenceFragment
         unitsPref = (ListPreference) findPreference(getString(R.string.pref_units_key));
         unitsPref.setSummary(unitsPref.getEntry());
 
-        String notifyKey = getString(R.string.pref_location_notify_key);
-        notifyPref = (SwitchPreference) findPreference(notifyKey);
-        switch (getResources().getConfiguration().locale.getCountry()) {
-            case "US":
-            case "CA":
-            case "GB":
-            case "IE":
-                break;
-            default:
-                notifyPref.setEnabled(false);
-                notifyPref.setSummary(R.string.pref_location_notify_summary_disabled);
-                preferences.edit().putBoolean(notifyKey, false).apply();
-        }
+        final String notifyKey = getString(R.string.pref_location_notify_key);
+        final SwitchPreference notifyPref = (SwitchPreference) findPreference(notifyKey);
+
+        locationProvider.getLastKnownLocation().flatMap(
+                new Func1<Location, Observable<List<Address>>>() {
+                @Override
+                public Observable<List<Address>> call(Location location) {
+                    if (location == null) {
+                        notifyPref.setEnabled(false);
+                        notifyPref.setSummary(R.string.pref_location_notify_disabled);
+                        preferences.edit().putBoolean(notifyKey, false).apply();
+                        return null;
+                    } else {
+                        return locationProvider.getReverseGeocodeObservable(
+                                location.getLatitude(),
+                                location.getLongitude(),
+                                1
+                        );
+                    }
+                }
+        }).subscribe(
+                new Action1<List<Address>>() {
+                    @Override
+                    public void call(List<Address> addresses) {
+                        if (addresses == null || addresses.size() == 0)
+                            return;
+
+                        switch (addresses.get(0).getCountryCode()) {
+                            case "US":
+                            case "CA":
+                            case "GB":
+                            case "IE":
+                                break;
+                            default:
+                                notifyPref.setEnabled(false);
+                                notifyPref.setSummary(R.string.pref_location_notify_unavailable);
+                                preferences.edit().putBoolean(notifyKey, false).apply();
+                        }
+                    }
+                }
+        );
     }
 
     @Override

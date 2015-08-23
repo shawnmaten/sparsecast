@@ -25,15 +25,18 @@
         <item>us</item>
     </string-array>
 
-    <string name="pref_category_notifications">Precipitation Notifications</string>
+    <string name="pref_category_notifications">Precipitation Notifications (BETA)</string>
 
     <string name="pref_location_notify_key">prefLocationNotify</string>
     <string name="pref_location_notify_title">Current Location</string>
     <string name="pref_location_notify_summary">
         Securely sent to server using negligible data and power
     </string>
-    <string name="pref_location_notify_summary_disabled">
+    <string name="pref_location_notify_unavailable">
         Only available in Canada, Ireland, United Kingdom, and United States.
+    </string>
+    <string name="pref_location_notify_disabled">
+        Requires location services.
     </string>
 
 </resources>

@@ -66,11 +66,10 @@ public class LocalizationSettings {
         );
         final String oldLangCode = prefs.getString(LANG_KEY, null);
 
-        unitCode = oldUnitCode != null ? oldUnitCode :
-                context.getResources().getConfiguration().locale.getCountry().toLowerCase();
+        langCode = context.getResources().getConfiguration().locale.getLanguage().toLowerCase();
 
-        langCode = oldLangCode != null ? oldLangCode :
-                context.getResources().getConfiguration().locale.getLanguage().toLowerCase();
+        unitCode = langCode.equals(oldLangCode)? oldUnitCode :
+            context.getResources().getConfiguration().locale.getCountry().toLowerCase();
 
         switch (unitCode != null ? unitCode : "si") {
             case "ca":

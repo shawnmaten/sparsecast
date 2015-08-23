@@ -5,22 +5,18 @@ import android.content.SharedPreferences;
 import android.support.multidex.MultiDexApplication;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.shawnaten.simpleweather.backend.gcmAPI.GcmAPI;
-import com.shawnaten.simpleweather.backend.prefsAPI.PrefsAPI;
+import com.instabug.library.Instabug;
 import com.shawnaten.simpleweather.component.DaggerMainComponent;
 import com.shawnaten.simpleweather.component.MainComponent;
 import com.shawnaten.simpleweather.module.ContextModule;
 import com.shawnaten.simpleweather.services.GCMRegistrarService;
 import com.shawnaten.simpleweather.services.LocationService2;
-import com.shawnaten.simpleweather.tools.LocalizationSettings;
 
 import javax.inject.Inject;
 
 public class App extends MultiDexApplication {
     @Inject SharedPreferences prefs;
     @Inject GoogleApiClient googleApiClient;
-    @Inject GcmAPI gcmAPI;
-    @Inject PrefsAPI prefsAPI;
 
     private MainComponent mainComponent;
 
@@ -34,7 +30,7 @@ public class App extends MultiDexApplication {
 
         mainComponent.inject(this);
 
-        LocalizationSettings.configure(this, prefsAPI, gcmAPI);
+        Instabug.initialize(this, "b35476559976660ba01ceb378d76f6d5");
 
         String notifyKey = getString(R.string.pref_location_notify_key);
 
