@@ -10,6 +10,7 @@ import com.googlecode.objectify.VoidWork;
 import com.shawnaten.simpleweather.backend.Dagger;
 import com.shawnaten.simpleweather.backend.Messaging;
 import com.shawnaten.simpleweather.backend.model.GCMRecord;
+import com.shawnaten.simpleweather.backend.model.Prefs;
 import com.shawnaten.simpleweather.lib.model.APIKeys;
 import com.shawnaten.simpleweather.lib.model.Forecast;
 import com.shawnaten.simpleweather.lib.model.MessagingCodes;
@@ -31,10 +32,11 @@ public class ForecastTask implements DeferredTask {
     private static final Logger log = Logger.getLogger(Messaging.class.getName());
 
     private GCMRecord gcmRecord;
+    private Prefs prefs;
     private double lat;
     private double lng;
 
-    public ForecastTask(GCMRecord gcmRecord, double lat, double lng) {
+    public ForecastTask(GCMRecord gcmRecord, Prefs prefs, double lat, double lng) {
         this.gcmRecord = gcmRecord;
         this.lat = lat;
         this.lng = lng;
@@ -57,7 +59,13 @@ public class ForecastTask implements DeferredTask {
         long eta;
 
         try {
-            forecast = forecastService.notifyVersion(APIKeys.FORECAST, lat, lng, "en", "us");
+            forecast = forecastService.notifyVersion(
+                    APIKeys.FORECAST,
+                    lat,
+                    lng,
+                    gcmRecord.getLangCode(),
+                    prefs.getUnitCode()
+            );
             eta = 0;
         } catch (RetrofitError e) {
             log.setLevel(Level.SEVERE);
