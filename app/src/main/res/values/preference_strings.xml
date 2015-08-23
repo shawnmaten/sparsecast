@@ -32,5 +32,8 @@
     <string name="pref_location_notify_summary">
         Securely sent to server using negligible data and power
     </string>
+    <string name="pref_location_notify_summary_disabled">
+        Only available in Canada, Ireland, United Kingdom, and United States.
+    </string>
 
 </resources>

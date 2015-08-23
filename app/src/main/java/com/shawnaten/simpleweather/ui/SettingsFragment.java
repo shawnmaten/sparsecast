@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
 
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,6 +43,7 @@ public class SettingsFragment extends PreferenceFragment
         ArrayList<CharSequence> accountNamesList = new ArrayList<>();
         CharSequence accountNames[];
         ListPreference accountPref, unitsPref;
+        SwitchPreference notifyPref;
 
         addPreferencesFromResource(R.xml.preferences);
 
@@ -62,6 +64,19 @@ public class SettingsFragment extends PreferenceFragment
 
         unitsPref = (ListPreference) findPreference(getString(R.string.pref_units_key));
         unitsPref.setSummary(unitsPref.getEntry());
+
+        String notifyKey = getString(R.string.pref_location_notify_key);
+        notifyPref = (SwitchPreference) findPreference(notifyKey);
+        switch (getResources().getConfiguration().locale.getCountry()) {
+            case "US":
+            case "CA":
+            case "GB":
+            case "IE":
+                break;
+            default:
+                notifyPref.setEnabled(false);
+                preferences.edit().putBoolean(notifyKey, false).apply();
+        }
     }
 
     @Override
