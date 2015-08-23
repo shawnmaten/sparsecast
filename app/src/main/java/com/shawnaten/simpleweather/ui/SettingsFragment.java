@@ -15,6 +15,7 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.shawnaten.simpleweather.App;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.gcmAPI.GcmAPI;
+import com.shawnaten.simpleweather.backend.locationAPI.LocationAPI;
 import com.shawnaten.simpleweather.backend.prefsAPI.PrefsAPI;
 import com.shawnaten.simpleweather.lib.model.APIKeys;
 import com.shawnaten.simpleweather.lib.model.Forecast;
@@ -24,14 +25,17 @@ import com.shawnaten.simpleweather.tools.GeneralAlertDialog;
 import com.shawnaten.simpleweather.tools.LocalizationSettings;
 import com.shawnaten.simpleweather.tools.LocationSettings;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class SettingsFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -42,8 +46,10 @@ public class SettingsFragment extends PreferenceFragment
     @Inject SharedPreferences preferences;
     @Inject GcmAPI gcmAPI;
     @Inject PrefsAPI prefsAPI;
+    @Inject LocationAPI locationAPI;
     @Inject ReactiveLocationProvider locationProvider;
     @Inject Forecast.Service forecastService;
+    @Inject @Named("gcmToken") String gcmToken;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -166,6 +172,16 @@ public class SettingsFragment extends PreferenceFragment
                     getBaseActivity().getSupportFragmentManager().beginTransaction()
                             .add(dialog, "betaAlert")
                             .commit();
+                    Observable.create(new Observable.OnSubscribe<Void>() {
+                        @Override
+                        public void call(Subscriber<? super Void> subscriber) {
+                            try {
+                                locationAPI.test(gcmToken).execute();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).subscribeOn(Schedulers.io()).subscribe();
                 } else
                     LocationService2.stop(getBaseActivity());
                 break;
