@@ -6,6 +6,7 @@ import android.support.multidex.MultiDexApplication;
 
 import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.instabug.library.Instabug;
 import com.shawnaten.simpleweather.component.DaggerMainComponent;
 import com.shawnaten.simpleweather.component.MainComponent;
@@ -18,6 +19,7 @@ import javax.inject.Inject;
 public class App extends MultiDexApplication {
     @Inject SharedPreferences prefs;
     @Inject GoogleApiClient googleApiClient;
+    @Inject GoogleAccountCredential googleAccountCredential;
 
     private MainComponent mainComponent;
 
@@ -32,6 +34,8 @@ public class App extends MultiDexApplication {
                 .build();
 
         mainComponent.inject(this);
+
+        Bugsnag.addToTab("User", "Email", googleAccountCredential.getAllAccounts()[0].name);
 
         Instabug.initialize(this, "b35476559976660ba01ceb378d76f6d5");
         Instabug.getInstance().setShowIntroDialog(false);

@@ -103,3 +103,14 @@
 -dontwarn com.google.auto.service.AutoService
 
 # end of dagger
+
+# bugsnag
+-keepattributes LineNumberTable,SourceFile
+
+# bugsnag or instabug (not sure)
+
+-dontwarn com.android.volley**
+-dontwarn com.google.android.gms**
+-dontwarn com.google.api.client**
+
+# end of bugsnag or instabug (not sure)
