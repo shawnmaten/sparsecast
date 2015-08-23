@@ -9,13 +9,8 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b67a918f-24a8-487a-a64a-74a4340de2b8" name="Default" comment="notifications notification">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
+    <list default="true" id="b67a918f-24a8-487a-a64a-74a4340de2b8" name="Default" comment="notifcation for enabling notifications">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/services/GCMNotificationService.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/services/GCMNotificationService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/endpoints/LocationEndpoint.java" afterPath="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/endpoints/LocationEndpoint.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/ui/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/ui/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/src/main/java/com/shawnaten/simpleweather/lib/model/MessagingCodes.java" afterPath="$PROJECT_DIR$/lib/src/main/java/com/shawnaten/simpleweather/lib/model/MessagingCodes.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="simpleweather.iws" />
@@ -103,26 +98,41 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="LocationEndpoint.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/endpoints/LocationEndpoint.java">
+      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/ui/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5846154">
-              <caret line="84" column="68" selection-start-line="84" selection-start-column="68" selection-end-line="84" selection-end-column="68" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="212" column="96" selection-start-line="206" selection-start-column="20" selection-end-line="212" selection-end-column="96" />
               <folding>
-                <element signature="e#1599#1626#0" expanded="true" />
+                <element signature="class#12879:13377" expanded="false" />
+                <element signature="method#onCompleted#0;class#12879:13377" expanded="false" />
+                <element signature="method#onError#0;class#12879:13377" expanded="false" />
+                <element signature="method#onNext#0;class#12879:13377" expanded="false" />
+                <element signature="class#13889:17613" expanded="false" />
+                <element signature="method#onCompleted#0;class#13889:17613" expanded="false" />
+                <element signature="method#onError#0;class#13889:17613" expanded="false" />
+                <element signature="method#onNext#0;class#13889:17613" expanded="false" />
+                <element signature="class#14331:15610" expanded="false" />
+                <element signature="method#onBitmapLoaded#0;class#14331:15610" expanded="false" />
+                <element signature="method#onBitmapFailed#0;class#14331:15610" expanded="false" />
+                <element signature="method#onPrepareLoad#0;class#14331:15610" expanded="false" />
+                <element signature="method#onCreateOptionsMenu#0;class#MainActivity#0" expanded="false" />
+                <element signature="method#onPrepareOptionsMenu#0;class#MainActivity#0" expanded="false" />
+                <element signature="method#onAttachFragment#0;class#MainActivity#0" expanded="false" />
+                <element signature="method#setScrollPos#0;class#MainActivity#0" expanded="false" />
+                <element signature="class#ScrollListener#0;class#MainActivity#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ForecastTask.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java">
+      <file leaf-file-name="GCMNotificationService.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/services/GCMNotificationService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="127" column="64" selection-start-line="122" selection-start-column="12" selection-end-line="127" selection-end-column="64" />
+            <state vertical-scroll-proportion="0.68421054">
+              <caret line="78" column="62" selection-start-line="78" selection-start-column="62" selection-end-line="78" selection-end-column="62" />
               <folding>
-                <element signature="method#delete#0;class#ForecastTask#0" expanded="false" />
-                <element signature="method#enqueue#0;class#ForecastTask#0" expanded="false" />
+                <element signature="e#2716#2744#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -4355,8 +4365,8 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/ui/MainActivity.java" />
         <option value="$PROJECT_DIR$/lib/src/main/java/com/shawnaten/simpleweather/lib/model/MessagingCodes.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/services/GCMNotificationService.java" />
         <option value="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/endpoints/LocationEndpoint.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/services/GCMNotificationService.java" />
       </list>
     </option>
   </component>
@@ -4450,15 +4460,47 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="backend" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.NonAndroidModuleNode" />
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simpleweather" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.NonAndroidSourceTypeNode" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="backend" />
+              <option name="myItemId" value="simpleweather" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simpleweather" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simpleweather" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ui" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -4468,41 +4510,19 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="backend" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.NonAndroidModuleNode" />
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.NonAndroidSourceTypeNode" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="backend" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tasks" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="simpleweather" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="backend" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.NonAndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.NonAndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="backend" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="endpoints" />
+              <option name="myItemId" value="services" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -5005,12 +5025,6 @@
       <option name="number" value="Default" />
       <updated>1435973806470</updated>
     </task>
-    <task id="LOCAL-00040" summary="finished with attributions change&#10;sorted out proguard problems&#10;release version 135">
-      <created>1439776950750</created>
-      <option name="number" value="00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1439776950750</updated>
-    </task>
     <task id="LOCAL-00041" summary="location services check">
       <created>1439779736710</created>
       <option name="number" value="00041" />
@@ -5299,7 +5313,13 @@
       <option name="project" value="LOCAL" />
       <updated>1440364350526</updated>
     </task>
-    <option name="localTasksCounter" value="89" />
+    <task id="LOCAL-00089" summary="notifcation for enabling notifications">
+      <created>1440366735473</created>
+      <option name="number" value="00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1440366735473</updated>
+    </task>
+    <option name="localTasksCounter" value="90" />
     <servers />
   </component>
   <component name="TodoView">
@@ -5336,7 +5356,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25625" sideWeight="0.544898" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2581121" sideWeight="0.4859375" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2581121" sideWeight="0.4859375" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -5392,7 +5412,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
-    <MESSAGE value="new message codes" />
     <MESSAGE value="removing slack messages" />
     <MESSAGE value="organizing" />
     <MESSAGE value="removing slack" />
@@ -5417,7 +5436,8 @@
     <MESSAGE value="checks notify ability with actual forecast response" />
     <MESSAGE value="updating" />
     <MESSAGE value="notifications notification" />
-    <option name="LAST_COMMIT_MESSAGE" value="notifications notification" />
+    <MESSAGE value="notifcation for enabling notifications" />
+    <option name="LAST_COMMIT_MESSAGE" value="notifcation for enabling notifications" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -5806,15 +5826,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/endpoints/GCMEndpoint.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7923077">
+          <caret line="84" column="37" selection-start-line="84" selection-start-column="37" selection-end-line="84" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/endpoints/LocationEndpoint.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5846154">
+          <caret line="84" column="68" selection-start-line="84" selection-start-column="68" selection-end-line="84" selection-end-column="68" />
+          <folding>
+            <element signature="e#1599#1626#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5307692">
+          <caret line="127" column="64" selection-start-line="122" selection-start-column="12" selection-end-line="127" selection-end-column="64" />
+          <folding>
+            <element signature="method#delete#0;class#ForecastTask#0" expanded="false" />
+            <element signature="method#enqueue#0;class#ForecastTask#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/ui/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.46153846">
-          <caret line="229" column="10" selection-start-line="229" selection-start-column="10" selection-end-line="229" selection-end-column="10" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="212" column="96" selection-start-line="206" selection-start-column="20" selection-end-line="212" selection-end-column="96" />
           <folding>
-            <element signature="e#5638#5671#0" expanded="true" />
-            <element signature="e#5804#5835#0" expanded="true" />
-            <element signature="e#8186#8227#0" expanded="true" />
-            <element signature="e#8277#8320#0" expanded="true" />
             <element signature="class#12879:13377" expanded="false" />
             <element signature="method#onCompleted#0;class#12879:13377" expanded="false" />
             <element signature="method#onError#0;class#12879:13377" expanded="false" />
@@ -5827,7 +5872,6 @@
             <element signature="method#onBitmapLoaded#0;class#14331:15610" expanded="false" />
             <element signature="method#onBitmapFailed#0;class#14331:15610" expanded="false" />
             <element signature="method#onPrepareLoad#0;class#14331:15610" expanded="false" />
-            <element signature="e#17420#17450#0" expanded="true" />
             <element signature="method#onCreateOptionsMenu#0;class#MainActivity#0" expanded="false" />
             <element signature="method#onPrepareOptionsMenu#0;class#MainActivity#0" expanded="false" />
             <element signature="method#onAttachFragment#0;class#MainActivity#0" expanded="false" />
@@ -5839,41 +5883,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/services/GCMNotificationService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.44615385">
-          <caret line="48" column="16" selection-start-line="48" selection-start-column="16" selection-end-line="48" selection-end-column="16" />
+        <state vertical-scroll-proportion="0.68421054">
+          <caret line="78" column="62" selection-start-line="78" selection-start-column="62" selection-end-line="78" selection-end-column="62" />
           <folding>
-            <element signature="e#1656#1690#0" expanded="true" />
-            <element signature="e#2384#2385#0" expanded="true" />
-            <element signature="e#2426#2427#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/endpoints/GCMEndpoint.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7923077">
-          <caret line="84" column="37" selection-start-line="84" selection-start-column="37" selection-end-line="84" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="127" column="64" selection-start-line="122" selection-start-column="12" selection-end-line="127" selection-end-column="64" />
-          <folding>
-            <element signature="method#delete#0;class#ForecastTask#0" expanded="false" />
-            <element signature="method#enqueue#0;class#ForecastTask#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/endpoints/LocationEndpoint.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5846154">
-          <caret line="84" column="68" selection-start-line="84" selection-start-column="68" selection-end-line="84" selection-end-column="68" />
-          <folding>
-            <element signature="e#1599#1626#0" expanded="true" />
+            <element signature="e#2716#2744#0" expanded="true" />
           </folding>
         </state>
       </provider>
