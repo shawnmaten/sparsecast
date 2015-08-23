@@ -40,6 +40,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/GOOGLE_API_KEY" />
+        <meta-data
+            android:name="com.bugsnag.android.API_KEY"
+            android:value="be6ef9cd3dfd97c1e902a3c57533ad53"/>
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

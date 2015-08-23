@@ -2,5 +2,4 @@
 <resources>
     <string name="ga_trackingId">UA-54261604-1</string>
     <boolean name="ga_autoActivityTracking">true</boolean>
-    <boolean name="ga_reportUncaughtExceptions">true</boolean>
 </resources>

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.multidex.MultiDexApplication;
 
+import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.instabug.library.Instabug;
 import com.shawnaten.simpleweather.component.DaggerMainComponent;
@@ -23,6 +24,8 @@ public class App extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Bugsnag.init(this);
 
         mainComponent = DaggerMainComponent.builder()
                 .contextModule(new ContextModule(this))

@@ -22,7 +22,7 @@ android {
     defaultConfig {
         applicationId 'com.shawnaten.simpleweather'
         minSdkVersion 15
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 136
         versionName "2.0" /*getVersionName()*/
         multiDexEnabled true
@@ -88,6 +88,6 @@ dependencies {
     compile 'pl.charmas.android:android-reactive-location:0.7@aar'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.instabug.library:instabugsupport:1.6.1'
+    compile 'com.bugsnag:bugsnag-android:3.2.6'
     compile project(':lib')
-    compile files('libs/emojiparser.jar')
 }
