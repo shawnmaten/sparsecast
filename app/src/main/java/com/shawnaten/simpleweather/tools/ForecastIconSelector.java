@@ -36,4 +36,23 @@ public class ForecastIconSelector {
                 return R.drawable.cloudy;
         }
     }
+
+    public static int getNotifyIcon(String iconString) {
+        switch (iconString) {
+            case "rain":
+                return R.drawable.notify_rain;
+            case "snow":
+                return R.drawable.notify_snow;
+            case "sleet":
+                return R.drawable.notify_sleet;
+            case "hail":
+                return R.drawable.notify_hail;
+            case "thunderstorm":
+                return R.drawable.notify_thunderstorm;
+            case "tornado":
+                return R.drawable.notify_tornado;
+            default:
+                return R.drawable.notify_rain;
+        }
+    }
 }

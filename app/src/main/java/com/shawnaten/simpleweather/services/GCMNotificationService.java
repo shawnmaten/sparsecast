@@ -50,7 +50,7 @@ public class GCMNotificationService extends GcmListenerService {
             return;
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
-                .setSmallIcon(ForecastIconSelector.getImageId(icon))
+                .setSmallIcon(ForecastIconSelector.getNotifyIcon(icon))
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(content)
                 .setSound(soundUri)
