@@ -3,6 +3,8 @@ package com.shawnaten.simpleweather.ui;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
@@ -100,23 +102,26 @@ public class SearchActivity extends BaseActivity {
 
     }
 
-    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        /*
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_search, menu);
         return true;
+        */
+        return false;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            /*
             case R.id.action_about:
                 startActivity(new Intent(this, AboutActivity.class));
                 return true;
+            */
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-    */
 }
