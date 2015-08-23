@@ -13,6 +13,7 @@ public class GCMRecord implements Serializable {
 
     @Index private String userId;
     @Index private String gcmToken;
+    private String langCode;
     private String forecastTask;
     private String locationTask;
 
@@ -30,6 +31,14 @@ public class GCMRecord implements Serializable {
 
     public void setGcmToken(String gcmToken) {
         this.gcmToken = gcmToken;
+    }
+
+    public String getLangCode() {
+        return langCode;
+    }
+
+    public void setLangCode(String langCode) {
+        this.langCode = langCode;
     }
 
     public String getForecastTask() {

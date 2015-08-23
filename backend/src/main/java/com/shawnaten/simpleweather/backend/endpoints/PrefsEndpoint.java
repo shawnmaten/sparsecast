@@ -8,7 +8,7 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
 import com.shawnaten.simpleweather.backend.UserIdFix;
 import com.shawnaten.simpleweather.backend.model.Constants;
-import com.shawnaten.simpleweather.backend.model.GCMRecord;
+import com.shawnaten.simpleweather.backend.model.Prefs;
 
 import java.util.logging.Logger;
 
@@ -17,7 +17,7 @@ import javax.inject.Named;
 import static com.shawnaten.simpleweather.backend.OfyService.ofy;
 
 @Api(
-        name = "gcmAPI",
+        name = "prefsAPI",
         version = "v1",
         namespace = @ApiNamespace(
                 ownerDomain = "backend.simpleweather.shawnaten.com",
@@ -35,55 +35,53 @@ import static com.shawnaten.simpleweather.backend.OfyService.ofy;
                 Constants.WEB_APP_ENGINE_ID
         }
 )
-public class GCMEndpoint {
+public class PrefsEndpoint {
 
     @SuppressWarnings("unused")
-    private static final Logger log = Logger.getLogger(GCMEndpoint.class.getName());
+    private static final Logger log = Logger.getLogger(PrefsEndpoint.class.getName());
 
     @ApiMethod(
             name = "insert",
             httpMethod = ApiMethod.HttpMethod.POST
     )
     public void insert(
-            User user,
-            @Named("token") String token,
-            @Named("langCode") String langCode
+            User user, @Named("unitCode") String unitCode
     ) throws OAuthRequestException, EntityNotFoundException {
 
         if (user == null)
             throw new OAuthRequestException("unauthorized request");
 
-        GCMRecord record = new GCMRecord();
-        record.setUserId(UserIdFix.getUserId(user));
-        record.setGcmToken(token);
-        record.setLangCode(langCode);
+        Prefs prefs = ofy()
+                .load()
+                .type(Prefs.class)
+                .filter("userId", UserIdFix.getUserId(user))
+                .first()
+                .now();
 
-        ofy().save().entity(record).now();
+        if (prefs == null) {
+            prefs = new Prefs();
+            prefs.setUserId(UserIdFix.getUserId(user));
+        }
+
+        prefs.setUnitCode(unitCode);
+
+        ofy().save().entity(prefs).now();
     }
 
     @ApiMethod(
-            name = "update",
-            httpMethod = ApiMethod.HttpMethod.POST
+            name = "get",
+            httpMethod = ApiMethod.HttpMethod.GET
     )
-    public void update(
-            User user,
-            @Named("oldToken") String oldToken,
-            @Named("newToken") String newToken,
-            @Named("langCode") String langCode
-    ) throws OAuthRequestException {
+    public Prefs get(User user) throws OAuthRequestException, EntityNotFoundException {
 
         if (user == null)
             throw new OAuthRequestException("unauthorized request");
 
-        GCMRecord record = ofy()
+        return ofy()
                 .load()
-                .type(GCMRecord.class)
-                .filter("gcmToken", oldToken)
+                .type(Prefs.class)
+                .filter("userId", UserIdFix.getUserId(user))
                 .first()
                 .now();
-
-        record.setGcmToken(newToken);
-        record.setLangCode(langCode);
-        ofy().save().entity(record).now();
     }
 }

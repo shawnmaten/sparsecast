@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="pref_gcm_token">prefGcmToken</string>
-    <string name="pref_last_location_report">prefLastLocationReport</string>
-
     <string name="pref_activity_title">Settings</string>
 
     <string name="pref_category_general">General</string>

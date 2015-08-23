@@ -11,6 +11,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.shawnaten.simpleweather.App;
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.backend.gcmAPI.GcmAPI;
+import com.shawnaten.simpleweather.backend.prefsAPI.PrefsAPI;
 import com.shawnaten.simpleweather.services.LocationService2;
 import com.shawnaten.simpleweather.tools.AnalyticsCodes;
 import com.shawnaten.simpleweather.tools.LocalizationSettings;
@@ -27,6 +29,8 @@ public class SettingsFragment extends PreferenceFragment
     @Inject GoogleAccountCredential credential;
     @Inject Tracker tracker;
     @Inject SharedPreferences preferences;
+    @Inject GcmAPI gcmAPI;
+    @Inject PrefsAPI prefsAPI;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,7 +92,7 @@ public class SettingsFragment extends PreferenceFragment
             case "prefUnits":
                 ListPreference unitsPref = (ListPreference) findPreference(key);
                 unitsPref.setSummary(unitsPref.getEntry());
-                LocalizationSettings.configure(getApp());
+                LocalizationSettings.configure(getApp(), prefsAPI, gcmAPI);
                 break;
             case "prefLocationNotify":
                 if (prefs.getBoolean(key, false))

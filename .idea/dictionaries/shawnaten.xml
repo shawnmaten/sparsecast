@@ -2,15 +2,32 @@
   <dictionary name="shawnaten">
     <words>
       <w>admob</w>
+      <w>atinlay</w>
+      <w>bosanac</w>
+      <w>bosanski</w>
+      <w>deutsch</w>
+      <w>español</w>
+      <w>français</w>
       <w>geofence</w>
       <w>geofences</w>
       <w>geofencing</w>
+      <w>igpay</w>
+      <w>italiano</w>
       <w>kiip</w>
+      <w>langs</w>
+      <w>nederlands</w>
       <w>notificaitons</w>
+      <w>polski</w>
+      <w>português</w>
       <w>precip</w>
+      <w>pусский</w>
       <w>shawnaten</w>
       <w>shortcode</w>
       <w>simpleweather</w>
+      <w>slovenčina</w>
+      <w>tetun</w>
+      <w>türkçe</w>
+      <w>yкраїнська</w>
     </words>
   </dictionary>
 </component>
