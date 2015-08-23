@@ -10,6 +10,7 @@ import com.shawnaten.simpleweather.module.GoogleApiClientModule;
 import com.shawnaten.simpleweather.module.GsonConverterModule;
 import com.shawnaten.simpleweather.module.ImagesApiModule;
 import com.shawnaten.simpleweather.module.InstagramModule;
+import com.shawnaten.simpleweather.module.LocationApiModule;
 import com.shawnaten.simpleweather.module.OkClientModule;
 import com.shawnaten.simpleweather.module.PlacesAutocompleteModule;
 import com.shawnaten.simpleweather.module.PlacesDetailsModule;
@@ -45,7 +46,8 @@ import dagger.Component;
                 AnalyticsModule.class,
                 PreferencesModule.class,
                 PrefsApiModule.class,
-                GCMApiModule.class
+                GCMApiModule.class,
+                LocationApiModule.class
         }
 )
 public interface MainComponent {
