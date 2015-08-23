@@ -320,7 +320,16 @@ public class MainActivity extends BaseActivity {
 
                         @Override
                         public void onNext(List<Address> addresses) {
-                            locationView.setText(addresses.get(0).getLocality());
+                            if (addresses.size() > 0) {
+                                Address address = addresses.get(0);
+                                if (address.getLocality() != null)
+                                    locationView.setText(address.getLocality());
+                                else if (address.getAdminArea() != null)
+                                    locationView.setText(address.getAdminArea());
+                                else
+                                    locationView.setText(R.string.current_location);
+                            } else
+                                locationView.setText(R.string.current_location);
                         }
                     });
         } else {

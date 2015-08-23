@@ -104,4 +104,6 @@
 
     <string name="notify_enabled">Notifications successfully enabled.</string>
 
+    <string name="current_location">Current Location</string>
+
 </resources>
