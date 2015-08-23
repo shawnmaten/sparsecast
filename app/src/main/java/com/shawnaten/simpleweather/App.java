@@ -31,6 +31,7 @@ public class App extends MultiDexApplication {
         mainComponent.inject(this);
 
         Instabug.initialize(this, "b35476559976660ba01ceb378d76f6d5");
+        Instabug.getInstance().setShowIntroDialog(false);
 
         String notifyKey = getString(R.string.pref_location_notify_key);
 

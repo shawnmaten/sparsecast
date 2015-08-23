@@ -111,6 +111,9 @@
             android:name=".ui.SettingsActivity"
             android:label="@string/pref_activity_title"
             android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity"/>
         </activity>
         <activity
             android:name=".ui.AdActivity"

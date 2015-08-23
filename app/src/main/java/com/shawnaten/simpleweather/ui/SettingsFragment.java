@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
+import android.support.v4.app.DialogFragment;
 
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -19,6 +20,7 @@ import com.shawnaten.simpleweather.lib.model.APIKeys;
 import com.shawnaten.simpleweather.lib.model.Forecast;
 import com.shawnaten.simpleweather.services.LocationService2;
 import com.shawnaten.simpleweather.tools.AnalyticsCodes;
+import com.shawnaten.simpleweather.tools.GeneralAlertDialog;
 import com.shawnaten.simpleweather.tools.LocalizationSettings;
 import com.shawnaten.simpleweather.tools.LocationSettings;
 
@@ -152,9 +154,19 @@ public class SettingsFragment extends PreferenceFragment
                 LocalizationSettings.configure(getApp(), prefsAPI, gcmAPI);
                 break;
             case "prefLocationNotify":
-                if (prefs.getBoolean(key, false))
+                if (prefs.getBoolean(key, false)) {
                     LocationService2.start(getBaseActivity());
-                else
+                    DialogFragment dialog = GeneralAlertDialog.newInstance(
+                            "betaAlert",
+                            getString(R.string.notify_beta_title),
+                            getString(R.string.notify_beta_message),
+                            null,
+                            getString(R.string.notify_beta_button)
+                    );
+                    getBaseActivity().getSupportFragmentManager().beginTransaction()
+                            .add(dialog, "betaAlert")
+                            .commit();
+                } else
                     LocationService2.stop(getBaseActivity());
                 break;
         }

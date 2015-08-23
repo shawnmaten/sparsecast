@@ -92,4 +92,14 @@
 
     <string name="send_feedback">Send Feedback</string>
 
+    <string name="notify_beta_title">Enabling BETA Feature</string>
+
+    <string name="notify_beta_message">Notifications is a BETA feature! Expect issues and / or utter uselessness. It may also break as the backend is worked on, requiring future re-enabling. Clear issues by toggling the setting or (worst case) reinstalling. Please provide feedback (by shaking your device or selecting the menu option) for any problems you encounter as well as the accuracy and usefulness of the notifications.</string>
+
+    <string name="notify_beta_button">OK, got it!</string>
+
+    <string name="message_8_23_15_title">Sparsecast Notifications BETA!</string>
+
+    <string name="message_8_23_15_content">Get alerted about upcoming precipitation.</string>
+
 </resources>

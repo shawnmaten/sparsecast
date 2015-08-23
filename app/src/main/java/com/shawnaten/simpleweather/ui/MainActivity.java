@@ -1,15 +1,23 @@
 package com.shawnaten.simpleweather.ui;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Location;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
@@ -40,8 +48,10 @@ import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
 import com.shawnaten.simpleweather.lib.model.APIKeys;
 import com.shawnaten.simpleweather.lib.model.Forecast;
 import com.shawnaten.simpleweather.module.ImagesApiModule;
+import com.shawnaten.simpleweather.services.GCMNotificationService;
 import com.shawnaten.simpleweather.tools.AnalyticsCodes;
 import com.shawnaten.simpleweather.tools.Attributions;
+import com.shawnaten.simpleweather.tools.ForecastIconSelector;
 import com.shawnaten.simpleweather.tools.ForecastTools;
 import com.shawnaten.simpleweather.tools.Instagram;
 import com.shawnaten.simpleweather.tools.LocalizationSettings;
@@ -75,6 +85,8 @@ public class MainActivity extends BaseActivity {
     private static final String FORECAST_DATA = "forecastData";
 
     @Inject Tracker tracker;
+
+    @Inject SharedPreferences prefs;
 
     @Inject ReactiveLocationProvider locationProvider;
 
@@ -173,6 +185,73 @@ public class MainActivity extends BaseActivity {
         super.onResume();
 
         LocalizationSettings.configure(this, prefsAPI, gcmAPI);
+
+        Subscriber<Forecast.Response> notifySub = new Subscriber<Forecast.Response>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Forecast.Response response) {
+                if (response != null && response.getMinutely() != null) {
+                    NotificationManager manager = (NotificationManager) getApplicationContext()
+                            .getSystemService(Context.NOTIFICATION_SERVICE);
+                    Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+                    Intent settingsIntent = new Intent(getBaseContext(), SettingsActivity.class);
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(getBaseContext());
+                    stackBuilder.addParentStack(SettingsActivity.class);
+                    stackBuilder.addNextIntent(settingsIntent);
+
+                    PendingIntent pendingIntent = PendingIntent.getActivity(
+                            getBaseContext(),
+                            0,
+                            settingsIntent,
+                            PendingIntent.FLAG_ONE_SHOT
+                    );
+
+                    NotificationCompat.Builder builder = new NotificationCompat
+                            .Builder(getApplicationContext())
+                                .setSmallIcon(ForecastIconSelector.getNotifyIcon("rain"))
+                                .setContentTitle(getString(R.string.message_8_23_15_title))
+                                .setContentText(getString(R.string.message_8_23_15_content))
+                                .setContentIntent(pendingIntent)
+                                .setSound(soundUri)
+                                .setPriority(NotificationCompat.PRIORITY_MAX)
+                            .setAutoCancel(true);
+
+                    manager.notify(GCMNotificationService.getID(), builder.build());
+                }
+
+                prefs.edit().putBoolean("message_8_23_15", true).apply();
+            }
+        };
+
+        if (!prefs.getBoolean("message_8_23_15", false)) {
+            subs.add(locationProvider.getLastKnownLocation()
+                    .flatMap(new Func1<Location, Observable<Forecast.Response>>() {
+                        @Override
+                        public Observable<Forecast.Response> call(Location location) {
+                            if (location == null) {
+                                return null;
+                            } else {
+                                return forecastService.notifyCheckVersion(
+                                        APIKeys.FORECAST,
+                                        location.getLatitude(),
+                                        location.getLongitude(),
+                                        LocalizationSettings.getLangCode(),
+                                        LocalizationSettings.getUnitCode()
+                                );
+                            }
+                        }
+                    }).subscribe(notifySub));
+        }
 
         final long startLoad = System.currentTimeMillis();
 
