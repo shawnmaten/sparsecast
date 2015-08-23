@@ -5,6 +5,7 @@ import com.shawnaten.simpleweather.module.AnalyticsModule;
 import com.shawnaten.simpleweather.module.ContextModule;
 import com.shawnaten.simpleweather.module.ForecastModule;
 import com.shawnaten.simpleweather.module.GCMApiModule;
+import com.shawnaten.simpleweather.module.GCMTokenModule;
 import com.shawnaten.simpleweather.module.GoogleAccountCredentialModule;
 import com.shawnaten.simpleweather.module.GoogleApiClientModule;
 import com.shawnaten.simpleweather.module.GsonConverterModule;
@@ -47,7 +48,8 @@ import dagger.Component;
                 PreferencesModule.class,
                 PrefsApiModule.class,
                 GCMApiModule.class,
-                LocationApiModule.class
+                LocationApiModule.class,
+                GCMTokenModule.class
         }
 )
 public interface MainComponent {
