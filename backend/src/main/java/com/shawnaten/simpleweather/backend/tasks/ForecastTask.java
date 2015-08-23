@@ -38,6 +38,7 @@ public class ForecastTask implements DeferredTask {
 
     public ForecastTask(GCMRecord gcmRecord, Prefs prefs, double lat, double lng) {
         this.gcmRecord = gcmRecord;
+        this.prefs = prefs;
         this.lat = lat;
         this.lng = lng;
     }
