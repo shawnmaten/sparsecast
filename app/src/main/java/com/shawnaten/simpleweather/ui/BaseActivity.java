@@ -2,6 +2,7 @@ package com.shawnaten.simpleweather.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.instabug.wrapper.support.activity.InstabugAppCompatActivity;
@@ -75,4 +76,8 @@ public class BaseActivity extends InstabugAppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return false;
+    }
 }

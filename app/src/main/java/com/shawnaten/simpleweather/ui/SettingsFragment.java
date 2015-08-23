@@ -48,6 +48,8 @@ public class SettingsFragment extends PreferenceFragment
 
         getApp().getMainComponent().inject(this);
 
+        setHasOptionsMenu(false);
+
         Account accounts[];
         ArrayList<CharSequence> accountNamesList = new ArrayList<>();
         CharSequence accountNames[];
