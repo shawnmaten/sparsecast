@@ -2,7 +2,6 @@ package com.shawnaten.simpleweather.ui;
 
 import android.accounts.Account;
 import android.content.SharedPreferences;
-import android.location.Address;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -16,19 +15,20 @@ import com.shawnaten.simpleweather.App;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.gcmAPI.GcmAPI;
 import com.shawnaten.simpleweather.backend.prefsAPI.PrefsAPI;
+import com.shawnaten.simpleweather.lib.model.APIKeys;
+import com.shawnaten.simpleweather.lib.model.Forecast;
 import com.shawnaten.simpleweather.services.LocationService2;
 import com.shawnaten.simpleweather.tools.AnalyticsCodes;
 import com.shawnaten.simpleweather.tools.LocalizationSettings;
 import com.shawnaten.simpleweather.tools.LocationSettings;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Observable;
-import rx.functions.Action1;
+import rx.Subscriber;
 import rx.functions.Func1;
 
 public class SettingsFragment extends PreferenceFragment
@@ -41,6 +41,7 @@ public class SettingsFragment extends PreferenceFragment
     @Inject GcmAPI gcmAPI;
     @Inject PrefsAPI prefsAPI;
     @Inject ReactiveLocationProvider locationProvider;
+    @Inject Forecast.Service forecastService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,44 +79,46 @@ public class SettingsFragment extends PreferenceFragment
         final String notifyKey = getString(R.string.pref_location_notify_key);
         final SwitchPreference notifyPref = (SwitchPreference) findPreference(notifyKey);
 
-        locationProvider.getLastKnownLocation().flatMap(
-                new Func1<Location, Observable<List<Address>>>() {
-                @Override
-                public Observable<List<Address>> call(Location location) {
-                    if (location == null) {
-                        notifyPref.setEnabled(false);
-                        notifyPref.setSummary(R.string.pref_location_notify_disabled);
-                        preferences.edit().putBoolean(notifyKey, false).apply();
-                        return null;
-                    } else {
-                        return locationProvider.getReverseGeocodeObservable(
-                                location.getLatitude(),
-                                location.getLongitude(),
-                                1
-                        );
-                    }
-                }
-        }).subscribe(
-                new Action1<List<Address>>() {
+        locationProvider.getLastKnownLocation()
+                .flatMap(new Func1<Location, Observable<Forecast.Response>>() {
                     @Override
-                    public void call(List<Address> addresses) {
-                        if (addresses == null || addresses.size() == 0)
-                            return;
-
-                        switch (addresses.get(0).getCountryCode()) {
-                            case "US":
-                            case "CA":
-                            case "GB":
-                            case "IE":
-                                break;
-                            default:
-                                notifyPref.setEnabled(false);
-                                notifyPref.setSummary(R.string.pref_location_notify_unavailable);
-                                preferences.edit().putBoolean(notifyKey, false).apply();
+                    public Observable<Forecast.Response> call(Location location) {
+                        if (location == null) {
+                            notifyPref.setEnabled(false);
+                            notifyPref.setSummary(R.string.pref_location_notify_disabled);
+                            preferences.edit().putBoolean(notifyKey, false).apply();
+                            return null;
+                        } else {
+                            return forecastService.notifyCheckVersion(
+                                    APIKeys.FORECAST,
+                                    location.getLatitude(),
+                                    location.getLongitude(),
+                                    LocalizationSettings.getLangCode(),
+                                    LocalizationSettings.getUnitCode()
+                            );
                         }
                     }
-                }
-        );
+                })
+                .subscribe(new Subscriber<Forecast.Response>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Forecast.Response response) {
+                        if (response != null && response.getMinutely() == null) {
+                            notifyPref.setEnabled(false);
+                            notifyPref.setSummary(R.string.pref_location_notify_unavailable);
+                            preferences.edit().putBoolean(notifyKey, false).apply();
+                        }
+                    }
+                });
     }
 
     @Override

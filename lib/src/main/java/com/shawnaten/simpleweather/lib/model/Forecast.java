@@ -48,6 +48,15 @@ public class Forecast {
                 @Query("lang") String lang,
                 @Query("units") String units
         );
+
+        @GET("/{key}/{lat},{lng}?exclude=currently,hourly,daily,flags")
+        Observable<Response> notifyCheckVersion(
+                @Path("key") String key,
+                @Path("lat") double lat,
+                @Path("lng") double lng,
+                @Query("lang") String lang,
+                @Query("units") String units
+        );
     }
 
     public static class Response {
