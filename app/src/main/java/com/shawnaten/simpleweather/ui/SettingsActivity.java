@@ -3,6 +3,7 @@ package com.shawnaten.simpleweather.ui;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 
 import com.shawnaten.simpleweather.R;
 
@@ -23,5 +24,8 @@ public class SettingsActivity extends BaseActivity {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
     }
 
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return false;
+    }
 }

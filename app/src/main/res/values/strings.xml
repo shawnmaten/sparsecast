@@ -90,4 +90,6 @@
         <item>Sourced through the Instagram API. The current photo is from</item>
     </string-array>
 
+    <string name="send_feedback">Send Feedback</string>
+
 </resources>
