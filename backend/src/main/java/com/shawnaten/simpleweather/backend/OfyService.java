@@ -21,6 +21,7 @@ public class OfyService {
         return ObjectifyService.ofy();
     }
 
+    @SuppressWarnings("unused")
     public static ObjectifyFactory factory() {
         return ObjectifyService.factory();
     }
