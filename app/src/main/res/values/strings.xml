@@ -102,4 +102,6 @@
 
     <string name="message_8_23_15_content">Get alerted about upcoming precipitation.</string>
 
+    <string name="notify_enabled">Notifications successfully enabled.</string>
+
 </resources>

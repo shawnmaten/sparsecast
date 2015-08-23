@@ -31,22 +31,29 @@ public class GCMNotificationService extends GcmListenerService {
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
+        String icon;
+        String content;
 
         switch (data.getString(MessagingCodes.TYPE, "")) {
             case MessagingCodes.PRECIPITATION:
-                sendNotification(data);
-                break;
+                icon = data.getString(MessagingCodes.ICON);
+                content = data.getString(MessagingCodes.CONTENT);
+
+                sendNotification(icon, content);
             case MessagingCodes.LOCATION_REQUEST:
                 LocationService2.start(this);
+                break;
+            case MessagingCodes.NOTIFY_ENABLED:
+                icon = "rain";
+                content = getString(R.string.notify_enabled);
+
+                sendNotification(icon, content);
                 break;
         }
     }
 
-    private void sendNotification(Bundle data) {
-        String icon = data.getString(MessagingCodes.ICON);
-        String content = data.getString(MessagingCodes.CONTENT);
-
-        if (icon == null || content == null)
+    private void sendNotification(String icon, String content) {
+        if (icon == null || content ==  null)
             return;
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())

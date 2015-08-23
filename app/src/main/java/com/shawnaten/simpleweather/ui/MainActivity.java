@@ -209,12 +209,8 @@ public class MainActivity extends BaseActivity {
                     stackBuilder.addParentStack(SettingsActivity.class);
                     stackBuilder.addNextIntent(settingsIntent);
 
-                    PendingIntent pendingIntent = PendingIntent.getActivity(
-                            getBaseContext(),
-                            0,
-                            settingsIntent,
-                            PendingIntent.FLAG_ONE_SHOT
-                    );
+                    PendingIntent pendingIntent =
+                            stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     NotificationCompat.Builder builder = new NotificationCompat
                             .Builder(getApplicationContext())
