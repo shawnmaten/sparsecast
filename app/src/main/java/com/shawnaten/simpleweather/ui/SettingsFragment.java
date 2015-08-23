@@ -75,6 +75,7 @@ public class SettingsFragment extends PreferenceFragment
                 break;
             default:
                 notifyPref.setEnabled(false);
+                notifyPref.setSummary(R.string.pref_location_notify_summary_disabled);
                 preferences.edit().putBoolean(notifyKey, false).apply();
         }
     }
