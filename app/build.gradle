@@ -27,7 +27,7 @@ android {
         applicationId 'com.shawnaten.simpleweather'
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 136
+        versionCode 137
         versionName getVersionName()
         multiDexEnabled true
     }
