@@ -65,7 +65,7 @@ public class LocalizationSettings {
 
         langCode = context.getResources().getConfiguration().locale.getLanguage().toLowerCase();
 
-        unitCode = oldUnitCode != null ? oldUnitCode :
+        unitCode = oldUnitCode != null && langCode.equals(oldLangCode) ? oldUnitCode :
             context.getResources().getConfiguration().locale.getCountry().toLowerCase();
 
         switch (unitCode) {

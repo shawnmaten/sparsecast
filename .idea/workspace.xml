@@ -9,13 +9,9 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b67a918f-24a8-487a-a64a-74a4340de2b8" name="Default" comment="correcting missing break">
+    <list default="true" id="b67a918f-24a8-487a-a64a-74a4340de2b8" name="Default" comment="trying to handle language changes">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app-prod-release.apk" afterPath="$PROJECT_DIR$/app/app-prod-release.apk" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/App.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/App.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/tools/LocalizationSettings.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/tools/LocalizationSettings.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/ui/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/ui/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="simpleweather.iws" />
@@ -59,66 +55,24 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="LocalizationSettings.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/tools/LocalizationSettings.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.33076924">
-              <caret line="124" column="64" selection-start-line="124" selection-start-column="64" selection-end-line="124" selection-end-column="64" />
-              <folding>
-                <element signature="e#588#615#0" expanded="true" />
-                <element signature="e#2082#2124#0" expanded="true" />
-                <element signature="e#2589#2617#0" expanded="true" />
-                <element signature="e#2650#2669#0" expanded="true" />
-                <element signature="e#2801#2824#0" expanded="true" />
-                <element signature="e#2857#2876#0" expanded="true" />
-                <element signature="e#2952#2975#0" expanded="true" />
-                <element signature="e#3008#3022#0" expanded="true" />
-                <element signature="e#3129#3155#0" expanded="true" />
-                <element signature="e#3188#3207#0" expanded="true" />
-                <element signature="e#3289#3304#0" expanded="true" />
-                <element signature="e#3342#3366#0" expanded="true" />
-                <element signature="e#3509#3527#0" expanded="true" />
-                <element signature="e#3578#3598#0" expanded="true" />
-                <element signature="e#3636#3665#0" expanded="true" />
-                <element signature="e#3810#3831#0" expanded="true" />
-                <element signature="e#4253#4295#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/ui/MainActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="98" column="40" selection-start-line="98" selection-start-column="40" selection-end-line="98" selection-end-column="40" />
-              <folding>
-                <element signature="method#onCreate#0;class#MainActivity#0" expanded="false" />
-                <element signature="class#6674:8646" expanded="false" />
-                <element signature="method#onCompleted#0;class#6674:8646" expanded="false" />
-                <element signature="method#onError#0;class#6674:8646" expanded="false" />
-                <element signature="method#onNext#0;class#6674:8646" expanded="false" />
-                <element signature="method#onCompleted#0;class#12756:13837" expanded="false" />
-                <element signature="method#onError#0;class#12756:13837" expanded="false" />
-                <element signature="method#onCompleted#0;class#14349:18073" expanded="false" />
-                <element signature="method#onError#0;class#14349:18073" expanded="false" />
-                <element signature="method#onBitmapFailed#0;class#14791:16070" expanded="false" />
-                <element signature="method#onPrepareLoad#0;class#14791:16070" expanded="false" />
-                <element signature="method#setScrollPos#0;class#MainActivity#0" expanded="false" />
-                <element signature="class#ScrollListener#0;class#MainActivity#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="App.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/App.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="47" column="72" selection-start-line="47" selection-start-column="72" selection-end-line="47" selection-end-column="72" />
+              <caret line="62" column="5" selection-start-line="62" selection-start-column="5" selection-end-line="62" selection-end-column="5" />
               <folding>
-                <element signature="e#1728#1772#0" expanded="true" />
+                <element signature="e#1770#1814#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LocalizationSettings.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/tools/LocalizationSettings.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.42307693">
+              <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -4686,6 +4640,28 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simpleweather" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simpleweather" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
     </panes>
@@ -5012,18 +4988,6 @@
       <option name="number" value="Default" />
       <updated>1435973806470</updated>
     </task>
-    <task id="LOCAL-00052" summary="actually checking forecast">
-      <created>1439952262174</created>
-      <option name="number" value="00052" />
-      <option name="project" value="LOCAL" />
-      <updated>1439952262174</updated>
-    </task>
-    <task id="LOCAL-00053" summary="serializable">
-      <created>1439952528010</created>
-      <option name="number" value="00053" />
-      <option name="project" value="LOCAL" />
-      <updated>1439952528010</updated>
-    </task>
     <task id="LOCAL-00054" summary="tweaking test message">
       <created>1439952809721</created>
       <option name="number" value="00054" />
@@ -5306,7 +5270,19 @@
       <option name="project" value="LOCAL" />
       <updated>1440431288110</updated>
     </task>
-    <option name="localTasksCounter" value="101" />
+    <task id="LOCAL-00101" summary="fixes">
+      <created>1440432453695</created>
+      <option name="number" value="00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1440432453695</updated>
+    </task>
+    <task id="LOCAL-00102" summary="trying to handle language changes">
+      <created>1440432702500</created>
+      <option name="number" value="00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1440432702500</updated>
+    </task>
+    <option name="localTasksCounter" value="103" />
     <servers />
   </component>
   <component name="TodoView">
@@ -5399,8 +5375,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
-    <MESSAGE value="register Prefs with Objectify" />
-    <MESSAGE value="suppress warning" />
     <MESSAGE value="using prefs in ForecastTask" />
     <MESSAGE value="assign prefs in constructor" />
     <MESSAGE value="serializable" />
@@ -5424,7 +5398,9 @@
     <MESSAGE value="ready for release" />
     <MESSAGE value="increasing threshold" />
     <MESSAGE value="correcting missing break" />
-    <option name="LAST_COMMIT_MESSAGE" value="correcting missing break" />
+    <MESSAGE value="fixes" />
+    <MESSAGE value="trying to handle language changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="trying to handle language changes" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -5800,61 +5776,43 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/App.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="47" column="72" selection-start-line="47" selection-start-column="72" selection-end-line="47" selection-end-column="72" />
-          <folding>
-            <element signature="e#1728#1772#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/ui/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="98" column="40" selection-start-line="98" selection-start-column="40" selection-end-line="98" selection-end-column="40" />
+        <state vertical-scroll-proportion="-0.43384615">
+          <caret line="96" column="40" selection-start-line="96" selection-start-column="40" selection-end-line="96" selection-end-column="40" />
           <folding>
             <element signature="method#onCreate#0;class#MainActivity#0" expanded="false" />
-            <element signature="class#6674:8646" expanded="false" />
-            <element signature="method#onCompleted#0;class#6674:8646" expanded="false" />
-            <element signature="method#onError#0;class#6674:8646" expanded="false" />
-            <element signature="method#onNext#0;class#6674:8646" expanded="false" />
-            <element signature="method#onCompleted#0;class#12756:13837" expanded="false" />
-            <element signature="method#onError#0;class#12756:13837" expanded="false" />
-            <element signature="method#onCompleted#0;class#14349:18073" expanded="false" />
-            <element signature="method#onError#0;class#14349:18073" expanded="false" />
-            <element signature="method#onBitmapFailed#0;class#14791:16070" expanded="false" />
-            <element signature="method#onPrepareLoad#0;class#14791:16070" expanded="false" />
+            <element signature="class#6554:8526" expanded="false" />
+            <element signature="method#onCompleted#0;class#6554:8526" expanded="false" />
+            <element signature="method#onError#0;class#6554:8526" expanded="false" />
+            <element signature="method#onNext#0;class#6554:8526" expanded="false" />
+            <element signature="method#onCompleted#0;class#12636:13717" expanded="false" />
+            <element signature="method#onError#0;class#12636:13717" expanded="false" />
+            <element signature="method#onCompleted#0;class#14229:17953" expanded="false" />
+            <element signature="method#onError#0;class#14229:17953" expanded="false" />
+            <element signature="method#onBitmapFailed#0;class#14671:15950" expanded="false" />
+            <element signature="method#onPrepareLoad#0;class#14671:15950" expanded="false" />
             <element signature="method#setScrollPos#0;class#MainActivity#0" expanded="false" />
             <element signature="class#ScrollListener#0;class#MainActivity#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/App.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="62" column="5" selection-start-line="62" selection-start-column="5" selection-end-line="62" selection-end-column="5" />
+          <folding>
+            <element signature="e#1770#1814#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/tools/LocalizationSettings.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33076924">
-          <caret line="124" column="64" selection-start-line="124" selection-start-column="64" selection-end-line="124" selection-end-column="64" />
-          <folding>
-            <element signature="e#588#615#0" expanded="true" />
-            <element signature="e#2082#2124#0" expanded="true" />
-            <element signature="e#2589#2617#0" expanded="true" />
-            <element signature="e#2650#2669#0" expanded="true" />
-            <element signature="e#2801#2824#0" expanded="true" />
-            <element signature="e#2857#2876#0" expanded="true" />
-            <element signature="e#2952#2975#0" expanded="true" />
-            <element signature="e#3008#3022#0" expanded="true" />
-            <element signature="e#3129#3155#0" expanded="true" />
-            <element signature="e#3188#3207#0" expanded="true" />
-            <element signature="e#3289#3304#0" expanded="true" />
-            <element signature="e#3342#3366#0" expanded="true" />
-            <element signature="e#3509#3527#0" expanded="true" />
-            <element signature="e#3578#3598#0" expanded="true" />
-            <element signature="e#3636#3665#0" expanded="true" />
-            <element signature="e#3810#3831#0" expanded="true" />
-            <element signature="e#4253#4295#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.42307693">
+          <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
