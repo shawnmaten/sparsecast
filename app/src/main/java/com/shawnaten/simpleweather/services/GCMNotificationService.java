@@ -44,6 +44,7 @@ public class GCMNotificationService extends GcmListenerService {
                 content = data.getString(MessagingCodes.CONTENT);
 
                 sendNotification(icon, content);
+                break;
             case MessagingCodes.LOCATION_REQUEST:
                 LocationService2.start(this);
                 break;
