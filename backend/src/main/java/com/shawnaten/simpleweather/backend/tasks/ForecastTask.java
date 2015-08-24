@@ -31,6 +31,8 @@ public class ForecastTask implements DeferredTask {
     public static final String QUEUE = "forecast-queue";
     private static final Logger log = Logger.getLogger(Messaging.class.getName());
 
+    private static final double THRESHOLD = .2;
+
     private GCMRecord gcmRecord;
     private Prefs prefs;
     private double lat;
@@ -93,7 +95,7 @@ public class ForecastTask implements DeferredTask {
         String message = "\nminutely\n[";
         for (Forecast.DataPoint dataPoint : minutelyData) {
             message += String.format("%.2f, ", dataPoint.getPrecipProbability());
-            if (eta == 0 && dataPoint.getPrecipProbability() > 0) {
+            if (eta == 0 && dataPoint.getPrecipProbability() > THRESHOLD) {
                 notify = true;
                 eta = endOfMinutely;
             }
@@ -104,7 +106,7 @@ public class ForecastTask implements DeferredTask {
         message += "hourly\n[";
         for (Forecast.DataPoint dataPoint : hourlyData) {
             message += String.format("%.2f, ", dataPoint.getPrecipProbability());
-            if (eta == 0 && dataPoint.getPrecipProbability() > 0)
+            if (eta == 0 && dataPoint.getPrecipProbability() > THRESHOLD)
                 eta = Math.max(endOfMinutely, dataPoint.getTime().getTime());
         }
         message = message.substring(0, message.length() - 2);
@@ -113,7 +115,7 @@ public class ForecastTask implements DeferredTask {
         message += "daily\n[";
         for (Forecast.DataPoint dataPoint : dailyData) {
             message += String.format("%.2f, ", dataPoint.getPrecipProbability());
-            if (eta == 0 && dataPoint.getPrecipProbability() > 0)
+            if (eta == 0 && dataPoint.getPrecipProbability() > THRESHOLD)
                 eta = Math.max(endOfHourly, dataPoint.getTime().getTime());
         }
         message = message.substring(0, message.length() - 2);
