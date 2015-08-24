@@ -7,7 +7,6 @@ import android.preference.PreferenceManager;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.gcmAPI.GcmAPI;
 import com.shawnaten.simpleweather.backend.prefsAPI.PrefsAPI;
-import com.shawnaten.simpleweather.backend.prefsAPI.model.Prefs;
 import com.shawnaten.simpleweather.services.GCMRegistrarService;
 
 import java.io.IOException;
@@ -59,19 +58,17 @@ public class LocalizationSettings {
             final GcmAPI gcmAPI
     ) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        final String unitCodeKey = context.getString(R.string.pref_units_key);
 
-        final String oldUnitCode = prefs.getString(
-                context.getString(R.string.pref_units_key),
-                null
-        );
+        final String oldUnitCode = prefs.getString(unitCodeKey, null);
         final String oldLangCode = prefs.getString(LANG_KEY, null);
 
         langCode = context.getResources().getConfiguration().locale.getLanguage().toLowerCase();
 
-        unitCode = langCode.equals(oldLangCode)? oldUnitCode :
+        unitCode = oldUnitCode != null ? oldUnitCode :
             context.getResources().getConfiguration().locale.getCountry().toLowerCase();
 
-        switch (unitCode != null ? unitCode : "si") {
+        switch (unitCode) {
             case "ca":
                 speedUnit = R.string.kilometers_per_hour;
                 distanceUnit = R.string.kilometers;
@@ -114,11 +111,8 @@ public class LocalizationSettings {
         Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
-                Prefs cloudPrefs;
-
                 try {
-                    cloudPrefs = prefsAPI.get().execute();
-                    if (cloudPrefs == null || !cloudPrefs.getUnitCode().equals(unitCode)) {
+                    if (!unitCode.equals(oldUnitCode)) {
                         prefsAPI.insert(unitCode).execute();
                         String key = context.getString(R.string.pref_units_key);
                         prefs.edit().putString(key, unitCode).apply();
