@@ -2,6 +2,7 @@ package com.shawnaten.simpleweather;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.support.multidex.MultiDexApplication;
 
 import com.bugsnag.android.Bugsnag;
@@ -55,7 +56,12 @@ public class App extends MultiDexApplication {
             LocationService2.start(this);
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
 
+        LocalizationSettings.configure(this, prefsAPI, gcmAPI);
+    }
 
     public MainComponent getMainComponent() {
         return mainComponent;
