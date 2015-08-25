@@ -191,7 +191,7 @@ public class ForecastTask implements DeferredTask {
         LocationTask.delete(task.getGcmRecord());
         delete(task.getGcmRecord());
 
-        final Queue queue = QueueFactory.getQueue(LocationTask.QUEUE);
+        final Queue queue = QueueFactory.getQueue(QUEUE);
 
         ofy().transact(new VoidWork() {
             @Override
