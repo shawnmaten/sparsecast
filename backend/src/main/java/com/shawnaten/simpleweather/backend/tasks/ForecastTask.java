@@ -58,16 +58,38 @@ public class ForecastTask implements DeferredTask {
         );
         dateFormat.setTimeZone(TimeZone.getTimeZone("US/Central"));
 
+        log.setLevel(Level.WARNING);
+
+        // TODO these things shouldn't be null
+
+        if (gcmRecord == null) {
+            log.warning("gcmRecord was null")temp ;
+            return;
+        }
+
         Forecast.Response forecast;
         long eta;
+
+        String langCode = "en";
+        String unitCode = "us";
+
+        if (gcmRecord.getLangCode() != null)
+            langCode = gcmRecord.getLangCode();
+        else
+            log.warning("langCode was null");
+
+        if (prefs != null)
+            unitCode = prefs.getUnitCode();
+        else
+            log.warning("prefs was null");
 
         try {
             forecast = forecastService.notifyVersion(
                     APIKeys.FORECAST,
                     lat,
                     lng,
-                    gcmRecord.getLangCode(),
-                    prefs.getUnitCode()
+                    langCode,
+                    unitCode
             );
             eta = 0;
         } catch (RetrofitError e) {
