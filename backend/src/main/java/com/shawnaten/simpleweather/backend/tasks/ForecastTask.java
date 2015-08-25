@@ -76,16 +76,16 @@ public class ForecastTask implements DeferredTask {
         String langCode = "en";
         String unitCode = "us";
 
-        log.setLevel(Level.WARNING);
+        log.setLevel(Level.INFO);
         if (gcmRecord.getLangCode() != null)
             langCode = gcmRecord.getLangCode();
         else
-            log.warning("langCode was null");
+            log.info("langCode was null");
 
         if (prefs != null)
             unitCode = prefs.getUnitCode();
         else
-            log.warning("prefs was null");
+            log.info("prefs was null");
 
         try {
             forecast = forecastService.notifyVersion(

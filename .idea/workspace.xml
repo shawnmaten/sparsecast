@@ -9,7 +9,7 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b67a918f-24a8-487a-a64a-74a4340de2b8" name="Default" comment="fixing queue used">
+    <list default="true" id="b67a918f-24a8-487a-a64a-74a4340de2b8" name="Default" comment="moving eta fallback above message">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java" afterPath="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -57,8 +57,8 @@
       <file leaf-file-name="ForecastTask.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4574639">
-              <caret line="167" column="8" selection-start-line="167" selection-start-column="8" selection-end-line="167" selection-end-column="8" />
+            <state vertical-scroll-proportion="0.3611557">
+              <caret line="83" column="0" selection-start-line="83" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
               <folding>
                 <element signature="e#1670#1671#0" expanded="true" />
                 <element signature="e#1702#1703#0" expanded="true" />
@@ -4946,12 +4946,6 @@
       <option name="number" value="Default" />
       <updated>1435973806470</updated>
     </task>
-    <task id="LOCAL-00061" summary="new message codes">
-      <created>1440275009353</created>
-      <option name="number" value="00061" />
-      <option name="project" value="LOCAL" />
-      <updated>1440275009353</updated>
-    </task>
     <task id="LOCAL-00062" summary="removing slack messages">
       <created>1440275159917</created>
       <option name="number" value="00062" />
@@ -5240,7 +5234,13 @@
       <option name="project" value="LOCAL" />
       <updated>1440480862678</updated>
     </task>
-    <option name="localTasksCounter" value="110" />
+    <task id="LOCAL-00110" summary="moving eta fallback above message">
+      <created>1440481147811</created>
+      <option name="number" value="00110" />
+      <option name="project" value="LOCAL" />
+      <updated>1440481147811</updated>
+    </task>
+    <option name="localTasksCounter" value="111" />
     <servers />
   </component>
   <component name="TodoView">
@@ -5333,7 +5333,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
-    <MESSAGE value="Instabug integration" />
     <MESSAGE value="instabug menu item&#10;removing toolbar items from search activity" />
     <MESSAGE value="fixing back button" />
     <MESSAGE value="fix for settings nav button" />
@@ -5358,7 +5357,8 @@
     <MESSAGE value="tweaks" />
     <MESSAGE value="edge case if no precip for every data point" />
     <MESSAGE value="fixing queue used" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixing queue used" />
+    <MESSAGE value="moving eta fallback above message" />
+    <option name="LAST_COMMIT_MESSAGE" value="moving eta fallback above message" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -5726,8 +5726,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4574639">
-          <caret line="167" column="8" selection-start-line="167" selection-start-column="8" selection-end-line="167" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.3611557">
+          <caret line="83" column="0" selection-start-line="83" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
           <folding>
             <element signature="e#1670#1671#0" expanded="true" />
             <element signature="e#1702#1703#0" expanded="true" />
