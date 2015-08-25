@@ -58,14 +58,17 @@ public class ForecastTask implements DeferredTask {
         );
         dateFormat.setTimeZone(TimeZone.getTimeZone("US/Central"));
 
-        log.setLevel(Level.WARNING);
-
         // TODO these things shouldn't be null
 
         if (gcmRecord == null) {
+            log.setLevel(Level.WARNING);
             log.warning("gcmRecord was null");
             return;
         }
+
+        log.setLevel(Level.INFO);
+        log.info(gcmRecord.getUserId());
+        log.info(gcmRecord.getForecastTask());
 
         Forecast.Response forecast;
         long eta;
@@ -73,6 +76,7 @@ public class ForecastTask implements DeferredTask {
         String langCode = "en";
         String unitCode = "us";
 
+        log.setLevel(Level.WARNING);
         if (gcmRecord.getLangCode() != null)
             langCode = gcmRecord.getLangCode();
         else
