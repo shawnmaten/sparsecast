@@ -9,7 +9,7 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b67a918f-24a8-487a-a64a-74a4340de2b8" name="Default" comment="tweaks">
+    <list default="true" id="b67a918f-24a8-487a-a64a-74a4340de2b8" name="Default" comment="fixing queue used">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java" afterPath="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -57,12 +57,22 @@
       <file leaf-file-name="ForecastTask.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.0476923">
-              <caret line="165" column="13" selection-start-line="165" selection-start-column="13" selection-end-line="165" selection-end-column="13" />
+            <state vertical-scroll-proportion="0.4574639">
+              <caret line="167" column="8" selection-start-line="167" selection-start-column="8" selection-end-line="167" selection-end-column="8" />
               <folding>
                 <element signature="e#1670#1671#0" expanded="true" />
                 <element signature="e#1702#1703#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LocationTask.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/LocationTask.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="4.703704">
+              <caret line="17" column="36" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="36" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -4263,7 +4273,6 @@
         <option value="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/ForecastTask.java" />
         <option value="$PROJECT_DIR$/lib/src/main/java/com/shawnaten/simpleweather/lib/model/APIKeys.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/services/LocationService2.java" />
-        <option value="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/LocationTask.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/module/GCMTokenModule.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/xml/preferences.xml" />
         <option value="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/model/GCMRecord.java" />
@@ -4295,6 +4304,7 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/ui/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/App.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/tools/LocalizationSettings.java" />
+        <option value="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/LocationTask.java" />
         <option value="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java" />
       </list>
     </option>
@@ -4936,18 +4946,6 @@
       <option name="number" value="Default" />
       <updated>1435973806470</updated>
     </task>
-    <task id="LOCAL-00059" summary="fixing typo">
-      <created>1440027566777</created>
-      <option name="number" value="00059" />
-      <option name="project" value="LOCAL" />
-      <updated>1440027566777</updated>
-    </task>
-    <task id="LOCAL-00060" summary="checking">
-      <created>1440274767549</created>
-      <option name="number" value="00060" />
-      <option name="project" value="LOCAL" />
-      <updated>1440274767550</updated>
-    </task>
     <task id="LOCAL-00061" summary="new message codes">
       <created>1440275009353</created>
       <option name="number" value="00061" />
@@ -5230,7 +5228,19 @@
       <option name="project" value="LOCAL" />
       <updated>1440480017302</updated>
     </task>
-    <option name="localTasksCounter" value="108" />
+    <task id="LOCAL-00108" summary="edge case if no precip for every data point">
+      <created>1440480438417</created>
+      <option name="number" value="00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1440480438417</updated>
+    </task>
+    <task id="LOCAL-00109" summary="fixing queue used">
+      <created>1440480862678</created>
+      <option name="number" value="00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1440480862678</updated>
+    </task>
+    <option name="localTasksCounter" value="110" />
     <servers />
   </component>
   <component name="TodoView">
@@ -5246,6 +5256,7 @@
     <frame x="0" y="23" width="1280" height="773" extended-state="6" />
     <editor active="true" />
     <layout>
+      <window_info id="Documentation" active="false" anchor="right" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27421874" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" x="100" y="100" width="1080" height="600" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3259587" sideWeight="0.4921875" order="8" side_tool="false" content_ui="tabs" />
@@ -5266,7 +5277,6 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25625" sideWeight="0.544898" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2581121" sideWeight="0.4828125" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Documentation" active="false" anchor="right" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27421874" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" x="100" y="100" width="1080" height="600" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -5323,8 +5333,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
-    <MESSAGE value="disabling notify pref based on location" />
-    <MESSAGE value="setting disabled summary" />
     <MESSAGE value="Instabug integration" />
     <MESSAGE value="instabug menu item&#10;removing toolbar items from search activity" />
     <MESSAGE value="fixing back button" />
@@ -5348,7 +5356,9 @@
     <MESSAGE value="reset unitCode on language change" />
     <MESSAGE value="temp fixes" />
     <MESSAGE value="tweaks" />
-    <option name="LAST_COMMIT_MESSAGE" value="tweaks" />
+    <MESSAGE value="edge case if no precip for every data point" />
+    <MESSAGE value="fixing queue used" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixing queue used" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -5384,13 +5394,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.72307694">
           <caret line="42" column="23" selection-start-line="42" selection-start-column="23" selection-end-line="42" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/LocationTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3">
-          <caret line="26" column="22" selection-start-line="26" selection-start-column="22" selection-end-line="26" selection-end-column="22" />
         </state>
       </provider>
     </entry>
@@ -5713,10 +5716,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/LocationTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="4.703704">
+          <caret line="17" column="36" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.0476923">
-          <caret line="165" column="13" selection-start-line="165" selection-start-column="13" selection-end-line="165" selection-end-column="13" />
+        <state vertical-scroll-proportion="0.4574639">
+          <caret line="167" column="8" selection-start-line="167" selection-start-column="8" selection-end-line="167" selection-end-column="8" />
           <folding>
             <element signature="e#1670#1671#0" expanded="true" />
             <element signature="e#1702#1703#0" expanded="true" />

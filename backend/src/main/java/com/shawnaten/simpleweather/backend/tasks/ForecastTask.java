@@ -158,13 +158,13 @@ public class ForecastTask implements DeferredTask {
             message += minutelyBlock.getSummary() + "\n\n";
         }
 
+        if (eta == 0)
+            eta = dailyData[dailyData.length - 1].getTime().getTime();
+
         message += "Next check at " + dateFormat.format(new Date(eta));
 
         log.setLevel(Level.INFO);
         log.info(message);
-
-        if (eta == 0)
-            eta = dailyData[dailyData.length - 1].getTime().getTime();
 
         LocationTask task = new LocationTask(gcmRecord);
         LocationTask.enqueue(task, eta);
