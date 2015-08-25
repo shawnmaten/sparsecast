@@ -63,7 +63,7 @@ public class ForecastTask implements DeferredTask {
         // TODO these things shouldn't be null
 
         if (gcmRecord == null) {
-            log.warning("gcmRecord was null")temp ;
+            log.warning("gcmRecord was null");
             return;
         }
 
