@@ -71,7 +71,7 @@ public class ForecastTask implements DeferredTask {
         log.info(gcmRecord.getForecastTask());
 
         Forecast.Response forecast;
-        long eta;
+        long eta = 0;
 
         String langCode = "en";
         String unitCode = "us";
@@ -95,7 +95,6 @@ public class ForecastTask implements DeferredTask {
                     langCode,
                     unitCode
             );
-            eta = 0;
         } catch (RetrofitError e) {
             log.setLevel(Level.SEVERE);
             log.severe(e.getKind().name());
