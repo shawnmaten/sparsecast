@@ -163,6 +163,9 @@ public class ForecastTask implements DeferredTask {
         log.setLevel(Level.INFO);
         log.info(message);
 
+        if (eta == 0)
+            eta = dailyData[dailyData.length - 1].getTime().getTime();
+
         LocationTask task = new LocationTask(gcmRecord);
         LocationTask.enqueue(task, eta);
     }
