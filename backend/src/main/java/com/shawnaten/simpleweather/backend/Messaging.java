@@ -33,7 +33,8 @@ public class Messaging {
                                 .filter("gcmToken", gcmToken)
                                 .first()
                                 .now();
-                        ofy().delete().entity(entity).now();
+                        if (entity != null)
+                            ofy().delete().entity(entity).now();
                         break;
                 }
             }
