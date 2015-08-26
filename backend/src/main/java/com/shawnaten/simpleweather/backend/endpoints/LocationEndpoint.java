@@ -8,13 +8,12 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
 import com.shawnaten.simpleweather.backend.Messaging;
-import com.shawnaten.simpleweather.backend.UserIdFix;
 import com.shawnaten.simpleweather.backend.model.Constants;
 import com.shawnaten.simpleweather.backend.model.GCMRecord;
-import com.shawnaten.simpleweather.backend.model.Prefs;
 import com.shawnaten.simpleweather.backend.tasks.ForecastTask;
 import com.shawnaten.simpleweather.lib.model.MessagingCodes;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
@@ -59,14 +58,18 @@ public class LocationEndpoint {
         if (user == null)
             throw new OAuthRequestException("unauthorized request");
 
-        String userId = UserIdFix.getUserId(user);
+        GCMRecord gcmRecord = ofy().load()
+                .type(GCMRecord.class)
+                .filter("gcmToken", gcmToken)
+                .first().now();
 
-        GCMRecord record;
-        record = ofy().load().type(GCMRecord.class).filter("gcmToken", gcmToken).first().now();
-        Prefs prefs;
-        prefs = ofy().load().type(Prefs.class).filter("userId", userId).first().now();
+        if (gcmRecord == null) {
+            log.setLevel(Level.SEVERE);
+            log.severe("gcmRecord was null");
+            return;
+        }
 
-        ForecastTask task = new ForecastTask(record, prefs, lat, lng);
+        ForecastTask task = new ForecastTask(gcmRecord, lat, lng);
 
         ForecastTask.enqueue(task);
 

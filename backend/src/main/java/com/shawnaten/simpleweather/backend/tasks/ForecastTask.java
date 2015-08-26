@@ -10,7 +10,6 @@ import com.googlecode.objectify.VoidWork;
 import com.shawnaten.simpleweather.backend.Dagger;
 import com.shawnaten.simpleweather.backend.Messaging;
 import com.shawnaten.simpleweather.backend.model.GCMRecord;
-import com.shawnaten.simpleweather.backend.model.Prefs;
 import com.shawnaten.simpleweather.lib.model.APIKeys;
 import com.shawnaten.simpleweather.lib.model.Forecast;
 import com.shawnaten.simpleweather.lib.model.MessagingCodes;
@@ -32,8 +31,6 @@ public class ForecastTask implements DeferredTask {
     public static final String QUEUE = "forecast-queue";
     private static final Logger log = Logger.getLogger(Messaging.class.getName());
 
-    //private static final double THRESHOLD = .5;
-
     private static final ArrayList<String> icons = new ArrayList<>();
     static {
         icons.add("rain");
@@ -45,13 +42,11 @@ public class ForecastTask implements DeferredTask {
     }
 
     private GCMRecord gcmRecord;
-    private Prefs prefs;
     private double lat;
     private double lng;
 
-    public ForecastTask(GCMRecord gcmRecord, Prefs prefs, double lat, double lng) {
+    public ForecastTask(GCMRecord gcmRecord, double lat, double lng) {
         this.gcmRecord = gcmRecord;
-        this.prefs = prefs;
         this.lat = lat;
         this.lng = lng;
     }
@@ -69,30 +64,13 @@ public class ForecastTask implements DeferredTask {
         );
         dateFormat.setTimeZone(TimeZone.getTimeZone("US/Central"));
 
-        // TODO these things shouldn't be null
-
-        if (gcmRecord == null) {
-            log.setLevel(Level.WARNING);
-            log.warning("gcmRecord was null");
-            return;
-        }
-
         Forecast.Response forecast;
         long eta = 0;
 
+        // TODO need to use user's actual language and units
+
         String langCode = "en";
         String unitCode = "us";
-
-        log.setLevel(Level.INFO);
-        if (gcmRecord.getLangCode() != null)
-            langCode = gcmRecord.getLangCode();
-        else
-            log.info("langCode was null");
-
-        if (prefs != null)
-            unitCode = prefs.getUnitCode();
-        else
-            log.info("prefs was null");
 
         try {
             forecast = forecastService.notifyVersion(
@@ -125,7 +103,15 @@ public class ForecastTask implements DeferredTask {
         long endOfHourly = hourlyData[hourlyData.length - 1].getTime().getTime();
 
         if (icons.contains(minutelyBlock.getIcon())) {
-            notify = true;
+            String summary = minutelyBlock.getSummary();
+
+            switch (langCode) {
+                case "en":
+                    if (summary.contains("starting") || summary.contains("stopping"))
+                        notify = true;
+                    break;
+            }
+
             eta = endOfMinutely;
         }
 
@@ -155,9 +141,12 @@ public class ForecastTask implements DeferredTask {
                     .build();
             Messaging.sendMessage(gcmRecord.getGcmToken(), msg);
 
-            message += "This sent a notification:\n";
-            message += minutelyBlock.getSummary() + "\n\n";
+            message += "This DID send a notification:\n";
+        } else {
+            message += "This DID NOT a notification:\n";
         }
+
+        message += minutelyBlock.getSummary() + "\n\n";
 
         if (eta == 0)
             eta = dailyData[dailyData.length - 1].getTime().getTime();
