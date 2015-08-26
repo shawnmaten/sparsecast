@@ -17,6 +17,7 @@ import com.shawnaten.simpleweather.lib.model.MessagingCodes;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.logging.Level;
@@ -31,7 +32,17 @@ public class ForecastTask implements DeferredTask {
     public static final String QUEUE = "forecast-queue";
     private static final Logger log = Logger.getLogger(Messaging.class.getName());
 
-    private static final double THRESHOLD = .2;
+    //private static final double THRESHOLD = .5;
+
+    private static final ArrayList<String> icons = new ArrayList<>();
+    static {
+        icons.add("rain");
+        icons.add("snow");
+        icons.add("sleet");
+        icons.add("hail");
+        icons.add("thunderstorm");
+        icons.add("tornado");
+    }
 
     private GCMRecord gcmRecord;
     private Prefs prefs;
@@ -65,10 +76,6 @@ public class ForecastTask implements DeferredTask {
             log.warning("gcmRecord was null");
             return;
         }
-
-        log.setLevel(Level.INFO);
-        log.info(gcmRecord.getUserId());
-        log.info(gcmRecord.getForecastTask());
 
         Forecast.Response forecast;
         long eta = 0;
@@ -117,21 +124,21 @@ public class ForecastTask implements DeferredTask {
         long endOfMinutely = minutelyData[minutelyData.length - 1].getTime().getTime();
         long endOfHourly = hourlyData[hourlyData.length - 1].getTime().getTime();
 
-        String message = "\nminutely\n[";
-        for (Forecast.DataPoint dataPoint : minutelyData) {
-            message += String.format("%.2f, ", dataPoint.getPrecipProbability());
-            if (eta == 0 && dataPoint.getPrecipProbability() > THRESHOLD) {
-                notify = true;
-                eta = endOfMinutely;
-            }
+        if (icons.contains(minutelyBlock.getIcon())) {
+            notify = true;
+            eta = endOfMinutely;
         }
+
+        String message = "\nminutely\n[";
+        for (Forecast.DataPoint dataPoint : minutelyData)
+            message += dataPoint.getIcon() + ",";
         message = message.substring(0, message.length() - 2);
         message += "]\n\n";
 
         message += "hourly\n[";
         for (Forecast.DataPoint dataPoint : hourlyData) {
-            message += String.format("%.2f, ", dataPoint.getPrecipProbability());
-            if (eta == 0 && dataPoint.getPrecipProbability() > THRESHOLD)
+            message += dataPoint.getIcon() + ",";
+            if (eta == 0 && icons.contains(dataPoint.getIcon()))
                 eta = Math.max(endOfMinutely, dataPoint.getTime().getTime());
         }
         message = message.substring(0, message.length() - 2);
@@ -139,8 +146,8 @@ public class ForecastTask implements DeferredTask {
 
         message += "daily\n[";
         for (Forecast.DataPoint dataPoint : dailyData) {
-            message += String.format("%.2f, ", dataPoint.getPrecipProbability());
-            if (eta == 0 && dataPoint.getPrecipProbability() > THRESHOLD)
+            message += dataPoint.getIcon() + ",";
+            if (eta == 0 && icons.contains(dataPoint.getIcon()))
                 eta = Math.max(endOfHourly, dataPoint.getTime().getTime());
         }
         message = message.substring(0, message.length() - 2);

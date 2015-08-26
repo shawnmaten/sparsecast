@@ -9,8 +9,9 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b67a918f-24a8-487a-a64a-74a4340de2b8" name="Default" comment="moving eta fallback above message">
+    <list default="true" id="b67a918f-24a8-487a-a64a-74a4340de2b8" name="Default" comment="changing log level">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java" afterPath="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/services/LocationService2.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/services/LocationService2.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="simpleweather.iws" />
@@ -54,15 +55,35 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ForecastTask.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ForecastTask.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3611557">
-              <caret line="83" column="0" selection-start-line="83" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="91" column="15" selection-start-line="91" selection-start-column="15" selection-end-line="91" selection-end-column="15" />
               <folding>
-                <element signature="e#1670#1671#0" expanded="true" />
-                <element signature="e#1702#1703#0" expanded="true" />
+                <element signature="e#1964#1965#0" expanded="true" />
+                <element signature="e#1996#1997#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LocationEndpoint.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/endpoints/LocationEndpoint.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.8384615">
+              <caret line="84" column="68" selection-start-line="84" selection-start-column="68" selection-end-line="84" selection-end-column="68" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LocationService2.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/services/LocationService2.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="122" column="37" selection-start-line="122" selection-start-column="37" selection-end-line="122" selection-end-column="37" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -70,7 +91,7 @@
       <file leaf-file-name="LocationTask.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/LocationTask.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="4.703704">
+            <state vertical-scroll-proportion="0.0">
               <caret line="17" column="36" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="36" />
               <folding />
             </state>
@@ -4272,7 +4293,6 @@
         <option value="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/Messaging.java" />
         <option value="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/ForecastTask.java" />
         <option value="$PROJECT_DIR$/lib/src/main/java/com/shawnaten/simpleweather/lib/model/APIKeys.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/services/LocationService2.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/module/GCMTokenModule.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/xml/preferences.xml" />
         <option value="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/model/GCMRecord.java" />
@@ -4305,6 +4325,7 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/App.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/tools/LocalizationSettings.java" />
         <option value="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/LocationTask.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/services/LocationService2.java" />
         <option value="$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java" />
       </list>
     </option>
@@ -4375,6 +4396,40 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simpleweather" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simpleweather" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sparsecast" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simpleweather" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sparsecast" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -4419,7 +4474,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="tasks" />
+              <option name="myItemId" value="endpoints" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -4577,47 +4632,13 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
       <pane id="PackagesPane">
         <subPane>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="simpleweather" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="Scratches" />
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simpleweather" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simpleweather" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sparsecast" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="simpleweather" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sparsecast" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -4946,12 +4967,6 @@
       <option name="number" value="Default" />
       <updated>1435973806470</updated>
     </task>
-    <task id="LOCAL-00062" summary="removing slack messages">
-      <created>1440275159917</created>
-      <option name="number" value="00062" />
-      <option name="project" value="LOCAL" />
-      <updated>1440275159917</updated>
-    </task>
     <task id="LOCAL-00063" summary="suppress warning">
       <created>1440275193793</created>
       <option name="number" value="00063" />
@@ -5240,7 +5255,13 @@
       <option name="project" value="LOCAL" />
       <updated>1440481147811</updated>
     </task>
-    <option name="localTasksCounter" value="111" />
+    <task id="LOCAL-00111" summary="changing log level">
+      <created>1440481456272</created>
+      <option name="number" value="00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1440481456272</updated>
+    </task>
+    <option name="localTasksCounter" value="112" />
     <servers />
   </component>
   <component name="TodoView">
@@ -5256,7 +5277,6 @@
     <frame x="0" y="23" width="1280" height="773" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Documentation" active="false" anchor="right" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27421874" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" x="100" y="100" width="1080" height="600" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3259587" sideWeight="0.4921875" order="8" side_tool="false" content_ui="tabs" />
@@ -5277,6 +5297,7 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25625" sideWeight="0.544898" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2581121" sideWeight="0.4828125" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Documentation" active="false" anchor="right" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27421874" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" x="100" y="100" width="1080" height="600" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -5333,7 +5354,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
-    <MESSAGE value="instabug menu item&#10;removing toolbar items from search activity" />
     <MESSAGE value="fixing back button" />
     <MESSAGE value="fix for settings nav button" />
     <MESSAGE value="notify icons" />
@@ -5358,7 +5378,8 @@
     <MESSAGE value="edge case if no precip for every data point" />
     <MESSAGE value="fixing queue used" />
     <MESSAGE value="moving eta fallback above message" />
-    <option name="LAST_COMMIT_MESSAGE" value="moving eta fallback above message" />
+    <MESSAGE value="changing log level" />
+    <option name="LAST_COMMIT_MESSAGE" value="changing log level" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -5372,7 +5393,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.18461539">
           <caret line="8" column="1" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="1" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -5550,13 +5570,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/tab_next_24_hours.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.36231884">
           <caret line="52" column="65" selection-start-line="52" selection-start-column="59" selection-end-line="52" selection-end-column="65" />
         </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/src/main/java/com/shawnaten/simpleweather/lib/model/Forecast.java">
@@ -5591,13 +5611,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7923077">
           <caret line="84" column="37" selection-start-line="84" selection-start-column="37" selection-end-line="84" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/endpoints/LocationEndpoint.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5846154">
-          <caret line="84" column="68" selection-start-line="84" selection-start-column="68" selection-end-line="84" selection-end-column="68" />
         </state>
       </provider>
     </entry>
@@ -5686,13 +5699,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/services/LocationService2.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="113" column="60" selection-start-line="113" selection-start-column="60" selection-end-line="113" selection-end-column="60" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/ui/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.43384615">
@@ -5704,7 +5710,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -5712,26 +5717,41 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.74615383">
           <caret line="62" column="5" selection-start-line="62" selection-start-column="5" selection-end-line="62" selection-end-column="5" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/LocationTask.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="4.703704">
+        <state vertical-scroll-proportion="0.0">
           <caret line="17" column="36" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shawnaten/simpleweather/services/LocationService2.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="122" column="37" selection-start-line="122" selection-start-column="37" selection-end-line="122" selection-end-column="37" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/tasks/ForecastTask.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3611557">
-          <caret line="83" column="0" selection-start-line="83" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="91" column="15" selection-start-line="91" selection-start-column="15" selection-end-line="91" selection-end-column="15" />
           <folding>
-            <element signature="e#1670#1671#0" expanded="true" />
-            <element signature="e#1702#1703#0" expanded="true" />
+            <element signature="e#1964#1965#0" expanded="true" />
+            <element signature="e#1996#1997#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/src/main/java/com/shawnaten/simpleweather/backend/endpoints/LocationEndpoint.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8384615">
+          <caret line="84" column="68" selection-start-line="84" selection-start-column="68" selection-end-line="84" selection-end-column="68" />
+          <folding />
         </state>
       </provider>
     </entry>
