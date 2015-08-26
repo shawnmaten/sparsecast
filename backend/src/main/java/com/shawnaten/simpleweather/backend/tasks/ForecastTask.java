@@ -156,7 +156,7 @@ public class ForecastTask implements DeferredTask {
             Messaging.sendMessage(gcmRecord.getGcmToken(), msg);
 
             message += "This sent a notification:\n";
-            message += minutelyBlock.getSummary();
+            message += minutelyBlock.getSummary() + "\n\n";
         }
 
         if (eta == 0)
