@@ -143,7 +143,7 @@ public class ForecastTask implements DeferredTask {
 
             message += "This DID send a notification:\n";
         } else {
-            message += "This DID NOT a notification:\n";
+            message += "This DID NOT send a notification:\n";
         }
 
         message += minutelyBlock.getSummary() + "\n\n";
