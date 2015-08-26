@@ -129,29 +129,23 @@ public class ForecastTask implements DeferredTask {
             eta = endOfMinutely;
         }
 
-        String message = "\nminutely\n[";
-        for (Forecast.DataPoint dataPoint : minutelyData)
-            message += dataPoint.getIcon() + ",";
-        message = message.substring(0, message.length() - 2);
-        message += "]\n\n";
+        String message = "\nminutely: " + minutelyBlock.getIcon() + "\n\n";
 
-        message += "hourly\n[";
+        message += "hourly: " + hourlyBlock.getIcon() + "\n";
         for (Forecast.DataPoint dataPoint : hourlyData) {
-            message += dataPoint.getIcon() + ",";
+            message += dataPoint.getIcon() + "\n";
             if (eta == 0 && icons.contains(dataPoint.getIcon()))
                 eta = Math.max(endOfMinutely, dataPoint.getTime().getTime());
         }
-        message = message.substring(0, message.length() - 2);
-        message += "]\n\n";
+        message += "\n";
 
-        message += "daily\n[";
+        message += "daily: " + dailyBlock.getIcon() + "\n";
         for (Forecast.DataPoint dataPoint : dailyData) {
-            message += dataPoint.getIcon() + ",";
+            message += dataPoint.getIcon() + "\n";
             if (eta == 0 && icons.contains(dataPoint.getIcon()))
                 eta = Math.max(endOfHourly, dataPoint.getTime().getTime());
         }
-        message = message.substring(0, message.length() - 2);
-        message += "]\n\n";
+        message += "\n";
 
         if (notify) {
             Message msg = new Message.Builder()
@@ -161,8 +155,8 @@ public class ForecastTask implements DeferredTask {
                     .build();
             Messaging.sendMessage(gcmRecord.getGcmToken(), msg);
 
-            message += "This sent a notification.\n";
-            message += minutelyBlock.getSummary() + "\n\n";
+            message += "This sent a notification:\n";
+            message += minutelyBlock.getSummary();
         }
 
         if (eta == 0)
