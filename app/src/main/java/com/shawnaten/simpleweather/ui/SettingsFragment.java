@@ -22,7 +22,7 @@ import com.shawnaten.simpleweather.lib.model.Forecast;
 import com.shawnaten.simpleweather.services.LocationService2;
 import com.shawnaten.simpleweather.tools.AnalyticsCodes;
 import com.shawnaten.simpleweather.tools.GeneralAlertDialog;
-import com.shawnaten.simpleweather.tools.LocalizationSettings;
+import com.shawnaten.simpleweather.tools.LocaleSettings;
 import com.shawnaten.simpleweather.tools.LocationSettings;
 
 import java.io.IOException;
@@ -101,8 +101,8 @@ public class SettingsFragment extends PreferenceFragment
                                     APIKeys.FORECAST,
                                     location.getLatitude(),
                                     location.getLongitude(),
-                                    LocalizationSettings.getLangCode(),
-                                    LocalizationSettings.getUnitCode()
+                                    LocaleSettings.getLangCode(),
+                                    LocaleSettings.getUnitCode()
                             );
                         }
                     }
@@ -157,7 +157,7 @@ public class SettingsFragment extends PreferenceFragment
             case "prefUnits":
                 ListPreference unitsPref = (ListPreference) findPreference(key);
                 unitsPref.setSummary(unitsPref.getEntry());
-                LocalizationSettings.configure(getApp(), prefsAPI, gcmAPI);
+                LocaleSettings.configure(getApp(), prefsAPI, gcmAPI);
                 break;
             case "prefLocationNotify":
                 if (prefs.getBoolean(key, false)) {

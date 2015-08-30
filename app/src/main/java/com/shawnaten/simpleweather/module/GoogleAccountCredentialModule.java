@@ -18,17 +18,16 @@ public class GoogleAccountCredentialModule {
     @Provides
     @Singleton
     public GoogleAccountCredential providesGoogleAccountCredential(Context context) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String accountName;
+        String accountKey = context.getString(R.string.pref_account_key);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String webId = context.getString(R.string.WEB_ID);
+        String accountName = prefs.getString(accountKey, null);
         GoogleAccountCredential cred;
 
-        cred = GoogleAccountCredential.usingAudience(context,
-                "server:client_id:" + context.getString(R.string.WEB_ID));
+        cred = GoogleAccountCredential.usingAudience(context, "server:client_id:" + webId);
 
-        accountName = preferences.getString(context.getString(R.string.pref_account_key),
-                cred.getAllAccounts()[0].name);
-
-        cred.setSelectedAccountName(accountName);
+        if (accountName != null)
+            cred.setSelectedAccountName(accountName);
 
         return cred;
     }

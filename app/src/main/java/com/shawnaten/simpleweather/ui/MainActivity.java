@@ -1,5 +1,7 @@
 package com.shawnaten.simpleweather.ui;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -38,8 +40,10 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.instabug.library.Instabug;
 import com.shawnaten.simpleweather.R;
+import com.shawnaten.simpleweather.backend.gcmAPI.GcmAPI;
 import com.shawnaten.simpleweather.backend.imagesApi.ImagesApi;
 import com.shawnaten.simpleweather.backend.imagesApi.model.Image;
 import com.shawnaten.simpleweather.backend.savedPlaceApi.SavedPlaceApi;
@@ -51,8 +55,9 @@ import com.shawnaten.simpleweather.tools.AnalyticsCodes;
 import com.shawnaten.simpleweather.tools.Attributions;
 import com.shawnaten.simpleweather.tools.ForecastIconSelector;
 import com.shawnaten.simpleweather.tools.ForecastTools;
+import com.shawnaten.simpleweather.tools.GCMToken;
 import com.shawnaten.simpleweather.tools.Instagram;
-import com.shawnaten.simpleweather.tools.LocalizationSettings;
+import com.shawnaten.simpleweather.tools.LocaleSettings;
 import com.shawnaten.simpleweather.tools.LocationSettings;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -78,6 +83,7 @@ import rx.schedulers.Schedulers;
 public class MainActivity extends BaseActivity {
     public static final int PLACE_SEARCH_CODE = RESULT_FIRST_USER + 1;
     public static final int PLACE_SELECTED_CODE = RESULT_FIRST_USER + 2;
+    private static final int REQUEST_ACCOUNT = RESULT_FIRST_USER + 3;
 
     private static final String SCROLL_POSITION = "scrollPos";
     private static final String FORECAST_DATA = "forecastData";
@@ -89,12 +95,14 @@ public class MainActivity extends BaseActivity {
     @Inject ReactiveLocationProvider locationProvider;
 
     @Inject GoogleApiClient googleApiClient;
+    @Inject GoogleAccountCredential cred;
 
     @Inject Forecast.Service forecastService;
     @Inject Instagram.Service instagramService;
 
     @Inject ImagesApi imagesApi;
     @Inject SavedPlaceApi savedPlaceApi;
+    @Inject GcmAPI gcmAPI;
 
     @Bind(R.id.toolbar) Toolbar toolbar;
 
@@ -105,6 +113,8 @@ public class MainActivity extends BaseActivity {
     @Bind(R.id.main_loc) TextView locationView;
     @Bind(R.id.current_condition) TextView status;
     @Bind(R.id.feels_like) TextView feelsLikes;
+
+    private String prefAccountKey;
 
     private int scrollPos;
 
@@ -121,6 +131,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        prefAccountKey = getString(R.string.pref_account_key);
 
         Resources res = getResources();
 
@@ -180,6 +192,53 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
+        // UI stuff
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            window.setStatusBarColor(0x00000000);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+
+        toolbar.setTranslationY(statBarSize);
+        // end of UI stuff
+
+        // configuration
+        String prefAccountName = prefs.getString(prefAccountKey, null);
+        Account accounts[] = cred.getAllAccounts();
+
+        boolean accountRemoved = true;
+        if (prefAccountName != null)
+            for (Account account : accounts)
+                if (account.name.equals(prefAccountName))
+                    accountRemoved = false;
+
+        if (prefAccountName == null || accountRemoved || accounts.length == 0) {
+            startActivityForResult(cred.newChooseAccountIntent(), REQUEST_ACCOUNT);
+            return;
+        }
+
+        GCMToken.configure(this, gcmAPI).subscribe(new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                // TODO do something on error
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+                getForecast();
+            }
+        });
+
+        invalidateOptionsMenu();
+        // end of configuration
+    }
+
+    private void getForecast() {
         Subscriber<Forecast.Response> notifySub = new Subscriber<Forecast.Response>() {
             @Override
             public void onCompleted() {
@@ -208,12 +267,12 @@ public class MainActivity extends BaseActivity {
 
                     NotificationCompat.Builder builder = new NotificationCompat
                             .Builder(getApplicationContext())
-                                .setSmallIcon(ForecastIconSelector.getNotifyIcon("rain"))
-                                .setContentTitle(getString(R.string.message_8_23_15_title))
-                                .setContentText(getString(R.string.message_8_23_15_content))
-                                .setContentIntent(pendingIntent)
-                                .setSound(soundUri)
-                                .setPriority(NotificationCompat.PRIORITY_MAX)
+                            .setSmallIcon(ForecastIconSelector.getNotifyIcon("rain"))
+                            .setContentTitle(getString(R.string.message_8_23_15_title))
+                            .setContentText(getString(R.string.message_8_23_15_content))
+                            .setContentIntent(pendingIntent)
+                            .setSound(soundUri)
+                            .setPriority(NotificationCompat.PRIORITY_MAX)
                             .setAutoCancel(true);
 
                     manager.notify(GCMNotificationService.getID(), builder.build());
@@ -235,8 +294,8 @@ public class MainActivity extends BaseActivity {
                                         APIKeys.FORECAST,
                                         location.getLatitude(),
                                         location.getLongitude(),
-                                        LocalizationSettings.getLangCode(),
-                                        LocalizationSettings.getUnitCode()
+                                        LocaleSettings.getLangCode(),
+                                        LocaleSettings.getUnitCode()
                                 );
                             }
                         }
@@ -258,9 +317,9 @@ public class MainActivity extends BaseActivity {
             forecastObservable = locationProvider
                     .checkLocationSettings(
                             new LocationSettingsRequest.Builder()
-                            .addLocationRequest(locationRequest)
-                            .setAlwaysShow(true)
-                            .build()
+                                    .addLocationRequest(locationRequest)
+                                    .setAlwaysShow(true)
+                                    .build()
                     )
                     .doOnNext(new Action1<LocationSettingsResult>() {
                         @Override
@@ -286,8 +345,8 @@ public class MainActivity extends BaseActivity {
                                     APIKeys.FORECAST,
                                     location.getLatitude(),
                                     location.getLongitude(),
-                                    LocalizationSettings.getLangCode(),
-                                    LocalizationSettings.getUnitCode()
+                                    LocaleSettings.getLangCode(),
+                                    LocaleSettings.getUnitCode()
                             );
                         }
                     })
@@ -332,8 +391,8 @@ public class MainActivity extends BaseActivity {
                     APIKeys.FORECAST,
                     LocationSettings.getLat(),
                     LocationSettings.getLng(),
-                    LocalizationSettings.getLangCode(),
-                    LocalizationSettings.getUnitCode()
+                    LocaleSettings.getLangCode(),
+                    LocaleSettings.getUnitCode()
             ).observeOn(AndroidSchedulers.mainThread());
 
             locationView.setText(LocationSettings.getName());
@@ -436,16 +495,6 @@ public class MainActivity extends BaseActivity {
         };
 
         subs.add(forecastObservable.subscribe(subscriber));
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            window.setStatusBarColor(0x00000000);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-
-        toolbar.setTranslationY(statBarSize);
-
-        invalidateOptionsMenu();
     }
 
     @Override
@@ -553,6 +602,30 @@ public class MainActivity extends BaseActivity {
         super.onSaveInstanceState(outState);
 
         outState.putInt(SCROLL_POSITION, scrollPos);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQUEST_ACCOUNT:
+                if (data != null && data.getExtras() != null) {
+                    String accountName;
+                    accountName = data.getExtras().getString(AccountManager.KEY_ACCOUNT_NAME);
+                    if (accountName != null)
+                        setSelectedAccountName(accountName);
+                }
+                onResume();
+                break;
+        }
+    }
+
+    private void setSelectedAccountName(String accountName) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(prefAccountKey, accountName);
+        editor.apply();
+        cred.setSelectedAccountName(accountName);
     }
 
     public void setScrollPos(int scrollPos) {

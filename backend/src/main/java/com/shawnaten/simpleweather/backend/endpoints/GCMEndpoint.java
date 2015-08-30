@@ -41,6 +41,84 @@ public class GCMEndpoint {
     private static final Logger log = Logger.getLogger(GCMEndpoint.class.getName());
 
     @ApiMethod(
+            name = "create",
+            path = "create",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    public void create(
+            User user,
+            @Named("token") String token,
+            @Named("langCode") String langCode,
+            @Named("unitCode") String unitCode
+    ) throws OAuthRequestException, EntityNotFoundException {
+
+        if (user == null)
+            throw new OAuthRequestException("unauthorized request");
+
+        GCMRecord record = new GCMRecord();
+        record.setUserId(UserIdFix.getUserId(user));
+        record.setGcmToken(token);
+        record.setLangCode(langCode);
+        record.setUnitCode(unitCode);
+
+        ofy().save().entity(record).now();
+    }
+
+    @ApiMethod(
+            name = "updateToken",
+            path = "updateToken",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    public void updateToken(
+            User user,
+            @Named("oldToken") String oldToken,
+            @Named("newToken") String newToken
+    ) throws OAuthRequestException {
+
+        if (user == null)
+            throw new OAuthRequestException("unauthorized request");
+
+        GCMRecord record = ofy()
+                .load()
+                .type(GCMRecord.class)
+                .filter("gcmToken", oldToken)
+                .first()
+                .now();
+
+        record.setGcmToken(newToken);
+        ofy().save().entity(record).now();
+    }
+
+    @ApiMethod(
+            name = "updatePrefs",
+            path = "updatePrefs",
+            httpMethod = ApiMethod.HttpMethod.POST
+    )
+    public void updatePrefs(
+            User user,
+            @Named("token") String token,
+            @Named("langCode") String langCode,
+            @Named("unitCode") String unitCode
+    ) throws OAuthRequestException {
+
+        if (user == null)
+            throw new OAuthRequestException("unauthorized request");
+
+        GCMRecord record = ofy()
+                .load()
+                .type(GCMRecord.class)
+                .filter("gcmToken", token)
+                .first()
+                .now();
+
+        record.setLangCode(langCode);
+        record.setUnitCode(unitCode);
+        ofy().save().entity(record).now();
+    }
+
+    // TODO the following are deprecated
+
+    @ApiMethod(
             name = "insert",
             httpMethod = ApiMethod.HttpMethod.POST
     )

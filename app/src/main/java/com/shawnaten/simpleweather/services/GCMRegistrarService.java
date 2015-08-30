@@ -11,7 +11,7 @@ import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.gcmAPI.GcmAPI;
 import com.shawnaten.simpleweather.component.DaggerServiceComponent;
 import com.shawnaten.simpleweather.module.ContextModule;
-import com.shawnaten.simpleweather.tools.LocalizationSettings;
+import com.shawnaten.simpleweather.tools.LocaleSettings;
 
 import java.io.IOException;
 
@@ -55,9 +55,9 @@ public class GCMRegistrarService extends IntentService {
         try {
             String newToken = instanceID.getToken(senderId, scope, null);
             if (oldToken != null)
-                gcmAPI.update(oldToken, newToken, LocalizationSettings.getLangCode()).execute();
+                gcmAPI.update(oldToken, newToken, LocaleSettings.getLangCode()).execute();
             else
-                gcmAPI.insert(newToken, LocalizationSettings.getLangCode()).execute();
+                gcmAPI.insert(newToken, LocaleSettings.getLangCode()).execute();
             prefs.edit().putString(GCMRegistrarService.KEY, newToken).apply();
             if (prefs.getBoolean(notifyKey, false))
                 LocationService2.start(this);

@@ -54,7 +54,7 @@ public class Charts {
 
         leftAxis.setDrawAxisLine(false);
         leftAxis.setAxisMinValue(0);
-        leftAxis.setAxisMaxValue((float) LocalizationSettings.getPrecipitationHeavy());
+        leftAxis.setAxisMaxValue((float) LocaleSettings.getPrecipitationHeavy());
         leftAxis.setLabelCount(2);
         leftAxis.setValueFormatter(new ValueFormatter() {
             @Override

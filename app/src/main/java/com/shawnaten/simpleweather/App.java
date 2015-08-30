@@ -1,8 +1,6 @@
 package com.shawnaten.simpleweather;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.support.multidex.MultiDexApplication;
 
 import com.bugsnag.android.Bugsnag;
@@ -14,9 +12,6 @@ import com.shawnaten.simpleweather.backend.prefsAPI.PrefsAPI;
 import com.shawnaten.simpleweather.component.DaggerMainComponent;
 import com.shawnaten.simpleweather.component.MainComponent;
 import com.shawnaten.simpleweather.module.ContextModule;
-import com.shawnaten.simpleweather.services.GCMRegistrarService;
-import com.shawnaten.simpleweather.services.LocationService2;
-import com.shawnaten.simpleweather.tools.LocalizationSettings;
 
 import javax.inject.Inject;
 
@@ -41,11 +36,12 @@ public class App extends MultiDexApplication {
 
         mainComponent.inject(this);
 
-        Bugsnag.addToTab("User", "Email", googleAccountCredential.getAllAccounts()[0].name);
+        //Bugsnag.addToTab("User", "Email", googleAccountCredential.getAllAccounts()[0].name);
 
         Instabug.initialize(this, "b35476559976660ba01ceb378d76f6d5");
         Instabug.getInstance().setShowIntroDialog(false);
 
+        /*
         String notifyKey = getString(R.string.pref_location_notify_key);
 
         LocalizationSettings.configure(this, prefsAPI, gcmAPI);
@@ -53,15 +49,16 @@ public class App extends MultiDexApplication {
         if (!prefs.contains(GCMRegistrarService.KEY))
             startService(new Intent(this, GCMRegistrarService.class));
         else if (prefs.getBoolean(notifyKey, false))
-            LocationService2.start(this);
+            LocationService2.start(this);*/
     }
 
+    /*
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
         LocalizationSettings.configure(this, prefsAPI, gcmAPI);
-    }
+    }*/
 
     public MainComponent getMainComponent() {
         return mainComponent;

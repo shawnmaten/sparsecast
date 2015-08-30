@@ -14,7 +14,7 @@ import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.lib.model.Forecast;
 import com.shawnaten.simpleweather.tools.Charts;
 import com.shawnaten.simpleweather.tools.ForecastTools;
-import com.shawnaten.simpleweather.tools.LocalizationSettings;
+import com.shawnaten.simpleweather.tools.LocaleSettings;
 import com.shawnaten.simpleweather.ui.widget.VerticalWeatherBar;
 
 import java.text.DateFormat;
@@ -156,7 +156,7 @@ public class Next24HoursTab extends Tab {
                         "(%s: %d %s %s)",
                         getString(R.string.nearest_storm),
                         (int) currently.getNearestStormDistance(),
-                        getString(LocalizationSettings.getDistanceUnit()),
+                        getString(LocaleSettings.getDistanceUnit()),
                         getString(ForecastTools.getWindString(currently
                                 .getNearestStormBearing()))
                 ));
@@ -175,7 +175,7 @@ public class Next24HoursTab extends Tab {
                     case R.string.wind:
                         text = String.format("%s %s %s",
                                 intForm.format(currently.getWindSpeed()),
-                                getString(LocalizationSettings.getSpeedUnit()),
+                                getString(LocaleSettings.getSpeedUnit()),
                                 getString(ForecastTools.getWindString(currently.getWindBearing())));
                         break;
                     case R.string.humidity:
@@ -187,12 +187,12 @@ public class Next24HoursTab extends Tab {
                     case R.string.pressure:
                         text = String.format("%s %s",
                                 intForm.format(currently.getPressure()),
-                                getString(LocalizationSettings.getPressureUnit()));
+                                getString(LocaleSettings.getPressureUnit()));
                         break;
                     case R.string.visibility:
                         text = String.format("%s %s",
                                 intForm.format(currently.getVisibility()),
-                                getString(LocalizationSettings.getDistanceUnit()));
+                                getString(LocaleSettings.getDistanceUnit()));
                         break;
                 }
 

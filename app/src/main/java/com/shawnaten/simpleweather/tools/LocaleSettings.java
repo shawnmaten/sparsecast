@@ -5,19 +5,11 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.shawnaten.simpleweather.R;
-import com.shawnaten.simpleweather.backend.gcmAPI.GcmAPI;
-import com.shawnaten.simpleweather.backend.prefsAPI.PrefsAPI;
-import com.shawnaten.simpleweather.services.GCMRegistrarService;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.schedulers.Schedulers;
-
 @SuppressWarnings("unused")
-public class LocalizationSettings {
+public class LocaleSettings {
     private static final ArrayList<String> SUPPORTED_LANGS = new ArrayList<>();
     static {
         SUPPORTED_LANGS.add("ar");
@@ -52,11 +44,8 @@ public class LocalizationSettings {
     private static double precipitationHeavy;
     private static int pressureUnit;
 
-    public static void configure(
-            final Context context,
-            final PrefsAPI prefsAPI,
-            final GcmAPI gcmAPI
-    ) {
+    public static boolean configure(final Context context) {
+
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         final String unitCodeKey = context.getString(R.string.pref_units_key);
 
@@ -108,26 +97,7 @@ public class LocalizationSettings {
         if (!SUPPORTED_LANGS.contains(langCode))
             langCode = "en";
 
-        Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    if (!unitCode.equals(oldUnitCode)) {
-                        prefsAPI.insert(unitCode).execute();
-                        String key = context.getString(R.string.pref_units_key);
-                        prefs.edit().putString(key, unitCode).apply();
-                    }
-
-                    if (prefs.contains(GCMRegistrarService.KEY) && !langCode.equals(oldLangCode)) {
-                        String token = prefs.getString(GCMRegistrarService.KEY, "");
-                        gcmAPI.update(token, token, langCode).execute();
-                        prefs.edit().putString(LANG_KEY, langCode).apply();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).subscribeOn(Schedulers.io()).subscribe();
+        return !(langCode.equals(oldLangCode) && unitCode.equals(oldUnitCode));
     }
 
     public static String getLangCode() {

@@ -17,24 +17,24 @@ public class Precipitation {
     public static final int OVERCAST = 3;
 
     public static int getIntensityCode(double intensity) {
-        if (intensity >= LocalizationSettings.getPrecipitationMed()) {
-            double distToHeavy = LocalizationSettings.getPrecipitationHeavy() - intensity;
-            double distToMod = intensity - LocalizationSettings.getPrecipitationMed();
+        if (intensity >= LocaleSettings.getPrecipitationMed()) {
+            double distToHeavy = LocaleSettings.getPrecipitationHeavy() - intensity;
+            double distToMod = intensity - LocaleSettings.getPrecipitationMed();
 
             if (distToHeavy < distToMod)
                 return HEAVY;
             else
                 return MODERATE;
-        } else if (intensity >= LocalizationSettings.getPrecipitationLight()) {
-            double distToMod = LocalizationSettings.getPrecipitationMed() - intensity;
-            double distToLight = intensity - LocalizationSettings.getPrecipitationLight();
+        } else if (intensity >= LocaleSettings.getPrecipitationLight()) {
+            double distToMod = LocaleSettings.getPrecipitationMed() - intensity;
+            double distToLight = intensity - LocaleSettings.getPrecipitationLight();
 
             if (distToMod < distToLight)
                 return MODERATE;
             else
                 return LIGHT;
         } else {
-            double distToLight = LocalizationSettings.getPrecipitationLight() - intensity;
+            double distToLight = LocaleSettings.getPrecipitationLight() - intensity;
 
             if (distToLight < intensity)
                 return LIGHT;
