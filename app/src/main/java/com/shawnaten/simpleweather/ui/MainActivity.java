@@ -35,11 +35,7 @@ import android.widget.TextView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.instabug.library.Instabug;
 import com.shawnaten.simpleweather.R;
@@ -217,29 +213,8 @@ public class MainActivity extends BaseActivity {
             return;
         }
 
-        GCMToken.configure(this, gcmAPI).subscribe(new Subscriber<Void>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                // TODO do something on error
-            }
-
-            @Override
-            public void onNext(Void aVoid) {
-                getForecast();
-            }
-        });
-
-        invalidateOptionsMenu();
-        // end of configuration
-    }
-
-    private void getForecast() {
-        Subscriber<Forecast.Response> notifySub = new Subscriber<Forecast.Response>() {
+        final Subscriber<Forecast.Response> notifySub;
+        notifySub = new Subscriber<Forecast.Response>() {
             @Override
             public void onCompleted() {
 
@@ -252,7 +227,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onNext(Forecast.Response response) {
-                if (response != null && response.getMinutely() != null) {
+                if (response.getMinutely() != null) {
                     NotificationManager manager = (NotificationManager) getApplicationContext()
                             .getSystemService(Context.NOTIFICATION_SERVICE);
                     Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -282,62 +257,66 @@ public class MainActivity extends BaseActivity {
             }
         };
 
-        if (!prefs.getBoolean("message_8_23_15", false)) {
-            subs.add(locationProvider.getLastKnownLocation()
-                    .flatMap(new Func1<Location, Observable<Forecast.Response>>() {
-                        @Override
-                        public Observable<Forecast.Response> call(Location location) {
-                            if (location == null) {
-                                return null;
-                            } else {
-                                return forecastService.notifyCheckVersion(
-                                        APIKeys.FORECAST,
-                                        location.getLatitude(),
-                                        location.getLongitude(),
-                                        LocaleSettings.getLangCode(),
-                                        LocaleSettings.getUnitCode()
-                                );
-                            }
-                        }
-                    }).subscribe(notifySub));
-        }
+        subs.add(GCMToken.configure(this, gcmAPI).flatMap(new Func1<Void, Observable<Location>>() {
+            @Override
+            public Observable<Location> call(Void aVoid) {
+                LocationRequest locationRequest = LocationRequest.create()
+                        .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
+                        .setInterval(0)
+                        .setNumUpdates(1);
+
+                return locationProvider.getUpdatedLocation(locationRequest);
+            }
+        }).subscribe(new Subscriber<Location>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Location location) {
+                LocationSettings.setIsLocationEnabled(location != null);
+                if (location != null) {
+                    if (!prefs.getBoolean("message_8_23_15", false)) {
+                        subs.add(locationProvider.getLastKnownLocation()
+                                .flatMap(new Func1<Location, Observable<Forecast.Response>>() {
+                                    @Override
+                                    public Observable<Forecast.Response> call(Location location) {
+                                        return forecastService.notifyCheckVersion(
+                                                APIKeys.FORECAST,
+                                                location.getLatitude(),
+                                                location.getLongitude(),
+                                                LocaleSettings.getLangCode(),
+                                                LocaleSettings.getUnitCode()
+                                        );
+                                    }
+                                }).subscribe(notifySub));
+                    }
+                } else if (LocationSettings.getSavedPlace() == null) {
+                    startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                    return;
+                }
+                invalidateOptionsMenu();
+                getForecast();
+            }
+        }));
+        // end of configuration
+    }
+
+    private void getForecast() {
 
         final long startLoad = System.currentTimeMillis();
 
         Observable<Forecast.Response> forecastObservable;
 
         if (LocationSettings.getMode() == LocationSettings.Mode.CURRENT) {
-            final Observable<Location> locationObservable = locationProvider.getLastKnownLocation();
-
-            final LocationRequest locationRequest = LocationRequest.create()
-                    .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-                    .setNumUpdates(5)
-                    .setInterval(100);
-
             forecastObservable = locationProvider
-                    .checkLocationSettings(
-                            new LocationSettingsRequest.Builder()
-                                    .addLocationRequest(locationRequest)
-                                    .setAlwaysShow(true)
-                                    .build()
-                    )
-                    .doOnNext(new Action1<LocationSettingsResult>() {
-                        @Override
-                        public void call(LocationSettingsResult locationSettingsResult) {
-                            Status status = locationSettingsResult.getStatus();
-                            if (status.getStatusCode() != LocationSettingsStatusCodes.SUCCESS) {
-                                Intent intent;
-                                intent = new Intent(getApplicationContext(), SearchActivity.class);
-                                startActivity(intent);
-                            }
-                        }
-                    })
-                    .flatMap(new Func1<LocationSettingsResult, Observable<Location>>() {
-                        @Override
-                        public Observable<Location> call(LocationSettingsResult locationSettingsResult) {
-                            return locationProvider.getLastKnownLocation();
-                        }
-                    })
+                    .getLastKnownLocation()
                     .flatMap(new Func1<Location, Observable<Forecast.Response>>() {
                         @Override
                         public Observable<Forecast.Response> call(Location location) {
@@ -352,15 +331,15 @@ public class MainActivity extends BaseActivity {
                     })
                     .observeOn(AndroidSchedulers.mainThread());
 
-            locationObservable
+            subs.add(locationProvider
+                    .getLastKnownLocation()
                     .flatMap(new Func1<Location, Observable<List<Address>>>() {
                         @Override
                         public Observable<List<Address>> call(Location location) {
                             return locationProvider.getReverseGeocodeObservable(
                                     location.getLatitude(), location.getLongitude(), 1);
                         }
-                    })
-                    .subscribe(new Subscriber<List<Address>>() {
+                    }).subscribe(new Subscriber<List<Address>>() {
                         @Override
                         public void onCompleted() {
 
@@ -384,9 +363,8 @@ public class MainActivity extends BaseActivity {
                             } else
                                 locationView.setText(R.string.current_location);
                         }
-                    });
+                    }));
         } else {
-
             forecastObservable = forecastService.getForecast(
                     APIKeys.FORECAST,
                     LocationSettings.getLat(),
