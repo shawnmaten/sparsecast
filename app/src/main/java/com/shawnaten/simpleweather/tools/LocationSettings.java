@@ -60,4 +60,9 @@ public class LocationSettings {
         return savedPlace;
     }
 
+    public static void clear() {
+        mode = Mode.CURRENT;
+        savedPlace = null;
+    }
+
 }

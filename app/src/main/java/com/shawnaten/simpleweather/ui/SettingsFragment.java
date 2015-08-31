@@ -157,7 +157,7 @@ public class SettingsFragment extends PreferenceFragment
             case "prefUnits":
                 ListPreference unitsPref = (ListPreference) findPreference(key);
                 unitsPref.setSummary(unitsPref.getEntry());
-                LocaleSettings.configure(getApp(), prefsAPI, gcmAPI);
+                LocaleSettings.configure(getApp());
                 break;
             case "prefLocationNotify":
                 if (prefs.getBoolean(key, false)) {

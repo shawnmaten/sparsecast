@@ -16,7 +16,7 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
 public class GCMToken {
-    public static Observable<Void> configure(final Context context, final GcmAPI gcmAPI) {
+    public static Observable<String> configure(final Context context, final GcmAPI gcmAPI) {
         final String gcmTokenKey = context.getString(R.string.pref_gcm_token);
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -24,11 +24,11 @@ public class GCMToken {
 
         final String oldToken = prefs.getString(gcmTokenKey, null);
 
-        return Observable.create(new Observable.OnSubscribe<Void>() {
+        return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
-            public void call(Subscriber<? super Void> subscriber) {
+            public void call(Subscriber<? super String> subscriber) {
                 if (oldToken != null && !localeChange) {
-                    subscriber.onCompleted();
+                    subscriber.onNext(oldToken);
                 } else if (oldToken != null) {
                     try {
                         gcmAPI.updatePrefs(
@@ -36,7 +36,7 @@ public class GCMToken {
                                 oldToken,
                                 LocaleSettings.getUnitCode()
                         ).execute();
-                        subscriber.onCompleted();
+                        subscriber.onNext(oldToken);
                     } catch (IOException e) {
                         subscriber.onError(e);
                     }
@@ -52,7 +52,7 @@ public class GCMToken {
                                 LocaleSettings.getUnitCode()
                         ).execute();
                         prefs.edit().putString(gcmTokenKey, newToken).apply();
-                        subscriber.onCompleted();
+                        subscriber.onNext(newToken);
                     } catch (IOException e) {
                         subscriber.onError(e);
                     }

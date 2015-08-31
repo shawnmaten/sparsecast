@@ -120,8 +120,7 @@ public class LocationService2 extends IntentService {
         }
 
         try {
-            // TODO this is temporary
-            api.report(gcmToken, 51.507325, -0.127638).execute();
+            api.report(gcmToken, location.getLatitude(), location.getLongitude()).execute();
             prefs.edit()
                     .putFloat(LAT, (float) location.getLatitude())
                     .putFloat(LNG, (float) location.getLongitude())

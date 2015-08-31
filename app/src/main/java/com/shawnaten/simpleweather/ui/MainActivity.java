@@ -36,6 +36,8 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.instabug.library.Instabug;
 import com.shawnaten.simpleweather.R;
@@ -124,6 +126,8 @@ public class MainActivity extends BaseActivity {
 
     private Target target;
 
+    private LocationRequest locationRequest;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -182,6 +186,11 @@ public class MainActivity extends BaseActivity {
                 )
         );
         slidingTabLayout.setViewPager(viewPager);
+
+        locationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
+                .setInterval(0)
+                .setNumUpdates(1);
     }
 
     @Override
@@ -252,60 +261,71 @@ public class MainActivity extends BaseActivity {
 
                     manager.notify(GCMNotificationService.getID(), builder.build());
                 }
-
-                prefs.edit().putBoolean("message_8_23_15", true).apply();
             }
         };
 
-        subs.add(GCMToken.configure(this, gcmAPI).flatMap(new Func1<Void, Observable<Location>>() {
-            @Override
-            public Observable<Location> call(Void aVoid) {
-                LocationRequest locationRequest = LocationRequest.create()
-                        .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-                        .setInterval(0)
-                        .setNumUpdates(1);
+        subs.add(GCMToken.configure(this, gcmAPI)
+                .flatMap(new Func1<String, Observable<LocationSettingsResult>>() {
+                    @Override
+                    public Observable<LocationSettingsResult> call(String string) {
+                        LocationSettingsRequest locationSettingsRequest;
+                        locationSettingsRequest = new LocationSettingsRequest.Builder()
+                                .addLocationRequest(locationRequest)
+                                .setAlwaysShow(true)
+                                .build();
 
-                return locationProvider.getUpdatedLocation(locationRequest);
-            }
-        }).subscribe(new Subscriber<Location>() {
+                        return locationProvider.checkLocationSettings(locationSettingsRequest);
+                    }
+                }).subscribe(new Subscriber<LocationSettingsResult>() {
             @Override
             public void onCompleted() {
-
             }
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override
-            public void onNext(Location location) {
-                LocationSettings.setIsLocationEnabled(location != null);
-                if (location != null) {
-                    if (!prefs.getBoolean("message_8_23_15", false)) {
-                        subs.add(locationProvider.getLastKnownLocation()
-                                .flatMap(new Func1<Location, Observable<Forecast.Response>>() {
-                                    @Override
-                                    public Observable<Forecast.Response> call(Location location) {
-                                        return forecastService.notifyCheckVersion(
-                                                APIKeys.FORECAST,
-                                                location.getLatitude(),
-                                                location.getLongitude(),
-                                                LocaleSettings.getLangCode(),
-                                                LocaleSettings.getUnitCode()
-                                        );
-                                    }
-                                }).subscribe(notifySub));
-                    }
-                } else if (LocationSettings.getSavedPlace() == null) {
+            public void onNext(LocationSettingsResult result) {
+                Boolean isSuccess = result.getStatus().isSuccess();
+                LocationSettings.setIsLocationEnabled(isSuccess);
+
+                if (isSuccess && !prefs.getBoolean("message_8_23_15", false)) {
+                    prefs.edit().putBoolean("message_8_23_15", true).apply();
+
+                    subs.add(locationProvider.getUpdatedLocation(locationRequest)
+                            .flatMap(new Func1<Location, Observable<Forecast.Response>>() {
+                                @Override
+                                public Observable<Forecast.Response> call(Location location) {
+                                    return forecastService.notifyCheckVersion(
+                                            APIKeys.FORECAST,
+                                            location.getLatitude(),
+                                            location.getLongitude(),
+                                            LocaleSettings.getLangCode(),
+                                            LocaleSettings.getUnitCode()
+                                    );
+                                }
+                            }).subscribe(notifySub));
+                }
+
+                if (!isSuccess && LocationSettings.getSavedPlace() == null) {
                     startActivity(new Intent(getApplicationContext(), SearchActivity.class));
                     return;
                 }
+
                 invalidateOptionsMenu();
                 getForecast();
             }
         }));
         // end of configuration
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        LocationSettings.clear();
     }
 
     private void getForecast() {
@@ -316,7 +336,7 @@ public class MainActivity extends BaseActivity {
 
         if (LocationSettings.getMode() == LocationSettings.Mode.CURRENT) {
             forecastObservable = locationProvider
-                    .getLastKnownLocation()
+                    .getUpdatedLocation(locationRequest)
                     .flatMap(new Func1<Location, Observable<Forecast.Response>>() {
                         @Override
                         public Observable<Forecast.Response> call(Location location) {
@@ -332,7 +352,7 @@ public class MainActivity extends BaseActivity {
                     .observeOn(AndroidSchedulers.mainThread());
 
             subs.add(locationProvider
-                    .getLastKnownLocation()
+                    .getUpdatedLocation(locationRequest)
                     .flatMap(new Func1<Location, Observable<List<Address>>>() {
                         @Override
                         public Observable<List<Address>> call(Location location) {
@@ -491,9 +511,9 @@ public class MainActivity extends BaseActivity {
 
         if (LocationSettings.getMode() == LocationSettings.Mode.SAVED) {
             actionFavorite.setVisible(true);
-            actionCurrentLocation.setVisible(true);
             if (LocationSettings.isFavorite())
                 actionFavorite.setIcon(R.drawable.ic_favorite_white_24dp);
+            actionCurrentLocation.setVisible(LocationSettings.isLocationEnabled());
         } else {
             actionFavorite.setVisible(false);
             actionCurrentLocation.setVisible(false);
@@ -600,9 +620,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setSelectedAccountName(String accountName) {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(prefAccountKey, accountName);
-        editor.apply();
+        prefs.edit().putString(prefAccountKey, accountName).apply();
         cred.setSelectedAccountName(accountName);
     }
 
