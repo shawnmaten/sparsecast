@@ -1,0 +1,16 @@
+Error:
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:preDexProdDebug'.
+> com.android.ide.common.process.ProcessException: org.gradle.process.internal.ExecException:
+Process 'command '/Library/Java/JavaVirtualMachines/jdk1.8.0_66.jdk/Contents/Home/bin/java''
+finished with non-zero exit value 1
+
+Solution:
+
+This seems to have been fixed by switching from Java SDK 1.8 to 1.7
+
+Now it's giving me the error for having too many classes which I don't understand because I thought
+on Android >= 5.0 I didn't have to worry about this.

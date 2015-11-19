@@ -25,13 +25,4 @@
         android:id="@+id/action_about"
         android:title="@string/about"
         app:showAsAction="never"/>
-    <item
-        android:id="@+id/action_feedback"
-        android:title="@string/send_feedback"
-        app:showAsAction="never"/>
-    <!--
-    <item
-        android:id="@+id/action_ad"
-        android:title="Ad Activity"
-        app:showAsAction="never"/>-->
 </menu>

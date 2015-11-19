@@ -39,7 +39,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.instabug.library.Instabug;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.gcmAPI.GcmAPI;
 import com.shawnaten.simpleweather.backend.imagesApi.ImagesApi;
@@ -576,12 +575,6 @@ public class MainActivity extends BaseActivity {
             case R.id.action_about:
                 startActivity(new Intent(this, AboutActivity.class));
                 return true;
-            case R.id.action_feedback:
-                Instabug.getInstance().invoke();
-                return true;
-            /*case R.id.action_ad:
-                startActivity(new Intent(this, AdActivity.class));
-                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }
