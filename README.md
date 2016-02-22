@@ -1,13 +1,14 @@
 # Sparsecast
 Android weather app powered by forecast.io service.
 
-Libraries / Patterns Used
+Libraries / Services / Patterns Used
 - forecast.io API for weather data
 - Google Maps API's for location searching / matching
 - Observable patterns using RxJava / RxAndroid
 - Dagger 2 for dependency injection
 - Retrofit for API interfacing
 - Picasso for image handling
+- simple Google App Engine backend for storing favorites and push weather updates
 
 Experience Highlights
 - first experience coding for Android
