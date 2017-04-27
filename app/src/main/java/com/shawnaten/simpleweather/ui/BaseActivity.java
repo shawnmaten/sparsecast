@@ -2,10 +2,10 @@ package com.shawnaten.simpleweather.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.instabug.wrapper.support.activity.InstabugAppCompatActivity;
 import com.shawnaten.simpleweather.App;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 import rx.subscriptions.CompositeSubscription;
 
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends InstabugAppCompatActivity {
     protected CompositeSubscription subs;
     protected ArrayList<FragmentDataListener> dataListeners = new ArrayList<>();
     protected HashMap<String, Object> dataMap = new HashMap<>();
