@@ -74,7 +74,6 @@ import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -461,22 +460,7 @@ public class MainActivity extends BaseActivity {
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<Instagram.Response>() {
-                            @Override
-                            public void call(Instagram.Response res) {
-                                Instagram.MediaData data = res.getData();
-                                Instagram.MediaData.Images images = data.getImages();
-
-                                String url = images.getStandardResolution().getUrl();
-                                String post = data.getLink();
-                                String user = data.getUser().getUsername();
-
-                                Attributions.setInstagramUser(user);
-                                Attributions.setInstagramUrl(post);
-
-                                Picasso.with(photo.getContext()).load(url).into(target);
-                            }
-                        });
+                        .subscribe(new InstagramSubscriber());
 
                 DecimalFormat tf = ForecastTools.getTempForm();
 
@@ -493,6 +477,33 @@ public class MainActivity extends BaseActivity {
         };
 
         subs.add(forecastObservable.subscribe(subscriber));
+    }
+
+    private class InstagramSubscriber extends Subscriber<Instagram.Response> {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Picasso.with(photo.getContext()).load(R.drawable.image_load_error).into(target);
+        }
+
+        @Override
+        public void onNext(Instagram.Response response) {
+            Instagram.MediaData data = response.getData();
+            Instagram.MediaData.Images images = data.getImages();
+
+            String url = images.getStandardResolution().getUrl();
+            String post = data.getLink();
+            String user = data.getUser().getUsername();
+
+            Attributions.setInstagramUser(user);
+            Attributions.setInstagramUrl(post);
+
+            Picasso.with(photo.getContext()).load(url).into(target);
+        }
     }
 
     @Override
