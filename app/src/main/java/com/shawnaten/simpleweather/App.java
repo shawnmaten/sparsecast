@@ -6,7 +6,7 @@ import android.support.multidex.MultiDexApplication;
 import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.instabug.library.Instabug;
+//import com.instabug.library.Instabug;
 import com.shawnaten.simpleweather.backend.gcmAPI.GcmAPI;
 import com.shawnaten.simpleweather.backend.prefsAPI.PrefsAPI;
 import com.shawnaten.simpleweather.component.DaggerMainComponent;
@@ -38,8 +38,8 @@ public class App extends MultiDexApplication {
 
         //Bugsnag.addToTab("User", "Email", googleAccountCredential.getAllAccounts()[0].name);
 
-        Instabug.initialize(this, "b35476559976660ba01ceb378d76f6d5");
-        Instabug.getInstance().setShowIntroDialog(false);
+//        Instabug.initialize(this, "b35476559976660ba01ceb378d76f6d5");
+//        Instabug.getInstance().setShowIntroDialog(false);
 
         /*
         String notifyKey = getString(R.string.pref_location_notify_key);
