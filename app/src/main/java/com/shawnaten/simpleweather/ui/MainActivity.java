@@ -450,17 +450,8 @@ public class MainActivity extends BaseActivity {
 
                 ImagesApiModule
                         .getImage(imagesApi, category)
-                        .flatMap(new Func1<Image, Observable<Instagram.Response>>() {
-                            @Override
-                            public Observable<Instagram.Response> call(Image image) {
-                                return instagramService.getMedia(
-                                        APIKeys.INSTAGRAM,
-                                        image.getShortcode()
-                                );
-                            }
-                        })
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new InstagramSubscriber());
+                        .subscribe(new ImageSubscriber());
 
                 DecimalFormat tf = ForecastTools.getTempForm();
 
@@ -479,7 +470,7 @@ public class MainActivity extends BaseActivity {
         subs.add(forecastObservable.subscribe(subscriber));
     }
 
-    private class InstagramSubscriber extends Subscriber<Instagram.Response> {
+    private class ImageSubscriber extends Subscriber<Image> {
         @Override
         public void onCompleted() {
 
@@ -491,18 +482,10 @@ public class MainActivity extends BaseActivity {
         }
 
         @Override
-        public void onNext(Instagram.Response response) {
-            Instagram.MediaData data = response.getData();
-            Instagram.MediaData.Images images = data.getImages();
-
-            String url = images.getStandardResolution().getUrl();
-            String post = data.getLink();
-            String user = data.getUser().getUsername();
-
-            Attributions.setInstagramUser(user);
-            Attributions.setInstagramUrl(post);
-
-            Picasso.with(photo.getContext()).load(url).into(target);
+        public void onNext(Image response) {
+            String baseUrl = "https://storage.googleapis.com/sparsecast/images/";
+            String imageUrl = String.format("%s%s.jpg", baseUrl, response.getShortcode());
+            Picasso.with(photo.getContext()).load(imageUrl).into(target);
         }
     }
 
