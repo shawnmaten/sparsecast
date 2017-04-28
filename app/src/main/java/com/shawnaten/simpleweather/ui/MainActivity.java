@@ -570,9 +570,9 @@ public class MainActivity extends BaseActivity {
             case R.id.action_about:
                 startActivity(new Intent(this, AboutActivity.class));
                 return true;
-            case R.id.action_feedback:
+//            case R.id.action_feedback:
 //                Instabug.getInstance().invoke();
-                return true;
+//                return true;
             /*case R.id.action_ad:
                 startActivity(new Intent(this, AdActivity.class));
                 return true;*/
