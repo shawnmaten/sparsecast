@@ -2,11 +2,13 @@ package com.shawnaten.simpleweather.tools;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 
 import com.shawnaten.simpleweather.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 @SuppressWarnings("unused")
 public class LocaleSettings {
@@ -49,13 +51,34 @@ public class LocaleSettings {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         final String unitCodeKey = context.getString(R.string.pref_units_key);
 
+        // Need these to see if something has changed
         final String oldUnitCode = prefs.getString(unitCodeKey, null);
         final String oldLangCode = prefs.getString(LANG_KEY, null);
 
-        langCode = context.getResources().getConfiguration().locale.getLanguage().toLowerCase();
+        Configuration configuration = context.getResources().getConfiguration();
+        Locale locale = configuration.locale;
 
-        unitCode = oldUnitCode != null && langCode.equals(oldLangCode) ? oldUnitCode :
-            context.getResources().getConfiguration().locale.getCountry().toLowerCase();
+        // Should always try to use current system language
+        langCode = locale.getLanguage().toLowerCase();
+        // Unless it's null or the language has changed, we want to use the setting
+        unitCode = oldUnitCode;
+
+        // If the user has changed their language, we may want to adjust the units they see
+        // Example: User changes from US English to GB English, they probably want different units
+        if (!langCode.equals(oldLangCode))
+            unitCode = null;
+
+        // Want to save this here because we might change it to the default
+        // If this language isn't supported by the API, we default to English
+        // But we don't want to detect a fake change each time
+        prefs.edit().putString(LANG_KEY, langCode).apply();
+        if (!SUPPORTED_LANGS.contains(langCode))
+            langCode = "en";
+
+        // Pick a default set of units based on device's set locale
+        // Example: us for United States, gb for Great Britain
+        if (unitCode == null)
+            unitCode = locale.getCountry().toLowerCase();
 
         switch (unitCode) {
             case "ca":
@@ -78,6 +101,8 @@ public class LocaleSettings {
                 distanceUnit = R.string.kilometers;
         }
 
+        prefs.edit().putString(unitCodeKey, unitCode).apply();
+
         if (unitCode.equals("us")) {
             precipitationUnit = R.string.inches;
             precipitationUnitTime = R.string.inches_per_hour;
@@ -93,9 +118,6 @@ public class LocaleSettings {
             precipitationHeavy = 10.2;
             pressureUnit = R.string.hectopascals;
         }
-
-        if (!SUPPORTED_LANGS.contains(langCode))
-            langCode = "en";
 
         return !(langCode.equals(oldLangCode) && unitCode.equals(oldUnitCode));
     }
