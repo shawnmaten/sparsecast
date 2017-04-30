@@ -3,7 +3,7 @@ package com.shawnaten.simpleweather.backend.model;
 /**
  * Created by Shawn Aten on 8/4/14.
  */
-public class Constants {
+public class ClientIDs {
 
     public static final String ANDROID_RELEASE_ID = "332711553534-9ui0rk61v78d6ebp306rctgpv7ippru5.apps.googleusercontent.com";
     public static final String ANDROID_DEBUG_ID = "332711553534-9e3r2gj1f6lji4h6isj6jcg8tnqid4on.apps.googleusercontent.com";

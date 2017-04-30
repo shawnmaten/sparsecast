@@ -5,7 +5,7 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
-import com.shawnaten.simpleweather.backend.model.Constants;
+import com.shawnaten.simpleweather.backend.model.ClientIDs;
 import com.shawnaten.simpleweather.backend.model.Keys;
 import com.shawnaten.simpleweather.lib.model.APIKeys;
 
@@ -18,12 +18,12 @@ import java.util.logging.Logger;
         namespace = @ApiNamespace(ownerDomain = "backend.simpleweather.shawnaten.com",
         ownerName = "backend.simpleweather.shawnaten.com", packagePath=""),
         clientIds = {
-                Constants.WEB_LOCAL_ID,
-                Constants.WEB_APP_ENGINE_ID,
-                Constants.ANDROID_DEBUG_ID,
-                Constants.ANDROID_RELEASE_ID
+                ClientIDs.WEB_LOCAL_ID,
+                ClientIDs.WEB_APP_ENGINE_ID,
+                ClientIDs.ANDROID_DEBUG_ID,
+                ClientIDs.ANDROID_RELEASE_ID
         },
-        audiences = {Constants.WEB_LOCAL_ID, Constants.WEB_APP_ENGINE_ID}
+        audiences = {ClientIDs.WEB_LOCAL_ID, ClientIDs.WEB_APP_ENGINE_ID}
 )
 
 public class KeysEndpoint {
