@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+    <application></application>
+    <version>2</version>
+    <threadsafe>true</threadsafe>
+
+    <!--Fill in empty strings.-->
+    <!--This file should not be committed to version control.-->
+    <system-properties>
+        <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+        <property name="gcm.api.key" value=""/>
+    </system-properties>
+
+
+</appengine-web-app>
