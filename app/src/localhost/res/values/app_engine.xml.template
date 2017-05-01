@@ -2,6 +2,6 @@
 <resources>
     <!--Fill in empty strings.-->
     <!--This file should not be committed to version control.-->
-    <string name="WEB_ID"></string>
-    <string name="root_url"></string>
+    <!--<string name="WEB_ID"></string>-->
+    <!--<string name="root_url"></string>-->
 </resources>
