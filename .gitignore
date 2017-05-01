@@ -163,6 +163,7 @@ Temporary Items
 # ************************************************
 
 app_engine.xml
+appengine-web.xml
 keys.xml
 ClientIDs.java
 APIKeys.java
