@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <string name="GOOGLE_API_KEY">AIzaSyADwEf8riAObeIS7DfBPXgGWWJ46yZosmY</string>
-    <string name="gcm_sender_id">332711553534</string>
-    <string name="bugsnag_api_key">be6ef9cd3dfd97c1e902a3c57533ad53</string>
-
-</resources>

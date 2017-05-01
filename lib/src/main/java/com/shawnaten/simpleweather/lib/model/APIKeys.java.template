@@ -1,0 +1,9 @@
+package com.shawnaten.simpleweather.lib.model;
+
+public class APIKeys {
+
+    public static final String GOOGLE = "";
+    public static final String FORECAST = "";
+    public static final String INSTAGRAM = "";
+
+}

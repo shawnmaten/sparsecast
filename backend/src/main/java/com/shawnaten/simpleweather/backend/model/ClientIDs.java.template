@@ -1,0 +1,10 @@
+package com.shawnaten.simpleweather.backend.model;
+
+public class ClientIDs {
+
+    public static final String ANDROID_RELEASE_ID = "";
+    public static final String ANDROID_DEBUG_ID = "";
+    public static final String WEB_APP_ENGINE_ID = "";
+    public static final String WEB_LOCAL_ID = "";
+
+}
