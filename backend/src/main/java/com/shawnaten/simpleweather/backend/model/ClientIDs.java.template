@@ -2,6 +2,8 @@ package com.shawnaten.simpleweather.backend.model;
 
 public class ClientIDs {
 
+    // Fill in empty strings.
+    // This file should not be checked into version control.
     public static final String ANDROID_RELEASE_ID = "";
     public static final String ANDROID_DEBUG_ID = "";
     public static final String WEB_APP_ENGINE_ID = "";
