@@ -1,16 +1,12 @@
 package com.shawnaten.simpleweather.backend.model;
 
-/**
- * Created by Shawn Aten on 8/4/14.
- */
-public class EmptyConstants {
+public class ClientIDs {
 
+    // Fill in empty strings.
+    // This file should not be checked into version control.
     public static final String ANDROID_RELEASE_ID = "";
     public static final String ANDROID_DEBUG_ID = "";
     public static final String WEB_APP_ENGINE_ID = "";
     public static final String WEB_LOCAL_ID = "";
-
-    public static final String PUBLIC_GOOGLE_API_KEY = "";
-    public static final String PUBLIC_FORECAST_API_KEY = "";
 
 }

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+//import com.instabug.wrapper.support.activity.InstabugAppCompatActivity;
 import com.shawnaten.simpleweather.App;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 
 import rx.subscriptions.CompositeSubscription;
 
+// This was changed from InstabugAppCompatActivity
 public class BaseActivity extends AppCompatActivity {
     protected CompositeSubscription subs;
     protected ArrayList<FragmentDataListener> dataListeners = new ArrayList<>();

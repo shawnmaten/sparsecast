@@ -39,6 +39,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+//import com.instabug.library.Instabug;
 import com.shawnaten.simpleweather.R;
 import com.shawnaten.simpleweather.backend.gcmAPI.GcmAPI;
 import com.shawnaten.simpleweather.backend.imagesApi.ImagesApi;
@@ -73,7 +74,6 @@ import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -450,32 +450,8 @@ public class MainActivity extends BaseActivity {
 
                 ImagesApiModule
                         .getImage(imagesApi, category)
-                        .flatMap(new Func1<Image, Observable<Instagram.Response>>() {
-                            @Override
-                            public Observable<Instagram.Response> call(Image image) {
-                                return instagramService.getMedia(
-                                        APIKeys.INSTAGRAM,
-                                        image.getShortcode()
-                                );
-                            }
-                        })
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<Instagram.Response>() {
-                            @Override
-                            public void call(Instagram.Response res) {
-                                Instagram.MediaData data = res.getData();
-                                Instagram.MediaData.Images images = data.getImages();
-
-                                String url = images.getStandardResolution().getUrl();
-                                String post = data.getLink();
-                                String user = data.getUser().getUsername();
-
-                                Attributions.setInstagramUser(user);
-                                Attributions.setInstagramUrl(post);
-
-                                Picasso.with(photo.getContext()).load(url).into(target);
-                            }
-                        });
+                        .subscribe(new ImageSubscriber());
 
                 DecimalFormat tf = ForecastTools.getTempForm();
 
@@ -492,6 +468,25 @@ public class MainActivity extends BaseActivity {
         };
 
         subs.add(forecastObservable.subscribe(subscriber));
+    }
+
+    private class ImageSubscriber extends Subscriber<Image> {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Picasso.with(photo.getContext()).load(R.drawable.image_load_error).into(target);
+        }
+
+        @Override
+        public void onNext(Image response) {
+            String baseUrl = "https://storage.googleapis.com/sparsecast/images/";
+            String imageUrl = String.format("%s%s.jpg", baseUrl, response.getShortcode());
+            Picasso.with(photo.getContext()).load(imageUrl).into(target);
+        }
     }
 
     @Override
@@ -575,6 +570,12 @@ public class MainActivity extends BaseActivity {
             case R.id.action_about:
                 startActivity(new Intent(this, AboutActivity.class));
                 return true;
+//            case R.id.action_feedback:
+//                Instabug.getInstance().invoke();
+//                return true;
+            /*case R.id.action_ad:
+                startActivity(new Intent(this, AdActivity.class));
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }

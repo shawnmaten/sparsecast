@@ -1,35 +1,36 @@
-*** taken from https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore ***
+# ************************************************
+# BEGIN IntelliJ / Android Studio
+# https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore
+# ************************************************
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
-
-*.iml
-
-## Directory-based project format:
-.idea/
-# if you remove the above rule, at least ignore the following:
+# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff:
-# .idea/workspace.xml
-# .idea/tasks.xml
-# .idea/dictionaries
-# .idea/shelf
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/dictionaries
 
 # Sensitive or high-churn files:
-# .idea/dataSources.ids
-# .idea/dataSources.xml
-# .idea/sqlDataSources.xml
-# .idea/dynamic.xml
-# .idea/uiDesigner.xml
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.xml
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
 
 # Gradle:
-# .idea/gradle.xml
-# .idea/libraries
+.idea/**/gradle.xml
+.idea/**/libraries
+
+# CMake
+cmake-build-debug/
 
 # Mongo Explorer plugin:
-# .idea/mongoSettings.xml
+.idea/**/mongoSettings.xml
 
 ## File-based project format:
-*.ipr
 *.iws
 
 ## Plugin-specific files:
@@ -43,24 +44,29 @@
 # JIRA plugin
 atlassian-ide-plugin.xml
 
+# Cursive Clojure plugin
+.idea/replstate.xml
+
 # Crashlytics plugin (for Android Studio and IntelliJ)
 com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-*** end of https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore ***
+# ************************************************
+# END IntelliJ / Android Studio
+# ************************************************
 
-
-
-
-*** taken from https://github.com/github/gitignore/blob/master/Android.gitignore ***
+# ************************************************
+# BEGIN Android
+# https://github.com/github/gitignore/blob/master/Android.gitignore
+# ************************************************
 
 # Built application files
 *.apk
 *.ap_
 
-# Files for the Dalvik VM
+# Files for the ART/Dalvik VM
 *.dex
 
 # Java class files
@@ -69,6 +75,7 @@ fabric.properties
 # Generated files
 bin/
 gen/
+out/
 
 # Gradle files
 .gradle/
@@ -89,14 +96,38 @@ proguard/
 # Android Studio captures folder
 captures/
 
-*** end of https://github.com/github/gitignore/blob/master/Android.gitignore ***
+# Intellij
+*.iml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/dictionaries
+.idea/libraries
 
+# Keystore files
+*.jks
 
+# External native build folder generated in Android Studio 2.2 and later
+.externalNativeBuild
 
+# Google Services (e.g. APIs or Firebase)
+google-services.json
 
-*** taken from https://github.com/github/gitignore/blob/master/Global/OSX.gitignore ***
+# Freeline
+freeline.py
+freeline/
+freeline_project_description.json
 
-.DS_Store
+# ************************************************
+# END Android
+# ************************************************
+
+# ************************************************
+# BEGIN macOS
+# https://github.com/github/gitignore/blob/master/Global/macOS.gitignore
+# ************************************************
+
+*.DS_Store
 .AppleDouble
 .LSOverride
 
@@ -114,6 +145,7 @@ Icon
 .TemporaryItems
 .Trashes
 .VolumeIcon.icns
+.com.apple.timemachine.donotpresent
 
 # Directories potentially created on remote AFP share
 .AppleDB
@@ -122,6 +154,22 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-*** end of https://github.com/github/gitignore/blob/master/Global/OSX.gitignore ***
+# ************************************************
+# END macOS
+# ************************************************
+
+# ************************************************
+# BEGIN Project Specific
+# ************************************************
+
+app_engine.xml
+appengine-web.xml
+keys.xml
+ClientIDs.java
+APIKeys.java
+
+# ************************************************
+# END Project Specific
+# ************************************************
 
 

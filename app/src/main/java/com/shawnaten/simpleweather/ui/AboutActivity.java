@@ -25,7 +25,7 @@ public class AboutActivity extends BaseActivity {
     public static final int[][] data = {
             {R.drawable.ic_map_black_24dp, R.array.attr_location},
             {R.drawable.ic_cloud_black_24dp, R.array.attr_forecast},
-            {R.drawable.ic_photo_black_24dp, R.array.attr_image}
+//            {R.drawable.ic_photo_black_24dp, R.array.attr_image}
     };
 
     @Bind(R.id.toolbar) Toolbar toolbar;
@@ -44,6 +44,12 @@ public class AboutActivity extends BaseActivity {
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     public class AttributionViewHolder extends RecyclerView.ViewHolder {

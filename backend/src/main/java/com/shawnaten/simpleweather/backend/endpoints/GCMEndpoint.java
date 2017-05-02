@@ -7,7 +7,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
 import com.shawnaten.simpleweather.backend.UserIdFix;
-import com.shawnaten.simpleweather.backend.model.Constants;
+import com.shawnaten.simpleweather.backend.model.ClientIDs;
 import com.shawnaten.simpleweather.backend.model.GCMRecord;
 
 import java.util.logging.Logger;
@@ -25,14 +25,14 @@ import static com.shawnaten.simpleweather.backend.OfyService.ofy;
                 packagePath = ""
         ),
         clientIds = {
-                Constants.WEB_LOCAL_ID,
-                Constants.WEB_APP_ENGINE_ID,
-                Constants.ANDROID_DEBUG_ID,
-                Constants.ANDROID_RELEASE_ID
+                ClientIDs.WEB_LOCAL_ID,
+                ClientIDs.WEB_APP_ENGINE_ID,
+                ClientIDs.ANDROID_DEBUG_ID,
+                ClientIDs.ANDROID_RELEASE_ID
         },
         audiences = {
-                Constants.WEB_LOCAL_ID,
-                Constants.WEB_APP_ENGINE_ID
+                ClientIDs.WEB_LOCAL_ID,
+                ClientIDs.WEB_APP_ENGINE_ID
         }
 )
 public class GCMEndpoint {
