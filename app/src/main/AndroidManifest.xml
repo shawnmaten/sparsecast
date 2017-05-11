@@ -116,6 +116,12 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity
+            android:name=".ui.UploadPhotoActivity"
+            android:label="Upload Photo"
+            android:screenOrientation="portrait">
+        </activity>
+
     </application>
 
 </manifest>
