@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="288dp"
+                android:layout_height="wrap_content"
+                android:text="Do you have an interesting photo of the weather in your area? Upload it! If approved, it’ll be shown to other users in matching weather conditions."
+                android:gravity="center_horizontal" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="16dp" />
+
+            <Button
+                android:id="@+id/select_file_button"
+                android:layout_width="118dp"
+                android:layout_height="36dp"
+                android:text="Select Photo"
+                android:background="#009688"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="center_horizontal"
+                android:onClick="onSelectPhotoClick"
+                android:layout_margin="16dp"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>
