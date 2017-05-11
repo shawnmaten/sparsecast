@@ -114,3 +114,22 @@
 -dontwarn com.google.api.client**
 
 # end of bugsnag or instabug (not sure)
+
+# for filepicker
+
+-keepattributes *Annotation*, Signature
+
+##== Filepicker ==
+-keep class io.filepicker.** { *; }
+
+##== Retrofit ==
+-keep class retrofit.** { *; }
+-keepclassmembernames interface * {
+    @retrofit.http.* <methods>;
+}
+
+##== Gson ==
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.stream.** { *; }
+
+# end of filepicker
