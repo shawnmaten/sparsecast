@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/photo"
+            android:layout_width="272dp"
+            android:layout_height="272dp"
+            android:layout_marginTop="32dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/image_placeholder"/>
+
+        <HorizontalScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_below="@id/photo"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/category_selector"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+            </LinearLayout>
+
+        </HorizontalScrollView>
+        
+        <Button
+            android:layout_width="88dp"
+            android:layout_height="36dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            android:background="#009688"
+            android:textColor="#FFFFFF"
+            android:text="Submit"
+            android:onClick="onSubmitClick"
+            android:layout_centerHorizontal="true"/>
+
+    </RelativeLayout>
+
+</LinearLayout>
