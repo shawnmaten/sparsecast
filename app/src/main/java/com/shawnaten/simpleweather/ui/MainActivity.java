@@ -576,6 +576,9 @@ public class MainActivity extends BaseActivity {
             /*case R.id.action_ad:
                 startActivity(new Intent(this, AdActivity.class));
                 return true;*/
+            case R.id.action_upload_photo:
+                startActivity(new Intent(this, UploadPhotoActivity.class));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.shawnaten.simpleweather.ui.MainActivity">
     <item
+        android:id="@+id/action_upload_photo"
+        android:title="@string/action_favorite"
+        android:icon="@drawable/ic_add_a_photo_white_24dp"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/action_favorite"
         android:title="@string/action_favorite"
         android:icon="@drawable/ic_favorite_border_white_24dp"
