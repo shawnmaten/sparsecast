@@ -1,1 +1,3 @@
 include ':app', ':backend', ':lib'
+include ':filepicker-android'
+project(':filepicker-android').projectDir=new File('../filepicker-android/filepicker-library')
