@@ -483,9 +483,15 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public void onNext(Image response) {
-            String baseUrl = "https://storage.googleapis.com/sparsecast/images/";
-            String imageUrl = String.format("%s%s.jpg", baseUrl, response.getShortcode());
-            Picasso.with(photo.getContext()).load(imageUrl).into(target);
+            String googleBaseURL = "https://storage.googleapis.com/sparsecast/images/";
+            String filestackBaseURL = "https://cdn.filepicker.io/api/file/";
+            String key = response.getShortcode();
+            String url = "";
+            if (key.length() == 10)
+                url = String.format("%s%s.jpg", googleBaseURL, key);
+            else
+                url = String.format("%s%s", filestackBaseURL, key);
+            Picasso.with(photo.getContext()).load(url).into(target);
         }
     }
 

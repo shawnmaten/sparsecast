@@ -37,6 +37,7 @@
         </HorizontalScrollView>
         
         <Button
+            android:id="@+id/button_confirm"
             android:layout_width="88dp"
             android:layout_height="36dp"
             android:layout_alignParentBottom="true"
@@ -47,7 +48,6 @@
             android:background="#009688"
             android:textColor="#FFFFFF"
             android:text="Submit"
-            android:onClick="onSubmitClick"
             android:layout_centerHorizontal="true"/>
 
     </RelativeLayout>

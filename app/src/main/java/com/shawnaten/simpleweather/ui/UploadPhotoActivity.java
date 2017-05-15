@@ -17,6 +17,8 @@ import com.shawnaten.simpleweather.lib.model.APIKeys;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,8 +28,6 @@ import io.filepicker.models.FPFile;
 public class UploadPhotoActivity extends BaseActivity {
 
     @Bind(R.id.toolbar) Toolbar toolbar;
-    private Fragment initialFrag;
-    private Fragment confirmFrag;
 
     private static String[] services = {
             "GALLERY",
@@ -38,6 +38,9 @@ public class UploadPhotoActivity extends BaseActivity {
     };
 
     private static String[] mimetypes = {"image/*"};
+
+    private String imageKey = null;
+    private String imageURL = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,26 +58,32 @@ public class UploadPhotoActivity extends BaseActivity {
             }
         });
 
-        initialFrag = UploadInitialFragment.newInstance();
-        confirmFrag = UploadConfirmFragment.newInstance();
+        Fragment fragment = UploadInitialFragment.newInstance();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragment, confirmFrag)
-                .add(R.id.fragment, initialFrag)
-                .detach(confirmFrag)
+                .add(R.id.fragment, fragment)
                 .commit();
 
         Filepicker.setKey(APIKeys.FILESTACK);
         Filepicker.setAppName(getString(R.string.app_name));
     }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        if (imageURL != null) {
+            Fragment fragment = UploadConfirmFragment.newInstance(imageKey, imageURL);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment, fragment)
+                    .commit();
+        }
+    }
+
     public void onSelectPhotoClick(View button) {
-//        Toast.makeText(this, "Select photo clicked!", Toast.LENGTH_SHORT).show();
-//        getSupportFragmentManager()
-//                .beginTransaction()
-//                .detach(initialFrag)
-//                .attach(confirmFrag)
-//                .commit();
+//      Toast.makeText(this, "Select photo clicked!", Toast.LENGTH_SHORT).show();
+
         Intent intent = new Intent(this, Filepicker.class);
         intent.putExtra("services", services);
         intent.putExtra("mimetype", mimetypes);
@@ -95,9 +104,14 @@ public class UploadPhotoActivity extends BaseActivity {
 
                 // Option multiple was not set so only 1 object is expected
                 FPFile file = fpFiles.get(0);
-                String key = file.getKey();
 
-                Toast.makeText(this, key != null ? key : "no key", Toast.LENGTH_SHORT).show();
+                Pattern pattern = Pattern.compile("\\Qhttps://cdn.filepicker.io/api/file/\\E(.+)");
+                Matcher matcher = pattern.matcher(file.getUrl());
+                matcher.find();
+
+                imageKey = matcher.group(1);
+                Log.d("key", imageKey);
+                imageURL = file.getUrl();
 
                 // Do something cool with the result
             } else {
@@ -106,6 +120,8 @@ public class UploadPhotoActivity extends BaseActivity {
 
         }
     }
+
+
 
 }
 

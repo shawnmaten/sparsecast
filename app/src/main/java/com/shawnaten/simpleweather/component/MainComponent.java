@@ -24,6 +24,7 @@ import com.shawnaten.simpleweather.ui.MainActivity;
 import com.shawnaten.simpleweather.ui.SearchActivity;
 import com.shawnaten.simpleweather.ui.SearchTab;
 import com.shawnaten.simpleweather.ui.SettingsFragment;
+import com.shawnaten.simpleweather.ui.UploadConfirmFragment;
 
 import javax.inject.Singleton;
 
@@ -58,5 +59,6 @@ public interface MainComponent {
     SearchActivity inject(SearchActivity activity);
     SettingsFragment inject(SettingsFragment settingsFragment);
     SearchTab inject(SearchTab tab);
+    UploadConfirmFragment inject(UploadConfirmFragment fragment);
     App inject(App app);
 }
