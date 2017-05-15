@@ -32,14 +32,9 @@ public class UploadPhotoActivity extends BaseActivity {
     private static String[] services = {
             "GALLERY",
             "CAMERA",
-            "FACEBOOK",
-            "CLOUDDRIVE",
             "DROPBOX",
-            "BOX",
             "INSTAGRAM",
-            "FLICKR",
             "GOOGLE_DRIVE",
-            "SKYDRIVE",
     };
 
     private static String[] mimetypes = {"image/*"};
